@@ -294,6 +294,28 @@ img {
   border: 1px solid var(--line);
 }
 
+/* Tablet-only fix (821px-1020px): .top-nav's nowrap links have an
+   intrinsic (min-content) width wider than the available header space.
+   Flex items default to min-width: auto, so .top-nav refused to shrink
+   below that intrinsic width and pushed .theme-toggle outside the
+   header/viewport. Letting .top-nav shrink and scroll internally keeps
+   the header on a single row, at its normal height, with the logo and
+   theme toggle both fully visible. Desktop (>1020px) and mobile
+   (<=820px, which already wraps the nav onto its own row) are untouched. */
+@media (min-width: 821px) and (max-width: 1020px) {
+  .brand,
+  .theme-toggle {
+    flex-shrink: 0;
+  }
+
+  .top-nav {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+}
+
 .theme-dot {
   width: 18px;
   height: 18px;
