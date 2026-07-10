@@ -1817,7 +1817,21 @@ guide-preview,
     grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
   }
 
+  /* Below the desktop breakpoint the converter must be reachable
+     without scrolling past the search/category panel first, so
+     reorder the tool-layout children: converter, then search/
+     categories, then saved/recent activity. Desktop (>1160px)
+     is untouched since this block is scoped to max-width. */
+  .converter-panel {
+    order: 1;
+  }
+
+  .category-panel {
+    order: 2;
+  }
+
   .activity-panel {
+    order: 3;
     position: static;
     grid-column: 1 / -1;
     grid-template-columns: repeat(3, minmax(0, 1fr));
