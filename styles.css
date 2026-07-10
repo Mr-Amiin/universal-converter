@@ -39,6 +39,8 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  width: 100%;
 }
 
 body {
@@ -164,6 +166,10 @@ img {
   gap: clamp(0.8rem, 2vw, 1.5rem);
   color: var(--muted);
   font-size: 0.96rem;
+}
+
+.site-footer nav {
+  flex-wrap: wrap;
 }
 
 .top-nav a,
@@ -331,7 +337,8 @@ img {
 }
 
 .hero-content {
-  width: min(980px, 100%);
+  width: min(980px, calc(100% - 2rem));
+  margin: 0 auto;
 }
 
 .shared-page-container {
