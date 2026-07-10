@@ -1883,6 +1883,38 @@ guide-preview,
   }
 }
 
+/* Dedicated tablet layout (821px-1160px). The block above sets a 2-column
+   .tool-layout (narrow track + 1fr track) and reorders the panels with
+   `order` so the converter reads before the category/search panel. But
+   CSS Grid auto-placement follows that same `order` value when assigning
+   items to column tracks, so .converter-panel (order: 1) was auto-placed
+   into the *first*, narrow (210px-260px) track, while .category-panel
+   (order: 2) landed in the wide 1fr track - squeezing every converter
+   control (From/To boxes, swap button, result, decimal settings) into an
+   unusably narrow column. Explicit grid-column placement here decouples
+   column assignment from `order`, gives the converter the wide flexible
+   track, and widens it further. This only applies between the mobile and
+   desktop breakpoints; the max-width: 820px block below still wins at
+   mobile widths (later in source, single-column), and the desktop
+   (min-width: 1161px) 3-column layout above is untouched. */
+@media (min-width: 821px) and (max-width: 1160px) {
+  .tool-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 280px);
+  }
+
+  .converter-panel {
+    grid-column: 1;
+  }
+
+  .category-panel {
+    grid-column: 2;
+  }
+
+  .activity-panel {
+    grid-column: 1 / -1;
+  }
+}
+
 @media (max-width: 820px) {
   .site-header {
     position: static;
