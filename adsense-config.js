@@ -7,6 +7,10 @@ const ADSENSE_SLOTS = {
   "below-converter": "REPLACE_WITH_SLOT_ID",
   "between-faq-about": "REPLACE_WITH_SLOT_ID",
   content: "REPLACE_WITH_SLOT_ID",
+  "content-top": "REPLACE_WITH_SLOT_ID",
+  "content-middle": "REPLACE_WITH_SLOT_ID",
+  "content-bottom": "REPLACE_WITH_SLOT_ID",
+  leaderboard: "REPLACE_WITH_SLOT_ID",
   "sitemap-top": "REPLACE_WITH_SLOT_ID"
 };
 
