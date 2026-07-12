@@ -1479,7 +1479,7 @@ guide-preview,
   z-index: 1;
   display: grid;
   gap: 0.25rem;
-  min-height: 250px;
+  min-height: 280px;
   padding: 1rem;
   place-items: center;
   text-align: center;
@@ -2059,11 +2059,19 @@ guide-preview,
     min-height: 96px;
   }
 
+  .sidebar-ad .adsbygoogle {
+    min-height: 96px;
+  }
+
   .ad-band,
   .converter-ad-slot,
   .in-content-ad {
     min-height: 88px;
     padding: 0.8rem;
+  }
+
+  .adsbygoogle {
+    min-height: 88px;
   }
 
   .agriculture-suite {
