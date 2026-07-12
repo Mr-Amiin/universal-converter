@@ -22,3 +22,12 @@
 /mph-to-kmh /mph-to-kmh/ 301
 /psi-to-bar /psi-to-bar/ 301
 /watts-to-horsepower /watts-to-horsepower/ 301
+
+# Legacy "flagship" volume pages live at site root (not under /volume/) but
+# share the volume category, so they don't match the /volume/{slug}/ pattern
+# used by every other volume conversion page. Redirect that expected pattern
+# to the real canonical page instead of falling through to the 404 fallback,
+# which has no SEO content (including no Related Conversions section).
+/volume/liter-to-gallon/* /liter-to-gallon/ 301
+/volume/liters-to-gallons/* /liters-to-gallons/ 301
+/volume/gallons-to-liters/* /gallons-to-liters/ 301
