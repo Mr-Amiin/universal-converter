@@ -837,12 +837,6 @@
     const fromSelect = byId("fromUnit");
     const toSelect = byId("toUnit");
     if (!category || !fromSelect || !toSelect) {
-      console.debug("[converter-init] falls back to default category: category or converter controls unavailable", {
-        categoryId: pageConversion.categoryId,
-        categoryFound: !!category,
-        fromSelectFound: !!fromSelect,
-        toSelectFound: !!toSelect
-      });
       return null;
     }
 
@@ -854,16 +848,9 @@
       || category.units[Math.min(1, category.units.length - 1)]
       || category.units[0];
     if (!fromUnit || !toUnit) {
-      console.debug("[converter-init] falls back to default category: requested units were not found in the category", pageConversion);
       return null;
     }
 
-    console.debug("[converter-init] step 5-9 - applying registry conversion", {
-      slug,
-      categoryId: category.id,
-      fromUnitId: fromUnit.id,
-      toUnitId: toUnit.id
-    });
 
     // Step 5: select the correct category using the same internal API as the
     // homepage converter.
@@ -881,37 +868,27 @@
     if (targetInput) targetInput.value = "";
     // Step 9: trigger the existing converter update/render function.
     updateConversion();
-    console.debug("[converter-init] initialization function called: initializeConverterFromPageRegistry -> selectCategory + populateSelect + updateConversion");
     return pageConversion;
   }
 
   function initializeConverterFromPageRegistry() {
-    console.debug("[converter-init] initializeConverterFromPageRegistry() called");
 
     // Step 1: read the page slug.
     const slug = currentPageSlug();
-    console.debug("[converter-init] step 1 - current page slug:", slug);
 
     // Steps 2-3: find the slug/page metadata in the conversion registry and
     // retrieve categoryId/fromUnitId/toUnitId.
     const pageConversion = readSeoConversionData();
-    console.debug("[converter-init] step 2 - registry lookup result:", pageConversion);
     if (!pageConversion || !pageConversion.categoryId || !pageConversion.fromUnitId || !pageConversion.toUnitId) {
-      console.debug("[converter-init] falls back to default category: no valid registry entry found for slug", slug);
       pageInitPending = false;
       return null;
     }
-    console.debug("[converter-init] step 3 - categoryId found:", pageConversion.categoryId);
-    console.debug("[converter-init] step 3 - fromUnitId found:", pageConversion.fromUnitId);
-    console.debug("[converter-init] step 3 - toUnitId found:", pageConversion.toUnitId);
 
     // Step 4: confirm the converter registry (categories/categoryMap) has
     // finished loading before applying the page-specific conversion.
     const registryLoaded = Boolean(categoryMap && categoryMap.size > 0 && byId("fromUnit") && byId("toUnit"));
-    console.debug("[converter-init] step 4 - converter registry loaded:", registryLoaded, "(", categoryMap ? categoryMap.size : 0, "categories)");
     if (!registryLoaded) {
       pageInitPending = true;
-      console.debug("[converter-init] waiting for converter registry to finish loading before applying the page conversion");
       window.requestAnimationFrame(() => {
         pageInitPending = false;
         initializeConverterFromPageRegistry();
