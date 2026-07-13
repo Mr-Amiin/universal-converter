@@ -40,10 +40,14 @@ PREFERRED_ORDER = [
     "pressure",
     "digital",
     "power",
+    "energy",
+    "electricity",
+    "currency",
 ]
 
 CONVERTER_LINK_RE = re.compile(
-    r'<a href="(?:[^"]*index\.html)?#converter">Converter</a>'
+    r'(<a href="(?:[^"]*index\.html)?#converter">Converter</a>)'
+    r'(?:<div class="nav-dropdown">.*?</div>)?'
 )
 
 
@@ -100,7 +104,8 @@ def update_html_files(dropdown_html: str) -> int:
                 text = f.read()
         except UnicodeDecodeError:
             continue
-        new_text, count = CONVERTER_LINK_RE.subn(dropdown_html, text)
+        replacement = r"\1" + dropdown_html.replace("\\", "\\\\")
+        new_text, count = CONVERTER_LINK_RE.subn(replacement, text)
         if count:
             with open(html_file, "w", encoding="utf-8", newline="") as f:
                 f.write(new_text)

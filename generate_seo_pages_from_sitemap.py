@@ -61,6 +61,9 @@ CATEGORY_LABELS = {
     "pressure": "Pressure",
     "digital": "Digital storage",
     "power": "Power",
+    "energy": "Energy",
+    "electricity": "Electricity",
+    "currency": "Currency",
 }
 
 RELATED_RULES = {
