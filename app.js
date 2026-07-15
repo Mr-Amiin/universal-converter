@@ -695,10 +695,30 @@
     const dropdowns = document.querySelectorAll(".nav-dropdown");
     if (!dropdowns.length) return;
 
+    const mobileMenuQuery = window.matchMedia("(max-width: 820px)");
+
+    // On mobile the header wraps onto two rows, so its rendered height
+    // varies (font size, zoom, content). Rather than trust a fixed CSS
+    // constant for the dropdown's offset, measure the toggle button's
+    // actual position each time the menu opens and write it to a CSS
+    // variable the mobile stylesheet reads. Keeps the menu pinned
+    // directly under its button instead of overlapping the hero below.
+    function positionMobileMenu(dropdown) {
+      if (!mobileMenuQuery.matches) return;
+      const toggle = dropdown.querySelector(".nav-dropdown-toggle");
+      const menu = dropdown.querySelector(".nav-dropdown-menu");
+      if (!toggle || !menu) return;
+      const rect = toggle.getBoundingClientRect();
+      const top = Math.round(rect.bottom + 8);
+      menu.style.setProperty("--dropdown-menu-top", `${top}px`);
+    }
+
     function closeDropdown(dropdown) {
       dropdown.classList.remove("is-open");
       const toggle = dropdown.querySelector(".nav-dropdown-toggle");
+      const menu = dropdown.querySelector(".nav-dropdown-menu");
       if (toggle) toggle.setAttribute("aria-expanded", "false");
+      if (menu) menu.style.removeProperty("--dropdown-menu-top");
     }
 
     function closeAll(except) {
@@ -716,8 +736,20 @@
         event.preventDefault();
         const isOpen = dropdown.classList.contains("is-open");
         closeAll(dropdown);
-        dropdown.classList.toggle("is-open", !isOpen);
-        toggle.setAttribute("aria-expanded", String(!isOpen));
+        const nextOpen = !isOpen;
+        dropdown.classList.toggle("is-open", nextOpen);
+        toggle.setAttribute("aria-expanded", String(nextOpen));
+        if (nextOpen) {
+          positionMobileMenu(dropdown);
+        } else {
+          menu.style.removeProperty("--dropdown-menu-top");
+        }
+      });
+
+      // Selecting a category closes the menu (it also navigates away,
+      // but this keeps state clean for back/forward-cache restores).
+      menu.addEventListener("click", (event) => {
+        if (event.target.closest("a")) closeDropdown(dropdown);
       });
 
       dropdown.addEventListener("keydown", (event) => {
@@ -737,6 +769,27 @@
     document.addEventListener("focusin", (event) => {
       dropdowns.forEach((dropdown) => {
         if (!dropdown.contains(event.target)) closeDropdown(dropdown);
+      });
+    });
+
+    // The mobile header is `position: static` (not sticky), so its
+    // toggle button moves out from under a `position: fixed` menu as
+    // soon as the page scrolls. Rather than let the menu drift out of
+    // alignment, close it on scroll so it never floats in the wrong
+    // place; the person can reopen it once they've stopped scrolling.
+    window.addEventListener(
+      "scroll",
+      () => {
+        dropdowns.forEach((dropdown) => {
+          if (dropdown.classList.contains("is-open")) closeDropdown(dropdown);
+        });
+      },
+      { passive: true }
+    );
+
+    window.addEventListener("resize", () => {
+      dropdowns.forEach((dropdown) => {
+        if (dropdown.classList.contains("is-open")) positionMobileMenu(dropdown);
       });
     });
   }
