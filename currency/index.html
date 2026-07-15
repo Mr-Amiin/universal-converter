@@ -69,15 +69,104 @@
       </section>
 
 
+      <section class="popular-conversions-hub" id="popular" aria-labelledby="popularHubTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">High-traffic conversions</p>
+            <h2 id="popularHubTitle">Popular Conversions</h2>
+          </div>
+        </div>
+        <div class="popular-grid" id="popularHubGrid">
+            <a class="popular-grid-card" href="aud-to-usd/index.html" title="Convert AUD to USD (Australian Dollar to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>AUD to USD</span>
+            </a>
+            <a class="popular-grid-card" href="cad-to-usd/index.html" title="Convert CAD to USD (Canadian Dollar to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>CAD to USD</span>
+            </a>
+            <a class="popular-grid-card" href="eur-to-gbp/index.html" title="Convert EUR to GBP (Euro to British Pound) with a clear reference rate, conversion table, and FAQ.">
+              <span>EUR to GBP</span>
+            </a>
+            <a class="popular-grid-card" href="eur-to-usd/index.html" title="Convert EUR to USD (Euro to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>EUR to USD</span>
+            </a>
+            <a class="popular-grid-card" href="gbp-to-eur/index.html" title="Convert GBP to EUR (British Pound to Euro) with a clear reference rate, conversion table, and FAQ.">
+              <span>GBP to EUR</span>
+            </a>
+            <a class="popular-grid-card" href="gbp-to-usd/index.html" title="Convert GBP to USD (British Pound to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>GBP to USD</span>
+            </a>
+            <a class="popular-grid-card" href="inr-to-usd/index.html" title="Convert INR to USD (Indian Rupee to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>INR to USD</span>
+            </a>
+            <a class="popular-grid-card" href="jpy-to-usd/index.html" title="Convert JPY to USD (Japanese Yen to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>JPY to USD</span>
+            </a>
+            <a class="popular-grid-card" href="kes-to-usd/index.html" title="Convert KES to USD (Kenyan Shilling to US Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>KES to USD</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-aud/index.html" title="Convert USD to AUD (US Dollar to Australian Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to AUD</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-cad/index.html" title="Convert USD to CAD (US Dollar to Canadian Dollar) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to CAD</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-eur/index.html" title="Convert USD to EUR (US Dollar to Euro) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to EUR</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-gbp/index.html" title="Convert USD to GBP (US Dollar to British Pound) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to GBP</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-inr/index.html" title="Convert USD to INR (US Dollar to Indian Rupee) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to INR</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-jpy/index.html" title="Convert USD to JPY (US Dollar to Japanese Yen) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to JPY</span>
+            </a>
+            <a class="popular-grid-card" href="usd-to-kes/index.html" title="Convert USD to KES (US Dollar to Kenyan Shilling) with a clear reference rate, conversion table, and FAQ.">
+              <span>USD to KES</span>
+            </a>
+        </div>
+      </section>
+
       <section class="all-conversions-hub" id="allConversions" aria-labelledby="allConversionsTitle">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Coming soon</p>
+            <p class="eyebrow">Complete list, A&ndash;Z</p>
             <h2 id="allConversionsTitle">All Currency Conversions</h2>
           </div>
         </div>
-        <p class="conversion-note">Individual currency conversion pages for this category are being added. Check back soon, or use the search on the homepage to find a specific conversion.</p>
+        <label class="field-label" for="allConversionsSearch">Search currency conversions</label>
+        <input class="compact-search" id="allConversionsSearch" type="search" placeholder="Search currency conversions, e.g. meters to feet">
+        <p class="conversion-note" id="allConversionsCount"></p>
+        <div class="conversions-grid" id="allConversionsGrid" role="list"></div>
       </section>
+
+      <script>
+        window.__categoryConversions = [{"slug": "currency/aud-to-usd", "title": "AUD to USD", "href": "../currency/aud-to-usd/index.html"}, {"slug": "currency/cad-to-usd", "title": "CAD to USD", "href": "../currency/cad-to-usd/index.html"}, {"slug": "currency/eur-to-gbp", "title": "EUR to GBP", "href": "../currency/eur-to-gbp/index.html"}, {"slug": "currency/eur-to-usd", "title": "EUR to USD", "href": "../currency/eur-to-usd/index.html"}, {"slug": "currency/gbp-to-eur", "title": "GBP to EUR", "href": "../currency/gbp-to-eur/index.html"}, {"slug": "currency/gbp-to-usd", "title": "GBP to USD", "href": "../currency/gbp-to-usd/index.html"}, {"slug": "currency/inr-to-usd", "title": "INR to USD", "href": "../currency/inr-to-usd/index.html"}, {"slug": "currency/jpy-to-usd", "title": "JPY to USD", "href": "../currency/jpy-to-usd/index.html"}, {"slug": "currency/kes-to-usd", "title": "KES to USD", "href": "../currency/kes-to-usd/index.html"}, {"slug": "currency/usd-to-aud", "title": "USD to AUD", "href": "../currency/usd-to-aud/index.html"}, {"slug": "currency/usd-to-cad", "title": "USD to CAD", "href": "../currency/usd-to-cad/index.html"}, {"slug": "currency/usd-to-eur", "title": "USD to EUR", "href": "../currency/usd-to-eur/index.html"}, {"slug": "currency/usd-to-gbp", "title": "USD to GBP", "href": "../currency/usd-to-gbp/index.html"}, {"slug": "currency/usd-to-inr", "title": "USD to INR", "href": "../currency/usd-to-inr/index.html"}, {"slug": "currency/usd-to-jpy", "title": "USD to JPY", "href": "../currency/usd-to-jpy/index.html"}, {"slug": "currency/usd-to-kes", "title": "USD to KES", "href": "../currency/usd-to-kes/index.html"}];
+        (function () {
+          const data = window.__categoryConversions || [];
+          const grid = document.getElementById('allConversionsGrid');
+          const search = document.getElementById('allConversionsSearch');
+          const count = document.getElementById('allConversionsCount');
+          if (!grid) return;
+          function render(filter) {
+            const term = (filter || '').trim().toLowerCase();
+            const filtered = term
+              ? data.filter((item) => item.title.toLowerCase().includes(term))
+              : data;
+            grid.innerHTML = filtered.map((item) =>
+              '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
+            ).join('');
+            if (count) {
+              count.textContent = filtered.length + ' of ' + data.length + ' conversions shown';
+            }
+          }
+          if (search) {
+            search.addEventListener('input', function () { render(search.value); });
+          }
+          render('');
+        })();
+      </script>
 
 
       <section class="seo-content">

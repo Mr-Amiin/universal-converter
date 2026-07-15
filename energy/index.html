@@ -69,15 +69,92 @@
       </section>
 
 
+      <section class="popular-conversions-hub" id="popular" aria-labelledby="popularHubTitle">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">High-traffic conversions</p>
+            <h2 id="popularHubTitle">Popular Conversions</h2>
+          </div>
+        </div>
+        <div class="popular-grid" id="popularHubGrid">
+            <a class="popular-grid-card" href="btu-to-kilowatt-hours/index.html" title="Convert british thermal units (BTU) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ.">
+              <span>Btu to Kilowatt hours</span>
+            </a>
+            <a class="popular-grid-card" href="calories-to-joules/index.html" title="Convert calories (cal) to joules (J) instantly with formula, conversion table, and FAQ.">
+              <span>Calories to Joules</span>
+            </a>
+            <a class="popular-grid-card" href="calories-to-kilocalories/index.html" title="Convert calories (cal) to kilocalories (kcal) instantly with formula, conversion table, and FAQ.">
+              <span>Calories to Kilocalories</span>
+            </a>
+            <a class="popular-grid-card" href="joules-to-calories/index.html" title="Convert joules (J) to calories (cal) instantly with formula, conversion table, and FAQ.">
+              <span>Joules to Calories</span>
+            </a>
+            <a class="popular-grid-card" href="joules-to-kilowatt-hours/index.html" title="Convert joules (J) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ.">
+              <span>Joules to Kilowatt hours</span>
+            </a>
+            <a class="popular-grid-card" href="kilocalories-to-calories/index.html" title="Convert kilocalories (kcal) to calories (cal) instantly with formula, conversion table, and FAQ.">
+              <span>Kilocalories to Calories</span>
+            </a>
+            <a class="popular-grid-card" href="kilocalories-to-kilojoules/index.html" title="Convert kilocalories (kcal) to kilojoules (kJ) instantly with formula, conversion table, and FAQ.">
+              <span>Kilocalories to Kilojoules</span>
+            </a>
+            <a class="popular-grid-card" href="kilojoules-to-kilocalories/index.html" title="Convert kilojoules (kJ) to kilocalories (kcal) instantly with formula, conversion table, and FAQ.">
+              <span>Kilojoules to Kilocalories</span>
+            </a>
+            <a class="popular-grid-card" href="kilowatt-hours-to-btu/index.html" title="Convert kilowatt-hours (kWh) to british thermal units (BTU) instantly with formula, conversion table, and FAQ.">
+              <span>Kilowatt hours to Btu</span>
+            </a>
+            <a class="popular-grid-card" href="kilowatt-hours-to-joules/index.html" title="Convert kilowatt-hours (kWh) to joules (J) instantly with formula, conversion table, and FAQ.">
+              <span>Kilowatt hours to Joules</span>
+            </a>
+            <a class="popular-grid-card" href="kilowatt-hours-to-therms/index.html" title="Convert kilowatt-hours (kWh) to us therms (therm) instantly with formula, conversion table, and FAQ.">
+              <span>Kilowatt hours to Therms</span>
+            </a>
+            <a class="popular-grid-card" href="therms-to-kilowatt-hours/index.html" title="Convert us therms (therm) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ.">
+              <span>Therms to Kilowatt hours</span>
+            </a>
+        </div>
+      </section>
+
       <section class="all-conversions-hub" id="allConversions" aria-labelledby="allConversionsTitle">
         <div class="section-heading">
           <div>
-            <p class="eyebrow">Coming soon</p>
+            <p class="eyebrow">Complete list, A&ndash;Z</p>
             <h2 id="allConversionsTitle">All Energy Conversions</h2>
           </div>
         </div>
-        <p class="conversion-note">Individual energy conversion pages for this category are being added. Check back soon, or use the search on the homepage to find a specific conversion.</p>
+        <label class="field-label" for="allConversionsSearch">Search energy conversions</label>
+        <input class="compact-search" id="allConversionsSearch" type="search" placeholder="Search energy conversions, e.g. meters to feet">
+        <p class="conversion-note" id="allConversionsCount"></p>
+        <div class="conversions-grid" id="allConversionsGrid" role="list"></div>
       </section>
+
+      <script>
+        window.__categoryConversions = [{"slug": "energy/btu-to-kilowatt-hours", "title": "Btu to Kilowatt hours", "href": "../energy/btu-to-kilowatt-hours/index.html"}, {"slug": "energy/calories-to-joules", "title": "Calories to Joules", "href": "../energy/calories-to-joules/index.html"}, {"slug": "energy/calories-to-kilocalories", "title": "Calories to Kilocalories", "href": "../energy/calories-to-kilocalories/index.html"}, {"slug": "energy/joules-to-calories", "title": "Joules to Calories", "href": "../energy/joules-to-calories/index.html"}, {"slug": "energy/joules-to-kilowatt-hours", "title": "Joules to Kilowatt hours", "href": "../energy/joules-to-kilowatt-hours/index.html"}, {"slug": "energy/kilocalories-to-calories", "title": "Kilocalories to Calories", "href": "../energy/kilocalories-to-calories/index.html"}, {"slug": "energy/kilocalories-to-kilojoules", "title": "Kilocalories to Kilojoules", "href": "../energy/kilocalories-to-kilojoules/index.html"}, {"slug": "energy/kilojoules-to-kilocalories", "title": "Kilojoules to Kilocalories", "href": "../energy/kilojoules-to-kilocalories/index.html"}, {"slug": "energy/kilowatt-hours-to-btu", "title": "Kilowatt hours to Btu", "href": "../energy/kilowatt-hours-to-btu/index.html"}, {"slug": "energy/kilowatt-hours-to-joules", "title": "Kilowatt hours to Joules", "href": "../energy/kilowatt-hours-to-joules/index.html"}, {"slug": "energy/kilowatt-hours-to-therms", "title": "Kilowatt hours to Therms", "href": "../energy/kilowatt-hours-to-therms/index.html"}, {"slug": "energy/therms-to-kilowatt-hours", "title": "Therms to Kilowatt hours", "href": "../energy/therms-to-kilowatt-hours/index.html"}];
+        (function () {
+          const data = window.__categoryConversions || [];
+          const grid = document.getElementById('allConversionsGrid');
+          const search = document.getElementById('allConversionsSearch');
+          const count = document.getElementById('allConversionsCount');
+          if (!grid) return;
+          function render(filter) {
+            const term = (filter || '').trim().toLowerCase();
+            const filtered = term
+              ? data.filter((item) => item.title.toLowerCase().includes(term))
+              : data;
+            grid.innerHTML = filtered.map((item) =>
+              '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
+            ).join('');
+            if (count) {
+              count.textContent = filtered.length + ' of ' + data.length + ' conversions shown';
+            }
+          }
+          if (search) {
+            search.addEventListener('input', function () { render(search.value); });
+          }
+          render('');
+        })();
+      </script>
 
 
       <section class="seo-content">
