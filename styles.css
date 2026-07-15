@@ -1925,37 +1925,10 @@ guide-preview,
     order: 3;
     width: 100%;
     justify-content: flex-start;
-    align-items: flex-start;
-    flex-wrap: wrap;
     gap: 0.5rem;
     overflow-x: auto;
     padding: 0.2rem 0 0.35rem;
     scrollbar-width: thin;
-  }
-
-  /* ROOT CAUSE (previous "fix" only changed z-index/top offset and
-     never addressed this): .nav-dropdown-menu was `position: fixed`.
-     A fixed/absolute element is removed from normal flow, so its
-     parent's box does not grow to contain it — computed height of
-     .nav-dropdown stayed 38px (just the button) even while the menu
-     rendered ~470px tall on top of the page. Since .hero is a sibling
-     of .site-header inside <main>, .hero's box starts right after the
-     header's (unchanged, too-small) box, which put it underneath
-     the visually-taller-but-not-actually-there menu — no z-index
-     value fixes that, because z-index only controls paint order, not
-     whether the boxes occupy the same space.
-     Fix: keep the menu in normal flow. .nav-dropdown becomes a
-     column (button, then menu stacked under it) and takes the full
-     row width so it wraps onto its own line in the (now wrapping)
-     .top-nav row; the header's box grows to actually contain it, so
-     everything after it in the flow -- including .hero -- is pushed
-     down automatically. No absolute/fixed positioning, no z-index
-     trick. */
-  .nav-dropdown.is-open {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    width: 100%;
   }
 
   /* The header wraps onto two rows on mobile (.top-nav gets
@@ -1971,12 +1944,15 @@ guide-preview,
      to auto forces overflow-y to auto too, per spec). */
   .nav-dropdown-menu {
     position: fixed;
-    top: calc(var(--header-height) + 0.5rem);
+    top: var(--dropdown-menu-top, calc(var(--header-height) + 0.5rem));
     left: 1rem;
     right: 1rem;
     width: auto;
-    max-height: calc(100vh - var(--header-height) - 1.5rem);
+    max-height: 60vh;
     overflow-y: auto;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    z-index: 1000;
   }
 
   .top-nav a,

@@ -752,12 +752,6 @@
         if (event.target.closest("a")) closeDropdown(dropdown);
       });
 
-      // Selecting a category closes the menu (it also navigates away,
-      // but this keeps state clean for back/forward-cache restores).
-      menu.addEventListener("click", (event) => {
-        if (event.target.closest("a")) closeDropdown(dropdown);
-      });
-
       dropdown.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeDropdown(dropdown);
