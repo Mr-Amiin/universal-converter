@@ -1958,14 +1958,25 @@ guide-preview,
     width: 100%;
   }
 
+  /* The header wraps onto two rows on mobile (.top-nav gets
+     order: 3; width: 100%), so its rendered height is taller than the
+     fixed --header-height constant used elsewhere. Anchoring the menu
+     to that constant put it too high, overlapping the hero section
+     text underneath. Instead, the menu's top offset is calculated from
+     the toggle button's actual position (see initCategoriesNav in
+     app.js) and written to --dropdown-menu-top; the calc() below is
+     only a safe fallback for the brief moment before JS runs. Position
+     stays `fixed` (not `absolute`) so the menu escapes .top-nav's
+     `overflow-x: auto`, which would otherwise clip it (overflow-x set
+     to auto forces overflow-y to auto too, per spec). */
   .nav-dropdown-menu {
-    position: static;
-    width: 100%;
-    margin-top: 0.5rem;
-    max-height: 60vh;
+    position: fixed;
+    top: calc(var(--header-height) + 0.5rem);
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    max-height: calc(100vh - var(--header-height) - 1.5rem);
     overflow-y: auto;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
   }
 
   .top-nav a,
