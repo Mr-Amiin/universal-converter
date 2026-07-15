@@ -58813,5 +58813,365 @@
     "value": "1",
     "title": "Weight Converter",
     "description": "Convert common mass and weight units for everyday, scientific, and professional use."
+  },
+  "energy/kilowatt-hours-to-joules": {
+    "slug": "energy/kilowatt-hours-to-joules",
+    "category": "energy",
+    "fromUnitId": "kilowatt_hour",
+    "toUnitId": "joule",
+    "value": "1",
+    "title": "Kilowatt hours to Joules Converter | Universal Converter",
+    "description": "Convert kilowatt-hours (kWh) to joules (J) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/joules-to-kilowatt-hours": {
+    "slug": "energy/joules-to-kilowatt-hours",
+    "category": "energy",
+    "fromUnitId": "joule",
+    "toUnitId": "kilowatt_hour",
+    "value": "1",
+    "title": "Joules to Kilowatt hours Converter | Universal Converter",
+    "description": "Convert joules (J) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/calories-to-joules": {
+    "slug": "energy/calories-to-joules",
+    "category": "energy",
+    "fromUnitId": "calorie",
+    "toUnitId": "joule",
+    "value": "1",
+    "title": "Calories to Joules Converter | Universal Converter",
+    "description": "Convert calories (cal) to joules (J) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/joules-to-calories": {
+    "slug": "energy/joules-to-calories",
+    "category": "energy",
+    "fromUnitId": "joule",
+    "toUnitId": "calorie",
+    "value": "1",
+    "title": "Joules to Calories Converter | Universal Converter",
+    "description": "Convert joules (J) to calories (cal) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/kilocalories-to-kilojoules": {
+    "slug": "energy/kilocalories-to-kilojoules",
+    "category": "energy",
+    "fromUnitId": "kilocalorie",
+    "toUnitId": "kilojoule",
+    "value": "1",
+    "title": "Kilocalories to Kilojoules Converter | Universal Converter",
+    "description": "Convert kilocalories (kcal) to kilojoules (kJ) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/kilojoules-to-kilocalories": {
+    "slug": "energy/kilojoules-to-kilocalories",
+    "category": "energy",
+    "fromUnitId": "kilojoule",
+    "toUnitId": "kilocalorie",
+    "value": "1",
+    "title": "Kilojoules to Kilocalories Converter | Universal Converter",
+    "description": "Convert kilojoules (kJ) to kilocalories (kcal) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/btu-to-kilowatt-hours": {
+    "slug": "energy/btu-to-kilowatt-hours",
+    "category": "energy",
+    "fromUnitId": "btu",
+    "toUnitId": "kilowatt_hour",
+    "value": "1",
+    "title": "Btu to Kilowatt hours Converter | Universal Converter",
+    "description": "Convert british thermal units (BTU) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/kilowatt-hours-to-btu": {
+    "slug": "energy/kilowatt-hours-to-btu",
+    "category": "energy",
+    "fromUnitId": "kilowatt_hour",
+    "toUnitId": "btu",
+    "value": "1",
+    "title": "Kilowatt hours to Btu Converter | Universal Converter",
+    "description": "Convert kilowatt-hours (kWh) to british thermal units (BTU) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/therms-to-kilowatt-hours": {
+    "slug": "energy/therms-to-kilowatt-hours",
+    "category": "energy",
+    "fromUnitId": "therm_us",
+    "toUnitId": "kilowatt_hour",
+    "value": "1",
+    "title": "Therms to Kilowatt hours Converter | Universal Converter",
+    "description": "Convert us therms (therm) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/kilowatt-hours-to-therms": {
+    "slug": "energy/kilowatt-hours-to-therms",
+    "category": "energy",
+    "fromUnitId": "kilowatt_hour",
+    "toUnitId": "therm_us",
+    "value": "1",
+    "title": "Kilowatt hours to Therms Converter | Universal Converter",
+    "description": "Convert kilowatt-hours (kWh) to us therms (therm) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/calories-to-kilocalories": {
+    "slug": "energy/calories-to-kilocalories",
+    "category": "energy",
+    "fromUnitId": "calorie",
+    "toUnitId": "kilocalorie",
+    "value": "1",
+    "title": "Calories to Kilocalories Converter | Universal Converter",
+    "description": "Convert calories (cal) to kilocalories (kcal) instantly with formula, conversion table, and FAQ."
+  },
+  "energy/kilocalories-to-calories": {
+    "slug": "energy/kilocalories-to-calories",
+    "category": "energy",
+    "fromUnitId": "kilocalorie",
+    "toUnitId": "calorie",
+    "value": "1",
+    "title": "Kilocalories to Calories Converter | Universal Converter",
+    "description": "Convert kilocalories (kcal) to calories (cal) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/volts-to-millivolts": {
+    "slug": "electricity/volts-to-millivolts",
+    "category": "electricity",
+    "fromUnitId": "volt",
+    "toUnitId": "millivolt",
+    "value": "1",
+    "title": "Volts to Millivolts Converter | Universal Converter",
+    "description": "Convert volts (V) to millivolts (mV) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/millivolts-to-volts": {
+    "slug": "electricity/millivolts-to-volts",
+    "category": "electricity",
+    "fromUnitId": "millivolt",
+    "toUnitId": "volt",
+    "value": "1",
+    "title": "Millivolts to Volts Converter | Universal Converter",
+    "description": "Convert millivolts (mV) to volts (V) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/volts-to-kilovolts": {
+    "slug": "electricity/volts-to-kilovolts",
+    "category": "electricity",
+    "fromUnitId": "volt",
+    "toUnitId": "kilovolt",
+    "value": "1",
+    "title": "Volts to Kilovolts Converter | Universal Converter",
+    "description": "Convert volts (V) to kilovolts (kV) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/kilovolts-to-volts": {
+    "slug": "electricity/kilovolts-to-volts",
+    "category": "electricity",
+    "fromUnitId": "kilovolt",
+    "toUnitId": "volt",
+    "value": "1",
+    "title": "Kilovolts to Volts Converter | Universal Converter",
+    "description": "Convert kilovolts (kV) to volts (V) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/amperes-to-milliamperes": {
+    "slug": "electricity/amperes-to-milliamperes",
+    "category": "electricity",
+    "fromUnitId": "ampere",
+    "toUnitId": "milliampere",
+    "value": "1",
+    "title": "Amperes to Milliamperes Converter | Universal Converter",
+    "description": "Convert amperes (A) to milliamperes (mA) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/milliamperes-to-amperes": {
+    "slug": "electricity/milliamperes-to-amperes",
+    "category": "electricity",
+    "fromUnitId": "milliampere",
+    "toUnitId": "ampere",
+    "value": "1",
+    "title": "Milliamperes to Amperes Converter | Universal Converter",
+    "description": "Convert milliamperes (mA) to amperes (A) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/ohms-to-kiloohms": {
+    "slug": "electricity/ohms-to-kiloohms",
+    "category": "electricity",
+    "fromUnitId": "ohm",
+    "toUnitId": "kiloohm",
+    "value": "1",
+    "title": "Ohms to Kiloohms Converter | Universal Converter",
+    "description": "Convert ohms (\u03a9) to kiloohms (k\u03a9) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/kiloohms-to-ohms": {
+    "slug": "electricity/kiloohms-to-ohms",
+    "category": "electricity",
+    "fromUnitId": "kiloohm",
+    "toUnitId": "ohm",
+    "value": "1",
+    "title": "Kiloohms to Ohms Converter | Universal Converter",
+    "description": "Convert kiloohms (k\u03a9) to ohms (\u03a9) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/watts-to-kilowatts": {
+    "slug": "electricity/watts-to-kilowatts",
+    "category": "electricity",
+    "fromUnitId": "watt",
+    "toUnitId": "kilowatt",
+    "value": "1",
+    "title": "Watts to Kilowatts Converter | Universal Converter",
+    "description": "Convert watts (W) to kilowatts (kW) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/kilowatts-to-watts": {
+    "slug": "electricity/kilowatts-to-watts",
+    "category": "electricity",
+    "fromUnitId": "kilowatt",
+    "toUnitId": "watt",
+    "value": "1",
+    "title": "Kilowatts to Watts Converter | Universal Converter",
+    "description": "Convert kilowatts (kW) to watts (W) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/watt-hours-to-kilowatt-hours": {
+    "slug": "electricity/watt-hours-to-kilowatt-hours",
+    "category": "electricity",
+    "fromUnitId": "watt_hour",
+    "toUnitId": "kilowatt_hour",
+    "value": "1",
+    "title": "Watt hours to Kilowatt hours Converter | Universal Converter",
+    "description": "Convert watt-hours (Wh) to kilowatt-hours (kWh) instantly with formula, conversion table, and FAQ."
+  },
+  "electricity/kilowatt-hours-to-watt-hours": {
+    "slug": "electricity/kilowatt-hours-to-watt-hours",
+    "category": "electricity",
+    "fromUnitId": "kilowatt_hour",
+    "toUnitId": "watt_hour",
+    "value": "1",
+    "title": "Kilowatt hours to Watt hours Converter | Universal Converter",
+    "description": "Convert kilowatt-hours (kWh) to watt-hours (Wh) instantly with formula, conversion table, and FAQ."
+  },
+  "currency/usd-to-eur": {
+    "slug": "currency/usd-to-eur",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "EUR",
+    "value": "1",
+    "title": "USD to EUR | Universal Converter",
+    "description": "Convert USD to EUR (US Dollar to Euro) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/eur-to-usd": {
+    "slug": "currency/eur-to-usd",
+    "category": "currency",
+    "fromUnitId": "EUR",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "EUR to USD | Universal Converter",
+    "description": "Convert EUR to USD (Euro to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-gbp": {
+    "slug": "currency/usd-to-gbp",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "GBP",
+    "value": "1",
+    "title": "USD to GBP | Universal Converter",
+    "description": "Convert USD to GBP (US Dollar to British Pound) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/gbp-to-usd": {
+    "slug": "currency/gbp-to-usd",
+    "category": "currency",
+    "fromUnitId": "GBP",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "GBP to USD | Universal Converter",
+    "description": "Convert GBP to USD (British Pound to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-jpy": {
+    "slug": "currency/usd-to-jpy",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "JPY",
+    "value": "1",
+    "title": "USD to JPY | Universal Converter",
+    "description": "Convert USD to JPY (US Dollar to Japanese Yen) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/jpy-to-usd": {
+    "slug": "currency/jpy-to-usd",
+    "category": "currency",
+    "fromUnitId": "JPY",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "JPY to USD | Universal Converter",
+    "description": "Convert JPY to USD (Japanese Yen to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-kes": {
+    "slug": "currency/usd-to-kes",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "KES",
+    "value": "1",
+    "title": "USD to KES | Universal Converter",
+    "description": "Convert USD to KES (US Dollar to Kenyan Shilling) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/kes-to-usd": {
+    "slug": "currency/kes-to-usd",
+    "category": "currency",
+    "fromUnitId": "KES",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "KES to USD | Universal Converter",
+    "description": "Convert KES to USD (Kenyan Shilling to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/eur-to-gbp": {
+    "slug": "currency/eur-to-gbp",
+    "category": "currency",
+    "fromUnitId": "EUR",
+    "toUnitId": "GBP",
+    "value": "1",
+    "title": "EUR to GBP | Universal Converter",
+    "description": "Convert EUR to GBP (Euro to British Pound) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/gbp-to-eur": {
+    "slug": "currency/gbp-to-eur",
+    "category": "currency",
+    "fromUnitId": "GBP",
+    "toUnitId": "EUR",
+    "value": "1",
+    "title": "GBP to EUR | Universal Converter",
+    "description": "Convert GBP to EUR (British Pound to Euro) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-inr": {
+    "slug": "currency/usd-to-inr",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "INR",
+    "value": "1",
+    "title": "USD to INR | Universal Converter",
+    "description": "Convert USD to INR (US Dollar to Indian Rupee) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/inr-to-usd": {
+    "slug": "currency/inr-to-usd",
+    "category": "currency",
+    "fromUnitId": "INR",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "INR to USD | Universal Converter",
+    "description": "Convert INR to USD (Indian Rupee to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-cad": {
+    "slug": "currency/usd-to-cad",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "CAD",
+    "value": "1",
+    "title": "USD to CAD | Universal Converter",
+    "description": "Convert USD to CAD (US Dollar to Canadian Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/cad-to-usd": {
+    "slug": "currency/cad-to-usd",
+    "category": "currency",
+    "fromUnitId": "CAD",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "CAD to USD | Universal Converter",
+    "description": "Convert CAD to USD (Canadian Dollar to US Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/usd-to-aud": {
+    "slug": "currency/usd-to-aud",
+    "category": "currency",
+    "fromUnitId": "USD",
+    "toUnitId": "AUD",
+    "value": "1",
+    "title": "USD to AUD | Universal Converter",
+    "description": "Convert USD to AUD (US Dollar to Australian Dollar) with a clear reference rate, conversion table, and FAQ."
+  },
+  "currency/aud-to-usd": {
+    "slug": "currency/aud-to-usd",
+    "category": "currency",
+    "fromUnitId": "AUD",
+    "toUnitId": "USD",
+    "value": "1",
+    "title": "AUD to USD | Universal Converter",
+    "description": "Convert AUD to USD (Australian Dollar to US Dollar) with a clear reference rate, conversion table, and FAQ."
   }
 }
