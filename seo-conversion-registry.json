@@ -11395,7 +11395,7 @@
   },
   "gb-to-mb": {
     "slug": "gb-to-mb",
-    "category": "universal converter",
+    "category": "digital",
     "fromUnitId": "",
     "toUnitId": "",
     "value": "1",
@@ -29314,7 +29314,7 @@
   },
   "mph-to-kmh": {
     "slug": "mph-to-kmh",
-    "category": "universal converter",
+    "category": "speed",
     "fromUnitId": "",
     "toUnitId": "",
     "value": "1",
@@ -29323,7 +29323,7 @@
   },
   "psi-to-bar": {
     "slug": "psi-to-bar",
-    "category": "universal converter",
+    "category": "pressure",
     "fromUnitId": "",
     "toUnitId": "",
     "value": "1",
@@ -58798,7 +58798,7 @@
   },
   "watts-to-horsepower": {
     "slug": "watts-to-horsepower",
-    "category": "universal converter",
+    "category": "power",
     "fromUnitId": "",
     "toUnitId": "",
     "value": "1",
