@@ -2282,6 +2282,26 @@ select.innerHTML = categories
 .filter((category) => ["linear", "currency"].includes(category.type))
 .map((category) => `<option value="${category.id}">${escapeHtml(category.name)}</option>`)
 .join("");
+const tableBody = byId("adminUnitTableBody");
+const searchInput = byId("adminSearch");
+const exportBtn = byId("adminExportBtn");
+const importBtn = byId("adminImportBtn");
+const importInput = byId("adminImportInput");
+const clearBtn = byId("adminClearBtn");
+const cancelEditBtn = byId("adminCancelEdit");
+const statusEl = byId("adminFormStatus");
+const submitBtn = form.querySelector('button[type="submit"]') || byId("adminSubmitBtn");
+let editingId = null;
+
+function setStatus(message) {
+if (statusEl) statusEl.textContent = message || "";
+}
+function exitEditMode() {
+editingId = null;
+if (submitBtn) submitBtn.textContent = "Add unit";
+if (cancelEditBtn) cancelEditBtn.hidden = true;
+}
+
 form.addEventListener("submit", (event) => {
 event.preventDefault();
 const categoryId = byId("adminCategory").value;
@@ -2289,8 +2309,21 @@ const name = byId("adminUnitName").value.trim();
 const symbol = byId("adminUnitSymbol").value.trim();
 const factor = Number(byId("adminUnitFactor").value);
 const definition = byId("adminUnitDefinition").value.trim();
-if (!name || !symbol || !Number.isFinite(factor) || factor <= 0) return;
+if (!name || !symbol || !Number.isFinite(factor) || factor <= 0) {
+setStatus("Enter a unit name, symbol, and a positive conversion factor.");
+return;
+}
 const custom = readArray(storageKeys.customUnits);
+if (editingId) {
+const index = custom.findIndex((item) => item.id === editingId);
+if (index !== -1) {
+custom[index] = { ...custom[index], categoryId, name, symbol, factor, definition };
+}
+writeArray(storageKeys.customUnits, custom);
+setStatus(`Updated "${name}". Reload to refresh the converter lists.`);
+trackEvent("admin_edit_unit", { category: categoryId });
+exitEditMode();
+} else {
 custom.unshift({
 categoryId,
 id: `custom_${slug(name)}_${Date.now()}`,
@@ -2300,26 +2333,156 @@ factor,
 definition
 });
 writeArray(storageKeys.customUnits, custom.slice(0, 100));
+setStatus(`Added "${name}". Reload to include it in the converter lists.`);
+trackEvent("admin_add_unit", { category: categoryId });
+}
 renderAdminList();
 form.reset();
-trackEvent("admin_add_unit", { category: categoryId });
 });
+
+if (cancelEditBtn) {
+cancelEditBtn.addEventListener("click", () => {
+exitEditMode();
+form.reset();
+setStatus("");
+});
+}
+if (searchInput) {
+searchInput.addEventListener("input", () => renderAdminList());
+}
+if (exportBtn) {
+exportBtn.addEventListener("click", () => {
+const custom = readArray(storageKeys.customUnits);
+const blob = new Blob([JSON.stringify(custom, null, 2)], { type: "application/json" });
+const url = URL.createObjectURL(blob);
+const link = document.createElement("a");
+link.href = url;
+link.download = "custom-units.json";
+document.body.appendChild(link);
+link.click();
+link.remove();
+URL.revokeObjectURL(url);
+trackEvent("admin_export_units", { count: custom.length });
+});
+}
+if (importBtn && importInput) {
+importBtn.addEventListener("click", () => importInput.click());
+importInput.addEventListener("change", () => {
+const file = importInput.files && importInput.files[0];
+if (!file) return;
+const reader = new FileReader();
+reader.onload = () => {
+try {
+const parsed = JSON.parse(String(reader.result));
+if (!Array.isArray(parsed)) throw new Error("invalid");
+const existing = readArray(storageKeys.customUnits);
+const seen = new Set(existing.map((item) => item.id));
+const additions = parsed.filter((item) => item && item.id && item.name && item.symbol && !seen.has(item.id));
+const merged = existing.concat(additions).slice(0, 100);
+writeArray(storageKeys.customUnits, merged);
+renderAdminList();
+setStatus(`Imported ${additions.length} custom unit${additions.length === 1 ? "" : "s"}.`);
+trackEvent("admin_import_units", { count: additions.length });
+} catch (error) {
+setStatus("That file could not be read as custom-unit JSON.");
+}
+};
+reader.readAsText(file);
+importInput.value = "";
+});
+}
+if (clearBtn) {
+clearBtn.addEventListener("click", () => {
+if (!window.confirm("Remove all custom units from this device? This cannot be undone.")) return;
+writeArray(storageKeys.customUnits, []);
+exitEditMode();
+form.reset();
+renderAdminList();
+setStatus("All custom units cleared.");
+trackEvent("admin_clear_units", {});
+});
+}
+if (tableBody) {
+tableBody.addEventListener("click", (event) => {
+const editTarget = event.target.closest("[data-edit]");
+const deleteTarget = event.target.closest("[data-delete]");
+if (editTarget) {
+const id = editTarget.getAttribute("data-edit");
+const custom = readArray(storageKeys.customUnits);
+const item = custom.find((entry) => entry.id === id);
+if (!item) return;
+byId("adminCategory").value = item.categoryId;
+byId("adminUnitName").value = item.name;
+byId("adminUnitSymbol").value = item.symbol;
+byId("adminUnitFactor").value = item.factor;
+byId("adminUnitDefinition").value = item.definition || "";
+editingId = id;
+if (submitBtn) submitBtn.textContent = "Update unit";
+if (cancelEditBtn) cancelEditBtn.hidden = false;
+setStatus(`Editing "${item.name}".`);
+form.scrollIntoView({ behavior: "smooth", block: "start" });
+} else if (deleteTarget) {
+const id = deleteTarget.getAttribute("data-delete");
+if (!window.confirm("Delete this custom unit?")) return;
+const custom = readArray(storageKeys.customUnits).filter((entry) => entry.id !== id);
+writeArray(storageKeys.customUnits, custom);
+if (editingId === id) {
+exitEditMode();
+form.reset();
+}
+renderAdminList();
+setStatus("Custom unit deleted.");
+trackEvent("admin_delete_unit", {});
+}
+});
+}
 renderAdminList();
 }
 function renderAdminList() {
-const list = byId("adminUnitList");
-if (!list) return;
+const tableBody = byId("adminUnitTableBody");
+const emptyState = byId("adminEmptyState");
+const searchInput = byId("adminSearch");
+if (!tableBody) return;
 const custom = readArray(storageKeys.customUnits);
+const query = searchInput ? searchInput.value.trim().toLowerCase() : "";
+const filtered = !query ? custom : custom.filter((item) => {
+const category = categoryMap.get(item.categoryId);
+const categoryName = category ? category.name : item.categoryId;
+return [item.name, item.symbol, categoryName].some((value) => String(value || "").toLowerCase().includes(query));
+});
 if (!custom.length) {
-list.innerHTML = '<p class="empty-state">Custom units added here are stored on this device. Reload to include them in the converter lists.</p>';
+tableBody.innerHTML = "";
+if (emptyState) {
+emptyState.hidden = false;
+emptyState.textContent = "No custom units yet. Add one above and it will appear here.";
+}
 return;
 }
-list.innerHTML = custom.slice(0, 8).map((item) => `
-<div class="admin-item">
-<strong>${escapeHtml(item.name)} (${escapeHtml(item.symbol)})</strong>
-<span>${escapeHtml(item.categoryId)} - factor ${escapeHtml(item.factor)}</span>
-</div>
-`).join("");
+if (!filtered.length) {
+tableBody.innerHTML = "";
+if (emptyState) {
+emptyState.hidden = false;
+emptyState.textContent = "No custom units match your search.";
+}
+return;
+}
+if (emptyState) emptyState.hidden = true;
+tableBody.innerHTML = filtered.map((item) => {
+const category = categoryMap.get(item.categoryId);
+const categoryName = category ? category.name : item.categoryId;
+return `
+<tr>
+<td data-label="Name"><strong>${escapeHtml(item.name)}</strong></td>
+<td data-label="Category">${escapeHtml(categoryName)}</td>
+<td data-label="Symbol">${escapeHtml(item.symbol)}</td>
+<td data-label="Factor">${escapeHtml(item.factor)}</td>
+<td data-label="Definition">${escapeHtml(item.definition || "\u2014")}</td>
+<td data-label="Actions" class="admin-row-actions">
+<button type="button" class="admin-edit-btn" data-edit="${escapeAttribute(item.id)}">Edit</button>
+<button type="button" class="admin-delete-btn" data-delete="${escapeAttribute(item.id)}">Delete</button>
+</td>
+</tr>`;
+}).join("");
 }
 function registerServiceWorker() {
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
@@ -2358,6 +2521,11 @@ share_result: "share_result",
 currency_refresh: "calculator_used",
 newsletter_signup: "newsletter_signup",
 admin_add_unit: "admin_add_unit",
+admin_edit_unit: "admin_edit_unit",
+admin_delete_unit: "admin_delete_unit",
+admin_export_units: "admin_export_units",
+admin_import_units: "admin_import_units",
+admin_clear_units: "admin_clear_units",
 swap_units: "swap_units"
 };
 return names[name] || name;
