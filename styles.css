@@ -31,6 +31,29 @@ color-scheme: dark;
 --danger: #ff6b7a;
 --shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
 }
+/* WCAG AA contrast fixes (2.x): --accent-strong is a light, high-luminance
+   teal in dark mode (by design, for use as foreground text on dark
+   backgrounds). Several buttons instead use it as a *fill* with white text,
+   which drops to ~1.6:1 in dark mode. Swapping the button label to the dark
+   background color keeps the brand teal fill untouched and restores >10:1
+   contrast without changing any color variables. */
+[data-theme="dark"] .calculator-card button,
+[data-theme="dark"] .newsletter-form button,
+[data-theme="dark"] .admin-form button,
+[data-theme="dark"] .agri-tabs button.active,
+[data-theme="dark"] .page-cta,
+[data-theme="dark"] .admin-btn-primary,
+[data-theme="dark"] .swap-button {
+color: var(--bg);
+}
+/* Light-theme conversion-card hover/focus text was 4.45:1 against the
+   card's tinted surface (just under the 4.5:1 AA minimum for normal text).
+   A ~2% darker shade of the same teal restores AA without visibly changing
+   the brand color. */
+[data-theme="light"] .conversion-card:hover,
+[data-theme="light"] .conversion-card:focus-visible {
+color: #077a77;
+}
 * {
 box-sizing: border-box;
 }
