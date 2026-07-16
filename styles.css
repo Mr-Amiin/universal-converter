@@ -283,6 +283,14 @@ img {
   display: block;
 }
 
+/* Sibling of .top-nav inside .site-header (see index.html), used only
+   on mobile — see @media (max-width: 820px) below. Hidden here
+   unconditionally so it can never appear on desktop, no matter what
+   class gets toggled on it. */
+.category-dropdown-container {
+  display: none;
+}
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -1919,50 +1927,194 @@ guide-preview,
   .site-header {
     position: static;
     flex-wrap: wrap;
+    row-gap: 0;
+    /* Base padding (0.85rem) is unchanged on every other side; only the
+       bottom is tightened here. Combined with the ad's own margin-top
+       below, this keeps the nav-grid-to-advertisement gap (and, when the
+       Categories panel is open, the dropdown-to-advertisement gap) at
+       roughly 20px instead of the ~35px the two paddings/margins added
+       up to before. */
+    padding-bottom: 0.5rem;
   }
+
+  /* The header ad is the first element after .site-header, so its own
+     margin is the only thing separating it from the nav grid (or, when
+     Categories is open, from the dropdown panel) above and the hero
+     below. Set both explicitly so spacing stays predictable regardless
+     of dropdown state, instead of relying on the generic .ad-band
+     margin shared with in-page ad slots elsewhere on the site. */
+  .ad-band.header-ad {
+    margin-top: 0.75rem;
+    /* Ad → Hero spacing (24px), per spec. */
+    margin-bottom: 24px;
+  }
+
+  /* Dropdown → Advertisement spacing (20px), per spec. No dropdown-state
+     override is needed here: `.site-header`'s padding-bottom (8px) plus
+     the ad's own margin-top above (12px) already total 20px after
+     whatever the header's last visible child is — `.top-nav` when
+     closed, `.category-dropdown-container` when open — since
+     padding-bottom applies unconditionally regardless of dropdown state.
+     A previous `:has()` override that bumped this margin-top to 20px
+     specifically while open stacked on top of that same 8px
+     padding-bottom, over-counting the gap to 28px; removed. */
 
   .top-nav {
     order: 3;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
-    justify-content: flex-start;
     gap: 0.5rem;
-    overflow-x: auto;
-    padding: 0.2rem 0 0.35rem;
-    scrollbar-width: thin;
+    padding: 0.2rem 0 0;
+    /* `.site-header`'s row-gap is zeroed above (see that rule's comment)
+       to stop it stacking onto the Nav→Ad spacing whenever
+       `.category-dropdown-container` is closed. That row-gap used to be
+       the only thing separating this row from the brand/theme-toggle
+       row above it, so restore that same 16px here as an explicit
+       margin — unrelated to, and unaffected by, the dropdown spacing
+       fix. */
+    margin-top: 1rem;
   }
 
-  /* The header wraps onto two rows on mobile (.top-nav gets
-     order: 3; width: 100%), so its rendered height is taller than the
-     fixed --header-height constant used elsewhere. Anchoring the menu
-     to that constant put it too high, overlapping the hero section
-     text underneath. Instead, the menu's top offset is calculated from
-     the toggle button's actual position (see initCategoriesNav in
-     app.js) and written to --dropdown-menu-top; the calc() below is
-     only a safe fallback for the brief moment before JS runs. Position
-     stays `fixed` (not `absolute`) so the menu escapes .top-nav's
-     `overflow-x: auto`, which would otherwise clip it (overflow-x set
-     to auto forces overflow-y to auto too, per spec). */
+  /* Nav items are grid cells now instead of a scrolling row, so both the
+     plain links and the Categories toggle (wrapped in `.nav-dropdown`)
+     need to stretch to fill their cell — otherwise the toggle would hug
+     its own text width instead of matching the other buttons. This is
+     purely sizing; it doesn't touch `.nav-dropdown-menu` or
+     `.category-dropdown-container`, so dropdown positioning/behavior is
+     unaffected. */
+  .top-nav .nav-dropdown {
+    width: 100%;
+  }
+
+  .top-nav .nav-dropdown-toggle {
+    width: 100%;
+  }
+
+  /* Widen to 3 columns once there's enough room per cell; below this the
+     default 2-column grid above keeps buttons comfortably tappable. */
+  @media (min-width: 601px) {
+    .top-nav {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  /* The nav buttons no longer need any special handling when Categories
+     opens — the dropdown panel lives in `.category-dropdown-container`,
+     a sibling of `.top-nav` inside `.site-header` (see the HTML), not a
+     descendant of it. It never sits inside the nav's scrolling row, so
+     the nav buttons stay exactly where they always are, in their
+     normal wrapped grid layout, whether the panel is open or closed.
+
+     The original nested `.nav-dropdown-menu` (inside `.nav-dropdown`,
+     next to the toggle button) is desktop-only from here down — it
+     keeps working exactly as before there, unchanged. On mobile it's
+     simply never shown; `.category-dropdown-container` is what mobile
+     users see instead. */
   .nav-dropdown-menu {
-    position: fixed;
-    top: var(--dropdown-menu-top, calc(var(--header-height) + 0.5rem));
-    left: 1rem;
-    right: 1rem;
-    width: auto;
+    display: none !important;
+  }
+
+  /* `.category-dropdown-container` is a normal block, sibling of
+     `.top-nav`, inside `.site-header` (`.site-header` already has
+     `flex-wrap: wrap` above, so a full-width sibling always starts its
+     own new row). Toggling `.open` only ever changes `display`, so the
+     panel is either absent from layout or a normal in-flow block —
+     never `position: fixed`/`absolute`, never taken out of flow. That
+     means opening it grows `.site-header`'s real height, and `<main>` /
+     `.hero` (later siblings in the DOM, entirely outside the header)
+     are simply pushed down by ordinary layout. No positioning math, no
+     CSS variables, no JS geometry needed. */
+  .category-dropdown-container {
+    /* display: grid + a single animatable row track (rather than
+       display: none/block) is what lets this panel expand and collapse
+       smoothly with a plain CSS transition — no JS height measuring, no
+       max-height guessing. A 0fr row has zero size when closed; 1fr lets
+       the row grow to fit its content when open. The container stays a
+       normal in-flow block the whole time (never display:none, never
+       positioned), so .top-nav's layout and the push-down of the ad/hero
+       below are completely unaffected by the animation. */
+    display: grid;
+    grid-template-rows: 0fr;
+    width: 100%;
+    opacity: 0;
+    margin-top: 0;
+    transition: grid-template-rows 220ms ease, opacity 220ms ease, margin-top 220ms ease;
+    /* .top-nav is order: 3; without an explicit order here this panel
+       (default order: 0) would lay out *before* the nav row instead of
+       after it, since flex placement follows `order` first and DOM
+       position only as a tiebreaker. Push it past the nav so it always
+       renders directly below the navigation grid, matching where the
+       toggle button that opens it lives. */
+    order: 4;
+  }
+
+  .category-dropdown-container.open {
+    /* Nav → Dropdown spacing (16px), per spec. */
+    opacity: 1;
+    grid-template-rows: 1fr;
+    margin-top: 16px;
+  }
+
+  .category-dropdown-container .nav-dropdown-menu {
+    display: block !important;
+    position: static;
+    width: 100%;
+    min-width: 0;
+    min-height: 0;
     max-height: 60vh;
-    overflow-y: auto;
+    /* No margin/padding here by default. `.category-dropdown-container`
+       collapses via `grid-template-rows: 0fr`, but a grid item's margin
+       and padding are NOT zeroed by `min-height: 0` + `overflow: hidden`
+       (those only zero the item's *content* minimum size). Any
+       margin-top/padding left on this element unconditionally would
+       still hold the 0fr row open at that many pixels even while
+       "closed", which was the actual bug. Real values are restored only
+       in `.category-dropdown-container.open .nav-dropdown-menu` below,
+       once the row is actually meant to have visible height. */
+    margin-top: 0;
+    padding: 0;
+    border: none;
+    /* Hidden (rather than auto) while the row track is animating so the
+       list can't visually escape the collapsing/expanding container;
+       swapped to a scrollable auto overflow the instant the panel is
+       open, in the rule below. */
+    overflow: hidden;
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    z-index: 1000;
+    box-shadow: none;
+  }
+
+  .category-dropdown-container.open .nav-dropdown-menu {
+    overflow-y: auto;
+    /* Restore the panel's visual padding/margin/border — matches the
+       base `.nav-dropdown-menu` values (desktop dropdown), reapplied
+       here only for the open mobile state. */
+    margin-top: 0.5rem;
+    padding: 0.4rem;
+    padding-top: calc(0.4rem + 2px);
+    border: 1px solid var(--line);
+  }
+
+  /* Mobile-only timing tweak so the chevron's 180° rotation (defined
+     once, shared with desktop, above) plays over the same ~220ms window
+     as the dropdown panel's expand/collapse. Desktop's 160ms timing is
+     untouched. */
+  .top-nav .nav-dropdown-toggle .nav-caret {
+    transition: transform 220ms ease;
   }
 
   .top-nav a,
   .nav-dropdown-toggle {
-    min-height: 38px;
-    padding: 0.45rem 0.62rem;
+    min-height: 44px;
+    padding: 10px 14px;
+    font-size: 15px;
+    line-height: 1.2;
     background: color-mix(in srgb, var(--surface-strong) 82%, transparent);
     border: 1px solid var(--line);
     border-radius: var(--radius);
   }
+
 
   .hero {
     min-height: auto;

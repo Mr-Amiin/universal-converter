@@ -691,34 +691,48 @@
     if (themeText) themeText.textContent = theme === "dark" ? "Light" : "Dark";
   }
 
+  /*
+  Mobile navigation architecture
+
+  Desktop (>820px):
+  - Hover/focus/click flyout dropdown, absolutely positioned inside
+    `.nav-dropdown` (`.nav-dropdown-menu`).
+
+  Mobile (<=820px):
+  - The dropdown is a second, separate list rendered in normal document
+    flow: `.category-dropdown-container`, a sibling of `.top-nav` inside
+    `.site-header` (see the HTML).
+  - Opening it expands the header; main content is pushed downward
+    naturally via ordinary layout.
+  - No absolute/fixed positioning and no JS geometry (no
+    getBoundingClientRect, no manual top/left math) — CSS alone
+    (`grid-template-rows: 0fr` -> `1fr`) drives the open/close animation.
+  - Shared implementation: one toggle button and one `initCategoriesNav`
+    function drive both layouts; only one of the two menus is ever
+    visible at a given screen width (see styles.css), so this same
+    markup and script work unmodified on every generated page.
+  */
   function initCategoriesNav() {
     const dropdowns = document.querySelectorAll(".nav-dropdown");
     if (!dropdowns.length) return;
 
-    const mobileMenuQuery = window.matchMedia("(max-width: 820px)");
-
-    // On mobile the header wraps onto two rows, so its rendered height
-    // varies (font size, zoom, content). Rather than trust a fixed CSS
-    // constant for the dropdown's offset, measure the toggle button's
-    // actual position each time the menu opens and write it to a CSS
-    // variable the mobile stylesheet reads. Keeps the menu pinned
-    // directly under its button instead of overlapping the hero below.
-    function positionMobileMenu(dropdown) {
-      if (!mobileMenuQuery.matches) return;
-      const toggle = dropdown.querySelector(".nav-dropdown-toggle");
-      const menu = dropdown.querySelector(".nav-dropdown-menu");
-      if (!toggle || !menu) return;
-      const rect = toggle.getBoundingClientRect();
-      const top = Math.round(rect.bottom + 8);
-      menu.style.setProperty("--dropdown-menu-top", `${top}px`);
+    // Desktop uses the menu nested inside `.nav-dropdown` (hover /
+    // focus-within / click). Mobile uses `.category-dropdown-container`
+    // (see architecture comment above). Each toggle button drives both:
+    // only one of the two is ever visible at a given screen width, so
+    // toggling both classes together is harmless and keeps this one
+    // function working for both layouts.
+    function findDropdownContainer(dropdown) {
+      const header = dropdown.closest(".site-header");
+      return header ? header.querySelector(".category-dropdown-container") : null;
     }
 
     function closeDropdown(dropdown) {
       dropdown.classList.remove("is-open");
       const toggle = dropdown.querySelector(".nav-dropdown-toggle");
-      const menu = dropdown.querySelector(".nav-dropdown-menu");
       if (toggle) toggle.setAttribute("aria-expanded", "false");
-      if (menu) menu.style.removeProperty("--dropdown-menu-top");
+      const container = findDropdownContainer(dropdown);
+      if (container) container.classList.remove("open");
     }
 
     function closeAll(except) {
@@ -730,6 +744,7 @@
     dropdowns.forEach((dropdown) => {
       const toggle = dropdown.querySelector(".nav-dropdown-toggle");
       const menu = dropdown.querySelector(".nav-dropdown-menu");
+      const container = findDropdownContainer(dropdown);
       if (!toggle || !menu) return;
 
       toggle.addEventListener("click", (event) => {
@@ -739,11 +754,7 @@
         const nextOpen = !isOpen;
         dropdown.classList.toggle("is-open", nextOpen);
         toggle.setAttribute("aria-expanded", String(nextOpen));
-        if (nextOpen) {
-          positionMobileMenu(dropdown);
-        } else {
-          menu.style.removeProperty("--dropdown-menu-top");
-        }
+        if (container) container.classList.toggle("open", nextOpen);
       });
 
       // Selecting a category closes the menu (it also navigates away,
@@ -751,6 +762,11 @@
       menu.addEventListener("click", (event) => {
         if (event.target.closest("a")) closeDropdown(dropdown);
       });
+      if (container) {
+        container.addEventListener("click", (event) => {
+          if (event.target.closest("a")) closeDropdown(dropdown);
+        });
+      }
 
       dropdown.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
@@ -758,38 +774,44 @@
           toggle.focus();
         }
       });
+
+      if (container) {
+        container.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            closeDropdown(dropdown);
+            toggle.focus();
+          }
+        });
+      }
     });
 
     document.addEventListener("click", (event) => {
       dropdowns.forEach((dropdown) => {
-        if (!dropdown.contains(event.target)) closeDropdown(dropdown);
+        const container = findDropdownContainer(dropdown);
+        const insideDropdown = dropdown.contains(event.target);
+        const insideContainer = container && container.contains(event.target);
+        if (!insideDropdown && !insideContainer) closeDropdown(dropdown);
       });
     });
 
     document.addEventListener("focusin", (event) => {
       dropdowns.forEach((dropdown) => {
-        if (!dropdown.contains(event.target)) closeDropdown(dropdown);
-      });
-    });
-
-    // The mobile header is `position: static` (not sticky), so its
-    // toggle button moves out from under a `position: fixed` menu as
-    // soon as the page scrolls. Rather than let the menu drift out of
-    // alignment, close it on scroll so it never floats in the wrong
-    // place; the person can reopen it once they've stopped scrolling.
-    window.addEventListener(
-      "scroll",
-      () => {
-        dropdowns.forEach((dropdown) => {
-          if (dropdown.classList.contains("is-open")) closeDropdown(dropdown);
-        });
-      },
-      { passive: true }
-    );
-
-    window.addEventListener("resize", () => {
-      dropdowns.forEach((dropdown) => {
-        if (dropdown.classList.contains("is-open")) positionMobileMenu(dropdown);
+        const container = findDropdownContainer(dropdown);
+        const insideDropdown = dropdown.contains(event.target);
+        const insideContainer = container && container.contains(event.target);
+        // Tabbing forward from the toggle naturally passes through the
+        // *other* plain links in `.top-nav` (and the theme toggle) before
+        // ever reaching `.category-dropdown-container`, since the panel
+        // sits after `.top-nav` in DOM order (see the layout comment on
+        // `.category-dropdown-container` above). None of those controls
+        // are inside `dropdown` or `container`, so without this check the
+        // panel closed itself on the very first Tab press — before a
+        // keyboard user could ever reach a category link. Treat the whole
+        // header as "still interacting with this UI" instead; the panel
+        // still closes via Escape, click-outside, or selecting a category.
+        const header = dropdown.closest(".site-header");
+        const insideHeader = header && header.contains(event.target);
+        if (!insideDropdown && !insideContainer && !insideHeader) closeDropdown(dropdown);
       });
     });
   }

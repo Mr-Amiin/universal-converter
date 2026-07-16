@@ -86,7 +86,7 @@ def build_dropdown_html(categories: list[tuple[str, str]]) -> str:
     return (
         '<div class="nav-dropdown">'
         '<button type="button" class="nav-dropdown-toggle" aria-haspopup="true" '
-        'aria-expanded="false" aria-controls="categoriesNavMenu">'
+        'aria-expanded="false" aria-controls="categoriesNavMenu categoriesNavMenuMobile">'
         "Categories<span class=\"nav-caret\" aria-hidden=\"true\"></span>"
         "</button>"
         f'<ul class="nav-dropdown-menu" id="categoriesNavMenu">{items}</ul>'
