@@ -2219,12 +2219,41 @@ const cost = distance / 100 * litersPer100 * price;
 byId("fuelCostResult").textContent = Number.isFinite(cost) ? `${money(cost)} estimated fuel cost` : "Enter trip details";
 }
 function initAgriTabs() {
-document.querySelectorAll("[data-agri-tool]").forEach((button) => {
-button.addEventListener("click", () => {
-document.querySelectorAll("[data-agri-tool]").forEach((item) => item.classList.remove("active"));
+const tabs = Array.from(document.querySelectorAll("[data-agri-tool]"));
+function selectAgriTab(tab) {
+tabs.forEach((item) => {
+const isSelected = item === tab;
+item.classList.toggle("active", isSelected);
+item.setAttribute("aria-selected", isSelected ? "true" : "false");
+item.setAttribute("tabindex", isSelected ? "0" : "-1");
+});
 document.querySelectorAll("[data-agri-panel]").forEach((item) => item.classList.remove("active"));
-button.classList.add("active");
-document.querySelector(`[data-agri-panel="${button.dataset.agriTool}"]`).classList.add("active");
+document.querySelector(`[data-agri-panel="${tab.dataset.agriTool}"]`).classList.add("active");
+}
+tabs.forEach((tab, index) => {
+tab.addEventListener("click", () => selectAgriTab(tab));
+tab.addEventListener("keydown", (event) => {
+let newIndex = null;
+switch (event.key) {
+case "ArrowRight":
+newIndex = (index + 1) % tabs.length;
+break;
+case "ArrowLeft":
+newIndex = (index - 1 + tabs.length) % tabs.length;
+break;
+case "Home":
+newIndex = 0;
+break;
+case "End":
+newIndex = tabs.length - 1;
+break;
+default:
+return;
+}
+event.preventDefault();
+const newTab = tabs[newIndex];
+selectAgriTab(newTab);
+newTab.focus();
 });
 });
 }

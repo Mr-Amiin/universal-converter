@@ -496,12 +496,12 @@
         <section class="calculator-card agriculture-suite">
           <h3>Agriculture calculators</h3>
           <div class="agri-tabs" role="tablist" aria-label="Agriculture calculators">
-            <button type="button" class="active" data-agri-tool="seed">Seed</button>
-            <button type="button" data-agri-tool="fertilizer">Fertilizer</button>
-            <button type="button" data-agri-tool="yield">Yield</button>
-            <button type="button" data-agri-tool="irrigation">Irrigation</button>
+            <button type="button" class="active" id="agriTab-seed" role="tab" aria-selected="true" aria-controls="agriPanel-seed" tabindex="0" data-agri-tool="seed">Seed</button>
+            <button type="button" id="agriTab-fertilizer" role="tab" aria-selected="false" aria-controls="agriPanel-fertilizer" tabindex="-1" data-agri-tool="fertilizer">Fertilizer</button>
+            <button type="button" id="agriTab-yield" role="tab" aria-selected="false" aria-controls="agriPanel-yield" tabindex="-1" data-agri-tool="yield">Yield</button>
+            <button type="button" id="agriTab-irrigation" role="tab" aria-selected="false" aria-controls="agriPanel-irrigation" tabindex="-1" data-agri-tool="irrigation">Irrigation</button>
           </div>
-          <div class="agri-tool active" data-agri-panel="seed">
+          <div class="agri-tool active" id="agriPanel-seed" role="tabpanel" aria-labelledby="agriTab-seed" tabindex="0" data-agri-panel="seed">
             <div class="calc-row three">
               <input id="seedArea" type="number" value="10" min="0" step="any" aria-label="Area hectares">
               <input id="seedRate" type="number" value="25" min="0" step="any" aria-label="Seed rate kilograms per hectare">
@@ -509,7 +509,7 @@
             </div>
             <strong id="seedResult">262.5 kg seed required</strong>
           </div>
-          <div class="agri-tool" data-agri-panel="fertilizer">
+          <div class="agri-tool" id="agriPanel-fertilizer" role="tabpanel" aria-labelledby="agriTab-fertilizer" tabindex="0" data-agri-panel="fertilizer">
             <div class="calc-row three">
               <input id="fertArea" type="number" value="8" min="0" step="any" aria-label="Area hectares">
               <input id="fertRate" type="number" value="120" min="0" step="any" aria-label="Fertilizer rate kilograms per hectare">
@@ -517,7 +517,7 @@
             </div>
             <strong id="fertResult">960 kg, 19.2 bags</strong>
           </div>
-          <div class="agri-tool" data-agri-panel="yield">
+          <div class="agri-tool" id="agriPanel-yield" role="tabpanel" aria-labelledby="agriTab-yield" tabindex="0" data-agri-panel="yield">
             <div class="calc-row three">
               <input id="yieldMass" type="number" value="18" min="0" step="any" aria-label="Harvest tons">
               <input id="yieldArea" type="number" value="6" min="0" step="any" aria-label="Area hectares">
@@ -525,7 +525,7 @@
             </div>
             <strong id="yieldResult">3 t/ha, $3,960 revenue</strong>
           </div>
-          <div class="agri-tool" data-agri-panel="irrigation">
+          <div class="agri-tool" id="agriPanel-irrigation" role="tabpanel" aria-labelledby="agriTab-irrigation" tabindex="0" data-agri-panel="irrigation">
             <div class="calc-row three">
               <input id="irrigationArea" type="number" value="5" min="0" step="any" aria-label="Area hectares">
               <input id="irrigationDepth" type="number" value="25" min="0" step="any" aria-label="Water depth millimeters">
