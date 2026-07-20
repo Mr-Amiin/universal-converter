@@ -105,7 +105,7 @@
     "toUnitId": "square_foot",
     "value": "1",
     "title": "Acres to Square feet Converter",
-    "description": "Convert acres (ac) to square feet (ft\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert acres (ac) to square feet (ft²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/acres-to-square-femtometers": {
     "slug": "area/acres-to-square-femtometers",
@@ -141,7 +141,7 @@
     "toUnitId": "square_inch",
     "value": "1",
     "title": "Acres to Square inches Converter",
-    "description": "Convert acres (ac) to square inches (in\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert acres (ac) to square inches (in²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/acres-to-square-kilometers": {
     "slug": "area/acres-to-square-kilometers",
@@ -168,7 +168,7 @@
     "toUnitId": "square_meter",
     "value": "1",
     "title": "Acres to Square meters Converter",
-    "description": "Convert acres (ac) to square meters (m\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert acres (ac) to square meters (m²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/acres-to-square-micrometers": {
     "slug": "area/acres-to-square-micrometers",
@@ -186,7 +186,7 @@
     "toUnitId": "square_mile",
     "value": "1",
     "title": "Acres to Square miles Converter",
-    "description": "Convert acres (ac) to square miles (mi\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert acres (ac) to square miles (mi²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/acres-to-square-millimeters": {
     "slug": "area/acres-to-square-millimeters",
@@ -1050,7 +1050,7 @@
     "toUnitId": "square_foot",
     "value": "1",
     "title": "Hectares to Square feet Converter",
-    "description": "Convert hectares (ha) to square feet (ft\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert hectares (ha) to square feet (ft²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/hectares-to-square-femtometers": {
     "slug": "area/hectares-to-square-femtometers",
@@ -1086,7 +1086,7 @@
     "toUnitId": "square_inch",
     "value": "1",
     "title": "Hectares to Square inches Converter",
-    "description": "Convert hectares (ha) to square inches (in\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert hectares (ha) to square inches (in²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/hectares-to-square-kilometers": {
     "slug": "area/hectares-to-square-kilometers",
@@ -1113,7 +1113,7 @@
     "toUnitId": "square_meter",
     "value": "1",
     "title": "Hectares to Square meters Converter",
-    "description": "Convert hectares (ha) to square meters (m\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert hectares (ha) to square meters (m²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/hectares-to-square-micrometers": {
     "slug": "area/hectares-to-square-micrometers",
@@ -1131,7 +1131,7 @@
     "toUnitId": "square_mile",
     "value": "1",
     "title": "Hectares to Square miles Converter",
-    "description": "Convert hectares (ha) to square miles (mi\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert hectares (ha) to square miles (mi²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/hectares-to-square-millimeters": {
     "slug": "area/hectares-to-square-millimeters",
@@ -3489,7 +3489,7 @@
     "toUnitId": "acre",
     "value": "1",
     "title": "Square feet to Acres Converter",
-    "description": "Convert square feet (ft\u00b2) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square feet (ft²) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-feet-to-ares": {
     "slug": "area/square-feet-to-ares",
@@ -3516,7 +3516,7 @@
     "toUnitId": "hectare",
     "value": "1",
     "title": "Square feet to Hectares Converter",
-    "description": "Convert square feet (ft\u00b2) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square feet (ft²) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-feet-to-roods": {
     "slug": "area/square-feet-to-roods",
@@ -3615,7 +3615,7 @@
     "toUnitId": "square_inch",
     "value": "1",
     "title": "Square feet to Square inches Converter",
-    "description": "Convert square feet (ft\u00b2) to square inches (in\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square feet (ft²) to square inches (in²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-feet-to-square-kilometers": {
     "slug": "area/square-feet-to-square-kilometers",
@@ -3642,7 +3642,7 @@
     "toUnitId": "square_meter",
     "value": "1",
     "title": "Square feet to Square meters Converter",
-    "description": "Convert square feet (ft\u00b2) to square meters (m\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square feet (ft²) to square meters (m²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-feet-to-square-micrometers": {
     "slug": "area/square-feet-to-square-micrometers",
@@ -3660,7 +3660,7 @@
     "toUnitId": "square_mile",
     "value": "1",
     "title": "Square feet to Square miles Converter",
-    "description": "Convert square feet (ft\u00b2) to square miles (mi\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square feet (ft²) to square miles (mi²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-feet-to-square-millimeters": {
     "slug": "area/square-feet-to-square-millimeters",
@@ -4749,7 +4749,7 @@
     "toUnitId": "acre",
     "value": "1",
     "title": "Square inches to Acres Converter",
-    "description": "Convert square inches (in\u00b2) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square inches (in²) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-inches-to-ares": {
     "slug": "area/square-inches-to-ares",
@@ -4776,7 +4776,7 @@
     "toUnitId": "hectare",
     "value": "1",
     "title": "Square inches to Hectares Converter",
-    "description": "Convert square inches (in\u00b2) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square inches (in²) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-inches-to-roods": {
     "slug": "area/square-inches-to-roods",
@@ -4848,7 +4848,7 @@
     "toUnitId": "square_foot",
     "value": "1",
     "title": "Square inches to Square feet Converter",
-    "description": "Convert square inches (in\u00b2) to square feet (ft\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square inches (in²) to square feet (ft²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-inches-to-square-femtometers": {
     "slug": "area/square-inches-to-square-femtometers",
@@ -4902,7 +4902,7 @@
     "toUnitId": "square_meter",
     "value": "1",
     "title": "Square inches to Square meters Converter",
-    "description": "Convert square inches (in\u00b2) to square meters (m\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square inches (in²) to square meters (m²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-inches-to-square-micrometers": {
     "slug": "area/square-inches-to-square-micrometers",
@@ -4920,7 +4920,7 @@
     "toUnitId": "square_mile",
     "value": "1",
     "title": "Square inches to Square miles Converter",
-    "description": "Convert square inches (in\u00b2) to square miles (mi\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square inches (in²) to square miles (mi²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-inches-to-square-millimeters": {
     "slug": "area/square-inches-to-square-millimeters",
@@ -5694,7 +5694,7 @@
     "toUnitId": "acre",
     "value": "1",
     "title": "Square meters to Acres Converter",
-    "description": "Convert square meters (m\u00b2) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square meters (m²) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-meters-to-ares": {
     "slug": "area/square-meters-to-ares",
@@ -5721,7 +5721,7 @@
     "toUnitId": "hectare",
     "value": "1",
     "title": "Square meters to Hectares Converter",
-    "description": "Convert square meters (m\u00b2) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square meters (m²) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-meters-to-roods": {
     "slug": "area/square-meters-to-roods",
@@ -5793,7 +5793,7 @@
     "toUnitId": "square_foot",
     "value": "1",
     "title": "Square meters to Square feet Converter",
-    "description": "Convert square meters (m\u00b2) to square feet (ft\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square meters (m²) to square feet (ft²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-meters-to-square-femtometers": {
     "slug": "area/square-meters-to-square-femtometers",
@@ -5829,7 +5829,7 @@
     "toUnitId": "square_inch",
     "value": "1",
     "title": "Square meters to Square inches Converter",
-    "description": "Convert square meters (m\u00b2) to square inches (in\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square meters (m²) to square inches (in²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-meters-to-square-kilometers": {
     "slug": "area/square-meters-to-square-kilometers",
@@ -5865,7 +5865,7 @@
     "toUnitId": "square_mile",
     "value": "1",
     "title": "Square meters to Square miles Converter",
-    "description": "Convert square meters (m\u00b2) to square miles (mi\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square meters (m²) to square miles (mi²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-meters-to-square-millimeters": {
     "slug": "area/square-meters-to-square-millimeters",
@@ -6324,7 +6324,7 @@
     "toUnitId": "acre",
     "value": "1",
     "title": "Square miles to Acres Converter",
-    "description": "Convert square miles (mi\u00b2) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square miles (mi²) to acres (ac) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-miles-to-ares": {
     "slug": "area/square-miles-to-ares",
@@ -6351,7 +6351,7 @@
     "toUnitId": "hectare",
     "value": "1",
     "title": "Square miles to Hectares Converter",
-    "description": "Convert square miles (mi\u00b2) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square miles (mi²) to hectares (ha) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-miles-to-roods": {
     "slug": "area/square-miles-to-roods",
@@ -6423,7 +6423,7 @@
     "toUnitId": "square_foot",
     "value": "1",
     "title": "Square miles to Square feet Converter",
-    "description": "Convert square miles (mi\u00b2) to square feet (ft\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square miles (mi²) to square feet (ft²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-miles-to-square-femtometers": {
     "slug": "area/square-miles-to-square-femtometers",
@@ -6459,7 +6459,7 @@
     "toUnitId": "square_inch",
     "value": "1",
     "title": "Square miles to Square inches Converter",
-    "description": "Convert square miles (mi\u00b2) to square inches (in\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square miles (mi²) to square inches (in²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-miles-to-square-kilometers": {
     "slug": "area/square-miles-to-square-kilometers",
@@ -6486,7 +6486,7 @@
     "toUnitId": "square_meter",
     "value": "1",
     "title": "Square miles to Square meters Converter",
-    "description": "Convert square miles (mi\u00b2) to square meters (m\u00b2) instantly. Free online area converter with formulas, tables and examples."
+    "description": "Convert square miles (mi²) to square meters (m²) instantly. Free online area converter with formulas, tables and examples."
   },
   "area/square-miles-to-square-micrometers": {
     "slug": "area/square-miles-to-square-micrometers",
@@ -11364,7 +11364,7 @@
     "toUnitId": "fahrenheit",
     "value": "1",
     "title": "Celsius to Fahrenheit Converter",
-    "description": "Convert celsius (\u00b0C) to fahrenheit (\u00b0F) instantly. Free online temperature converter with formulas, tables and examples."
+    "description": "Convert celsius (°C) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
   },
   "fahrenheit-to-celsius": {
     "slug": "fahrenheit-to-celsius",
@@ -11373,7 +11373,7 @@
     "toUnitId": "celsius",
     "value": "1",
     "title": "Fahrenheit to Celsius Converter",
-    "description": "Convert fahrenheit (\u00b0F) to celsius (\u00b0C) instantly. Free online temperature converter with formulas, tables and examples."
+    "description": "Convert fahrenheit (°F) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
   },
   "feet-to-meters": {
     "slug": "feet-to-meters",
@@ -58983,7 +58983,7 @@
     "toUnitId": "kiloohm",
     "value": "1",
     "title": "Ohms to Kiloohms Converter | Universal Converter",
-    "description": "Convert ohms (\u03a9) to kiloohms (k\u03a9) instantly with formula, conversion table, and FAQ."
+    "description": "Convert ohms (Ω) to kiloohms (kΩ) instantly with formula, conversion table, and FAQ."
   },
   "electricity/kiloohms-to-ohms": {
     "slug": "electricity/kiloohms-to-ohms",
@@ -58992,7 +58992,7 @@
     "toUnitId": "ohm",
     "value": "1",
     "title": "Kiloohms to Ohms Converter | Universal Converter",
-    "description": "Convert kiloohms (k\u03a9) to ohms (\u03a9) instantly with formula, conversion table, and FAQ."
+    "description": "Convert kiloohms (kΩ) to ohms (Ω) instantly with formula, conversion table, and FAQ."
   },
   "electricity/watts-to-kilowatts": {
     "slug": "electricity/watts-to-kilowatts",
@@ -66985,5 +66985,491 @@
     "value": "1",
     "title": "Angle Circles-to-milliradians | Universal Converter",
     "description": "Browse the Universal Converter for accurate, data-driven conversions and practical examples."
+  },
+  "celsius-to-kelvin": {
+    "slug": "celsius-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Celsius to Kelvin Converter",
+    "description": "Convert celsius (°C) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "celsius-to-rankine": {
+    "slug": "celsius-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Celsius to Rankine Converter",
+    "description": "Convert celsius (°C) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "celsius-to-delisle": {
+    "slug": "celsius-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Celsius to Delisle Converter",
+    "description": "Convert celsius (°C) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "celsius-to-newton": {
+    "slug": "celsius-to-newton",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Celsius to Newton Converter",
+    "description": "Convert celsius (°C) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "celsius-to-reaumur": {
+    "slug": "celsius-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Celsius to Reaumur Converter",
+    "description": "Convert celsius (°C) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "celsius-to-romer": {
+    "slug": "celsius-to-romer",
+    "category": "temperature",
+    "fromUnitId": "celsius",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Celsius to Romer Converter",
+    "description": "Convert celsius (°C) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-kelvin": {
+    "slug": "fahrenheit-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Fahrenheit to Kelvin Converter",
+    "description": "Convert fahrenheit (°F) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-rankine": {
+    "slug": "fahrenheit-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Fahrenheit to Rankine Converter",
+    "description": "Convert fahrenheit (°F) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-delisle": {
+    "slug": "fahrenheit-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Fahrenheit to Delisle Converter",
+    "description": "Convert fahrenheit (°F) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-newton": {
+    "slug": "fahrenheit-to-newton",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Fahrenheit to Newton Converter",
+    "description": "Convert fahrenheit (°F) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-reaumur": {
+    "slug": "fahrenheit-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Fahrenheit to Reaumur Converter",
+    "description": "Convert fahrenheit (°F) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "fahrenheit-to-romer": {
+    "slug": "fahrenheit-to-romer",
+    "category": "temperature",
+    "fromUnitId": "fahrenheit",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Fahrenheit to Romer Converter",
+    "description": "Convert fahrenheit (°F) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-celsius": {
+    "slug": "kelvin-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Kelvin to Celsius Converter",
+    "description": "Convert kelvin (K) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-fahrenheit": {
+    "slug": "kelvin-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Kelvin to Fahrenheit Converter",
+    "description": "Convert kelvin (K) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-rankine": {
+    "slug": "kelvin-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Kelvin to Rankine Converter",
+    "description": "Convert kelvin (K) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-delisle": {
+    "slug": "kelvin-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Kelvin to Delisle Converter",
+    "description": "Convert kelvin (K) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-newton": {
+    "slug": "kelvin-to-newton",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Kelvin to Newton Converter",
+    "description": "Convert kelvin (K) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-reaumur": {
+    "slug": "kelvin-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Kelvin to Reaumur Converter",
+    "description": "Convert kelvin (K) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "kelvin-to-romer": {
+    "slug": "kelvin-to-romer",
+    "category": "temperature",
+    "fromUnitId": "kelvin",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Kelvin to Romer Converter",
+    "description": "Convert kelvin (K) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-celsius": {
+    "slug": "rankine-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Rankine to Celsius Converter",
+    "description": "Convert rankine (°R) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-fahrenheit": {
+    "slug": "rankine-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Rankine to Fahrenheit Converter",
+    "description": "Convert rankine (°R) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-kelvin": {
+    "slug": "rankine-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Rankine to Kelvin Converter",
+    "description": "Convert rankine (°R) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-delisle": {
+    "slug": "rankine-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Rankine to Delisle Converter",
+    "description": "Convert rankine (°R) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-newton": {
+    "slug": "rankine-to-newton",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Rankine to Newton Converter",
+    "description": "Convert rankine (°R) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-reaumur": {
+    "slug": "rankine-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Rankine to Reaumur Converter",
+    "description": "Convert rankine (°R) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "rankine-to-romer": {
+    "slug": "rankine-to-romer",
+    "category": "temperature",
+    "fromUnitId": "rankine",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Rankine to Romer Converter",
+    "description": "Convert rankine (°R) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-celsius": {
+    "slug": "delisle-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Delisle to Celsius Converter",
+    "description": "Convert delisle (°De) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-fahrenheit": {
+    "slug": "delisle-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Delisle to Fahrenheit Converter",
+    "description": "Convert delisle (°De) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-kelvin": {
+    "slug": "delisle-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Delisle to Kelvin Converter",
+    "description": "Convert delisle (°De) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-rankine": {
+    "slug": "delisle-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Delisle to Rankine Converter",
+    "description": "Convert delisle (°De) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-newton": {
+    "slug": "delisle-to-newton",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Delisle to Newton Converter",
+    "description": "Convert delisle (°De) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-reaumur": {
+    "slug": "delisle-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Delisle to Reaumur Converter",
+    "description": "Convert delisle (°De) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "delisle-to-romer": {
+    "slug": "delisle-to-romer",
+    "category": "temperature",
+    "fromUnitId": "delisle",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Delisle to Romer Converter",
+    "description": "Convert delisle (°De) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-celsius": {
+    "slug": "newton-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Newton to Celsius Converter",
+    "description": "Convert newton (°N) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-fahrenheit": {
+    "slug": "newton-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Newton to Fahrenheit Converter",
+    "description": "Convert newton (°N) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-kelvin": {
+    "slug": "newton-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Newton to Kelvin Converter",
+    "description": "Convert newton (°N) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-rankine": {
+    "slug": "newton-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Newton to Rankine Converter",
+    "description": "Convert newton (°N) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-delisle": {
+    "slug": "newton-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Newton to Delisle Converter",
+    "description": "Convert newton (°N) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-reaumur": {
+    "slug": "newton-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Newton to Reaumur Converter",
+    "description": "Convert newton (°N) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "newton-to-romer": {
+    "slug": "newton-to-romer",
+    "category": "temperature",
+    "fromUnitId": "newton_temperature",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Newton to Romer Converter",
+    "description": "Convert newton (°N) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-celsius": {
+    "slug": "reaumur-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Reaumur to Celsius Converter",
+    "description": "Convert reaumur (°Re) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-fahrenheit": {
+    "slug": "reaumur-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Reaumur to Fahrenheit Converter",
+    "description": "Convert reaumur (°Re) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-kelvin": {
+    "slug": "reaumur-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Reaumur to Kelvin Converter",
+    "description": "Convert reaumur (°Re) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-rankine": {
+    "slug": "reaumur-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Reaumur to Rankine Converter",
+    "description": "Convert reaumur (°Re) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-delisle": {
+    "slug": "reaumur-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Reaumur to Delisle Converter",
+    "description": "Convert reaumur (°Re) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-newton": {
+    "slug": "reaumur-to-newton",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Reaumur to Newton Converter",
+    "description": "Convert reaumur (°Re) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "reaumur-to-romer": {
+    "slug": "reaumur-to-romer",
+    "category": "temperature",
+    "fromUnitId": "reaumur",
+    "toUnitId": "romer",
+    "value": "1",
+    "title": "Reaumur to Romer Converter",
+    "description": "Convert reaumur (°Re) to romer (°Ro) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-celsius": {
+    "slug": "romer-to-celsius",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "celsius",
+    "value": "1",
+    "title": "Romer to Celsius Converter",
+    "description": "Convert romer (°Ro) to celsius (°C) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-fahrenheit": {
+    "slug": "romer-to-fahrenheit",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "fahrenheit",
+    "value": "1",
+    "title": "Romer to Fahrenheit Converter",
+    "description": "Convert romer (°Ro) to fahrenheit (°F) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-kelvin": {
+    "slug": "romer-to-kelvin",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "kelvin",
+    "value": "1",
+    "title": "Romer to Kelvin Converter",
+    "description": "Convert romer (°Ro) to kelvin (K) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-rankine": {
+    "slug": "romer-to-rankine",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "rankine",
+    "value": "1",
+    "title": "Romer to Rankine Converter",
+    "description": "Convert romer (°Ro) to rankine (°R) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-delisle": {
+    "slug": "romer-to-delisle",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "delisle",
+    "value": "1",
+    "title": "Romer to Delisle Converter",
+    "description": "Convert romer (°Ro) to delisle (°De) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-newton": {
+    "slug": "romer-to-newton",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "newton_temperature",
+    "value": "1",
+    "title": "Romer to Newton Converter",
+    "description": "Convert romer (°Ro) to newton (°N) instantly. Free online temperature converter with formulas, tables and examples."
+  },
+  "romer-to-reaumur": {
+    "slug": "romer-to-reaumur",
+    "category": "temperature",
+    "fromUnitId": "romer",
+    "toUnitId": "reaumur",
+    "value": "1",
+    "title": "Romer to Reaumur Converter",
+    "description": "Convert romer (°Ro) to reaumur (°Re) instantly. Free online temperature converter with formulas, tables and examples."
   }
 }
