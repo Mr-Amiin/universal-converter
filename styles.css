@@ -310,7 +310,7 @@ display: block;
 padding: 0;
 overflow: hidden;
 isolation: isolate;
-order: 1;
+order: 2;
 }
 .hero::after {
 position: absolute;
@@ -538,10 +538,10 @@ background: var(--surface);
 order: 0;
 }
 .popular-conversions {
-order: 3;
+order: 4;
 }
 .category-overview {
-order: 4;
+order: 3;
 }
 .trust-section {
 order: 5;
@@ -553,7 +553,7 @@ order: 6;
 order: 7;
 }
 .tool-section {
-order: 8;
+order: 1;
 }
 .ad-band:not(.header-ad) {
 order: 9;
