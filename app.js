@@ -425,6 +425,8 @@ lastRecordKey: ""
 let historyTimer = 0;
 let historyEnabled = false;
 let pageInitPending = false;
+let seoConversionDataCache = null;
+let seoConversionDataResolved = false;
 document.addEventListener("DOMContentLoaded", () => {
 initTheme();
 initHeroCanvas();
@@ -434,10 +436,38 @@ initConverterApp();
 initCalculators();
 initNewsletter();
 initAdmin();
-registerServiceWorker();
-loadCachedCurrencyRates();
-trackEvent("page_view", { title: document.title });
+// Service worker registration, cached-currency-rate loading, and the
+// page_view analytics event are not required for first paint or first
+// interaction. They are deferred below (load event / idle callback) so
+// they no longer occupy the critical startup path, while preserving
+// identical registration/fetch/tracking logic and firing exactly once.
 if (document.body) document.body.classList.remove("is-loading");
+});
+// Service worker registration deferred until after the page has fully
+// loaded (including images/subresources), matching the standard
+// "register after load" pattern. Registration logic itself is unchanged.
+window.addEventListener("load", () => {
+registerServiceWorker();
+});
+function runWhenIdle(callback) {
+if (typeof window.requestIdleCallback === "function") {
+window.requestIdleCallback(callback);
+} else {
+window.setTimeout(callback, 1);
+}
+}
+// Cached currency rate loading deferred to idle time. Behavior is
+// unchanged: the currency tool already relies on the hard-coded fallback
+// rates until this fetch resolves, whether that fetch is kicked off
+// immediately or during an idle window.
+runWhenIdle(() => {
+loadCachedCurrencyRates();
+});
+// Page-view tracking deferred to idle time. dataLayer/gtag/sendBeacon
+// logic inside trackEvent() is unchanged; this only delays when the
+// single page_view event fires, not whether or how it fires.
+runWhenIdle(() => {
+trackEvent("page_view", { title: document.title });
 });
 function loadCachedCurrencyRates() {
 // Reads the locally cached rates.json (produced offline by fetch_rates.py on a
@@ -1107,12 +1137,19 @@ context.moveTo(x1, y1);
 context.lineTo(x2, y2);
 context.stroke();
 }
+window.requestAnimationFrame(() => {
 resize();
 drawGrid();
+});
+let resizeRaf = 0;
 window.addEventListener("resize", () => {
+if (resizeRaf) window.cancelAnimationFrame(resizeRaf);
+resizeRaf = window.requestAnimationFrame(() => {
+resizeRaf = 0;
 window.cancelAnimationFrame(raf);
 resize();
 drawGrid();
+});
 });
 document.addEventListener("visibilitychange", () => {
 if (document.hidden) {
@@ -2063,6 +2100,17 @@ url.hash = "converter";
 return url.toString();
 }
 function readSeoConversionData() {
+// Cached per page load: the underlying inputs (window.__seoPageData, the
+// #seoConverter dataset, categoryMap, and the current location) do not
+// change during a single page load, so this result is safe to compute once
+// and reuse instead of re-deriving it on every call (initSeoConverterPage()
+// and initializeConverterFromPageRegistry() both need this same value).
+if (seoConversionDataResolved) return seoConversionDataCache;
+seoConversionDataCache = computeSeoConversionData();
+seoConversionDataResolved = true;
+return seoConversionDataCache;
+}
+function computeSeoConversionData() {
 const pageData = typeof window !== "undefined" ? window.__seoPageData : null;
 const slugFromPageData = pageData && typeof pageData.slug === "string" ? pageData.slug.trim() : "";
 const container = document.getElementById("seoConverter");
