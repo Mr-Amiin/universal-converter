@@ -1,0 +1,5 @@
+[build]
+  # Runs automatically on every deploy - no manual steps required.
+  # See build.py for what it does.
+  command = "python3 build.py"
+  publish = "dist"
