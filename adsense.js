@@ -119,8 +119,8 @@ for (var d = 0; d < depth; d += 1) prefix += "../";
 return prefix + "privacy.html";
 })();
 banner.innerHTML =
-'<p class="uc-cookie-banner-text">This site uses cookies and similar technologies for analytics and advertising, including Google AdSense and Google Analytics. ' +
-'See our <a href="' + privacyHref + '">Privacy Policy</a> for details.</p>' +
+'<p class="uc-cookie-banner-text">We use cookies to improve your experience and to enable Google Analytics and Google AdSense. By continuing, you agree to our ' +
+'<a href="' + privacyHref + '">Privacy Policy</a>.</p>' +
 '<div class="uc-cookie-banner-actions">' +
 '<button type="button" class="uc-cookie-decline" id="ucCookieDecline">Decline</button>' +
 '<button type="button" class="uc-cookie-accept" id="ucCookieAccept">Accept</button>' +

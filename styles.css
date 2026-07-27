@@ -1987,14 +1987,25 @@ background: transparent;
 color: #f2f7f6;
 border-color: rgba(242, 247, 246, 0.5);
 }
-@media (max-width: 560px) {
+/* Mobile-only cookie banner tweak. Only screens <=768px are affected;
+   the base .uc-cookie-banner rules above (used on desktop/tablet) are untouched.
+   No height/overflow limits, no font-size changes, no text changes -
+   the banner simply sizes itself to its content with slightly less
+   top/bottom padding than on desktop, and a tighter, centered,
+   single-line button row. */
+@media (max-width: 768px) {
 .uc-cookie-banner {
-flex-direction: column;
-align-items: stretch;
-text-align: left;
+padding-top: 10px;
+padding-bottom: 10px;
+gap: 11px;
 }
 .uc-cookie-banner-actions {
-justify-content: flex-end;
+margin-left: auto;
+margin-right: auto;
+gap: 12px;
+}
+.uc-cookie-banner-actions button {
+min-height: 44px;
 }
 }
 .link-button {

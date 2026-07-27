@@ -1107,12 +1107,19 @@ context.moveTo(x1, y1);
 context.lineTo(x2, y2);
 context.stroke();
 }
+window.requestAnimationFrame(() => {
 resize();
 drawGrid();
+});
+let resizeRaf = 0;
 window.addEventListener("resize", () => {
+if (resizeRaf) window.cancelAnimationFrame(resizeRaf);
+resizeRaf = window.requestAnimationFrame(() => {
+resizeRaf = 0;
 window.cancelAnimationFrame(raf);
 resize();
 drawGrid();
+});
 });
 document.addEventListener("visibilitychange", () => {
 if (document.hidden) {
