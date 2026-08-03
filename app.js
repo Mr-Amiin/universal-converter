@@ -2741,7 +2741,7 @@ if (!email) return;
 const subscribers = readArray(storageKeys.newsletter);
 subscribers.unshift({ email, date: new Date().toISOString() });
 writeArray(storageKeys.newsletter, subscribers.slice(0, 100));
-byId("newsletterStatus").textContent = "Subscribed locally. Connect an email provider when publishing.";
+byId("newsletterStatus").textContent = "Thanks for subscribing! You're on the list.";
 form.reset();
 trackEvent("newsletter_signup", {});
 });

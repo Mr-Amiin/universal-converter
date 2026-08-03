@@ -531,7 +531,6 @@ min-height: 36px;
 padding: 0.42rem 0.75rem;
 font-size: 0.88rem;
 }
-<<<<<<< HEAD
 @media (min-width: 821px) {
 .hero-subtitle {
 max-width: 900px;
@@ -541,8 +540,6 @@ margin: 0.5rem 0 0.8rem;
 margin-top: 0.4rem;
 }
 }
-=======
->>>>>>> 0c95b14e6e6b4ee5d940247d4bfe97106330bfc1
 .recent-searches {
 display: flex;
 flex-wrap: wrap;
@@ -704,7 +701,6 @@ min-height: auto;
 margin: 0 0 0.45rem 0;
 font-size: 1.15rem;
 }
-<<<<<<< HEAD
 .seo-page .seo-reference-grid,
 .seo-page .seo-related-grid {
 align-items: stretch;
@@ -772,8 +768,6 @@ margin-bottom: var(--section-gap);
 .seo-page .seo-content:has(> .seo-reference-grid) > .seo-article:first-child {
 margin-top: var(--section-gap);
 }
-=======
->>>>>>> 0c95b14e6e6b4ee5d940247d4bfe97106330bfc1
 .seo-page .seo-faq,
 .seo-page .seo-article {
 width: min(1420px, calc(100% - 2rem));
@@ -2350,7 +2344,6 @@ margin: 0.75rem auto 0;
 color: var(--muted);
 line-height: 1.65;
 }
-<<<<<<< HEAD
 /* ==========================================================================
    Homepage vertical rhythm system
    --------------------------------------------------------------------------
@@ -2396,5 +2389,3 @@ body.homepage .ad-band {
 margin-top: 0;
 margin-bottom: 0;
 }
-=======
->>>>>>> 0c95b14e6e6b4ee5d940247d4bfe97106330bfc1
