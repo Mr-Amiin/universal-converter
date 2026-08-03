@@ -1,5 +1,49 @@
 (function () {
 "use strict";
+// Single source of truth for the site-wide "Categories" nav dropdown.
+// Every page's dropdown (desktop #categoriesNavMenu and mobile
+// #categoriesNavMenuMobile) is rendered from this list by
+// renderCategoryDropdownMenus() below, so adding, removing, or
+// reordering a category here updates every page automatically.
+const NAV_CATEGORIES = [
+{ href: "/length/", label: "Length" },
+{ href: "/area/", label: "Area" },
+{ href: "/volume/", label: "Volume" },
+{ href: "/weight/", label: "Weight" },
+{ href: "/temperature/", label: "Temperature" },
+{ href: "/time/", label: "Time" },
+{ href: "/speed/", label: "Speed" },
+{ href: "/pressure/", label: "Pressure" },
+{ href: "/power/", label: "Power" },
+{ href: "/energy/", label: "Energy" },
+{ href: "/electricity/", label: "Electricity" },
+{ href: "/frequency/", label: "Frequency" },
+{ href: "/angle/", label: "Angle" },
+{ href: "/digital/", label: "Digital storage" },
+{ href: "/currency/", label: "Currency" },
+{ href: "/density/", label: "Density" },
+{ href: "/flow-rate/", label: "Flow Rate" },
+{ href: "/agriculture/", label: "Agriculture" },
+{ href: "/astronomy/", label: "Astronomy" },
+{ href: "/chemistry/", label: "Chemistry" },
+{ href: "/cooking/", label: "Cooking" },
+{ href: "/engineering/", label: "Engineering" },
+{ href: "/force/", label: "Force" },
+{ href: "/fuel-economy/", label: "Fuel Economy" },
+{ href: "/radiation/", label: "Radiation" },
+{ href: "/scientific/", label: "Scientific" },
+{ href: "/torque/", label: "Torque" }
+];
+function renderCategoryDropdownMenus() {
+const menus = document.querySelectorAll("#categoriesNavMenu, #categoriesNavMenuMobile");
+if (!menus.length) return;
+const itemsHtml = NAV_CATEGORIES.map(
+(category) => `<li><a href="${category.href}">${category.label}</a></li>`
+).join("");
+menus.forEach((menu) => {
+menu.innerHTML = itemsHtml;
+});
+}
 const storageKeys = {
 theme: "uc-theme",
 favorites: "uc-favorites",
@@ -430,6 +474,7 @@ let seoConversionDataResolved = false;
 document.addEventListener("DOMContentLoaded", () => {
 initTheme();
 initHeroCanvas();
+renderCategoryDropdownMenus();
 initCategoriesNav();
 initSeoConverterPage();
 initConverterApp();
@@ -1410,14 +1455,19 @@ function renderOverview() {
 const overviewGrid = byId("overviewGrid");
 if (!overviewGrid) return;
 overviewGrid.innerHTML = categories.map((category) => {
-const chips = category.units.slice(0, 5).map((item) => `<span>${escapeHtml(item.name)}</span>`).join("");
+const unitCount = category.units.length.toLocaleString("en-US");
+const pageCount = conversionPageCountFor(category.id).toLocaleString("en-US");
+const href = categoryPageUrl(category.id);
 return `
-<article>
+<a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(category.name)}: ${unitCount} units, ${pageCount} conversion pages">
 <span class="overview-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
 <h3>${escapeHtml(category.name)}</h3>
 <p>${escapeHtml(category.description)}</p>
-<div class="unit-chips">${chips}<span>${category.units.length.toLocaleString("en-US")} total</span></div>
-</article>
+<div class="unit-chips">
+<span>${unitCount} units</span>
+<span>${pageCount} conversion pages</span>
+</div>
+</a>
 `;
 }).join("");
 }
@@ -1509,6 +1559,19 @@ scrollToConverter();
 results.appendChild(button);
 });
 results.classList.add("active");
+}
+function conversionPageCountFor(id) {
+const counts = {
+length: 1981, area: 1261, volume: 4693, weight: 1561, temperature: 57, time: 1123, speed: 1191,
+pressure: 1191, energy: 1123, power: 871, force: 871, torque: 813, electricity: 40603, frequency: 813,
+digital: 553, angle: 57, density: 166057, flow: 102081, fuel_economy: 43, radiation: 2863, chemistry: 4291,
+agriculture: 9121, cooking: 343, astronomy: 211, engineering: 24807, scientific: 2257, currency: 23871
+};
+return counts[id] || 0;
+}
+function categoryPageUrl(id) {
+const slugs = { flow: "flow-rate", fuel_economy: "fuel-economy" };
+return `/${slugs[id] || id}/`;
 }
 function iconFor(id) {
 const icons = {

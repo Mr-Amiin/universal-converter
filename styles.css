@@ -14,6 +14,9 @@ color-scheme: light;
 --shadow: 0 18px 50px rgba(21, 32, 46, 0.11);
 --radius: 8px;
 --header-height: 72px;
+--section-gap: 32px;
+--card-gap: 24px;
+--home-rhythm: clamp(2.5rem, 6vw, 5rem);
 font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 [data-theme="dark"] {
@@ -329,7 +332,7 @@ display: block;
 padding: 0;
 overflow: hidden;
 isolation: isolate;
-order: 2;
+order: 0;
 }
 .hero::after {
 position: absolute;
@@ -349,6 +352,9 @@ z-index: -2;
 .hero-content {
 width: min(980px, calc(100% - 2rem));
 margin: 0 auto;
+}
+.hero-content .eyebrow {
+margin-bottom: 0.4rem;
 }
 .breadcrumb {
 margin: 0;
@@ -383,15 +389,15 @@ line-height: 1.05;
 }
 .hero h1 {
 max-width: 760px;
-font-size: 5.6rem;
+font-size: 3.5rem;
 margin: 0;
 }
 .hero-subtitle {
-max-width: 760px;
-margin: 1rem 0 2.5rem;
+max-width: 720px;
+margin: 0.6rem 0 1.4rem;
 color: var(--muted);
-font-size: 1.25rem;
-line-height: 1.6;
+font-size: 1.05rem;
+line-height: 1.5;
 }
 .hero-search {
 position: relative;
@@ -419,9 +425,9 @@ outline: none;
 transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
 }
 .hero-search input {
-min-height: 68px;
-padding: 0 1.3rem;
-font-size: 1.1rem;
+min-height: 54px;
+padding: 0 1.2rem;
+font-size: 1rem;
 box-shadow: var(--shadow);
 }
 .hero-search input:focus,
@@ -497,8 +503,8 @@ font-size: 0.88rem;
 .popular-actions {
 display: flex;
 flex-wrap: wrap;
-gap: 0.75rem;
-margin-top: 1.3rem;
+gap: 0.6rem;
+margin-top: 0.8rem;
 }
 .popular-actions button,
 .copy-button,
@@ -520,13 +526,27 @@ transition: transform 160ms ease, border-color 160ms ease, background 160ms ease
 transform: translateY(-1px);
 border-color: var(--accent);
 }
+.hero .popular-actions button {
+min-height: 36px;
+padding: 0.42rem 0.75rem;
+font-size: 0.88rem;
+}
+@media (min-width: 821px) {
+.hero-subtitle {
+max-width: 900px;
+margin: 0.5rem 0 0.8rem;
+}
+.hero .popular-actions {
+margin-top: 0.4rem;
+}
+}
 .recent-searches {
 display: flex;
 flex-wrap: wrap;
 align-items: center;
 gap: 0.55rem;
 min-height: 38px;
-margin-top: 1rem;
+margin-top: 0.6rem;
 color: var(--muted);
 }
 .recent-searches:empty {
@@ -551,7 +571,7 @@ border-color: var(--accent);
 background: var(--surface);
 }
 .header-ad {
-order: 0;
+order: 2;
 }
 .popular-conversions {
 order: 4;
@@ -564,6 +584,9 @@ order: 6;
 }
 .faq-section {
 order: 7;
+}
+.featured-guides {
+order: 8;
 }
 .ad-band:not(.header-ad) {
 order: 9;
@@ -590,6 +613,7 @@ order: 15;
 .trust-section,
 .why-section,
 .faq-section,
+.featured-guides,
 .newsletter-section,
 .blog-system,
 .admin-section,
@@ -677,6 +701,73 @@ min-height: auto;
 margin: 0 0 0.45rem 0;
 font-size: 1.15rem;
 }
+.seo-page .seo-reference-grid,
+.seo-page .seo-related-grid {
+align-items: stretch;
+gap: var(--card-gap);
+margin-top: 0;
+margin-bottom: var(--section-gap);
+}
+.seo-page .seo-reference-grid > .page-card,
+.seo-page .seo-related-grid > .page-card {
+height: 100%;
+}
+.seo-page .seo-related-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+/* Layout fix 2.0: contain the reference/related cards (Common Measurements,
+   Conversion Formulas, Practical Examples, Related Guides, Related Categories)
+   within their parent grid at every breakpoint. Scoped to .seo-reference-grid
+   and .seo-related-grid only, so converter pages and guide pages (which reuse
+   .page-grid/.page-card but not these two subclasses) are unaffected. */
+.seo-page .seo-reference-grid {
+grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.seo-page .seo-reference-grid > .page-card,
+.seo-page .seo-related-grid > .page-card {
+min-width: 0;
+overflow-wrap: anywhere;
+word-break: break-word;
+}
+.seo-page .seo-reference-grid .admin-table-wrap {
+max-width: 100%;
+}
+@media (max-width: 900px) {
+.seo-page .seo-reference-grid,
+.seo-page .seo-related-grid {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.seo-page .seo-reference-grid > .page-card,
+.seo-page .seo-related-grid > .page-card {
+width: 100%;
+}
+}
+@media (max-width: 600px) {
+.seo-page .seo-reference-grid,
+.seo-page .seo-related-grid {
+grid-template-columns: 1fr;
+}
+.seo-page .seo-reference-grid > .page-card,
+.seo-page .seo-related-grid > .page-card {
+height: auto;
+}
+}
+/* Vertical rhythm fix 2.0: normalize the gap between every major section
+   (intro article, reference cards, ad, FAQ, related cards) on the 27 category
+   hub pages to --section-gap. Scoped with :has(> .seo-reference-grid) so it
+   only applies where a .seo-content wrapper actually contains the category
+   reference grid, leaving conversion pages and guide pages (which reuse
+   .seo-content/.seo-article/.in-content-ad/.seo-faq without that grid)
+   untouched. */
+.seo-page .seo-content:has(> .seo-reference-grid) > .seo-article,
+.seo-page .seo-content:has(> .seo-reference-grid) > .in-content-ad,
+.seo-page .seo-content:has(> .seo-reference-grid) > .seo-faq {
+margin-top: 0;
+margin-bottom: var(--section-gap);
+}
+.seo-page .seo-content:has(> .seo-reference-grid) > .seo-article:first-child {
+margin-top: var(--section-gap);
+}
 .seo-page .seo-faq,
 .seo-page .seo-article {
 width: min(1420px, calc(100% - 2rem));
@@ -737,6 +828,40 @@ gap: 0.65rem;
 color: var(--muted);
 line-height: 1.5;
 }
+/* Mobile fix 2.0: on SEO conversion pages only, stack the Formula /
+   Conversion Table / Related Conversions cards vertically below 821px so
+   each card reads full width instead of squeezing into three unreadable
+   columns. Scoped to .seo-page .page-grid while explicitly excluding
+   .seo-reference-grid / .seo-related-grid (the category-hub variants of
+   .page-grid, which already have their own responsive rules above) so
+   category hubs, guides, the converter homepage, and the homepage are all
+   completely unaffected. Desktop (>=821px) keeps the existing unconditional
+   three-column .seo-page .page-grid rule untouched. */
+@media (max-width: 820px) {
+.seo-page .page-grid:not(.seo-reference-grid):not(.seo-related-grid) {
+grid-template-columns: 1fr;
+}
+.seo-page .page-grid:not(.seo-reference-grid):not(.seo-related-grid) > .page-card {
+width: 100%;
+max-width: 100%;
+min-width: 0;
+box-sizing: border-box;
+margin: 0;
+padding: 0.85rem 0.9rem;
+}
+.seo-page .page-grid:not(.seo-reference-grid):not(.seo-related-grid) .page-card p,
+.seo-page .page-grid:not(.seo-reference-grid):not(.seo-related-grid) .page-card li {
+overflow-wrap: anywhere;
+word-break: break-word;
+}
+.seo-page .page-grid:not(.seo-reference-grid):not(.seo-related-grid) .conversion-table {
+display: block;
+width: 100%;
+max-width: 100%;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
+}
+}
 @media (max-width: 900px) {
 .seo-grid,
 .tool-layout {
@@ -752,7 +877,7 @@ grid-template-columns: 1fr;
 .category-panel,
 .converter-panel,
 .activity-panel,
-.overview-grid article,
+.overview-grid a,
 guide-preview,
 .future-grid article,
 .popular-grid a,
@@ -1099,6 +1224,7 @@ font-size: 0.82rem;
 .business-section,
 .why-section,
 .faq-section,
+.featured-guides,
 .blog-system,
 .admin-section {
 padding: clamp(2.5rem, 6vw, 5rem) 0;
@@ -1398,7 +1524,7 @@ border-radius: var(--radius);
 .admin-item span {
 display: block;
 }
-.overview-grid article,
+.overview-grid a,
 .future-grid article {
 padding: 1rem;
 }
@@ -1471,7 +1597,19 @@ margin: 0;
 line-height: 1.6;
 }
 .page-shell {
-padding: clamp(2.5rem, 6vw, 5rem) 0;
+padding: clamp(0.75rem, 2.5vw, 1.5rem) 0 clamp(2.5rem, 6vw, 5rem);
+}
+/* Footer-gap fix: category hub pages end with a 32px margin-bottom already
+   present on .seo-related-grid ("Related Guides"/"Related Categories").
+   Stacking the full page-shell bottom padding on top of that pushed the
+   footer 70-110px away. Scoped with :has(.seo-related-grid) so it only
+   touches the 27 category hub pages that actually end in that section —
+   single unit-conversion pages (e.g. kg-to-lbs) share .shared-page-container
+   but end in a plain .seo-article with no trailing margin, so they are
+   unaffected, as are guide/converter/about/etc. pages using plain
+   .page-shell. */
+.page-shell:has(.seo-related-grid) {
+padding-bottom: clamp(0rem, 0.5vw, 0.75rem);
 }
 .page-hero {
 display: grid;
@@ -1660,10 +1798,10 @@ border-radius: var(--radius);
 min-height: auto;
 }
 .hero h1 {
-font-size: 3.6rem;
+font-size: 2.3rem;
 }
 .hero-subtitle {
-font-size: 1.1rem;
+font-size: 0.98rem;
 }
 .section-heading h2,
 .guide-copy h2,
@@ -1771,10 +1909,20 @@ line-height: 1.1;
 min-height: 38px;
 }
 .hero-search input {
-min-height: 58px;
+min-height: 48px;
 }
 .hero h1 {
-font-size: 2.75rem;
+font-size: 1.9rem;
+}
+.hero-subtitle {
+margin: 0.4rem 0 1rem;
+}
+.hero .popular-actions {
+margin-top: 0.6rem;
+gap: 0.45rem;
+}
+.hero .recent-searches {
+margin-top: 0.45rem;
 }
 .section-heading h2,
 .guide-copy h2,
@@ -2168,4 +2316,76 @@ align-items: stretch;
 width: 100%;
 justify-content: center;
 }
+}
+/* Phase 2 homepage content enhancements */
+.stats-section {
+order: 2;
+}
+.overview-grid a {
+display: block;
+transition: border-color 160ms ease, transform 160ms ease;
+}
+.overview-grid a:hover,
+.overview-grid a:focus-visible {
+border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+transform: translateY(-2px);
+outline: none;
+}
+.mission-section {
+order: 15;
+width: min(1420px, calc(100% - 2rem));
+margin: 0 auto;
+padding: clamp(2rem, 5vw, 4rem) 0;
+text-align: center;
+}
+.mission-section p {
+max-width: 760px;
+margin: 0.75rem auto 0;
+color: var(--muted);
+line-height: 1.65;
+}
+/* ==========================================================================
+   Homepage vertical rhythm system
+   --------------------------------------------------------------------------
+   Every major homepage section previously supplied its own top+bottom
+   padding (or, for ad slots, its own margin) to create the gap between
+   itself and its neighbors. Because these are separate sibling elements,
+   two adjacent "padded" sections stacked their padding together instead of
+   sharing a single gap, so some boundaries ended up roughly twice as tall
+   as others (and a couple of sections used an entirely different, smaller
+   scale). That produced the uneven whitespace across the page.
+   This block makes <main> the single source of truth for spacing between
+   top-level homepage sections via `gap`, and zeroes out each section's own
+   outer vertical padding/margin so nothing stacks with it. Internal
+   padding for boxed sections (ad slots, the newsletter panel, the guide
+   preview panel) is left untouched since that's content padding inside
+   the box, not spacing between sections. --home-rhythm uses the same
+   clamp() already used by most sections, so it scales the same way on
+   mobile as it did before.
+   Scoped to body.homepage (set only on index.html) so the .tool-section,
+   .popular-conversions, and .ad-band classes — which are also used on
+   category, converter, and other SEO pages — are completely unaffected
+   anywhere else on the site.
+   ========================================================================== */
+body.homepage main {
+gap: var(--home-rhythm);
+margin-bottom: var(--home-rhythm);
+}
+body.homepage .tool-section,
+body.homepage .category-overview,
+body.homepage .popular-conversions,
+body.homepage .tools-section,
+body.homepage .business-section,
+body.homepage .why-section,
+body.homepage .faq-section,
+body.homepage .featured-guides,
+body.homepage .blog-system,
+body.homepage .trust-section,
+body.homepage .mission-section {
+padding-top: 0;
+padding-bottom: 0;
+}
+body.homepage .ad-band {
+margin-top: 0;
+margin-bottom: 0;
 }

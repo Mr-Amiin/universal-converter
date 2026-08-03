@@ -722,6 +722,19 @@ def render_page(page_data: Dict[str, object], canonical: str, depth: int) -> str
         selection_script + f'<script src="{prefix}analytics-config.js" defer></script>'
     )
 
+    # Hero advertisement placeholder removed sitewide: the "leaderboard" ad
+    # band directly below the hero (and above the converter) is no longer
+    # part of the SEO page layout. Stripped here as a defensive step so the
+    # converter always sits immediately below the hero even if a future
+    # template edit reintroduces the block. All other ad placements
+    # (converter, sidebar, content-top/middle/bottom) are left untouched.
+    rendered = re.sub(
+        r'\n?[ \t]*<section class="ad-band adsense-placeholder" data-ad-placement="leaderboard"[^>]*>.*?</section>\n?',
+        '',
+        rendered,
+        flags=re.DOTALL,
+    )
+
     return rendered
 
 
