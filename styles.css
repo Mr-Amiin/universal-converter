@@ -500,6 +500,44 @@ margin-top: 0.16rem;
 color: var(--muted);
 font-size: 0.88rem;
 }
+.search-results a,
+.search-results button {
+display: flex;
+flex-direction: column;
+gap: 0.15rem;
+}
+.search-result-row {
+display: flex;
+align-items: center;
+gap: 0.5rem;
+}
+.search-result-title mark,
+.search-result-meta mark {
+background: color-mix(in srgb, var(--accent) 35%, transparent);
+color: inherit;
+border-radius: 3px;
+padding: 0 1px;
+}
+.search-result-badge {
+flex: 0 0 auto;
+font-size: 0.72rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.02em;
+color: var(--accent);
+background: color-mix(in srgb, var(--accent) 14%, transparent);
+border-radius: 999px;
+padding: 0.12rem 0.55rem;
+}
+.search-results button.active,
+.search-results a.active {
+background: var(--surface-strong);
+border-color: var(--accent);
+}
+.search-results button[disabled] {
+cursor: default;
+color: var(--muted);
+}
 .popular-actions {
 display: flex;
 flex-wrap: wrap;

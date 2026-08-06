@@ -48,12 +48,14 @@ import hashlib
 import json
 import re
 import shutil
+import subprocess
 import sys
 import time
 from pathlib import Path
 
 SOURCE_DIR = Path(__file__).resolve().parent
 DIST_DIR = SOURCE_DIR / "dist"
+SEARCH_INDEX_GENERATOR = SOURCE_DIR / "generate_search_index.py"
 
 # The six files that get a content hash baked into their filename.
 VERSIONED_ASSETS = [
@@ -273,32 +275,61 @@ def print_build_summary(duration, html_page_count, mapping, total_substitutions,
             print(new_name)
 
 
+def regenerate_search_index():
+    """Rebuild search-index.json from the current SEO conversion registry
+    + static page list *before* anything is copied into dist/, so every
+    build always ships a search index that matches every other generated
+    page. Never hand-edited - always derived at build time."""
+    if not SEARCH_INDEX_GENERATOR.exists():
+        print("  ! WARNING: generate_search_index.py not found, skipping", file=sys.stderr)
+        return False
+    result = subprocess.run(
+        [sys.executable, str(SEARCH_INDEX_GENERATOR)],
+        cwd=SOURCE_DIR,
+        capture_output=True,
+        text=True,
+    )
+    if result.stdout:
+        print("  " + result.stdout.strip().replace("\n", "\n  "))
+    if result.returncode != 0:
+        print("  ! search index generation FAILED:", file=sys.stderr)
+        print(result.stderr, file=sys.stderr)
+        return False
+    return True
+
+
 def main():
     start_time = time.perf_counter()
 
-    print("1. Copying source -> dist/ ...")
+    print("1. Regenerating search-index.json from the SEO conversion registry ...")
+    search_index_ok = regenerate_search_index()
+    if not search_index_ok:
+        print("\n✗ Aborting build - search index must be up to date before every deploy.", file=sys.stderr)
+        sys.exit(1)
+
+    print("2. Copying source -> dist/ ...")
     copy_source_to_dist()
 
-    print("2. Hashing + renaming versioned assets:")
+    print("3. Hashing + renaming versioned assets:")
     mapping = rename_versioned_assets()
 
-    print("3. Rewriting references in HTML pages + service-worker.js ...")
+    print("4. Rewriting references in HTML pages + service-worker.js ...")
     changed, total_substitutions = rewrite_references(mapping)
     for f in changed:
         print(f"     updated {f}")
 
-    print("4. Regenerating _headers rules for hashed filenames ...")
+    print("5. Regenerating _headers rules for hashed filenames ...")
     headers_updated = rewrite_headers_file(mapping)
 
-    print("5. Updating service-worker.js CACHE_NAME ...")
+    print("6. Updating service-worker.js CACHE_NAME ...")
     sw_updated = update_service_worker_cache_name(mapping)
 
-    print("6. Writing dist/asset-manifest.json ...")
+    print("7. Writing dist/asset-manifest.json ...")
     write_manifest(mapping)
 
     print(f"\nDone. {len(mapping)} asset(s) versioned, {len(changed)} file(s) updated.")
 
-    print("\n7. Validating dist/ for leftover unversioned asset references ...")
+    print("\n8. Validating dist/ for leftover unversioned asset references ...")
     problems = validate_dist(mapping)
 
     html_page_count = sum(1 for p in DIST_DIR.rglob("*.html") if p.is_file())

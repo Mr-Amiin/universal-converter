@@ -827,6 +827,28 @@ def main() -> None:
     count = generate_pages(urls, ROOT, overwrite=not args.skip_existing)
     print(f"Generated {count} SEO page(s) from {SITEMAP_PATH.name}")
 
+    # The registry this script just wrote is the source of truth for the
+    # global search box, so every regeneration must refresh the search
+    # index too - no manual step, no stale search results.
+    try:
+        import subprocess
+        import sys as _sys
+
+        search_index_script = ROOT / "generate_search_index.py"
+        if search_index_script.exists():
+            result = subprocess.run(
+                [_sys.executable, str(search_index_script)],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+            )
+            if result.stdout:
+                print(result.stdout.strip())
+            if result.returncode != 0:
+                print(f"WARNING: search index regeneration failed:\n{result.stderr}", file=_sys.stderr)
+    except Exception as exc:  # pragma: no cover - defensive, never blocks page generation
+        print(f"WARNING: could not regenerate search index: {exc}")
+
 
 if __name__ == "__main__":
     main()

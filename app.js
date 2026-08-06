@@ -1388,21 +1388,7 @@ if (input) input.addEventListener("input", updateConversion);
 });
 const unitSearch = byId("unitSearch");
 unitSearch.addEventListener("input", () => renderCategoryList(unitSearch.value));
-const globalSearch = byId("globalSearch");
-const searchResults = byId("searchResults");
-if (globalSearch && searchResults) {
-globalSearch.addEventListener("input", () => renderSearchResults(globalSearch.value));
-globalSearch.addEventListener("focus", () => renderSearchResults(globalSearch.value));
-globalSearch.addEventListener("keydown", (event) => {
-if (event.key === "Escape") {
-globalSearch.value = "";
-searchResults.classList.remove("active");
-}
-});
-document.addEventListener("click", (event) => {
-if (!event.target.closest(".hero-search")) searchResults.classList.remove("active");
-});
-}
+initGlobalSearch();
 document.addEventListener("keydown", handleGlobalKeyboard);
 }
 function handleGlobalKeyboard(event) {
@@ -1516,50 +1502,245 @@ to: link.dataset.to
 });
 });
 }
+/* -------------------------------------------------------------------- *
+ * Global site-wide search
+ *
+ * Loads /search-index.json (built by generate_search_index.py from the
+ * SEO conversion registry + static page list, so it covers every
+ * searchable page on the site) exactly once, then searches entirely
+ * client-side against that in-memory array. Debounced, keyboard
+ * navigable, ranked (never alphabetical).
+ * -------------------------------------------------------------------- */
+const searchState = {
+loadPromise: null,
+records: [],
+activeIndex: -1,
+currentResults: [],
+debounceTimer: null
+};
+const SEARCH_DEBOUNCE_MS = 150;
+const SEARCH_MAX_RESULTS = 15;
+
+function loadSearchIndex() {
+if (searchState.loadPromise) return searchState.loadPromise;
+searchState.loadPromise = fetch(`${rootRelativePrefix()}search-index.json`)
+.then((response) => {
+if (!response.ok) throw new Error(`search-index.json ${response.status}`);
+return response.json();
+})
+.then((data) => {
+searchState.records = Array.isArray(data) ? data : [];
+return searchState.records;
+})
+.catch((error) => {
+console.error("Failed to load search index:", error);
+searchState.records = [];
+return searchState.records;
+});
+return searchState.loadPromise;
+}
+
+function normalizeSearchText(text) {
+return String(text || "").toLowerCase().trim();
+}
+
+/* Ranking, lowest number wins (never alphabetical):
+   1 exact title, 2 exact slug, 3 exact unit (from/to), 4 alias match,
+   5 partial match, 6 keyword match. */
+function scoreSearchRecord(record, termLower) {
+if (!termLower) return null;
+const title = normalizeSearchText(record.title);
+const slug = normalizeSearchText(record.slug);
+const from = normalizeSearchText(record.from);
+const to = normalizeSearchText(record.to);
+const category = normalizeSearchText(record.category);
+const aliases = (record.aliases || []).map(normalizeSearchText);
+const keywords = (record.keywords || []).map(normalizeSearchText);
+
+if (title === termLower) return { rank: 1, field: "title" };
+if (slug === termLower || slug.replace(/-/g, " ") === termLower) return { rank: 2, field: "slug" };
+if (from === termLower || to === termLower) return { rank: 3, field: "unit" };
+if (aliases.some((alias) => alias === termLower)) return { rank: 4, field: "alias" };
+
+const titleWords = title.split(/\s+/);
+if (titleWords.some((word) => word === termLower)) return { rank: 3, field: "title" };
+if (title.includes(termLower)) return { rank: 5, field: "title" };
+if (slug.includes(termLower.replace(/\s+/g, "-"))) return { rank: 5, field: "slug" };
+if (from.includes(termLower) || to.includes(termLower)) return { rank: 5, field: "unit" };
+if (category === termLower) return { rank: 3, field: "category" };
+if (aliases.some((alias) => alias.includes(termLower))) return { rank: 5, field: "alias" };
+if (category.includes(termLower)) return { rank: 5, field: "category" };
+if (keywords.some((keyword) => keyword === termLower)) return { rank: 6, field: "keyword" };
+if (keywords.some((keyword) => keyword.includes(termLower))) return { rank: 6, field: "keyword" };
+
+return null;
+}
+
+function searchIndexRecords(term) {
+const termLower = normalizeSearchText(term);
+if (!termLower) return [];
+const scored = [];
+for (const record of searchState.records) {
+const match = scoreSearchRecord(record, termLower);
+if (match) scored.push({ record, rank: match.rank, field: match.field });
+}
+scored.sort((a, b) => {
+if (a.rank !== b.rank) return a.rank - b.rank;
+const lenDiff = a.record.title.length - b.record.title.length;
+if (lenDiff !== 0) return lenDiff;
+return a.record.title.localeCompare(b.record.title);
+});
+return scored.slice(0, SEARCH_MAX_RESULTS);
+}
+
+function highlightMatch(text, term) {
+const safeText = escapeHtml(text || "");
+const termTrimmed = (term || "").trim();
+if (!termTrimmed) return safeText;
+const safeTerm = escapeHtml(termTrimmed).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const pattern = new RegExp(`(${safeTerm})`, "ig");
+return safeText.replace(pattern, "<mark>$1</mark>");
+}
+
+function categorySubtitleFor(record) {
+if (record.category === "Home" || record.category === "Tools" || record.category === "About") {
+return record.category;
+}
+if (!record.from && !record.to) return `${record.category} \u2022 Category`;
+return `${record.category} \u2022 SEO converter`;
+}
+
 function renderSearchResults(query) {
 const results = byId("searchResults");
+const input = byId("globalSearch");
+if (!results || !input) return;
 const term = query.trim();
-results.innerHTML = "";
+searchState.activeIndex = -1;
 if (!term) {
+results.innerHTML = "";
 results.classList.remove("active");
+searchState.currentResults = [];
+input.removeAttribute("aria-activedescendant");
+input.setAttribute("aria-expanded", "false");
 return;
 }
-const pageMatches = seoConversions.filter((item) => `${item.slug} ${item.title} ${item.description}`.toLowerCase().includes(term.toLowerCase())).slice(0, 4);
-const matches = filterCategories(term).slice(0, 8);
-if (!matches.length && !pageMatches.length) {
+loadSearchIndex().then(() => {
+const matches = searchIndexRecords(term);
+searchState.currentResults = matches;
+results.innerHTML = "";
+if (!matches.length) {
 results.innerHTML = '<button type="button" disabled>No matching conversion found</button>';
 results.classList.add("active");
+input.setAttribute("aria-expanded", "true");
 return;
 }
-pageMatches.forEach((item) => {
-const link = document.createElement("a");
-const href = conversionPageUrl(item.slug);
-link.href = href;
-link.innerHTML = `
-<span class="search-result-title">${escapeHtml(item.title)}</span>
-<span class="search-result-meta">SEO converter page with formula and FAQ</span>
+matches.forEach((match, index) => {
+const record = match.record;
+const isCategoryPage = !record.from && !record.to && record.category !== "Home" && record.category !== "Tools" && record.category !== "About" && record.category !== "Guides";
+const el = document.createElement(record.url.startsWith("#") ? "button" : "a");
+el.id = `searchResultOption-${index}`;
+el.setAttribute("role", "option");
+if (el.tagName === "A") {
+el.href = record.url;
+} else {
+el.type = "button";
+}
+el.innerHTML = `
+<span class="search-result-row">
+<span class="search-result-title">${highlightMatch(record.title, term)}</span>
+<span class="search-result-badge">${escapeHtml(record.category)}</span>
+</span>
+<span class="search-result-meta">${escapeHtml(categorySubtitleFor(record))}</span>
 `;
-link.addEventListener("click", () => rememberSearch(item.title, href));
-results.appendChild(link);
-});
-matches.forEach((category) => {
-const matchingUnit = category.units.find((item) => searchableUnitText(item).includes(term.toLowerCase()));
-const button = document.createElement("button");
-button.type = "button";
-button.innerHTML = `
-<span class="search-result-title">${escapeHtml(category.name)}</span>
-<span class="search-result-meta">${matchingUnit ? `Includes ${escapeHtml(matchingUnit.name)} (${escapeHtml(matchingUnit.symbol)})` : escapeHtml(category.description)}</span>
-`;
-button.addEventListener("click", () => {
-selectCategory(category.id);
-rememberSearch(category.name, "#converter", category.id);
-byId("globalSearch").value = "";
-results.classList.remove("active");
+el.addEventListener("click", (event) => {
+rememberSearch(record.title, record.url, isCategoryPage ? record.slug : "");
+if (isCategoryPage && categoryMap.has(record.slug)) {
+event.preventDefault();
+selectCategory(record.slug);
 scrollToConverter();
+}
+input.value = "";
+results.classList.remove("active");
+input.setAttribute("aria-expanded", "false");
 });
-results.appendChild(button);
+results.appendChild(el);
 });
 results.classList.add("active");
+input.setAttribute("aria-expanded", "true");
+});
+}
+
+function setActiveSearchResult(index) {
+const results = byId("searchResults");
+const input = byId("globalSearch");
+if (!results || !input) return;
+const options = Array.from(results.querySelectorAll('[role="option"]'));
+if (!options.length) return;
+options.forEach((option) => option.classList.remove("active"));
+const clamped = ((index % options.length) + options.length) % options.length;
+searchState.activeIndex = clamped;
+const active = options[clamped];
+active.classList.add("active");
+if (typeof active.scrollIntoView === "function") {
+active.scrollIntoView({ block: "nearest" });
+}
+input.setAttribute("aria-activedescendant", active.id);
+}
+
+function initGlobalSearch() {
+const globalSearch = byId("globalSearch");
+const searchResults = byId("searchResults");
+if (!globalSearch || !searchResults) return;
+globalSearch.setAttribute("role", "combobox");
+globalSearch.setAttribute("aria-autocomplete", "list");
+globalSearch.setAttribute("aria-expanded", "false");
+globalSearch.setAttribute("aria-controls", "searchResults");
+searchResults.setAttribute("role", "listbox");
+loadSearchIndex();
+
+const debouncedRender = (value) => {
+clearTimeout(searchState.debounceTimer);
+searchState.debounceTimer = setTimeout(() => renderSearchResults(value), SEARCH_DEBOUNCE_MS);
+};
+
+globalSearch.addEventListener("input", () => debouncedRender(globalSearch.value));
+globalSearch.addEventListener("focus", () => {
+if (globalSearch.value.trim()) renderSearchResults(globalSearch.value);
+});
+globalSearch.addEventListener("keydown", (event) => {
+const options = () => Array.from(searchResults.querySelectorAll('[role="option"]'));
+if (event.key === "ArrowDown") {
+event.preventDefault();
+if (!options().length) return;
+setActiveSearchResult(searchState.activeIndex + 1);
+} else if (event.key === "ArrowUp") {
+event.preventDefault();
+if (!options().length) return;
+setActiveSearchResult(searchState.activeIndex - 1);
+} else if (event.key === "Enter") {
+const items = options();
+if (searchState.activeIndex >= 0 && items[searchState.activeIndex]) {
+event.preventDefault();
+items[searchState.activeIndex].click();
+}
+} else if (event.key === "Escape") {
+clearTimeout(searchState.debounceTimer);
+globalSearch.value = "";
+searchResults.innerHTML = "";
+searchResults.classList.remove("active");
+globalSearch.setAttribute("aria-expanded", "false");
+searchState.activeIndex = -1;
+} else if (event.key === "Tab") {
+searchResults.classList.remove("active");
+globalSearch.setAttribute("aria-expanded", "false");
+}
+});
+document.addEventListener("click", (event) => {
+if (!event.target.closest(".hero-search")) {
+searchResults.classList.remove("active");
+globalSearch.setAttribute("aria-expanded", "false");
+}
+});
 }
 function conversionPageCountFor(id) {
 const counts = {
