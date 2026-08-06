@@ -1520,6 +1520,51 @@ debounceTimer: null
 };
 const SEARCH_DEBOUNCE_MS = 150;
 const SEARCH_MAX_RESULTS = 15;
+const SEARCH_DROPDOWN_GAP = 6; // px gap between the search field and the dropdown
+
+/**
+ * Keeps the #searchResults dropdown pinned directly beneath #globalSearch,
+ * sized to fit whatever viewport space is available, and immune to
+ * clipping from ancestors such as .hero (which uses overflow:hidden for
+ * its background canvas). The dropdown is portaled to <body> the first
+ * time this runs and positioned with position:fixed, so it always paints
+ * above the rest of the page regardless of where it lives in the DOM.
+ */
+function positionSearchDropdown() {
+const results = byId("searchResults");
+const input = byId("globalSearch");
+if (!results || !input) return;
+if (results.parentElement !== document.body) {
+document.body.appendChild(results);
+}
+const rect = input.getBoundingClientRect();
+const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+const spaceBelow = viewportHeight - rect.bottom - SEARCH_DROPDOWN_GAP - 8;
+const spaceAbove = rect.top - SEARCH_DROPDOWN_GAP - 8;
+const openUpward = spaceBelow < 160 && spaceAbove > spaceBelow;
+const available = Math.max(160, openUpward ? spaceAbove : spaceBelow);
+results.style.left = `${rect.left}px`;
+results.style.width = `${rect.width}px`;
+results.style.maxHeight = `${Math.min(available, 600)}px`;
+if (openUpward) {
+results.style.top = "";
+results.style.bottom = `${viewportHeight - rect.top + SEARCH_DROPDOWN_GAP}px`;
+} else {
+results.style.bottom = "";
+results.style.top = `${rect.bottom + SEARCH_DROPDOWN_GAP}px`;
+}
+}
+
+function trackSearchDropdownPosition() {
+positionSearchDropdown();
+window.addEventListener("scroll", positionSearchDropdown, true);
+window.addEventListener("resize", positionSearchDropdown);
+}
+
+function untrackSearchDropdownPosition() {
+window.removeEventListener("scroll", positionSearchDropdown, true);
+window.removeEventListener("resize", positionSearchDropdown);
+}
 
 function loadSearchIndex() {
 if (searchState.loadPromise) return searchState.loadPromise;
@@ -1619,6 +1664,7 @@ searchState.activeIndex = -1;
 if (!term) {
 results.innerHTML = "";
 results.classList.remove("active");
+untrackSearchDropdownPosition();
 searchState.currentResults = [];
 input.removeAttribute("aria-activedescendant");
 input.setAttribute("aria-expanded", "false");
@@ -1632,6 +1678,7 @@ if (!matches.length) {
 results.innerHTML = '<button type="button" disabled>No matching conversion found</button>';
 results.classList.add("active");
 input.setAttribute("aria-expanded", "true");
+trackSearchDropdownPosition();
 return;
 }
 matches.forEach((match, index) => {
@@ -1661,12 +1708,14 @@ scrollToConverter();
 }
 input.value = "";
 results.classList.remove("active");
+untrackSearchDropdownPosition();
 input.setAttribute("aria-expanded", "false");
 });
 results.appendChild(el);
 });
 results.classList.add("active");
 input.setAttribute("aria-expanded", "true");
+trackSearchDropdownPosition();
 });
 }
 
@@ -1728,16 +1777,21 @@ clearTimeout(searchState.debounceTimer);
 globalSearch.value = "";
 searchResults.innerHTML = "";
 searchResults.classList.remove("active");
+untrackSearchDropdownPosition();
 globalSearch.setAttribute("aria-expanded", "false");
 searchState.activeIndex = -1;
 } else if (event.key === "Tab") {
 searchResults.classList.remove("active");
+untrackSearchDropdownPosition();
 globalSearch.setAttribute("aria-expanded", "false");
 }
 });
 document.addEventListener("click", (event) => {
-if (!event.target.closest(".hero-search")) {
+// searchResults is portaled to <body> (see positionSearchDropdown), so it's
+// no longer a DOM descendant of .hero-search — check both explicitly.
+if (!event.target.closest(".hero-search") && !event.target.closest("#searchResults")) {
 searchResults.classList.remove("active");
+untrackSearchDropdownPosition();
 globalSearch.setAttribute("aria-expanded", "false");
 }
 });

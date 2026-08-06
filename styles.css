@@ -448,19 +448,22 @@ border-color: var(--accent);
 box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 .search-results {
-position: absolute;
-top: calc(100% + 0.5rem);
-left: 0;
-right: 0;
+/* Positioned dynamically as position:fixed by app.js (see positionSearchDropdown),
+   which portals this element to <body> so it can never be clipped by an
+   ancestor's overflow:hidden (e.g. .hero) and always renders above every
+   other section, including the sticky header. Do not reintroduce
+   position:absolute here without also removing the JS portal logic. */
+position: fixed;
 display: none;
-max-height: 310px;
-overflow: auto;
+max-height: min(65vh, 600px);
+overflow-y: auto;
+overscroll-behavior: contain;
 padding: 0.45rem;
 background: var(--surface);
 border: 1px solid var(--line);
 border-radius: var(--radius);
 box-shadow: var(--shadow);
-z-index: 8;
+z-index: 9999;
 }
 .search-results.active,
 .page-form label {
