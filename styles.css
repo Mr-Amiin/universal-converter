@@ -2392,19 +2392,26 @@ margin-bottom: 0;
 /* ==========================================================================
    About page vertical rhythm system
    --------------------------------------------------------------------------
-   Same fix as the homepage rhythm system above: each About page section
-   supplied its own top+bottom padding (or, for the ad slot, its own
-   margin), so adjacent sections stacked their padding together instead of
-   sharing a single gap. This made <main> the single source of truth for
-   spacing between top-level About page sections via `gap`, matching the
-   homepage's ~40-60px rhythm, and zeroes out each section's own outer
-   vertical padding/margin so nothing stacks with it.
+   <main> is a flex column (see the base `main` rule), so `gap` is the
+   single source of truth for spacing between top-level About page
+   sections. Two things were stacking extra space on top of that gap:
+   1) Each plain section (mission/why/tools/business/trust/category-overview/
+      popular-conversions) supplied its own top+bottom padding.
+   2) `.page-hero` has its own margin-bottom and `.in-content-ad` has its
+      own top+bottom margin (both are "boxed" components, so that margin
+      is genuinely extra outer spacing, not internal box padding).
+   Zeroing both of those and relying solely on main's gap collapses the
+   double-spacing into a single, consistent ~40-56px rhythm between every
+   section on the page, including hero-to-ad and ad-to-next-section.
    Scoped to body.about-page (set only on about.html) so other pages that
    reuse these same section classes are unaffected.
    ========================================================================== */
 body.about-page main {
-gap: var(--home-rhythm);
-margin-bottom: var(--home-rhythm);
+gap: clamp(2.5rem, 4vw, 3.5rem);
+margin-bottom: clamp(2.5rem, 4vw, 3.5rem);
+}
+body.about-page .page-hero {
+margin-bottom: 0;
 }
 body.about-page .mission-section,
 body.about-page .why-section,
@@ -2416,7 +2423,8 @@ body.about-page .popular-conversions {
 padding-top: 0;
 padding-bottom: 0;
 }
-body.about-page .ad-band {
+body.about-page .ad-band,
+body.about-page .in-content-ad {
 margin-top: 0;
 margin-bottom: 0;
 }
