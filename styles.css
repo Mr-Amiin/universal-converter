@@ -2389,3 +2389,34 @@ body.homepage .ad-band {
 margin-top: 0;
 margin-bottom: 0;
 }
+/* ==========================================================================
+   About page vertical rhythm system
+   --------------------------------------------------------------------------
+   Same fix as the homepage rhythm system above: each About page section
+   supplied its own top+bottom padding (or, for the ad slot, its own
+   margin), so adjacent sections stacked their padding together instead of
+   sharing a single gap. This made <main> the single source of truth for
+   spacing between top-level About page sections via `gap`, matching the
+   homepage's ~40-60px rhythm, and zeroes out each section's own outer
+   vertical padding/margin so nothing stacks with it.
+   Scoped to body.about-page (set only on about.html) so other pages that
+   reuse these same section classes are unaffected.
+   ========================================================================== */
+body.about-page main {
+gap: var(--home-rhythm);
+margin-bottom: var(--home-rhythm);
+}
+body.about-page .mission-section,
+body.about-page .why-section,
+body.about-page .tools-section,
+body.about-page .business-section,
+body.about-page .trust-section,
+body.about-page .category-overview,
+body.about-page .popular-conversions {
+padding-top: 0;
+padding-bottom: 0;
+}
+body.about-page .ad-band {
+margin-top: 0;
+margin-bottom: 0;
+}

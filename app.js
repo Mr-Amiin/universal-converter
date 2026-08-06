@@ -477,6 +477,7 @@ initHeroCanvas();
 renderCategoryDropdownMenus();
 initCategoriesNav();
 initSeoConverterPage();
+renderOverview();
 initConverterApp();
 initCalculators();
 initNewsletter();
