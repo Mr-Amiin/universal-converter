@@ -44,6 +44,287 @@ menus.forEach((menu) => {
 menu.innerHTML = itemsHtml;
 });
 }
+// ---------------------------------------------------------------------
+// Mobile drawer navigation (hamburger menu, <=820px).
+// One consistent line-icon set (hand-drawn in the same stroke style as
+// the site's existing nav-caret/theme-dot glyphs) used for both the main
+// nav rows and every category row. Categories are NOT duplicated here —
+// the drawer's "All Categories" list renders straight from
+// NAV_CATEGORIES, the same registry renderCategoryDropdownMenus() uses
+// for the desktop dropdown, so adding/removing a category there updates
+// the drawer automatically too.
+// ---------------------------------------------------------------------
+function drawerIcon(pathMarkup) {
+return `<svg class="drawer-icon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${pathMarkup}</svg>`;
+}
+const CHEVRON_ICON = `<svg class="drawer-chevron" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 5l5 5-5 5"/></svg>`;
+const MAIN_NAV_ICONS = {
+converter: drawerIcon('<path d="M4 7h9"/><path d="M11 4.5 13.5 7 11 9.5"/><path d="M16 13H7"/><path d="M9 10.5 6.5 13 9 15.5"/>'),
+categories: drawerIcon('<rect x="3" y="3" width="6" height="6" rx="1"/><rect x="11" y="3" width="6" height="6" rx="1"/><rect x="3" y="11" width="6" height="6" rx="1"/><rect x="11" y="11" width="6" height="6" rx="1"/>'),
+calculators: drawerIcon('<rect x="4" y="2.5" width="12" height="15" rx="2"/><line x1="6.5" y1="6" x2="13.5" y2="6"/><line x1="6.5" y1="9.7" x2="6.5" y2="9.7"/><line x1="10" y1="9.7" x2="10" y2="9.7"/><line x1="13.5" y1="9.7" x2="13.5" y2="9.7"/><line x1="6.5" y1="12.6" x2="6.5" y2="12.6"/><line x1="10" y1="12.6" x2="10" y2="12.6"/><line x1="13.5" y1="12.6" x2="13.5" y2="12.6"/><line x1="6.5" y1="15.5" x2="6.5" y2="15.5"/>'),
+popular: drawerIcon('<path d="M10 17c-3 0-5-2-5-4.7 0-2 1.3-3.2 2-4.8.3 1 .2 2 1 2.3-.3-2.7 1-4.7 3-6 .1 2 .1 3 1.5 4.3C13.8 9.3 15 10.7 15 12.3 15 15 13 17 10 17z"/>'),
+guides: drawerIcon('<path d="M10 5c-1.5-1-3.5-1.3-5.5-1v11c2 0 4 .3 5.5 1.3"/><path d="M10 5c1.5-1 3.5-1.3 5.5-1v11c-2 0-4 .3-5.5 1.3"/><path d="M10 5v11.3"/>'),
+sitemap: drawerIcon('<path d="M3 5.5 7.5 4l5 1.5 4-1.5v11l-4 1.5-5-1.5-4.5 1.5z"/><path d="M7.5 4v11.5"/><path d="M12.5 5.5V17"/>'),
+about: drawerIcon('<circle cx="10" cy="10" r="7"/><line x1="10" y1="9" x2="10" y2="13.5"/><line x1="10" y1="6.3" x2="10" y2="6.3"/>'),
+contact: drawerIcon('<rect x="3" y="5" width="14" height="10" rx="1.5"/><path d="M3.5 5.8 10 11l6.5-5.2"/>')
+};
+// Keyed by the category slug parsed from NAV_CATEGORIES href (e.g.
+// "/length/" -> "length"), so this stays in sync automatically as long
+// as new categories reuse an existing slug or fall back to the default.
+const CATEGORY_ICONS = {
+length: drawerIcon('<path d="M3 14 14 3l3 3L6 17z"/><path d="M9.5 7.5l1.5 1.5"/><path d="M6.5 10.5 8 12"/><path d="M12.5 4.5 14 6"/>'),
+area: drawerIcon('<rect x="4" y="4" width="12" height="12" rx="1.5"/>'),
+volume: drawerIcon('<path d="M10 3 17 6.5 17 13.5 10 17 3 13.5 3 6.5z"/><path d="M3 6.5 10 10l7-3.5"/><path d="M10 10v7"/>'),
+weight: drawerIcon('<path d="M10 3v14"/><path d="M4 6h12"/><path d="M4 6 1.5 11a2.5 2.5 0 0 0 5 0z"/><path d="M16 6l-2.5 5a2.5 2.5 0 0 0 5 0z"/>'),
+temperature: drawerIcon('<path d="M10 3a2 2 0 0 0-2 2v7.1a3.5 3.5 0 1 0 4 0V5a2 2 0 0 0-2-2z"/><line x1="10" y1="14.5" x2="10" y2="14.5" stroke-width="3"/>'),
+time: drawerIcon('<circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/>'),
+speed: drawerIcon('<path d="M3 13a7 7 0 1 1 14 0"/><path d="M10 13l4-4"/><line x1="10" y1="13" x2="10" y2="13" stroke-width="3"/>'),
+pressure: drawerIcon('<circle cx="10" cy="10" r="7"/><path d="M10 10l3-3"/><line x1="10" y1="6" x2="10" y2="6" stroke-width="3"/>'),
+power: drawerIcon('<circle cx="10" cy="10" r="7"/><path d="M11 6 7 11h3l-1 4 4-5h-3z"/>'),
+energy: drawerIcon('<path d="M11 2 4 12h5l-1 6 7-10h-5z"/>'),
+electricity: drawerIcon('<path d="M8 3v4"/><path d="M12 3v4"/><path d="M6 7h8v3a4 4 0 0 1-4 4 4 4 0 0 1-4-4z"/><path d="M10 14v3"/>'),
+frequency: drawerIcon('<path d="M2 10h2l1.5-5L9 15l2-8 1.5 3H18"/>'),
+angle: drawerIcon('<path d="M4 15a6 6 0 0 1 12 0"/><path d="M4 15h12"/><path d="M10 15V9"/>'),
+digital: drawerIcon('<rect x="3" y="4" width="14" height="12" rx="2"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="6" y1="13.5" x2="6" y2="13.5" stroke-width="3"/>'),
+currency: drawerIcon('<circle cx="10" cy="10" r="7"/><path d="M10 6.5v7"/><path d="M12 8a2 2 0 0 0-2-1.5 2 2 0 0 0 0 4 2 2 0 0 1 0 4 2 2 0 0 1-2-1.5"/>'),
+density: drawerIcon('<path d="M8 3h4"/><path d="M9 3v5l-4.5 7a1.5 1.5 0 0 0 1.3 2.2h8.4A1.5 1.5 0 0 0 15.5 15L11 8V3"/>'),
+"flow-rate": drawerIcon('<path d="M10 3s5 6 5 9.5A5 5 0 0 1 5 12.5C5 9 10 3 10 3z"/>'),
+agriculture: drawerIcon('<path d="M10 17V6"/><path d="M10 6 7 3"/><path d="M10 6l3-3"/><path d="M10 9 7.5 6.5"/><path d="M10 9l2.5-2.5"/><path d="M10 12 7.5 9.5"/><path d="M10 12l2.5-2.5"/>'),
+astronomy: drawerIcon('<circle cx="10" cy="10" r="2"/><ellipse cx="10" cy="10" rx="8" ry="3.2"/>'),
+chemistry: drawerIcon('<path d="M8 3h4"/><path d="M8 3v5l-4 8.5A1 1 0 0 0 4.9 18h10.2a1 1 0 0 0 .9-1.5L12 8V3"/><path d="M6.5 12h7"/>'),
+cooking: drawerIcon('<path d="M4 9h12"/><path d="M5 9v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9"/><path d="M2 9h2"/><path d="M16 9h2"/><path d="M10 6V4"/>'),
+engineering: drawerIcon('<circle cx="10" cy="10" r="2.4"/><path d="M10 3v2"/><path d="M10 15v2"/><path d="M3 10h2"/><path d="M15 10h2"/><path d="M5.2 5.2l1.4 1.4"/><path d="M13.4 13.4l1.4 1.4"/><path d="M14.8 5.2l-1.4 1.4"/><path d="M6.6 13.4l-1.4 1.4"/>'),
+force: drawerIcon('<path d="M4 10h10"/><path d="M11 6l3 4-3 4"/>'),
+"fuel-economy": drawerIcon('<rect x="4" y="4" width="7" height="12" rx="1"/><path d="M11 8h2.5a1.5 1.5 0 0 1 1.5 1.5V13a1 1 0 0 0 2 0V8l-2-2"/><line x1="4" y1="8" x2="11" y2="8"/>'),
+radiation: drawerIcon('<line x1="10" y1="10" x2="10" y2="10" stroke-width="3.2"/><circle cx="10" cy="10" r="7"/><path d="M10 3.5v3.4"/><path d="M15.2 12.7 12.3 11"/><path d="M4.8 12.7 7.7 11"/>'),
+scientific: drawerIcon('<path d="M6 17h8"/><path d="M9 3 8 9"/><path d="M12 3l1 6"/><path d="M6.5 13.5a3.5 3.5 0 1 1 7 0"/>'),
+torque: drawerIcon('<path d="M13.5 3.5a3.5 3.5 0 0 0-4.9 4.2L4 12.3v2.2h2.2l4.6-4.6a3.5 3.5 0 0 0 4.2-4.9l-2.3 2.3-1.4-1.4z"/>')
+};
+const DEFAULT_CATEGORY_ICON = drawerIcon('<path d="M4 7h9"/><path d="M11 4.5 13.5 7 11 9.5"/><path d="M16 13H7"/><path d="M9 10.5 6.5 13 9 15.5"/>');
+// Every entry here is a real destination already used elsewhere in the
+// site's own header nav (index.html#converter, index.html#calculators,
+// index.html#popular, guides.html, sitemap.html, about.html,
+// contact.html) - nothing new is invented.
+const MOBILE_MAIN_NAV = [
+{ id: "converter", label: "Converter", href: "index.html#converter" },
+{ id: "categories", label: "Categories", expand: true },
+{ id: "calculators", label: "Calculators", href: "index.html#calculators" },
+{ id: "popular", label: "Popular", href: "index.html#popular" },
+{ id: "guides", label: "Guides", href: "guides.html" },
+{ id: "sitemap", label: "Sitemap", href: "sitemap.html" },
+{ id: "about", label: "About", href: "about.html" },
+{ id: "contact", label: "Contact", href: "contact.html" }
+];
+function categorySlugFromHref(href) {
+const parts = String(href || "").split("/").filter(Boolean);
+return parts.length ? parts[parts.length - 1] : "";
+}
+function renderMobileDrawer() {
+const drawer = document.getElementById("mobileDrawer");
+if (!drawer) return;
+// The categories submenu markup is built first so it can be embedded
+// directly inside the "Categories" <li> below. It must live in normal
+// document flow immediately after the Categories toggle button (not as
+// a sibling appended after the whole nav list), otherwise it renders
+// detached from the row that opens it.
+const categoryItemsHtml = NAV_CATEGORIES.map((category) => {
+const slug = categorySlugFromHref(category.href);
+const icon = CATEGORY_ICONS[slug] || DEFAULT_CATEGORY_ICON;
+return `<li><a class="mobile-drawer-category-link" href="${category.href}">${icon}<span>${category.label}</span></a></li>`;
+}).join("");
+const navItemsHtml = MOBILE_MAIN_NAV.map((item) => {
+const icon = MAIN_NAV_ICONS[item.id] || DEFAULT_CATEGORY_ICON;
+if (item.expand) {
+return `<li class="mobile-drawer-categories-item">
+<button type="button" class="mobile-drawer-link mobile-drawer-categories-toggle" id="mobileDrawerCategoriesToggle" aria-expanded="false" aria-controls="mobileDrawerCategoriesPanel">${icon}<span>${item.label}</span>${CHEVRON_ICON}</button>
+<div class="mobile-drawer-categories" id="mobileDrawerCategoriesPanel">
+<ul class="mobile-drawer-category-list">${categoryItemsHtml}</ul>
+</div>
+</li>`;
+}
+return `<li><a class="mobile-drawer-link" href="${item.href}">${icon}<span>${item.label}</span>${CHEVRON_ICON}</a></li>`;
+}).join("");
+drawer.innerHTML = `
+<div class="mobile-drawer-head">
+<button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu">
+<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>
+</button>
+</div>
+<ul class="mobile-drawer-nav">${navItemsHtml}</ul>
+`;
+}
+// Expands/collapses the Categories submenu as a true accordion: the
+// panel stays `position: static` and part of normal document flow, so
+// animating its height naturally pushes Calculators/Popular/Guides/etc.
+// downward instead of overlaying them.
+function toggleCategoriesPanel(panel, open) {
+// Clear any in-progress transition listener before starting a new one.
+if (panel._collapseTransitionHandler) {
+panel.removeEventListener("transitionend", panel._collapseTransitionHandler);
+panel._collapseTransitionHandler = null;
+}
+if (open) {
+// Add the class first so padding is in place before we measure the
+// content height we're animating toward.
+panel.classList.add("open");
+const targetHeight = panel.scrollHeight;
+panel.style.maxHeight = "0px";
+// Force a reflow so the browser registers the 0px starting point
+// before we animate to the measured content height.
+void panel.offsetHeight;
+panel.style.maxHeight = targetHeight + "px";
+const onDone = (event) => {
+if (event.target !== panel || event.propertyName !== "max-height") return;
+// Let the panel grow/shrink freely after opening (e.g. on resize)
+// instead of staying pinned to the height measured at open time.
+panel.style.maxHeight = "none";
+panel.removeEventListener("transitionend", onDone);
+panel._collapseTransitionHandler = null;
+};
+panel._collapseTransitionHandler = onDone;
+panel.addEventListener("transitionend", onDone);
+} else {
+// Pin the panel to its current pixel height first (it may currently
+// be "none") so there is a concrete starting point to animate from.
+const currentHeight = panel.scrollHeight;
+panel.style.maxHeight = currentHeight + "px";
+void panel.offsetHeight;
+panel.style.maxHeight = "0px";
+const onDone = (event) => {
+if (event.target !== panel || event.propertyName !== "max-height") return;
+// Only now drop the padding, once the panel is visually collapsed.
+panel.classList.remove("open");
+panel.removeEventListener("transitionend", onDone);
+panel._collapseTransitionHandler = null;
+};
+panel._collapseTransitionHandler = onDone;
+panel.addEventListener("transitionend", onDone);
+}
+}
+function initMobileDrawer() {
+const toggle = document.getElementById("mobileMenuToggle");
+const overlay = document.getElementById("mobileDrawerOverlay");
+const drawer = document.getElementById("mobileDrawer");
+if (!toggle || !overlay || !drawer) return null;
+let lastFocused = null;
+function focusableElements() {
+return Array.prototype.slice.call(
+drawer.querySelectorAll('a[href], button:not([disabled])')
+).filter((el) => el.offsetParent !== null);
+}
+function openDrawer() {
+lastFocused = document.activeElement;
+overlay.hidden = false;
+requestAnimationFrame(() => {
+overlay.classList.add("open");
+drawer.classList.add("open");
+});
+drawer.setAttribute("aria-hidden", "false");
+toggle.setAttribute("aria-expanded", "true");
+document.body.classList.add("mobile-drawer-open");
+const main = document.querySelector("main");
+if (main) main.setAttribute("inert", "");
+const footer = document.querySelector(".site-footer");
+if (footer) footer.setAttribute("inert", "");
+const closeBtn = document.getElementById("mobileDrawerClose");
+if (closeBtn) closeBtn.focus();
+}
+function closeDrawer() {
+overlay.classList.remove("open");
+drawer.classList.remove("open");
+drawer.setAttribute("aria-hidden", "true");
+toggle.setAttribute("aria-expanded", "false");
+document.body.classList.remove("mobile-drawer-open");
+const main = document.querySelector("main");
+if (main) main.removeAttribute("inert");
+const footer = document.querySelector(".site-footer");
+if (footer) footer.removeAttribute("inert");
+window.setTimeout(() => {
+if (!drawer.classList.contains("open")) overlay.hidden = true;
+}, 260);
+if (lastFocused && typeof lastFocused.focus === "function") {
+lastFocused.focus();
+} else {
+toggle.focus();
+}
+}
+toggle.addEventListener("click", () => {
+const isOpen = drawer.classList.contains("open");
+if (isOpen) {
+closeDrawer();
+} else {
+openDrawer();
+}
+});
+overlay.addEventListener("click", closeDrawer);
+drawer.addEventListener("click", (event) => {
+const closeBtn = event.target.closest("#mobileDrawerClose");
+if (closeBtn) {
+closeDrawer();
+return;
+}
+const categoriesToggle = event.target.closest("#mobileDrawerCategoriesToggle");
+if (categoriesToggle) {
+const panel = document.getElementById("mobileDrawerCategoriesPanel");
+const isExpanded = categoriesToggle.getAttribute("aria-expanded") === "true";
+categoriesToggle.setAttribute("aria-expanded", String(!isExpanded));
+categoriesToggle.classList.toggle("is-open", !isExpanded);
+if (panel) toggleCategoriesPanel(panel, !isExpanded);
+return;
+}
+// Any real navigation link inside the drawer: let the browser follow
+// it, but also close the drawer so it isn't left open behind the new
+// page (relevant for same-page anchors like index.html#converter).
+const link = event.target.closest("a[href]");
+if (link) closeDrawer();
+});
+document.addEventListener("keydown", (event) => {
+if (event.key !== "Escape") return;
+if (!drawer.classList.contains("open")) return;
+closeDrawer();
+});
+drawer.addEventListener("keydown", (event) => {
+if (event.key !== "Tab") return;
+const focusable = focusableElements();
+if (!focusable.length) return;
+const first = focusable[0];
+const last = focusable[focusable.length - 1];
+if (event.shiftKey && document.activeElement === first) {
+event.preventDefault();
+last.focus();
+} else if (!event.shiftKey && document.activeElement === last) {
+event.preventDefault();
+first.focus();
+}
+});
+return closeDrawer;
+}
+// ---------------------------------------------------------------------
+// Responsive guard: the drawer is tablet/mobile-only (<1024px). It is
+// never rendered or initialized while the viewport is desktop-width,
+// and it's lazily rendered/initialized the first time the viewport
+// drops below 1024px - so resizing a browser window, or rotating a
+// tablet, across that breakpoint works correctly with no duplicate
+// listeners and no drawer left open behind the desktop nav.
+// ---------------------------------------------------------------------
+const DESKTOP_NAV_MQ = window.matchMedia("(min-width: 1024px)");
+let mobileDrawerReady = false;
+let closeMobileDrawer = null;
+function setupResponsiveMobileNav() {
+if (DESKTOP_NAV_MQ.matches) {
+if (closeMobileDrawer) closeMobileDrawer();
+return;
+}
+if (mobileDrawerReady) return;
+renderMobileDrawer();
+closeMobileDrawer = initMobileDrawer();
+mobileDrawerReady = true;
+}
+if (typeof DESKTOP_NAV_MQ.addEventListener === "function") {
+DESKTOP_NAV_MQ.addEventListener("change", setupResponsiveMobileNav);
+} else if (typeof DESKTOP_NAV_MQ.addListener === "function") {
+DESKTOP_NAV_MQ.addListener(setupResponsiveMobileNav);
+}
 const storageKeys = {
 theme: "uc-theme",
 favorites: "uc-favorites",
@@ -476,6 +757,7 @@ initTheme();
 initHeroCanvas();
 renderCategoryDropdownMenus();
 initCategoriesNav();
+setupResponsiveMobileNav();
 initSeoConverterPage();
 renderOverview();
 initConverterApp();

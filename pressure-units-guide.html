@@ -57,11 +57,15 @@
 </head>
 <body>
   <header class="site-header">
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+
     <a class="brand" href="index.html" aria-label="Universal Converter home"><img src="logo.svg" alt="Universal Converter logo" width="38" height="38"><span>Universal Converter</span></a>
     <nav class="top-nav" aria-label="Primary navigation"><a href="index.html#converter">Converter</a><div class="nav-dropdown"><button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="categoriesNavMenu categoriesNavMenuMobile">Categories<span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu" id="categoriesNavMenu"></ul></div><a href="guides.html">Guides</a><a href="sitemap.html">Sitemap</a><a href="references.html">References</a><a href="about.html">About</a></nav>
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
       <div class="category-dropdown-container" id="categoryDropdownContainer"><ul class="nav-dropdown-menu" id="categoriesNavMenuMobile"></ul></div>
-  </header><section class="ad-band header-ad" data-ad-placement="header" aria-label="Header advertisement placeholder"><span>Advertisement</span><strong>Header ad slot</strong><p>Reserved responsive banner space.</p></section>
+  </header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
+<section class="ad-band header-ad" data-ad-placement="header" aria-label="Header advertisement placeholder"><span>Advertisement</span><strong>Header ad slot</strong><p>Reserved responsive banner space.</p></section>
   <main class="page-shell">
     <section class="page-hero">
       <p class="eyebrow">Engineering guide</p>
