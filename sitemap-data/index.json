@@ -1,0 +1,227 @@
+[
+  {
+    "type": "category",
+    "slug": "agriculture",
+    "name": "AGRICULTURE",
+    "count": 9121
+  },
+  {
+    "type": "category",
+    "slug": "angle",
+    "name": "ANGLE",
+    "count": 57
+  },
+  {
+    "type": "category",
+    "slug": "area",
+    "name": "AREA",
+    "count": 1261
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-area",
+    "label": "Reserved after the Area category listing."
+  },
+  {
+    "type": "category",
+    "slug": "astronomy",
+    "name": "ASTRONOMY",
+    "count": 211
+  },
+  {
+    "type": "category",
+    "slug": "chemistry",
+    "name": "CHEMISTRY",
+    "count": 4291
+  },
+  {
+    "type": "category",
+    "slug": "cooking",
+    "name": "COOKING",
+    "count": 343
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-cooking",
+    "label": "Reserved after the Cooking category listing."
+  },
+  {
+    "type": "category",
+    "slug": "currency",
+    "name": "CURRENCY",
+    "count": 23871
+  },
+  {
+    "type": "category",
+    "slug": "density",
+    "name": "DENSITY",
+    "count": 166057
+  },
+  {
+    "type": "category",
+    "slug": "digital",
+    "name": "DIGITAL STORAGE",
+    "count": 553
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-digital-storage",
+    "label": "Reserved after the Digital Storage category listing."
+  },
+  {
+    "type": "category",
+    "slug": "electricity",
+    "name": "ELECTRICITY",
+    "count": 40603
+  },
+  {
+    "type": "category",
+    "slug": "energy",
+    "name": "ENERGY",
+    "count": 1123
+  },
+  {
+    "type": "category",
+    "slug": "engineering",
+    "name": "ENGINEERING",
+    "count": 24807
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-engineering",
+    "label": "Reserved after the Engineering category listing."
+  },
+  {
+    "type": "category",
+    "slug": "flow-rate",
+    "name": "FLOW RATE",
+    "count": 102081
+  },
+  {
+    "type": "category",
+    "slug": "force",
+    "name": "FORCE",
+    "count": 871
+  },
+  {
+    "type": "category",
+    "slug": "frequency",
+    "name": "FREQUENCY",
+    "count": 813
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-frequency",
+    "label": "Reserved after the Frequency category listing."
+  },
+  {
+    "type": "category",
+    "slug": "fuel-economy",
+    "name": "FUEL ECONOMY",
+    "count": 43
+  },
+  {
+    "type": "category",
+    "slug": "length",
+    "name": "LENGTH",
+    "count": 1981
+  },
+  {
+    "type": "category",
+    "slug": "power",
+    "name": "POWER",
+    "count": 871
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-power",
+    "label": "Reserved after the Power category listing."
+  },
+  {
+    "type": "category",
+    "slug": "pressure",
+    "name": "PRESSURE",
+    "count": 1191
+  },
+  {
+    "type": "category",
+    "slug": "radiation",
+    "name": "RADIATION",
+    "count": 2863
+  },
+  {
+    "type": "category",
+    "slug": "scientific",
+    "name": "SCIENTIFIC",
+    "count": 2257
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-scientific",
+    "label": "Reserved after the Scientific category listing."
+  },
+  {
+    "type": "category",
+    "slug": "speed",
+    "name": "SPEED",
+    "count": 1191
+  },
+  {
+    "type": "category",
+    "slug": "temperature",
+    "name": "TEMPERATURE",
+    "count": 57
+  },
+  {
+    "type": "category",
+    "slug": "time",
+    "name": "TIME",
+    "count": 1123
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-time",
+    "label": "Reserved after the Time category listing."
+  },
+  {
+    "type": "category",
+    "slug": "torque",
+    "name": "TORQUE",
+    "count": 813
+  },
+  {
+    "type": "category",
+    "slug": "volume",
+    "name": "VOLUME",
+    "count": 4693
+  },
+  {
+    "type": "category",
+    "slug": "weight",
+    "name": "WEIGHT",
+    "count": 1561
+  },
+  {
+    "type": "ad",
+    "placement": "sitemap-after-weight",
+    "label": "Reserved after the Weight category listing."
+  },
+  {
+    "type": "category",
+    "slug": "main-pages",
+    "name": "Main pages",
+    "count": 27
+  },
+  {
+    "type": "category",
+    "slug": "guides",
+    "name": "Guides",
+    "count": 12
+  },
+  {
+    "type": "category",
+    "slug": "trust-and-legal",
+    "name": "Trust and legal",
+    "count": 6
+  }
+]
