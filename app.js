@@ -119,6 +119,29 @@ function categorySlugFromHref(href) {
 const parts = String(href || "").split("/").filter(Boolean);
 return parts.length ? parts[parts.length - 1] : "";
 }
+// Renders the shared site header (hamburger button, brand/logo, desktop
+// top-nav with the Categories dropdown, and theme toggle) into the empty
+// #siteHeader placeholder that every page now ships. This is the missing
+// counterpart to renderMobileDrawer() below: both fill an empty shared
+// placeholder from the same NAV_CATEGORIES/MOBILE_MAIN_NAV data so every
+// page's navigation is rendered from one source of truth instead of being
+// hand-authored per page.
+function renderSiteHeader() {
+const header = document.getElementById("siteHeader");
+if (!header || header.childElementCount) return;
+const topNavItemsHtml = MOBILE_MAIN_NAV.map((item) => {
+if (item.expand) {
+return `<div class="nav-dropdown"><button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="categoriesNavMenu">${item.label}<span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu" id="categoriesNavMenu"></ul></div>`;
+}
+return `<a href="${item.href}">${item.label}</a>`;
+}).join("");
+header.innerHTML = `
+<button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+<a class="brand" href="/index.html" aria-label="Universal Converter home"><img src="/logo.svg" alt="Universal Converter logo" width="38" height="38"><span>Universal Converter</span></a>
+<nav class="top-nav" aria-label="Primary navigation">${topNavItemsHtml}</nav>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
+`;
+}
 function renderMobileDrawer() {
 const drawer = document.getElementById("mobileDrawer");
 if (!drawer) return;
@@ -753,6 +776,7 @@ let pageInitPending = false;
 let seoConversionDataCache = null;
 let seoConversionDataResolved = false;
 document.addEventListener("DOMContentLoaded", () => {
+renderSiteHeader();
 initTheme();
 initHeroCanvas();
 renderCategoryDropdownMenus();
