@@ -31,6 +31,64 @@
   <link rel="dns-prefetch" href="https://www.clarity.ms">
   <link rel="preconnect" href="https://fundingchoicesmessages.google.com" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Reduce the homepage Categories panel to roughly half its previous
+       height, keeping the list independently scrollable inside it. This
+       overrides only .category-list max-height (styles.css sets 640px;
+       this page-level override sets 320px, about half), and does not
+       touch styles.css, app.js, or any other file. Placed after the
+       stylesheet link so it wins by normal CSS source order at equal
+       specificity - no !important needed. */
+    .category-list {
+      max-height: 320px;
+      overflow-y: auto;
+    }
+    /* On mobile, show only about 2 category cards before scrolling.
+       Each card is roughly 65px tall (34px icon + ~11px top/bottom
+       padding, from the existing .category-list button and
+       .category-icon rules in styles.css) plus the 0.45rem row gap
+       between cards - so 2 cards + 1 gap is about 137px; 140px shows
+       two full cards clearly. This only narrows the desktop/tablet
+       320px value above for small screens; it does not replace it. */
+    @media (max-width: 600px) {
+      .category-list {
+        max-height: 140px;
+      }
+      /* Mobile-only section order: Header, Converter, Categories (+ its
+         Advertisement), then everything else in its existing order. The
+         wrapper div added above (holding .category-panel and the new
+         left-sidebar ad) is the only plain <div> among .tool-layout's
+         direct children (converter-panel is a <section>, activity-panel
+         is an <aside>), so it can be targeted without adding a class.
+         .tool-layout already collapses to a single column below 900px
+         (existing styles.css rule), so these order values only change
+         the stacking sequence within that single column - nothing about
+         the grid/columns themselves, and nothing above 600px is affected. */
+      .tool-layout > .converter-panel {
+        order: 1;
+      }
+      .tool-layout > div {
+        order: 2;
+      }
+      .tool-layout > .activity-panel {
+        order: 3;
+      }
+      /* Within that Categories+Ad wrapper, swap the internal order for
+         mobile only: the LEFT Advertisement comes first, the Categories
+         panel second - so the overall mobile sequence reads Converter ->
+         LEFT Advertisement -> Categories. The wrapper is a flex column
+         (set above), so order applies the same way as it does to
+         .tool-layout's own children. Desktop/tablet keep the original
+         Category-then-Ad arrangement, since this block only applies
+         below 600px. */
+      .tool-layout > div > .category-panel {
+        order: 2;
+      }
+      .tool-layout > div > .sidebar-ad {
+        order: 1;
+      }
+    }
+  </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -229,11 +287,17 @@
       
 
       <div class="tool-layout">
-        <aside class="category-panel" aria-label="Converter categories">
-          <label class="field-label" for="unitSearch">Search all units</label>
-          <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
-          <div class="category-list" id="categoryList"></div>
-        </aside>
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+          <aside class="category-panel" aria-label="Converter categories">
+            <label class="field-label" for="unitSearch">Search all units</label>
+            <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+            <div class="category-list" id="categoryList"></div>
+          </aside>
+
+          <aside class="sidebar-ad" data-ad-placement="category-sidebar" aria-label="Advertisement">
+            Advertisement
+          </aside>
+        </div>
 
         <section class="converter-panel" aria-label="Active converter">
           <div class="converter-header">
