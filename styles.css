@@ -3246,3 +3246,27 @@ body.homepage .category-list {
 grid-template-columns: 1fr;
 }
 }
+
+/* SEO pages: the LEFT sidebar advertisement (below the category card)
+   gets its min-height set by app.js, calculated to match the converter
+   panel's height when they sit side by side (desktop, and the
+   901-1024px SEO tablet layout). Below that - where the SEO page's
+   own existing layout stacks Category, Converter, and this ad
+   vertically instead of side by side (tablet widths under ~821px, and
+   mobile) - that same JS-calculated height is no longer contextually
+   meaningful, since there's no side-by-side column for it to match,
+   but the inline min-height is still applied, producing a dramatically
+   oversized ad block with a large empty gap below it. Per the CSS
+   spec, when min-height and max-height conflict, min-height wins (an
+   earlier version of this fix tried max-height and confirmed this the
+   hard way - it had no effect). So this overrides the inline
+   min-height itself, back to the site's normal baseline ad-slot size,
+   using !important - the only way for an external stylesheet rule to
+   take precedence over an inline style for the same property. Desktop
+   and the 901-1024px side-by-side SEO tablet layout are untouched -
+   this only applies below 821px, and only on SEO pages. */
+@media (max-width: 820px) {
+body.seo-page .sidebar-ad[data-ad-placement="category-sidebar"] {
+min-height: 280px !important;
+}
+}
