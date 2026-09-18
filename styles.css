@@ -3181,24 +3181,28 @@ flex-direction: column;
 gap: 1rem;
 }
 
-/* Homepage tablet: exactly two columns from 768px to 1024px (covers
-   768/820/900/960/1024) - LEFT = the category+ad column, RIGHT =
-   converter. The existing right sidebar (favorite/recent/history)
-   moves to its own full-width row below this pair, rather than
-   forming a third column - matching "do not create Category |
-   Converter | Right Sidebar" as three columns. Uses body.homepage
-   as a high-specificity prefix so it wins over the unscoped
-   .tool-layout rules elsewhere in this file without needing to be
-   moved or reordered relative to them.
+/* Homepage tablet: exactly two columns from 768px up to (and
+   including) 1099px - covers all tested tablet widths (768, 820,
+   900, 960, 1024, 1032). The upper bound was previously 1024px,
+   which excluded 1032px entirely - at that width the layout fell
+   through to no tablet override at all, reproducing the vertical
+   stack this rule exists to prevent. Widened with margin above the
+   highest tested width (1032px) so nearby widths aren't similarly
+   missed. LEFT = the category+ad column, RIGHT = converter. The
+   existing right sidebar (favorite/recent/history) moves to its own
+   full-width row below this pair, rather than forming a third
+   column. Uses body.homepage as a high-specificity prefix so it wins
+   over the unscoped .tool-layout rules elsewhere in this file
+   without needing to be moved or reordered relative to them.
    Both the class selector (.category-column, used when that class
    is present on the wrapper) and the structural selector
    (.tool-layout > div, the wrapper's only plain-div child regardless
    of what class it carries) are included, so this applies correctly
    whichever of the two ways the homepage wrapper markup was written.
-   Within that left column, the advertisement is ordered before the
-   category panel to match the approved reference layout (ad, then
-   "Search all units" and the category list, stacked below it). */
-@media (min-width: 768px) and (max-width: 1024px) {
+   Within that left column, the category panel (with "Search all
+   units") now comes first and the advertisement directly below it -
+   this order was reversed from ad-first per explicit instruction. */
+@media (min-width: 768px) and (max-width: 1099px) {
 body.homepage .tool-layout {
 display: grid;
 grid-template-columns: minmax(250px, 320px) 1fr;
@@ -3214,12 +3218,12 @@ display: flex;
 flex-direction: column;
 gap: 1rem;
 }
-body.homepage .tool-layout > .category-column > .sidebar-ad,
-body.homepage .tool-layout > div > .sidebar-ad {
-order: 1;
-}
 body.homepage .tool-layout > .category-column > .category-panel,
 body.homepage .tool-layout > div > .category-panel {
+order: 1;
+}
+body.homepage .tool-layout > .category-column > .sidebar-ad,
+body.homepage .tool-layout > div > .sidebar-ad {
 order: 2;
 }
 body.homepage .tool-layout > .converter-panel {
