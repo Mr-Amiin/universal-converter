@@ -1,5 +1,5 @@
 diff --git a/styles.css b/styles.css
-index 1dc21cc5d5..45d0110967 100644
+index 1dc21cc5d5..b30f1b5c92 100644
 --- a/styles.css
 +++ b/styles.css
 @@ -306,7 +306,7 @@ color: var(--text);
@@ -88,7 +88,7 @@ index 1dc21cc5d5..45d0110967 100644
  .hero-subtitle {
  margin: 0.4rem 0 1rem;
  }
-@@ -3120,3 +3162,76 @@ transition: none !important;
+@@ -3120,3 +3162,87 @@ transition: none !important;
  transform: none;
  }
  }
@@ -163,5 +163,16 @@ index 1dc21cc5d5..45d0110967 100644
 +body.homepage .tool-layout > .activity-panel {
 +grid-column: 1 / -1;
 +grid-row: 2;
++}
++/* The category panel's own internal list must stay a single vertical
++   column here, not the 2-column grid a separate, unbounded pre-existing
++   rule (".category-list { grid-template-columns: repeat(2, ...) } " at
++   "@media (min-width: 821px)", with no upper bound) applies for any
++   width 821px and up - which includes 900/960/1024/1032 within this
++   tablet range. That rule is never edited or removed (it may be relied
++   on elsewhere); this explicitly overrides just the property back to
++   one column, scoped to the homepage and this width range only. */
++body.homepage .category-list {
++grid-template-columns: 1fr;
 +}
 +}
