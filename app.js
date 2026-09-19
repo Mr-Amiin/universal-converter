@@ -106,14 +106,14 @@ const DEFAULT_CATEGORY_ICON = drawerIcon('<path d="M4 7h9"/><path d="M11 4.5 13.
 // index.html#popular, guides.html, sitemap.html, about.html,
 // contact.html) - nothing new is invented.
 const MOBILE_MAIN_NAV = [
-{ id: "converter", label: "Converter", href: "index.html#converter" },
-{ id: "categories", label: "Categories", expand: true },
-{ id: "calculators", label: "Calculators", href: "index.html#calculators" },
-{ id: "popular", label: "Popular", href: "index.html#popular" },
-{ id: "guides", label: "Guides", href: "guides.html" },
-{ id: "sitemap", label: "Sitemap", href: "sitemap.html" },
-{ id: "about", label: "About", href: "about.html" },
-{ id: "contact", label: "Contact", href: "contact.html" }
+{ id: "converter", label: "Converter", href: "index.html#converter", i18nKey: "nav.converter" },
+{ id: "categories", label: "Categories", expand: true, i18nKey: "nav.categories" },
+{ id: "calculators", label: "Calculators", href: "index.html#calculators", i18nKey: "nav.calculators" },
+{ id: "popular", label: "Popular", href: "index.html#popular", i18nKey: "nav.popular" },
+{ id: "guides", label: "Guides", href: "guides.html", i18nKey: "nav.guides" },
+{ id: "sitemap", label: "Sitemap", href: "sitemap.html", i18nKey: "nav.sitemap" },
+{ id: "about", label: "About", href: "about.html", i18nKey: "nav.about" },
+{ id: "contact", label: "Contact", href: "contact.html", i18nKey: "nav.contact" }
 ];
 function categorySlugFromHref(href) {
 const parts = String(href || "").split("/").filter(Boolean);
@@ -131,9 +131,9 @@ const header = document.getElementById("siteHeader");
 if (!header || header.childElementCount) return;
 const topNavItemsHtml = MOBILE_MAIN_NAV.map((item) => {
 if (item.expand) {
-return `<div class="nav-dropdown"><button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="categoriesNavMenu">${item.label}<span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu" id="categoriesNavMenu"></ul></div>`;
+return `<div class="nav-dropdown"><button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="categoriesNavMenu"><span data-i18n="${item.i18nKey}">${item.label}</span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu" id="categoriesNavMenu"></ul></div>`;
 }
-return `<a href="${item.href}">${item.label}</a>`;
+return `<a href="${item.href}" data-i18n="${item.i18nKey}">${item.label}</a>`;
 }).join("");
 header.innerHTML = `
 <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
@@ -172,13 +172,13 @@ const navItemsHtml = MOBILE_MAIN_NAV.map((item) => {
 const icon = MAIN_NAV_ICONS[item.id] || DEFAULT_CATEGORY_ICON;
 if (item.expand) {
 return `<li class="mobile-drawer-categories-item">
-<button type="button" class="mobile-drawer-link mobile-drawer-categories-toggle" id="mobileDrawerCategoriesToggle" aria-expanded="false" aria-controls="mobileDrawerCategoriesPanel">${icon}<span>${item.label}</span>${CHEVRON_ICON}</button>
+<button type="button" class="mobile-drawer-link mobile-drawer-categories-toggle" id="mobileDrawerCategoriesToggle" aria-expanded="false" aria-controls="mobileDrawerCategoriesPanel">${icon}<span data-i18n="${item.i18nKey}">${item.label}</span>${CHEVRON_ICON}</button>
 <div class="mobile-drawer-categories" id="mobileDrawerCategoriesPanel">
 <ul class="mobile-drawer-category-list">${categoryItemsHtml}</ul>
 </div>
 </li>`;
 }
-return `<li><a class="mobile-drawer-link" href="${item.href}">${icon}<span>${item.label}</span>${CHEVRON_ICON}</a></li>`;
+return `<li><a class="mobile-drawer-link" href="${item.href}">${icon}<span data-i18n="${item.i18nKey}">${item.label}</span>${CHEVRON_ICON}</a></li>`;
 }).join("");
 drawer.innerHTML = `
 <div class="mobile-drawer-head">
@@ -396,6 +396,106 @@ const SUPPORTED_LANGUAGES = [
 { code: "so", name: "Soomaali", flag: "\u{1F1F8}\u{1F1F4}", dir: "ltr" }
 ];
 const DEFAULT_LANGUAGE_CODE = "en";
+const TRANSLATIONS = {
+en: {
+nav: { home: "Home", converter: "Converter", categories: "Categories", allCategories: "All categories", calculators: "Calculators", popular: "Popular", guides: "Guides", sitemap: "Sitemap", about: "About", contact: "Contact", search: "Search", language: "Language", theme: "Theme", menu: "Menu" },
+converter: { searchAllUnits: "Search all units", fromUnit: "From Unit", toUnit: "To Unit", swap: "Swap units", decimalControl: "Decimal control", notation: "Notation", notationAuto: "Auto", notationDecimal: "Decimal", notationScientific: "Scientific", notationEngineering: "Engineering", result: "Result", copyResult: "Copy result", share: "Share", favorite: "Favorite", contextValues: "Context values", fromDefinition: "From definition", toDefinition: "To definition", formula: "Formula", enterValue: "Enter a number to convert", useDecimalNotation: "Use decimal or scientific notation, such as 1.25e6." },
+sidebar: { advertisement: "Advertisement", favoriteConverters: "Favorite converters", recentlyUsed: "Recently used", conversionHistory: "Conversion history", clear: "Clear", noFavorites: "No favorites yet. Save a converter to keep it here.", noRecent: "Recent converters will appear here after you use them.", noHistory: "Your latest conversions stay on this device and work offline." },
+common: { resultCopied: "Result copied to clipboard.", copyUnavailable: "Copy is unavailable in this browser, but the result is ready to select.", shareOpened: "Share dialog opened.", shareCopied: "Share text copied to clipboard.", shareCancelled: "Share was cancelled or unavailable.", addApiEndpoint: "Add an API endpoint or use offline fallback rates.", couldNotLoadRates: "Could not load live rates. Offline fallback remains active." },
+categories: { unitsLabel: "units", conversionPagesLabel: "conversion pages" }
+},
+es: {
+nav: { home: "Inicio", converter: "Conversor", categories: "Categorías", allCategories: "Todas las categorías", calculators: "Calculadoras", popular: "Popular", guides: "Guías", sitemap: "Mapa del sitio", about: "Acerca de", contact: "Contacto", search: "Buscar", language: "Idioma", theme: "Tema", menu: "Menú" },
+converter: { searchAllUnits: "Buscar todas las unidades", fromUnit: "Unidad de origen", toUnit: "Unidad de destino", swap: "Intercambiar unidades", decimalControl: "Control de decimales", notation: "Notación", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Ingeniería", result: "Resultado", copyResult: "Copiar resultado", share: "Compartir", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definición de origen", toDefinition: "Definición de destino", formula: "Fórmula", enterValue: "Introduce un número para convertir", useDecimalNotation: "Usa notación decimal o científica, como 1.25e6." },
+sidebar: { advertisement: "Publicidad", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recientemente", conversionHistory: "Historial de conversiones", clear: "Borrar", noFavorites: "Aún no hay favoritos. Guarda un conversor para verlo aquí.", noRecent: "Los conversores recientes aparecerán aquí después de usarlos.", noHistory: "Tus conversiones más recientes permanecen en este dispositivo y funcionan sin conexión." },
+common: { resultCopied: "Resultado copiado al portapapeles.", copyUnavailable: "Copiar no está disponible en este navegador, pero el resultado está listo para seleccionar.", shareOpened: "Se abrió el diálogo para compartir.", shareCopied: "Texto para compartir copiado al portapapeles.", shareCancelled: "Se canceló o no está disponible la función de compartir.", addApiEndpoint: "Agrega un endpoint de API o usa las tasas sin conexión.", couldNotLoadRates: "No se pudieron cargar las tasas en vivo. Sigue activo el modo sin conexión." },
+categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversión" }
+},
+fr: {
+nav: { home: "Accueil", converter: "Convertisseur", categories: "Catégories", allCategories: "Toutes les catégories", calculators: "Calculatrices", popular: "Populaire", guides: "Guides", sitemap: "Plan du site", about: "À propos", contact: "Contact", search: "Rechercher", language: "Langue", theme: "Thème", menu: "Menu" },
+converter: { searchAllUnits: "Rechercher toutes les unités", fromUnit: "Unité de départ", toUnit: "Unité d'arrivée", swap: "Inverser les unités", decimalControl: "Contrôle des décimales", notation: "Notation", notationAuto: "Automatique", notationDecimal: "Décimale", notationScientific: "Scientifique", notationEngineering: "Ingénierie", result: "Résultat", copyResult: "Copier le résultat", share: "Partager", favorite: "Favori", contextValues: "Valeurs de contexte", fromDefinition: "Définition de départ", toDefinition: "Définition d'arrivée", formula: "Formule", enterValue: "Entrez un nombre à convertir", useDecimalNotation: "Utilisez la notation décimale ou scientifique, par exemple 1.25e6." },
+sidebar: { advertisement: "Publicité", favoriteConverters: "Convertisseurs favoris", recentlyUsed: "Utilisés récemment", conversionHistory: "Historique des conversions", clear: "Effacer", noFavorites: "Aucun favori pour l'instant. Enregistrez un convertisseur pour le retrouver ici.", noRecent: "Les convertisseurs récents apparaîtront ici après utilisation.", noHistory: "Vos dernières conversions restent sur cet appareil et fonctionnent hors ligne." },
+common: { resultCopied: "Résultat copié dans le presse-papiers.", copyUnavailable: "La copie n'est pas disponible dans ce navigateur, mais le résultat peut être sélectionné.", shareOpened: "Boîte de dialogue de partage ouverte.", shareCopied: "Texte de partage copié dans le presse-papiers.", shareCancelled: "Le partage a été annulé ou n'est pas disponible.", addApiEndpoint: "Ajoutez un point d'accès API ou utilisez les taux hors ligne.", couldNotLoadRates: "Impossible de charger les taux en direct. Le mode hors ligne reste actif." },
+categories: { unitsLabel: "unités", conversionPagesLabel: "pages de conversion" }
+},
+de: {
+nav: { home: "Startseite", converter: "Umrechner", categories: "Kategorien", allCategories: "Alle Kategorien", calculators: "Rechner", popular: "Beliebt", guides: "Anleitungen", sitemap: "Sitemap", about: "Über uns", contact: "Kontakt", search: "Suche", language: "Sprache", theme: "Design", menu: "Menü" },
+converter: { searchAllUnits: "Alle Einheiten durchsuchen", fromUnit: "Von-Einheit", toUnit: "Zu-Einheit", swap: "Einheiten tauschen", decimalControl: "Dezimalstellen", notation: "Schreibweise", notationAuto: "Automatisch", notationDecimal: "Dezimal", notationScientific: "Wissenschaftlich", notationEngineering: "Technisch", result: "Ergebnis", copyResult: "Ergebnis kopieren", share: "Teilen", favorite: "Favorit", contextValues: "Kontextwerte", fromDefinition: "Definition (von)", toDefinition: "Definition (zu)", formula: "Formel", enterValue: "Zahl zum Umrechnen eingeben", useDecimalNotation: "Verwenden Sie Dezimal- oder wissenschaftliche Schreibweise, z. B. 1.25e6." },
+sidebar: { advertisement: "Werbung", favoriteConverters: "Favorisierte Umrechner", recentlyUsed: "Zuletzt verwendet", conversionHistory: "Umrechnungsverlauf", clear: "Löschen", noFavorites: "Noch keine Favoriten. Speichern Sie einen Umrechner, damit er hier erscheint.", noRecent: "Zuletzt verwendete Umrechner erscheinen hier nach der Nutzung.", noHistory: "Ihre letzten Umrechnungen bleiben auf diesem Gerät gespeichert und funktionieren offline." },
+common: { resultCopied: "Ergebnis in die Zwischenablage kopiert.", copyUnavailable: "Kopieren ist in diesem Browser nicht verfügbar, das Ergebnis kann aber markiert werden.", shareOpened: "Teilen-Dialog geöffnet.", shareCopied: "Text zum Teilen in die Zwischenablage kopiert.", shareCancelled: "Teilen wurde abgebrochen oder ist nicht verfügbar.", addApiEndpoint: "Fügen Sie einen API-Endpunkt hinzu oder nutzen Sie die Offline-Kurse.", couldNotLoadRates: "Live-Kurse konnten nicht geladen werden. Der Offline-Modus bleibt aktiv." },
+categories: { unitsLabel: "Einheiten", conversionPagesLabel: "Umrechnungsseiten" }
+},
+pt: {
+nav: { home: "Início", converter: "Conversor", categories: "Categorias", allCategories: "Todas as categorias", calculators: "Calculadoras", popular: "Popular", guides: "Guias", sitemap: "Mapa do site", about: "Sobre", contact: "Contato", search: "Pesquisar", language: "Idioma", theme: "Tema", menu: "Menu" },
+converter: { searchAllUnits: "Pesquisar todas as unidades", fromUnit: "Unidade de origem", toUnit: "Unidade de destino", swap: "Trocar unidades", decimalControl: "Controle de casas decimais", notation: "Notação", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Engenharia", result: "Resultado", copyResult: "Copiar resultado", share: "Compartilhar", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definição de origem", toDefinition: "Definição de destino", formula: "Fórmula", enterValue: "Digite um número para converter", useDecimalNotation: "Use notação decimal ou científica, como 1.25e6." },
+sidebar: { advertisement: "Publicidade", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recentemente", conversionHistory: "Histórico de conversões", clear: "Limpar", noFavorites: "Ainda não há favoritos. Salve um conversor para vê-lo aqui.", noRecent: "Os conversores recentes aparecerão aqui após o uso.", noHistory: "Suas conversões mais recentes ficam neste dispositivo e funcionam offline." },
+common: { resultCopied: "Resultado copiado para a área de transferência.", copyUnavailable: "A cópia não está disponível neste navegador, mas o resultado pode ser selecionado.", shareOpened: "Caixa de diálogo de compartilhamento aberta.", shareCopied: "Texto de compartilhamento copiado para a área de transferência.", shareCancelled: "O compartilhamento foi cancelado ou não está disponível.", addApiEndpoint: "Adicione um endpoint de API ou use as taxas offline.", couldNotLoadRates: "Não foi possível carregar as taxas em tempo real. O modo offline continua ativo." },
+categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversão" }
+},
+it: {
+nav: { home: "Home", converter: "Convertitore", categories: "Categorie", allCategories: "Tutte le categorie", calculators: "Calcolatrici", popular: "Popolare", guides: "Guide", sitemap: "Mappa del sito", about: "Chi siamo", contact: "Contatti", search: "Cerca", language: "Lingua", theme: "Tema", menu: "Menu" },
+converter: { searchAllUnits: "Cerca tutte le unità", fromUnit: "Unità di partenza", toUnit: "Unità di arrivo", swap: "Scambia unità", decimalControl: "Controllo decimali", notation: "Notazione", notationAuto: "Automatica", notationDecimal: "Decimale", notationScientific: "Scientifica", notationEngineering: "Ingegneristica", result: "Risultato", copyResult: "Copia risultato", share: "Condividi", favorite: "Preferito", contextValues: "Valori di contesto", fromDefinition: "Definizione di partenza", toDefinition: "Definizione di arrivo", formula: "Formula", enterValue: "Inserisci un numero da convertire", useDecimalNotation: "Usa la notazione decimale o scientifica, ad esempio 1.25e6." },
+sidebar: { advertisement: "Pubblicità", favoriteConverters: "Convertitori preferiti", recentlyUsed: "Usati di recente", conversionHistory: "Cronologia conversioni", clear: "Cancella", noFavorites: "Nessun preferito ancora. Salva un convertitore per trovarlo qui.", noRecent: "I convertitori recenti appariranno qui dopo l'uso.", noHistory: "Le tue conversioni più recenti restano su questo dispositivo e funzionano offline." },
+common: { resultCopied: "Risultato copiato negli appunti.", copyUnavailable: "La copia non è disponibile in questo browser, ma il risultato è pronto per essere selezionato.", shareOpened: "Finestra di condivisione aperta.", shareCopied: "Testo di condivisione copiato negli appunti.", shareCancelled: "La condivisione è stata annullata o non è disponibile.", addApiEndpoint: "Aggiungi un endpoint API oppure usa i tassi offline.", couldNotLoadRates: "Impossibile caricare i tassi in tempo reale. La modalità offline resta attiva." },
+categories: { unitsLabel: "unità", conversionPagesLabel: "pagine di conversione" }
+},
+ar: {
+nav: { home: "الرئيسية", converter: "المحوّل", categories: "الفئات", allCategories: "كل الفئات", calculators: "الحاسبات", popular: "الأكثر استخدامًا", guides: "الأدلة", sitemap: "خريطة الموقع", about: "من نحن", contact: "تواصل معنا", search: "بحث", language: "اللغة", theme: "المظهر", menu: "القائمة" },
+converter: { searchAllUnits: "ابحث في كل الوحدات", fromUnit: "الوحدة الأصلية", toUnit: "الوحدة الهدف", swap: "تبديل الوحدتين", decimalControl: "عدد الخانات العشرية", notation: "طريقة العرض", notationAuto: "تلقائي", notationDecimal: "عشري", notationScientific: "علمي", notationEngineering: "هندسي", result: "النتيجة", copyResult: "نسخ النتيجة", share: "مشاركة", favorite: "المفضلة", contextValues: "قيم سياقية إضافية", fromDefinition: "تعريف الوحدة الأصلية", toDefinition: "تعريف الوحدة الهدف", formula: "المعادلة", enterValue: "أدخل رقمًا للتحويل", useDecimalNotation: "استخدم الصيغة العشرية أو العلمية، مثل 1.25e6." },
+sidebar: { advertisement: "إعلان", favoriteConverters: "المحوّلات المفضّلة", recentlyUsed: "المستخدَمة مؤخرًا", conversionHistory: "سجل التحويلات", clear: "مسح", noFavorites: "لا توجد مفضلة بعد. احفظ محوّلًا ليظهر هنا.", noRecent: "ستظهر المحوّلات المستخدمة مؤخرًا هنا بعد استخدامها.", noHistory: "تبقى آخر تحويلاتك محفوظة على هذا الجهاز وتعمل دون اتصال بالإنترنت." },
+common: { resultCopied: "تم نسخ النتيجة إلى الحافظة.", copyUnavailable: "النسخ غير متاح في هذا المتصفح، لكن النتيجة جاهزة للتحديد.", shareOpened: "تم فتح نافذة المشاركة.", shareCopied: "تم نسخ نص المشاركة إلى الحافظة.", shareCancelled: "تم إلغاء المشاركة أو أنها غير متاحة.", addApiEndpoint: "أضف نقطة وصول API أو استخدم الأسعار غير المتصلة.", couldNotLoadRates: "تعذّر تحميل الأسعار المباشرة. لا يزال الوضع غير المتصل نشطًا." },
+categories: { unitsLabel: "وحدة", conversionPagesLabel: "صفحة تحويل" }
+},
+zh: {
+nav: { home: "首页", converter: "换算器", categories: "分类", allCategories: "所有分类", calculators: "计算器", popular: "热门", guides: "指南", sitemap: "网站地图", about: "关于我们", contact: "联系我们", search: "搜索", language: "语言", theme: "主题", menu: "菜单" },
+converter: { searchAllUnits: "搜索所有单位", fromUnit: "原单位", toUnit: "目标单位", swap: "交换单位", decimalControl: "小数位数", notation: "表示法", notationAuto: "自动", notationDecimal: "小数", notationScientific: "科学计数法", notationEngineering: "工程计数法", result: "结果", copyResult: "复制结果", share: "分享", favorite: "收藏", contextValues: "附加参数", fromDefinition: "原单位定义", toDefinition: "目标单位定义", formula: "换算公式", enterValue: "输入要换算的数值", useDecimalNotation: "请使用小数或科学计数法，例如 1.25e6。" },
+sidebar: { advertisement: "广告", favoriteConverters: "收藏的换算器", recentlyUsed: "最近使用", conversionHistory: "换算记录", clear: "清除", noFavorites: "暂无收藏。保存一个换算器后会显示在这里。", noRecent: "使用过的换算器会在此处显示。", noHistory: "最近的换算记录保存在本设备上，离线也可使用。" },
+common: { resultCopied: "结果已复制到剪贴板。", copyUnavailable: "此浏览器不支持复制，但结果已可供选中。", shareOpened: "已打开分享窗口。", shareCopied: "分享文本已复制到剪贴板。", shareCancelled: "分享已取消或不可用。", addApiEndpoint: "请添加 API 端点，或使用离线备用汇率。", couldNotLoadRates: "无法加载实时汇率，已继续使用离线备用汇率。" },
+categories: { unitsLabel: "个单位", conversionPagesLabel: "个换算页面" }
+},
+ja: {
+nav: { home: "ホーム", converter: "コンバーター", categories: "カテゴリー", allCategories: "すべてのカテゴリー", calculators: "計算ツール", popular: "人気", guides: "ガイド", sitemap: "サイトマップ", about: "サイトについて", contact: "お問い合わせ", search: "検索", language: "言語", theme: "テーマ", menu: "メニュー" },
+converter: { searchAllUnits: "すべての単位を検索", fromUnit: "変換元の単位", toUnit: "変換先の単位", swap: "単位を入れ替え", decimalControl: "小数点以下の桁数", notation: "表記形式", notationAuto: "自動", notationDecimal: "小数", notationScientific: "指数表記", notationEngineering: "工学表記", result: "結果", copyResult: "結果をコピー", share: "共有", favorite: "お気に入り", contextValues: "追加パラメータ", fromDefinition: "変換元単位の定義", toDefinition: "変換先単位の定義", formula: "計算式", enterValue: "変換する数値を入力してください", useDecimalNotation: "1.25e6 のように小数表記または指数表記を使用してください。" },
+sidebar: { advertisement: "広告", favoriteConverters: "お気に入りのコンバーター", recentlyUsed: "最近使用したもの", conversionHistory: "変換履歴", clear: "削除", noFavorites: "お気に入りはまだありません。コンバーターを保存するとここに表示されます。", noRecent: "使用したコンバーターがここに表示されます。", noHistory: "最近の変換履歴はこの端末に保存され、オフラインでも利用できます。" },
+common: { resultCopied: "結果をクリップボードにコピーしました。", copyUnavailable: "このブラウザではコピーを利用できませんが、結果は選択できます。", shareOpened: "共有ダイアログを開きました。", shareCopied: "共有用のテキストをクリップボードにコピーしました。", shareCancelled: "共有がキャンセルされたか、利用できません。", addApiEndpoint: "APIエンドポイントを追加するか、オフラインの参考レートを使用してください。", couldNotLoadRates: "最新レートを取得できませんでした。オフラインの参考レートを引き続き使用します。" },
+categories: { unitsLabel: "単位", conversionPagesLabel: "変換ページ" }
+},
+ko: {
+nav: { home: "홈", converter: "변환기", categories: "카테고리", allCategories: "전체 카테고리", calculators: "계산기", popular: "인기", guides: "가이드", sitemap: "사이트맵", about: "소개", contact: "문의하기", search: "검색", language: "언어", theme: "테마", menu: "메뉴" },
+converter: { searchAllUnits: "모든 단위 검색", fromUnit: "변환 전 단위", toUnit: "변환 후 단위", swap: "단위 바꾸기", decimalControl: "소수점 자릿수", notation: "표기 방식", notationAuto: "자동", notationDecimal: "소수", notationScientific: "지수 표기", notationEngineering: "공학 표기", result: "결과", copyResult: "결과 복사", share: "공유", favorite: "즐겨찾기", contextValues: "추가 값", fromDefinition: "변환 전 단위 정의", toDefinition: "변환 후 단위 정의", formula: "공식", enterValue: "변환할 숫자를 입력하세요", useDecimalNotation: "1.25e6과 같은 소수 또는 지수 표기를 사용하세요." },
+sidebar: { advertisement: "광고", favoriteConverters: "즐겨찾는 변환기", recentlyUsed: "최근 사용", conversionHistory: "변환 기록", clear: "지우기", noFavorites: "아직 즐겨찾기가 없습니다. 변환기를 저장하면 여기에 표시됩니다.", noRecent: "최근에 사용한 변환기가 여기에 표시됩니다.", noHistory: "최근 변환 기록은 이 기기에 저장되며 오프라인에서도 사용할 수 있습니다." },
+common: { resultCopied: "결과가 클립보드에 복사되었습니다.", copyUnavailable: "이 브라우저에서는 복사를 사용할 수 없지만 결과를 선택할 수 있습니다.", shareOpened: "공유 대화상자가 열렸습니다.", shareCopied: "공유 텍스트가 클립보드에 복사되었습니다.", shareCancelled: "공유가 취소되었거나 사용할 수 없습니다.", addApiEndpoint: "API 엔드포인트를 추가하거나 오프라인 참고 환율을 사용하세요.", couldNotLoadRates: "실시간 환율을 불러오지 못했습니다. 오프라인 참고 환율이 계속 사용됩니다." },
+categories: { unitsLabel: "개 단위", conversionPagesLabel: "개 변환 페이지" }
+},
+hi: {
+nav: { home: "होम", converter: "कनवर्टर", categories: "श्रेणियाँ", allCategories: "सभी श्रेणियाँ", calculators: "कैलकुलेटर", popular: "लोकप्रिय", guides: "गाइड", sitemap: "साइटमैप", about: "हमारे बारे में", contact: "संपर्क करें", search: "खोजें", language: "भाषा", theme: "थीम", menu: "मेनू" },
+converter: { searchAllUnits: "सभी इकाइयाँ खोजें", fromUnit: "मूल इकाई", toUnit: "लक्ष्य इकाई", swap: "इकाइयाँ बदलें", decimalControl: "दशमलव अंकों की संख्या", notation: "संकेतन", notationAuto: "स्वतः", notationDecimal: "दशमलव", notationScientific: "वैज्ञानिक", notationEngineering: "इंजीनियरिंग", result: "परिणाम", copyResult: "परिणाम कॉपी करें", share: "साझा करें", favorite: "पसंदीदा", contextValues: "अतिरिक्त मान", fromDefinition: "मूल इकाई की परिभाषा", toDefinition: "लक्ष्य इकाई की परिभाषा", formula: "सूत्र", enterValue: "बदलने के लिए एक संख्या दर्ज करें", useDecimalNotation: "दशमलव या वैज्ञानिक संकेतन का उपयोग करें, जैसे 1.25e6।" },
+sidebar: { advertisement: "विज्ञापन", favoriteConverters: "पसंदीदा कनवर्टर", recentlyUsed: "हाल ही में उपयोग किए गए", conversionHistory: "रूपांतरण इतिहास", clear: "साफ़ करें", noFavorites: "अभी तक कोई पसंदीदा नहीं है। कनवर्टर सहेजें ताकि वह यहाँ दिखे।", noRecent: "हाल ही में उपयोग किए गए कनवर्टर उपयोग के बाद यहाँ दिखाई देंगे।", noHistory: "आपके नवीनतम रूपांतरण इस डिवाइस पर सुरक्षित रहते हैं और ऑफ़लाइन भी काम करते हैं।" },
+common: { resultCopied: "परिणाम क्लिपबोर्ड पर कॉपी किया गया।", copyUnavailable: "इस ब्राउज़र में कॉपी करना उपलब्ध नहीं है, लेकिन परिणाम चुनने के लिए तैयार है।", shareOpened: "शेयर डायलॉग खोला गया।", shareCopied: "शेयर टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया।", shareCancelled: "शेयर रद्द कर दिया गया या उपलब्ध नहीं है।", addApiEndpoint: "कोई API एंडपॉइंट जोड़ें या ऑफ़लाइन दरें उपयोग करें।", couldNotLoadRates: "लाइव दरें लोड नहीं हो सकीं। ऑफ़लाइन दरें सक्रिय रहेंगी।" },
+categories: { unitsLabel: "इकाइयाँ", conversionPagesLabel: "रूपांतरण पेज" }
+},
+tr: {
+nav: { home: "Ana Sayfa", converter: "Dönüştürücü", categories: "Kategoriler", allCategories: "Tüm kategoriler", calculators: "Hesap Makineleri", popular: "Popüler", guides: "Rehberler", sitemap: "Site Haritası", about: "Hakkımızda", contact: "İletişim", search: "Ara", language: "Dil", theme: "Tema", menu: "Menü" },
+converter: { searchAllUnits: "Tüm birimlerde ara", fromUnit: "Kaynak Birim", toUnit: "Hedef Birim", swap: "Birimleri değiştir", decimalControl: "Ondalık basamak sayısı", notation: "Gösterim", notationAuto: "Otomatik", notationDecimal: "Ondalık", notationScientific: "Bilimsel", notationEngineering: "Mühendislik", result: "Sonuç", copyResult: "Sonucu kopyala", share: "Paylaş", favorite: "Favori", contextValues: "Ek bağlam değerleri", fromDefinition: "Kaynak birim tanımı", toDefinition: "Hedef birim tanımı", formula: "Formül", enterValue: "Dönüştürülecek sayıyı girin", useDecimalNotation: "1.25e6 gibi ondalık veya bilimsel gösterim kullanın." },
+sidebar: { advertisement: "Reklam", favoriteConverters: "Favori dönüştürücüler", recentlyUsed: "Son kullanılanlar", conversionHistory: "Dönüştürme geçmişi", clear: "Temizle", noFavorites: "Henüz favori yok. Burada görünmesi için bir dönüştürücü kaydedin.", noRecent: "Kullandığınız dönüştürücüler burada görünecek.", noHistory: "Son dönüştürmeleriniz bu cihazda saklanır ve çevrimdışı da çalışır." },
+common: { resultCopied: "Sonuç panoya kopyalandı.", copyUnavailable: "Bu tarayıcıda kopyalama kullanılamıyor, ancak sonuç seçilmeye hazır.", shareOpened: "Paylaşım penceresi açıldı.", shareCopied: "Paylaşım metni panoya kopyalandı.", shareCancelled: "Paylaşım iptal edildi veya kullanılamıyor.", addApiEndpoint: "Bir API uç noktası ekleyin veya çevrimdışı kurları kullanın.", couldNotLoadRates: "Anlık kurlar yüklenemedi. Çevrimdışı kurlar kullanılmaya devam ediyor." },
+categories: { unitsLabel: "birim", conversionPagesLabel: "dönüştürme sayfası" }
+},
+id: {
+nav: { home: "Beranda", converter: "Konverter", categories: "Kategori", allCategories: "Semua kategori", calculators: "Kalkulator", popular: "Populer", guides: "Panduan", sitemap: "Peta situs", about: "Tentang", contact: "Kontak", search: "Cari", language: "Bahasa", theme: "Tema", menu: "Menu" },
+converter: { searchAllUnits: "Cari semua satuan", fromUnit: "Satuan Asal", toUnit: "Satuan Tujuan", swap: "Tukar satuan", decimalControl: "Kontrol desimal", notation: "Notasi", notationAuto: "Otomatis", notationDecimal: "Desimal", notationScientific: "Ilmiah", notationEngineering: "Rekayasa", result: "Hasil", copyResult: "Salin hasil", share: "Bagikan", favorite: "Favorit", contextValues: "Nilai konteks tambahan", fromDefinition: "Definisi satuan asal", toDefinition: "Definisi satuan tujuan", formula: "Rumus", enterValue: "Masukkan angka yang akan dikonversi", useDecimalNotation: "Gunakan notasi desimal atau ilmiah, misalnya 1.25e6." },
+sidebar: { advertisement: "Iklan", favoriteConverters: "Konverter favorit", recentlyUsed: "Baru digunakan", conversionHistory: "Riwayat konversi", clear: "Hapus", noFavorites: "Belum ada favorit. Simpan konverter agar muncul di sini.", noRecent: "Konverter yang baru digunakan akan muncul di sini.", noHistory: "Konversi terbaru Anda tersimpan di perangkat ini dan tetap berfungsi secara offline." },
+common: { resultCopied: "Hasil disalin ke clipboard.", copyUnavailable: "Salin tidak tersedia di browser ini, tetapi hasil siap untuk dipilih.", shareOpened: "Dialog berbagi terbuka.", shareCopied: "Teks berbagi disalin ke clipboard.", shareCancelled: "Berbagi dibatalkan atau tidak tersedia.", addApiEndpoint: "Tambahkan endpoint API atau gunakan kurs offline.", couldNotLoadRates: "Kurs langsung tidak dapat dimuat. Kurs offline tetap digunakan." },
+categories: { unitsLabel: "satuan", conversionPagesLabel: "halaman konversi" }
+},
+so: {
+nav: { home: "Bogga hore", converter: "Beddelaha", categories: "Qaybaha", allCategories: "Dhammaan qaybaha", calculators: "Xisaabiyayaasha", popular: "Caanka ah", guides: "Hagayaasha", sitemap: "Khariidadda bogga", about: "Nagu saabsan", contact: "Nala soo xiriir", search: "Raadi", language: "Luqadda", theme: "Muuqaalka", menu: "Menu-ga" },
+converter: { searchAllUnits: "Ka raadi dhammaan cabbirrada", fromUnit: "Cabbirka laga beddelayo", toUnit: "Cabbirka loo beddelayo", swap: "Isbeddel cabbirrada", decimalControl: "Xakameynta tirooyinka jajabka", notation: "Habka muujinta", notationAuto: "Si toos ah", notationDecimal: "Jajab tobanle", notationScientific: "Sayniska", notationEngineering: "Injineernimo", result: "Natiijada", copyResult: "Koobi natiijada", share: "La wadaag", favorite: "Ku dar door bidaan", contextValues: "Qiyamka dheeraadka ah", fromDefinition: "Sharaxaadda cabbirka laga beddelayo", toDefinition: "Sharaxaadda cabbirka loo beddelayo", formula: "Qaacidada", enterValue: "Geli lambar aad beddesho", useDecimalNotation: "Isticmaal habka jajabka tobanlaha ah ama kan sayniska, sida 1.25e6." },
+sidebar: { advertisement: "Xayeysiin", favoriteConverters: "Beddelayaasha door bidan", recentlyUsed: "Dhawaan la isticmaalay", conversionHistory: "Taariikhda beddelka", clear: "Nadiifi", noFavorites: "Wali ma jiraan door bidaan. Kaydi beddelaha si uu halkan uga soo muuqdo.", noRecent: "Beddelayaasha dhawaan la isticmaalay ayaa halkan ka soo muuqan doona.", noHistory: "Beddelladaada ugu dambeeyay ayaa ku hadhaya qalabkan waxayna u shaqeeyaan offline." },
+common: { resultCopied: "Natiijadu waxay ku koobiyowday xarunta xusuusta.", copyUnavailable: "Koobiyaha lama heli karo biraawsarkan, laakiin natiijadu diyaar bay u tahay in la doorto.", shareOpened: "Sanduuqa wadaagista ayaa la furay.", shareCopied: "Qoraalka wadaagista ayaa ku koobiyowday xarunta xusuusta.", shareCancelled: "Wadaagistu waa la joojiyay ama lama heli karo.", addApiEndpoint: "Ku dar dhamaadka API ama isticmaal qiimayaasha offline-ka ah.", couldNotLoadRates: "Qiimayaasha toos ah lama soo geli karin. Qiimayaasha offline-ku wali way shaqeynayaan." },
+categories: { unitsLabel: "cabbir", conversionPagesLabel: "bog beddel" }
+}
+};
 const prefixes = [
 ["quetta", "Quetta", "Q", 1e30],
 ["ronna", "Ronna", "R", 1e27],
@@ -1410,6 +1510,152 @@ return match ? match.code : DEFAULT_LANGUAGE_CODE;
 // and persists the choice. This is Phase 1: it establishes the global
 // language state and direction correctly; it does not translate page
 // content yet (see the task's "prepare for future translation" scope).
+// Looks up a translation by dot-path key (e.g. "nav.home") for the given
+// language, falling back to English whenever the language is missing
+// entirely, the key path doesn't exist for it, or the value is empty -
+// so the UI can never show "undefined" or a raw key name. This is the
+// only function that should read from TRANSLATIONS directly; everything
+// else (applyTranslations, individual call sites) should go through it.
+function getTranslation(path, langCode) {
+const parts = path.split(".");
+function readFrom(dict) {
+let node = dict;
+for (const part of parts) {
+if (node == null || typeof node !== "object") return undefined;
+node = node[part];
+}
+return typeof node === "string" && node.length > 0 ? node : undefined;
+}
+const langDict = TRANSLATIONS[langCode];
+const fromLang = langDict ? readFrom(langDict) : undefined;
+if (fromLang !== undefined) return fromLang;
+const fromEnglish = readFrom(TRANSLATIONS[DEFAULT_LANGUAGE_CODE]);
+return fromEnglish !== undefined ? fromEnglish : path;
+}
+// Applies every data-i18n-tagged element's translated text (and, for
+// elements also carrying data-i18n-attr, a translated attribute such as
+// placeholder/aria-label instead of textContent) for the given language.
+// This only touches shared UI chrome (header, sidebar, converter shell,
+// homepage overview labels) that renderSiteHeader()/renderSeoConverterShell()/
+// etc. already render on every page - it never touches SEO page-specific
+// content (titles, About, FAQ, formulas, examples), since none of that is
+// marked with data-i18n and this function only ever looks at elements that are.
+function applyTranslations(langCode) {
+// Elements tagged data-i18n (currently: the header nav, which
+// renderSiteHeader() genuinely injects at runtime into every page's
+// empty #siteHeader placeholder) are updated generically here.
+document.querySelectorAll("[data-i18n]").forEach((el) => {
+const key = el.getAttribute("data-i18n");
+const value = getTranslation(key, langCode);
+const attr = el.getAttribute("data-i18n-attr");
+if (attr) {
+el.setAttribute(attr, value);
+} else {
+el.textContent = value;
+}
+});
+document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+el.setAttribute("title", getTranslation(el.getAttribute("data-i18n-title"), langCode));
+});
+// The converter shell and sidebar are NOT injected by any runtime
+// function - every SEO page (and the homepage) already ships this
+// markup as static, pre-generated HTML with no data-i18n attributes
+// on it (renderSeoConverterShell() in this file is not actually
+// called anywhere at runtime; adding data-i18n to its template alone
+// would not reach any real page). So these are targeted directly by
+// their existing selectors/IDs instead, which are identical across
+// the homepage and all 327,527 SEO pages since they share one
+// generation source - no HTML file needs to change for this to work.
+const t = (key) => getTranslation(key, langCode);
+// Small helper: updates only the first text-node child of an element,
+// leaving nested elements (inputs, selects, spans) untouched - several
+// of these labels are raw text immediately followed by a form control
+// with no wrapping span, e.g. <label>Decimal control<input>...</label>
+function setFirstTextNode(el, text) {
+if (!el) return;
+for (const node of el.childNodes) {
+if (node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 0) {
+node.textContent = text + " ";
+return;
+}
+}
+}
+document.querySelectorAll('label[for="fromValue"] > span:first-child').forEach((el) => { el.textContent = t("converter.fromUnit"); });
+document.querySelectorAll('label[for="toValue"] > span:first-child').forEach((el) => { el.textContent = t("converter.toUnit"); });
+document.querySelectorAll(".swap-button").forEach((el) => { el.setAttribute("aria-label", t("converter.swap")); });
+document.querySelectorAll(".converter-controls label").forEach((el) => {
+const input = el.querySelector("input, select");
+if (input && input.id === "precisionControl") setFirstTextNode(el, t("converter.decimalControl"));
+if (input && input.id === "notationMode") setFirstTextNode(el, t("converter.notation"));
+});
+document.querySelectorAll("#notationMode option").forEach((opt) => {
+const map = { auto: "converter.notationAuto", decimal: "converter.notationDecimal", scientific: "converter.notationScientific", engineering: "converter.notationEngineering" };
+if (map[opt.value]) opt.textContent = t(map[opt.value]);
+});
+document.querySelectorAll(".favorite-button").forEach((el) => { setFirstTextNode(el, t("converter.favorite")); });
+document.querySelectorAll(".result-label").forEach((el) => { el.textContent = t("converter.result"); });
+document.querySelectorAll("#copyButton").forEach((el) => { el.textContent = t("converter.copyResult"); });
+document.querySelectorAll("#shareButton").forEach((el) => { el.textContent = t("converter.share"); });
+document.querySelectorAll(".converter-ad-slot > span:first-child").forEach((el) => { el.textContent = t("sidebar.advertisement"); });
+document.querySelectorAll(".definition-panel article > span:first-child").forEach((el, i) => {
+const keys = ["converter.fromDefinition", "converter.toDefinition", "converter.formula"];
+if (keys[i]) el.textContent = t(keys[i]);
+});
+document.querySelectorAll(".sidebar-ad").forEach((el) => { setFirstTextNode(el, t("sidebar.advertisement")); });
+document.querySelectorAll(".activity-panel > section").forEach((section, i) => {
+const keys = ["sidebar.favoriteConverters", "sidebar.recentlyUsed", "sidebar.conversionHistory"];
+const heading = section.querySelector(".activity-heading h3");
+const clearBtn = section.querySelector(".activity-heading button");
+if (heading && keys[i]) heading.textContent = t(keys[i]);
+if (clearBtn) clearBtn.textContent = t("sidebar.clear");
+});
+// The sidebar's empty-state messages (Favorites/Recently used/History)
+// are generated by JS at render time rather than living as static
+// template text, so they need an explicit re-render here to pick up
+// the new language - typeof-guarded since not every page that calls
+// applyLanguage() necessarily has renderStoredLists defined/relevant.
+if (typeof renderStoredLists === "function") {
+renderStoredLists();
+}
+if (typeof renderOverview === "function") {
+renderOverview();
+}
+}
+// Diagnostic helper (not run automatically): walks every language and
+// every English key, reporting any language missing a key or holding an
+// empty value for one - the same check already run standalone during
+// development, exposed here so it can be re-run against the live
+// TRANSLATIONS object from the browser console if needed later.
+function validateAllTranslations() {
+function flattenKeys(obj, prefix) {
+let keys = [];
+for (const k of Object.keys(obj)) {
+const path = prefix ? `${prefix}.${k}` : k;
+if (obj[k] && typeof obj[k] === "object") {
+keys = keys.concat(flattenKeys(obj[k], path));
+} else {
+keys.push(path);
+}
+}
+return keys;
+}
+const englishKeys = flattenKeys(TRANSLATIONS[DEFAULT_LANGUAGE_CODE], "");
+const problems = [];
+Object.keys(TRANSLATIONS).forEach((langCode) => {
+englishKeys.forEach((key) => {
+const value = getTranslation(key, langCode);
+if (value === key || !value) problems.push(`${langCode}: ${key}`);
+});
+});
+return { totalKeys: englishKeys.length, totalLanguages: Object.keys(TRANSLATIONS).length, problems };
+}
+// app.js runs inside an IIFE (see the top of this file), so top-level
+// function declarations are private to that scope and not reachable
+// from the browser console or from outside code by default. This one
+// diagnostic is deliberately exposed on window so it can actually be
+// run from the console as intended, without exposing the rest of the
+// app's internals.
+window.validateAllTranslations = validateAllTranslations;
 function applyLanguage(code) {
 const lang = SUPPORTED_LANGUAGES.find((entry) => entry.code === code) ||
 SUPPORTED_LANGUAGES.find((entry) => entry.code === DEFAULT_LANGUAGE_CODE);
@@ -1421,6 +1667,7 @@ localStorage.setItem(storageKeys.language, lang.code);
 /* localStorage unavailable (private mode, quota, etc.) - language
    still applies for this page view, just won't persist across visits. */
 }
+applyTranslations(lang.code);
 const flagEl = document.getElementById("langToggleFlag");
 const nameEl = document.getElementById("langToggleName");
 if (flagEl) flagEl.textContent = lang.flag;
@@ -2043,18 +2290,21 @@ list.innerHTML = '<p class="empty-state">No matching converter found. Try a unit
 function renderOverview() {
 const overviewGrid = byId("overviewGrid");
 if (!overviewGrid) return;
+const lang = getStoredLanguageCode();
+const unitsLabel = getTranslation("categories.unitsLabel", lang);
+const pagesLabel = getTranslation("categories.conversionPagesLabel", lang);
 overviewGrid.innerHTML = categories.map((category) => {
 const unitCount = category.units.length.toLocaleString("en-US");
 const pageCount = conversionPageCountFor(category.id).toLocaleString("en-US");
 const href = categoryPageUrl(category.id);
 return `
-<a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(category.name)}: ${unitCount} units, ${pageCount} conversion pages">
+<a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(category.name)}: ${unitCount} ${escapeAttribute(unitsLabel)}, ${pageCount} ${escapeAttribute(pagesLabel)}">
 <span class="overview-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
 <h3>${escapeHtml(category.name)}</h3>
 <p>${escapeHtml(category.description)}</p>
 <div class="unit-chips">
-<span>${unitCount} units</span>
-<span>${pageCount} conversion pages</span>
+<span>${unitCount} ${escapeHtml(unitsLabel)}</span>
+<span>${pageCount} ${escapeHtml(pagesLabel)}</span>
 </div>
 </a>
 `;
@@ -3020,8 +3270,9 @@ value: "1"
 return `${rootRelativePrefix()}index.html?${params.toString()}#converter`;
 }
 function renderStoredLists() {
-renderCategoryMiniList("favoritesList", readArray(storageKeys.favorites), "No favorites yet. Save a converter to keep it here.");
-renderCategoryMiniList("recentList", readArray(storageKeys.recent), "Recent converters will appear here after you use them.");
+const lang = getStoredLanguageCode();
+renderCategoryMiniList("favoritesList", readArray(storageKeys.favorites), getTranslation("sidebar.noFavorites", lang));
+renderCategoryMiniList("recentList", readArray(storageKeys.recent), getTranslation("sidebar.noRecent", lang));
 renderRecentSearches();
 renderHistory();
 }
@@ -3048,7 +3299,7 @@ const element = byId("historyList");
 if (!element) return;
 const history = readArray(storageKeys.history);
 if (!history.length) {
-element.innerHTML = '<p class="empty-state">Your latest conversions stay on this device and work offline.</p>';
+element.innerHTML = `<p class="empty-state">${escapeHtml(getTranslation("sidebar.noHistory", getStoredLanguageCode()))}</p>`;
 return;
 }
 element.innerHTML = history.map((item) => `
@@ -3061,12 +3312,13 @@ element.innerHTML = history.map((item) => `
 async function copyResult() {
 const text = byId("resultText").textContent;
 const note = byId("conversionNote");
+const lang = getStoredLanguageCode();
 try {
 await navigator.clipboard.writeText(text);
-note.textContent = "Result copied to clipboard.";
+note.textContent = getTranslation("common.resultCopied", lang);
 trackEvent("copy_result", { category: state.categoryId });
 } catch (error) {
-note.textContent = "Copy is unavailable in this browser, but the result is ready to select.";
+note.textContent = getTranslation("common.copyUnavailable", lang);
 }
 }
 async function shareResult() {
@@ -3074,17 +3326,18 @@ const text = byId("resultText").textContent;
 const note = byId("conversionNote");
 const shareUrl = buildShareUrl();
 const shareData = { title: "Universal Converter", text, url: shareUrl };
+const lang = getStoredLanguageCode();
 try {
 if (navigator.share) {
 await navigator.share(shareData);
-note.textContent = "Share dialog opened.";
+note.textContent = getTranslation("common.shareOpened", lang);
 } else {
 await navigator.clipboard.writeText(`${text} - ${shareUrl}`);
-note.textContent = "Share text copied to clipboard.";
+note.textContent = getTranslation("common.shareCopied", lang);
 }
 trackEvent("share_result", { category: state.categoryId });
 } catch (error) {
-note.textContent = "Share was cancelled or unavailable.";
+note.textContent = getTranslation("common.shareCancelled", lang);
 }
 }
 function buildShareUrl() {
@@ -3252,8 +3505,8 @@ return `
 </div>
 <div class="tool-layout">
 <aside class="category-panel" aria-label="Converter categories">
-<label class="field-label" for="unitSearch">Search all units</label>
-<input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+<label class="field-label" for="unitSearch" data-i18n="converter.searchAllUnits">Search all units</label>
+<input class="compact-search" id="unitSearch" type="search" placeholder="Search all units" data-i18n="converter.searchAllUnits" data-i18n-attr="placeholder">
 <div class="category-list" id="categoryList"></div>
 </aside>
 <section class="converter-panel" aria-label="Active converter">
@@ -3265,32 +3518,32 @@ return `
 </div>
 <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
 <span aria-hidden="true">+</span>
-Favorite
+<span data-i18n="converter.favorite">Favorite</span>
 </button>
 </div>
 <div class="converter-grid">
 <label class="unit-box" for="fromValue">
-<span>From Unit</span>
+<span data-i18n="converter.fromUnit">From Unit</span>
 <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
 <select id="fromUnit" aria-label="From unit"></select>
 </label>
-<button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+<button class="swap-button" id="swapButton" type="button" aria-label="Swap units" data-i18n="converter.swap" data-i18n-attr="aria-label">&#8644;</button>
 <label class="unit-box" for="toValue">
-<span>To Unit</span>
+<span data-i18n="converter.toUnit">To Unit</span>
 <input id="toValue" type="text" readonly>
 <select id="toUnit" aria-label="To unit"></select>
 </label>
 </div>
 <div class="converter-controls" aria-label="Result formatting controls">
-<label>Decimal control
+<label><span data-i18n="converter.decimalControl">Decimal control</span>
 <input id="precisionControl" type="number" min="2" max="15" value="12">
 </label>
-<label>Notation
+<label><span data-i18n="converter.notation">Notation</span>
 <select id="notationMode">
-<option value="auto">Auto</option>
-<option value="decimal">Decimal</option>
-<option value="scientific">Scientific</option>
-<option value="engineering">Engineering</option>
+<option value="auto" data-i18n="converter.notationAuto">Auto</option>
+<option value="decimal" data-i18n="converter.notationDecimal">Decimal</option>
+<option value="scientific" data-i18n="converter.notationScientific">Scientific</option>
+<option value="engineering" data-i18n="converter.notationEngineering">Engineering</option>
 </select>
 </label>
 </div>
@@ -3321,30 +3574,30 @@ Favorite
 </div>
 <div class="result-bar">
 <div>
-<span class="result-label">Result</span>
+<span class="result-label" data-i18n="converter.result">Result</span>
 <strong id="resultText">1 meter = 3.28084 feet</strong>
 </div>
 <div class="result-actions">
-<button class="copy-button" id="copyButton" type="button">Copy result</button>
-<button class="copy-button secondary" id="shareButton" type="button">Share</button>
+<button class="copy-button" id="copyButton" type="button" data-i18n="converter.copyResult">Copy result</button>
+<button class="copy-button secondary" id="shareButton" type="button" data-i18n="converter.share">Share</button>
 </div>
 </div>
 <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
-<span>Advertisement</span>
+<span data-i18n="sidebar.advertisement">Advertisement</span>
 <strong>Converter ad slot</strong>
 <p>Reserved below the result so the calculator remains usable.</p>
 </section>
 <div class="definition-panel" id="definitionPanel">
 <article>
-<span>From definition</span>
+<span data-i18n="converter.fromDefinition">From definition</span>
 <p id="fromDefinition">Meter is the SI base unit of length.</p>
 </article>
 <article>
-<span>To definition</span>
+<span data-i18n="converter.toDefinition">To definition</span>
 <p id="toDefinition">Foot equals exactly 0.3048 meters.</p>
 </article>
 <article>
-<span>Formula</span>
+<span data-i18n="converter.formula">Formula</span>
 <p id="formulaText">Multiply by the source factor, then divide by the target factor.</p>
 </article>
 </div>
@@ -3352,26 +3605,26 @@ Favorite
 </section>
 <aside class="activity-panel" aria-label="Saved and recent conversions">
 <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
-Advertisement
+<span data-i18n="sidebar.advertisement">Advertisement</span>
 </aside>
 <section>
 <div class="activity-heading">
-<h3>Favorite converters</h3>
-<button type="button" id="clearFavorites">Clear</button>
+<h3 data-i18n="sidebar.favoriteConverters">Favorite converters</h3>
+<button type="button" id="clearFavorites" data-i18n="sidebar.clear">Clear</button>
 </div>
 <div class="mini-list" id="favoritesList"></div>
 </section>
 <section>
 <div class="activity-heading">
-<h3>Recently used</h3>
-<button type="button" id="clearRecent">Clear</button>
+<h3 data-i18n="sidebar.recentlyUsed">Recently used</h3>
+<button type="button" id="clearRecent" data-i18n="sidebar.clear">Clear</button>
 </div>
 <div class="mini-list" id="recentList"></div>
 </section>
 <section>
 <div class="activity-heading">
-<h3>Conversion history</h3>
-<button type="button" id="clearHistory">Clear</button>
+<h3 data-i18n="sidebar.conversionHistory">Conversion history</h3>
+<button type="button" id="clearHistory" data-i18n="sidebar.clear">Clear</button>
 </div>
 <div class="history-list" id="historyList"></div>
 </section>
