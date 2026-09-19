@@ -139,6 +139,7 @@ header.innerHTML = `
 <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 <a class="brand" href="/index.html" aria-label="Universal Converter home"><img src="/logo.svg" alt="Universal Converter logo" width="38" height="38"><span>Universal Converter</span></a>
 <nav class="top-nav" aria-label="Primary navigation">${topNavItemsHtml}</nav>
+<div class="nav-dropdown lang-dropdown" id="langDropdown"><button type="button" class="nav-dropdown-toggle lang-dropdown-toggle" id="langDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="langDropdownMenu" aria-label="Change language"><span class="lang-toggle-flag" id="langToggleFlag" aria-hidden="true"></span><span id="langToggleName"></span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu lang-dropdown-menu" id="langDropdownMenu" role="listbox" aria-label="Select language"></ul></div>
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
 `;
 }
@@ -369,8 +370,32 @@ history: "uc-history",
 precision: "uc-precision",
 notation: "uc-notation",
 customUnits: "uc-custom-units",
-newsletter: "uc-newsletter"
+newsletter: "uc-newsletter",
+language: "uc-language"
 };
+// Phase 1 of the language selector: this is the single source of truth
+// for every supported language - code, display name (in that language's
+// own script), flag, and text direction. The selector UI, the stored-
+// language validation/fallback, and the future translation-loading layer
+// should all read from this one list rather than each keeping their own
+// copy. Adding a 15th language later means adding one entry here.
+const SUPPORTED_LANGUAGES = [
+{ code: "en", name: "English", flag: "\u{1F1EC}\u{1F1E7}", dir: "ltr" },
+{ code: "es", name: "Espa\u00f1ol", flag: "\u{1F1EA}\u{1F1F8}", dir: "ltr" },
+{ code: "fr", name: "Fran\u00e7ais", flag: "\u{1F1EB}\u{1F1F7}", dir: "ltr" },
+{ code: "de", name: "Deutsch", flag: "\u{1F1E9}\u{1F1EA}", dir: "ltr" },
+{ code: "pt", name: "Portugu\u00eas", flag: "\u{1F1F5}\u{1F1F9}", dir: "ltr" },
+{ code: "it", name: "Italiano", flag: "\u{1F1EE}\u{1F1F9}", dir: "ltr" },
+{ code: "ar", name: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629", flag: "\u{1F1F8}\u{1F1E6}", dir: "rtl" },
+{ code: "zh", name: "\u4e2d\u6587", flag: "\u{1F1E8}\u{1F1F3}", dir: "ltr" },
+{ code: "ja", name: "\u65e5\u672c\u8a9e", flag: "\u{1F1EF}\u{1F1F5}", dir: "ltr" },
+{ code: "ko", name: "\ud55c\uad6d\uc5b4", flag: "\u{1F1F0}\u{1F1F7}", dir: "ltr" },
+{ code: "hi", name: "\u0939\u093f\u0928\u094d\u0926\u0940", flag: "\u{1F1EE}\u{1F1F3}", dir: "ltr" },
+{ code: "tr", name: "T\u00fcrk\u00e7e", flag: "\u{1F1F9}\u{1F1F7}", dir: "ltr" },
+{ code: "id", name: "Bahasa Indonesia", flag: "\u{1F1EE}\u{1F1E9}", dir: "ltr" },
+{ code: "so", name: "Soomaali", flag: "\u{1F1F8}\u{1F1F4}", dir: "ltr" }
+];
+const DEFAULT_LANGUAGE_CODE = "en";
 const prefixes = [
 ["quetta", "Quetta", "Q", 1e30],
 ["ronna", "Ronna", "R", 1e27],
@@ -793,6 +818,7 @@ initTheme();
 initHeroCanvas();
 renderCategoryDropdownMenus();
 initCategoriesNav();
+initLanguageSelector();
 setupResponsiveMobileNav();
 initSeoConverterPage();
 renderOverview();
@@ -1363,6 +1389,97 @@ document.documentElement.dataset.theme = theme;
 localStorage.setItem(storageKeys.theme, theme);
 const themeText = document.getElementById("themeText");
 if (themeText) themeText.textContent = theme === "dark" ? "Light" : "Dark";
+}
+// Returns a valid language code: the stored choice if it's one of
+// SUPPORTED_LANGUAGES, otherwise DEFAULT_LANGUAGE_CODE. This is the only
+// place that reads uc-language from storage, so an invalid/missing/
+// tampered value can never reach the rest of the app - every caller
+// downstream always receives a known-good code.
+function getStoredLanguageCode() {
+let stored = null;
+try {
+stored = localStorage.getItem(storageKeys.language);
+} catch (error) {
+stored = null;
+}
+const match = SUPPORTED_LANGUAGES.find((lang) => lang.code === stored);
+return match ? match.code : DEFAULT_LANGUAGE_CODE;
+}
+// Applies a language code to the document (html lang/dir) and to the
+// selector UI (toggle flag/name, aria-current on the active menu item),
+// and persists the choice. This is Phase 1: it establishes the global
+// language state and direction correctly; it does not translate page
+// content yet (see the task's "prepare for future translation" scope).
+function applyLanguage(code) {
+const lang = SUPPORTED_LANGUAGES.find((entry) => entry.code === code) ||
+SUPPORTED_LANGUAGES.find((entry) => entry.code === DEFAULT_LANGUAGE_CODE);
+document.documentElement.setAttribute("lang", lang.code);
+document.documentElement.setAttribute("dir", lang.dir);
+try {
+localStorage.setItem(storageKeys.language, lang.code);
+} catch (error) {
+/* localStorage unavailable (private mode, quota, etc.) - language
+   still applies for this page view, just won't persist across visits. */
+}
+const flagEl = document.getElementById("langToggleFlag");
+const nameEl = document.getElementById("langToggleName");
+if (flagEl) flagEl.textContent = lang.flag;
+if (nameEl) nameEl.textContent = lang.name;
+const toggle = document.getElementById("langDropdownToggle");
+if (toggle) toggle.setAttribute("aria-label", `Change language, current language ${lang.name}`);
+document.querySelectorAll("#langDropdownMenu [role=\"option\"]").forEach((item) => {
+const isSelected = item.dataset.langCode === lang.code;
+item.setAttribute("aria-selected", String(isSelected));
+item.classList.toggle("is-selected", isSelected);
+});
+}
+// Builds the 14-item language menu from SUPPORTED_LANGUAGES (one source
+// of truth - see its definition above) and wires up selection, restores
+// the previously chosen language on load, and layers keyboard support
+// (Up/Down/Home/End to move between options, Enter/Space to choose,
+// matching the existing Categories dropdown's Escape/click-outside
+// handling already set up generically for every .nav-dropdown in
+// initCategoriesNav() below) on top of that shared open/close behavior.
+function initLanguageSelector() {
+const menu = document.getElementById("langDropdownMenu");
+const toggle = document.getElementById("langDropdownToggle");
+const dropdown = document.getElementById("langDropdown");
+if (!menu || !toggle || !dropdown) return;
+menu.innerHTML = SUPPORTED_LANGUAGES.map((lang) => `<li role="presentation"><button type="button" class="lang-option" role="option" aria-selected="false" data-lang-code="${lang.code}"><span class="lang-option-flag" aria-hidden="true">${lang.flag}</span><span class="lang-option-name">${lang.name}</span></button></li>`).join("");
+applyLanguage(getStoredLanguageCode());
+menu.addEventListener("click", (event) => {
+const option = event.target.closest(".lang-option");
+if (!option) return;
+applyLanguage(option.dataset.langCode);
+dropdown.classList.remove("is-open");
+toggle.setAttribute("aria-expanded", "false");
+toggle.focus();
+});
+menu.addEventListener("keydown", (event) => {
+const options = Array.from(menu.querySelectorAll(".lang-option"));
+const currentIndex = options.indexOf(document.activeElement);
+if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+event.preventDefault();
+const delta = event.key === "ArrowDown" ? 1 : -1;
+const nextIndex = (currentIndex + delta + options.length) % options.length;
+options[nextIndex].focus();
+} else if (event.key === "Home") {
+event.preventDefault();
+options[0].focus();
+} else if (event.key === "End") {
+event.preventDefault();
+options[options.length - 1].focus();
+}
+});
+toggle.addEventListener("keydown", (event) => {
+if (event.key === "ArrowDown") {
+event.preventDefault();
+dropdown.classList.add("is-open");
+toggle.setAttribute("aria-expanded", "true");
+const first = menu.querySelector(".lang-option");
+if (first) first.focus();
+}
+});
 }
 function initCategoriesNav() {
 const dropdowns = document.querySelectorAll(".nav-dropdown");
