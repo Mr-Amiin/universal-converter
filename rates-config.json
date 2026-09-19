@@ -1,6 +1,6 @@
 {
   "provider": "frankfurter",
-  "update_frequency": "hourly",
+  "update_frequency": "30m",
   "base": "USD",
   "api_key_env": "EXCHANGE_RATE_API_KEY",
   "timeout_seconds": 10,
