@@ -1,0 +1,139 @@
+name: Update currency rates
+
+# Runs the existing fetch_rates.py on a schedule so production currency
+# rates stay fresh, without ever calling a live provider from the browser.
+# This workflow only ever touches rates.json. It does not modify app.js,
+# styles.css, any SEO page, sitemap.xml/html, sitemap-data, the SEO
+# registry, fetch_rates.py, or rates-config.json - those are all read
+# (or in most cases not even read) but never written back by this job.
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: currency-rates-update
+  cancel-in-progress: false
+
+jobs:
+  update-rates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Record pre-run rates.json for comparison
+        run: cp rates.json /tmp/rates.json.before
+
+      # fetch_rates.py already implements the "keep previous rates on
+      # failure" behavior itself: on a provider/network error it prints
+      # a message, leaves rates.json completely untouched, and exits
+      # with code 2 (see fetch_rates.py's own except block). A non-zero
+      # exit here fails this step, which fails the job before any
+      # git add/commit/push step below ever runs - so a failed fetch
+      # can never produce a commit.
+      - name: Run fetch_rates.py (uses rates-config.json for provider/settings)
+        run: python3 fetch_rates.py
+
+      # Defense in depth: even though fetch_rates.py's own logic should
+      # already guarantee rates.json is well-formed whenever it exits 0,
+      # this step independently re-parses the file the script actually
+      # wrote and checks the specific structural properties called for
+      # in this task, rather than assuming the script's exit code alone
+      # is sufficient proof of a valid result.
+      - name: Validate rates.json structure
+        run: |
+          python3 - <<'PYEOF'
+          import json, sys
+
+          with open("rates.json", "r", encoding="utf-8") as f:
+              text = f.read()
+
+          try:
+              payload = json.loads(text)
+          except json.JSONDecodeError as exc:
+              print(f"FAIL: rates.json is not valid JSON: {exc}", file=sys.stderr)
+              sys.exit(1)
+
+          if not isinstance(payload, dict):
+              print("FAIL: rates.json top level is not an object.", file=sys.stderr)
+              sys.exit(1)
+
+          if "generated_at" not in payload or not payload["generated_at"]:
+              print("FAIL: rates.json is missing 'generated_at'.", file=sys.stderr)
+              sys.exit(1)
+
+          rates = payload.get("rates")
+          if not isinstance(rates, dict) or len(rates) == 0:
+              print("FAIL: rates.json 'rates' object is missing or empty.", file=sys.stderr)
+              sys.exit(1)
+
+          base = payload.get("base")
+          if not base or base not in rates:
+              print("FAIL: rates.json base currency is missing from its own rates object.", file=sys.stderr)
+              sys.exit(1)
+
+          bad = [
+              code for code, value in rates.items()
+              if not isinstance(value, (int, float)) or isinstance(value, bool) or value <= 0
+          ]
+          if bad:
+              print(f"FAIL: rates.json contains non-numeric or non-positive rates: {bad[:10]}", file=sys.stderr)
+              sys.exit(1)
+
+          # Catches the case where a provider error page (HTML/JSON error
+          # body) somehow still got written instead of real rate data.
+          lowered = text.lower()
+          if "<html" in lowered or "<!doctype" in lowered:
+              print("FAIL: rates.json appears to contain HTML content, not rate data.", file=sys.stderr)
+              sys.exit(1)
+
+          print(f"OK: {len(rates)} currencies, base={base}, generated_at={payload['generated_at']}")
+          PYEOF
+
+      - name: Check whether rates.json actually changed
+        id: diff
+        run: |
+          if cmp -s /tmp/rates.json.before rates.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "rates.json is unchanged - nothing to commit."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "rates.json changed - will commit."
+          fi
+
+      # Belt-and-suspenders: confirm no other tracked file was touched,
+      # even though nothing in this workflow ever writes to anything
+      # other than rates.json. If this ever fails, it means something
+      # unexpected happened upstream, and the job should stop rather
+      # than commit a wider change than intended.
+      - name: Confirm only rates.json is modified
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          changed_files="$(git status --porcelain | awk '{print $2}')"
+          if [ "$changed_files" != "rates.json" ]; then
+            echo "FAIL: expected only rates.json to change, but found:" >&2
+            echo "$changed_files" >&2
+            exit 1
+          fi
+
+      - name: Commit and push updated rates.json
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add rates.json
+          git commit -m "chore: update currency rates"
+          git push origin HEAD:main
