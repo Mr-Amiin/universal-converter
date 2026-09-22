@@ -1668,6 +1668,7 @@ localStorage.setItem(storageKeys.language, lang.code);
    still applies for this page view, just won't persist across visits. */
 }
 applyTranslations(lang.code);
+if (typeof applySeoTranslations === "function") applySeoTranslations(lang.code);
 const flagEl = document.getElementById("langToggleFlag");
 const nameEl = document.getElementById("langToggleName");
 if (flagEl) flagEl.textContent = lang.flag;
@@ -2725,8 +2726,8 @@ const remember = options.remember !== false;
 state.categoryId = category.id;
 state.fromUnitId = category.defaultFrom || category.units[0].id;
 state.toUnitId = category.defaultTo || category.units[Math.min(1, category.units.length - 1)].id;
-byId("activeCategoryName").textContent = category.name;
-byId("activeCategoryDescription").textContent = category.description;
+byId("activeCategoryName").textContent = getCategoryDisplayName(category);
+byId("activeCategoryDescription").textContent = getCategoryDisplayDescription(category);
 byId("activeCategoryKind").textContent = category.type === "currency" ? "Currency calculator" : category.type === "electricity" ? "Electrical calculator" : "Converter";
 populateSelect(byId("fromUnit"), category.units, state.fromUnitId);
 populateSelect(byId("toUnit"), category.units, state.toUnitId);
@@ -2742,7 +2743,7 @@ trackEvent("category_opened", { category: category.id, category_name: category.n
 }
 }
 function populateSelect(select, units, selectedId) {
-select.innerHTML = units.map((item) => `<option value="${escapeAttribute(item.id)}">${escapeHtml(item.name)} (${escapeHtml(item.symbol)})</option>`).join("");
+select.innerHTML = units.map((item) => `<option value="${escapeAttribute(item.id)}">${escapeHtml(getUnitDisplayName(item))} (${escapeHtml(item.symbol)})</option>`).join("");
 select.value = selectedId;
 }
 function updateContextPanel(category) {
@@ -2811,26 +2812,26 @@ return `${prefix}${pluralizeWord(lastWord)}`;
 }
 function buildConversionDescription(category, fromUnit, toUnit) {
 if (!category) return "";
-if (!fromUnit || !toUnit) return category.description;
+if (!fromUnit || !toUnit) return getCategoryDisplayDescription(category);
 if (category.type === "temperature") {
 const fromLabel = fromUnit.id === "kelvin" ? fromUnit.symbol : `\u00b0${fromUnit.symbol}`;
 const toLabel = toUnit.id === "kelvin" ? toUnit.symbol : `\u00b0${toUnit.symbol}`;
-return `Convert ${fromUnit.name} (${fromLabel}) to ${toUnit.name} (${toLabel}) using the standard temperature conversion formula.`;
+return `Convert ${getUnitDisplayName(fromUnit)} (${fromLabel}) to ${getUnitDisplayName(toUnit)} (${toLabel}) using the standard temperature conversion formula.`;
 }
 if (category.type === "currency") {
-return `Convert ${pluralizeUnitName(fromUnit)} (${fromUnit.id}) to ${pluralizeUnitName(toUnit)} (${toUnit.id}) using current exchange rates.`;
+return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.id}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.id}) using current exchange rates.`;
 }
 if (category.type === "fuel") {
-return `Convert ${fromUnit.name} (${fromUnit.symbol}) to ${toUnit.name} (${toUnit.symbol}) using the fuel economy conversion formula.`;
+return `Convert ${getUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${getUnitDisplayName(toUnit)} (${toUnit.symbol}) using the fuel economy conversion formula.`;
 }
 if (category.type === "electricity") {
-return `Convert ${pluralizeUnitName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitName(toUnit)} (${toUnit.symbol}) using the applicable electrical conversion factor.`;
+return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) using the applicable electrical conversion factor.`;
 }
 if (category.type === "multi") {
-return `Convert ${pluralizeUnitName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitName(toUnit)} (${toUnit.symbol}) using the applicable conversion factor for these units.`;
+return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) using the applicable conversion factor for these units.`;
 }
 const tail = CATEGORY_CONVERSION_TAIL[category.id] || "using the exact conversion factor";
-return `Convert ${pluralizeUnitName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitName(toUnit)} (${toUnit.symbol}) ${tail}.`;
+return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) ${tail}.`;
 }
 function updateActiveCategoryDescription(category, fromUnit, toUnit) {
 const node = byId("activeCategoryDescription");
@@ -2873,8 +2874,8 @@ scheduleHistoryRecord(category, amount, from, result.value, to);
 function updateDefinitionPanel(category, from, to, result) {
 const fromDefinition = byId("fromDefinition");
 if (!fromDefinition) return;
-byId("fromDefinition").textContent = from.definition || `${from.name} definition.`;
-byId("toDefinition").textContent = to.definition || `${to.name} definition.`;
+byId("fromDefinition").textContent = getUnitDisplayDefinition(from) || `${getUnitDisplayName(from)} definition.`;
+byId("toDefinition").textContent = getUnitDisplayDefinition(to) || `${getUnitDisplayName(to)} definition.`;
 byId("formulaText").textContent = result && result.formula
 ? result.formula
 : formulaFor(category, from, to);
@@ -4234,5 +4235,510 @@ return escapeHtml(value).replace(/`/g, "&#096;");
 function scrollToConverter() {
 const converter = document.getElementById("converter");
 if (converter) converter.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// ===========================================================================
+// PHASE 3: SEO CONTENT LOCALIZATION
+// ===========================================================================
+// Phase 1/2 (above) translate the shared UI chrome (header, sidebar,
+// converter shell) via TRANSLATIONS/applyTranslations() and explicitly did
+// NOT translate SEO page-specific content (titles, About, FAQ, formulas,
+// definitions) because none of it carries data-i18n markup - see the
+// comment on applyTranslations().
+//
+// This section adds that missing layer WITHOUT touching any of the
+// 327,527 pre-generated static HTML files: the translation data lives in
+// small on-demand JSON files (/i18n-seo/<lang>.json, one per non-English
+// language, fetched only when that language is selected) and this file -
+// the one script every page already includes - re-renders the relevant
+// DOM text at runtime from that data, using the exact same
+// deriveConversionFromPath()/categoryMap/getUnit() machinery the
+// converter widget already uses to know which unit pair a given page is
+// about. English is completely unaffected: nothing is fetched or
+// rewritten unless a non-English language is actively selected, and
+// switching back to English restores the original static text exactly
+// (cached before the first rewrite) rather than re-deriving it.
+//
+// Scope (see PHASE_3_IMPLEMENTATION_REPORT.md for the full breakdown):
+//   - category names/descriptions, unit names/definitions, FAQ items 1-6
+//     (the mechanically-composed ones), "Where it's used"/"difference
+//     between" FAQ items (translation-memory, bounded to the 16 enhanced
+//     pages' researched content), chrome labels (Formula, Related
+//     conversions, etc.), the converter widget's live definition panel
+//     and unit dropdowns.
+//   - deliberately NOT translated in this phase: the long-form
+//     About/Understanding/History/Uses/Sources prose paragraphs (no
+//     per-unit researched translation source exists for those beyond the
+//     16 enhanced pages), and the live calculation result text.
+//   - IDs, symbols, numeric factors, formulas, URLs and slugs are never
+//     translated or altered, per the hard safety rules for this project.
+
+let currentLanguageCode = DEFAULT_LANGUAGE_CODE;
+const SEO_I18N_CACHE = {};
+
+function seoI18nUrl(langCode) {
+// Root-absolute, exactly like the existing /logo.svg and /index.html
+// references in renderSiteHeader() - works the same from any page depth
+// (root pages, one level deep, or two levels deep under a category).
+return `/i18n-seo/${langCode}.json`;
+}
+
+function loadSeoTranslations(langCode) {
+if (langCode === DEFAULT_LANGUAGE_CODE) return Promise.resolve(null);
+if (SEO_I18N_CACHE[langCode]) return Promise.resolve(SEO_I18N_CACHE[langCode]);
+if (typeof fetch !== "function") return Promise.resolve(null);
+return fetch(seoI18nUrl(langCode), { cache: "force-cache" })
+.then((response) => (response && response.ok ? response.json() : null))
+.then((data) => {
+if (data) SEO_I18N_CACHE[langCode] = data;
+return data;
+})
+.catch(() => null);
+}
+
+// ---------------------------------------------------------------------
+// Display-name/definition lookups. Every one of these falls back to the
+// original English value (from the real app.js unit/category catalog)
+// whenever no translation is loaded, cached, or available for that
+// specific id - so a partially-covered language degrades gracefully
+// instead of ever showing "undefined" or a blank string.
+// ---------------------------------------------------------------------
+function currentSeoData() {
+return SEO_I18N_CACHE[currentLanguageCode] || null;
+}
+
+function resolveBaseUnitName(baseId, seoData) {
+return (seoData.units && seoData.units[baseId]) || null;
+}
+
+// Recursive version of the base-id resolver used by composeGeneratedUnitName:
+// unlike resolveBaseUnitName (a single flat dictionary lookup), this also
+// unwraps a square/cubic modifier or an SI prefix around the id before
+// giving up - so a compound-rate numerator/denominator id like
+// "cubic_millimeter" or "kilogram" resolves the same way it would if it
+// were the page's own primary unit, not just when it happens to be
+// individually curated. Still never guesses: every step requires an
+// actual translated prefix/modifier AND a resolved base name.
+function resolveComposableUnitName(id, seoData) {
+if (!id || !seoData) return null;
+const flat = resolveBaseUnitName(id, seoData);
+if (flat) return flat;
+const modMatch = id.match(/^(square|cubic)_(.+)$/);
+if (modMatch && seoData.modifiers && seoData.modifiers[modMatch[1]]) {
+const baseName = resolveComposableUnitName(modMatch[2], seoData);
+if (baseName) return `${seoData.modifiers[modMatch[1]]} ${baseName}`;
+}
+if (seoData.prefixes) {
+const prefixKeys = Object.keys(seoData.prefixes).filter(Boolean).sort((a, b) => b.length - a.length);
+for (const pk of prefixKeys) {
+if (id.indexOf(pk) === 0) {
+const baseName = resolveComposableUnitName(id.slice(pk.length), seoData);
+if (baseName) return `${seoData.prefixes[pk]}${baseName.toLowerCase()}`;
+}
+}
+}
+return null;
+}
+
+// Mirrors app.js's own compositional unit-name generation
+// (metricUnits()/squareMetricUnits()/cubicMetricUnits()/ratioUnits()
+// above): a generated id like "kilojoule", "square_kilometer", or
+// "kilogram_per_cubic_meter" is decomposed into known parts (SI prefix,
+// area/volume modifier, or a numerator_per_denominator pair) and only
+// composed into a translated name when every part already has a real
+// translation loaded - never guessed. The "_per_" branch (compound-rate
+// units: density, flow, speed subset, mass_concentration subset, and the
+// three agriculture rate classes - the 7 ratioUnits() call sites in this
+// file) was previously unhandled here, so those units' names silently
+// stayed in English even when both sides of the ratio were curated; the
+// translated "per" joiner word (seoData.modifiers.per) already existed
+// in every language file but was dead data until this branch was added.
+function composeGeneratedUnitName(unit, seoData) {
+if (!unit || !unit.id || !seoData) return null;
+const id = unit.id;
+const perMatch = id.match(/^(.+?)_per_(.+)$/);
+if (perMatch && seoData.modifiers && seoData.modifiers.per) {
+const topName = resolveComposableUnitName(perMatch[1], seoData);
+const bottomName = resolveComposableUnitName(perMatch[2], seoData);
+if (topName && bottomName) return `${topName} ${seoData.modifiers.per} ${bottomName}`;
+}
+const modMatch = id.match(/^(square|cubic)_(.+)$/);
+if (modMatch && seoData.modifiers && seoData.modifiers[modMatch[1]]) {
+const baseName = resolveComposableUnitName(modMatch[2], seoData);
+if (baseName) return `${seoData.modifiers[modMatch[1]]} ${baseName}`;
+}
+if (seoData.prefixes) {
+const prefixKeys = Object.keys(seoData.prefixes).filter(Boolean).sort((a, b) => b.length - a.length);
+for (const pk of prefixKeys) {
+if (id.indexOf(pk) === 0) {
+const baseName = resolveComposableUnitName(id.slice(pk.length), seoData);
+if (baseName) return `${seoData.prefixes[pk]}${baseName.toLowerCase()}`;
+}
+}
+}
+return null;
+}
+
+function getUnitDisplayName(unit) {
+if (!unit) return "";
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return unit.name;
+const seoData = currentSeoData();
+if (!seoData) return unit.name;
+if (seoData.units && seoData.units[unit.id]) return seoData.units[unit.id];
+// Currency units use their ISO code as `unit.id` (see currencyUnits()),
+// which is the same key seoData.currencyNames is keyed by - reusing that
+// existing dictionary here means currency pages get translated unit
+// names (hero heading, dropdown, "What is a X" FAQ) from the SAME 42
+// curated currency names already shipped, with no new data required.
+// This dictionary previously existed but was never read by any display
+// function, so currency names always fell back to English regardless of
+// curation.
+if (unit.dimension === "currency" && seoData.currencyNames && seoData.currencyNames[unit.id]) {
+return seoData.currencyNames[unit.id];
+}
+return composeGeneratedUnitName(unit, seoData) || unit.name;
+}
+
+// English pluralization (pluralizeUnitName() above) does not apply to
+// translated names, so translated display uses the singular translated
+// form as-is rather than risk appending an English "s" to non-English
+// text.
+function pluralizeUnitDisplayName(unit) {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return pluralizeUnitName(unit);
+return getUnitDisplayName(unit);
+}
+
+function getUnitDisplayDefinition(unit) {
+if (!unit) return "";
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return unit.definition;
+const seoData = currentSeoData();
+if (!seoData) return unit.definition;
+if (seoData.unitDefinitions && seoData.unitDefinitions[unit.id]) return seoData.unitDefinitions[unit.id];
+// Compound-rate units (density, flow, speed subset, mass_concentration
+// subset, and the three agriculture rate classes - the 7 ratioUnits()
+// call sites in this file) all share ONE English definition per
+// dimension rather than a per-unit one (e.g. every density unit's
+// `definition` field is literally "Mass per volume density."). Falling
+// back to a per-dimension translated definition covers all of them with
+// 7 translated sentences instead of requiring thousands of identical
+// per-unit entries.
+if (unit.dimension && seoData.dimensionDefinitions && seoData.dimensionDefinitions[unit.dimension]) {
+return seoData.dimensionDefinitions[unit.dimension];
+}
+return unit.definition;
+}
+
+function getCategoryDisplayName(category) {
+if (!category) return "";
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return category.name;
+const seoData = currentSeoData();
+if (!seoData || !seoData.categories || !seoData.categories[category.id]) return category.name;
+return seoData.categories[category.id].name;
+}
+
+function getCategoryDisplayDescription(category) {
+if (!category) return "";
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return category.description;
+const seoData = currentSeoData();
+if (!seoData || !seoData.categories || !seoData.categories[category.id]) return category.description;
+return seoData.categories[category.id].description;
+}
+
+// ---------------------------------------------------------------------
+// DOM rewriting for the static, pre-generated SEO article (About/FAQ/
+// Related conversions/info-card labels). Every element this touches has
+// its original English text cached in a data attribute the first time it
+// is rewritten, so switching back to English is a restore, never a
+// re-derivation.
+// ---------------------------------------------------------------------
+function originalText(el) {
+if (el.dataset.i18nSeoOriginal === undefined) el.dataset.i18nSeoOriginal = el.textContent;
+return el.dataset.i18nSeoOriginal;
+}
+function setTranslatedText(el, text) {
+if (!el || text == null) return;
+originalText(el);
+el.textContent = text;
+}
+function restoreOriginalSeoText() {
+document.querySelectorAll("[data-i18n-seo-original]").forEach((el) => {
+el.textContent = el.dataset.i18nSeoOriginal;
+});
+}
+
+function fillTemplate(tpl, vars) {
+if (!tpl) return null;
+return tpl.replace(/\{(\w+)\}/g, (match, key) => (vars[key] != null ? vars[key] : match));
+}
+
+// Same as fillTemplate, but returns null instead of text containing a
+// literal, un-substituted "{PLACEHOLDER}" - used anywhere a required
+// variable (e.g. a factor pulled from the page's own original text) might
+// legitimately be missing, so a lookup miss falls back to leaving the
+// original English untouched rather than ever showing raw template syntax
+// to a visitor.
+function fillTemplateSafe(tpl, vars) {
+const filled = fillTemplate(tpl, vars);
+if (filled == null) return null;
+return /\{\w+\}/.test(filled) ? null : filled;
+}
+
+const SEO_CHROME_LABEL_MAP = {
+"Formula": "formula",
+"Simple example": "simple_example",
+"Real-world example": "real_world_example",
+"Conversion table": "conversion_table"
+};
+
+function translateChromeLabels(seoData) {
+const chrome = seoData.chrome || {};
+document.querySelectorAll(".info-card h3").forEach((el) => {
+const key = SEO_CHROME_LABEL_MAP[originalText(el)];
+if (key && chrome[key]) setTranslatedText(el, chrome[key]);
+});
+document.querySelectorAll(".seo-faq > h2").forEach((el) => {
+if (seoData.faq && seoData.faq.faq_heading) setTranslatedText(el, seoData.faq.faq_heading);
+});
+document.querySelectorAll(".page-card h2").forEach((el) => {
+if (originalText(el) === "Related conversions" && chrome.related_conversions) {
+setTranslatedText(el, chrome.related_conversions);
+}
+});
+}
+
+function translateHeroAndAboutHeading(seoData, fromUnit, toUnit) {
+const fromName = getUnitDisplayName(fromUnit);
+const toName = getUnitDisplayName(toUnit);
+const h1 = document.querySelector(".hero-content h1");
+if (h1) setTranslatedText(h1, `${fromName} → ${toName}`);
+const aboutHeading = document.querySelector(".seo-article > h2:first-child");
+const chrome = seoData.chrome || {};
+if (aboutHeading && chrome.about_converting && /^About Converting /.test(originalText(aboutHeading))) {
+setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${toName}`);
+}
+}
+
+// Pulls the actual number the site's own generator already printed out of
+// a FAQ answer's cached ORIGINAL English text, instead of recomputing a
+// value from unit.factor. This matters because unit.factor is not a
+// usable multiplicative ratio for every category: temperature units all
+// carry factor 1 (the real relationship is the Kelvin-offset formula in
+// toKelvin()/fromKelvin()), and fuel-economy "consumption" units need
+// convertFuel()'s inversion, not a straight factor division. Re-deriving
+// those independently in this translation layer risks a *different*
+// kind of mismatch - disagreeing with what the same static generator
+// already committed to the English page (which, on fuel-economy pages,
+// is not even internally consistent between its own FAQ items - see
+// PHASE_3_CORRECTNESS_REMEDIATION_REPORT.md). Reading the number back out
+// of the real sentence guarantees the translated sentence always agrees
+// with the English original, for every category, without hard-coding any
+// category's math here.
+function extractNumberFromOriginal(text) {
+if (!text) return null;
+const m = String(text).match(/equals?\s+(-?[\d,]+(?:\.\d+)?(?:e[+-]?\d+)?)/i);
+return m ? m[1] : null;
+}
+
+// Matches each FAQ item's ENGLISH question against the deterministic
+// shapes the generator actually produces (see PHASE_3_IMPLEMENTATION_REPORT.md
+// for the audited pattern list) rather than assuming a fixed position,
+// since not every page has every optional item (DIFFERENCE_BETWEEN/
+// WHERE_USED are conditional). Anything that doesn't match a known
+// pattern - or a known pattern whose named unit doesn't resolve to this
+// page's actual from/to unit - is left exactly as generated.
+//
+// Three category types (temperature, fuel, currency) produce real
+// English FAQ wording that a single generic template does not reproduce
+// (confirmed against real generated pages during the correctness
+// remediation audit - see PHASE_3_CORRECTNESS_REMEDIATION_REPORT.md).
+// `category` is optional for backward compatibility; when omitted, only
+// the generic templates are used (same behavior as before remediation).
+function translateFaqItems(seoData, fromUnit, toUnit, category) {
+const faq = seoData.faq || {};
+const fromName = getUnitDisplayName(fromUnit);
+const toName = getUnitDisplayName(toUnit);
+const categoryType = category && category.type;
+
+function templateFor(genericKey, specificPrefix) {
+if (specificPrefix && faq[`${specificPrefix}_${genericKey}`]) return faq[`${specificPrefix}_${genericKey}`];
+return faq[genericKey];
+}
+
+function matchUnit(name) {
+const lower = String(name).trim().toLowerCase();
+if (lower === fromUnit.name.toLowerCase() || lower === fromName.toLowerCase()) return fromUnit;
+if (lower === toUnit.name.toLowerCase() || lower === toName.toLowerCase()) return toUnit;
+return null;
+}
+
+const specificPrefix = categoryType === "temperature" ? "temp" : categoryType === "fuel" ? "fuel" : categoryType === "currency" ? "currency" : null;
+
+// q1 ("How many X are in 1 Y?") and q2 ("How do I convert X to Y?")
+// both describe the SAME forward factor, and the generic q2_answer
+// template embeds {FACTOR} too - so this number is found once, up front,
+// from whichever item carries the q1 pattern (its own original text is
+// the only place this page guarantees the number appears in a directly
+// extractable "equals N" shape), and reused for both. Without this,
+// q2 would render with the literal, un-substituted "{FACTOR}" text
+// whenever it is processed without ever having seen q1's answer.
+let sharedFactor = null;
+let sharedInvFactor = null;
+document.querySelectorAll(".seo-faq .faq-item").forEach((item) => {
+const qEl = item.querySelector("h3");
+const aEl = item.querySelector("p");
+if (!qEl || !aEl) return;
+const q = originalText(qEl);
+if (sharedFactor == null && /^How many .+ are in 1 .+\?$/.test(q)) {
+sharedFactor = extractNumberFromOriginal(originalText(aEl));
+} else if (sharedInvFactor == null && /^How do I convert .+ back to .+\?$/.test(q)) {
+sharedInvFactor = extractNumberFromOriginal(originalText(aEl));
+}
+});
+const baseVars = { FROM: fromName, TO: toName, FROM_LOWER: fromName, FACTOR: sharedFactor, INV_FACTOR: sharedInvFactor };
+
+document.querySelectorAll(".seo-faq .faq-item").forEach((item) => {
+const qEl = item.querySelector("h3");
+const aEl = item.querySelector("p");
+if (!qEl || !aEl) return;
+const q = originalText(qEl);
+let m;
+if (/^How many .+ are in 1 .+\?$/.test(q)) {
+if (sharedFactor == null) return;
+const qTpl = templateFor("q1_question", null);
+const aTpl = templateFor("q1_answer", specificPrefix);
+if (qTpl) setTranslatedText(qEl, fillTemplateSafe(qTpl, baseVars));
+if (aTpl) setTranslatedText(aEl, fillTemplateSafe(aTpl, baseVars));
+} else if (/^How do I convert .+ back to .+\?$/.test(q)) {
+if (sharedInvFactor == null) return;
+if (faq.q3_question) setTranslatedText(qEl, fillTemplateSafe(faq.q3_question, baseVars));
+if (faq.q3_answer) setTranslatedText(aEl, fillTemplateSafe(faq.q3_answer, baseVars));
+} else if (/^How do I convert .+ to .+\?$/.test(q)) {
+const qTpl = templateFor("q2_question", null);
+const aTpl = templateFor("q2_answer", specificPrefix);
+if (qTpl) setTranslatedText(qEl, fillTemplateSafe(qTpl, baseVars));
+if (aTpl) setTranslatedText(aEl, fillTemplateSafe(aTpl, baseVars));
+} else if (/^Is the .+ to .+ conversion exact\?$/.test(q)) {
+const qTpl = templateFor("q6_question", null);
+const aTpl = templateFor("q6_answer", specificPrefix);
+if (qTpl) setTranslatedText(qEl, fillTemplateSafe(qTpl, baseVars));
+if (aTpl) setTranslatedText(aEl, fillTemplateSafe(aTpl, baseVars));
+} else if (categoryType === "currency" && /^Is (this|the) exchange rate exact/i.test(q)) {
+if (faq.currency_q6_question) setTranslatedText(qEl, fillTemplateSafe(faq.currency_q6_question, baseVars));
+if (faq.currency_q6_answer) setTranslatedText(aEl, fillTemplateSafe(faq.currency_q6_answer, baseVars));
+} else if ((m = q.match(/^What is a (.+)\?$/))) {
+const unit = matchUnit(m[1]);
+if (unit && faq.q4_question && faq.q4_answer) {
+const uName = getUnitDisplayName(unit);
+const uDef = getUnitDisplayDefinition(unit);
+const vars = { UNIT: uName, SYMBOL: unit.symbol, DEFINITION: uDef };
+setTranslatedText(qEl, fillTemplate(faq.q4_question, vars));
+setTranslatedText(aEl, fillTemplate(faq.q4_answer, vars));
+}
+} else if ((m = q.match(/^Where is the (.+) still used today\?$/))) {
+const unit = matchUnit(m[1]);
+const translatedAnswer = unit && seoData.whereUsed && seoData.whereUsed[unit.id];
+if (unit && translatedAnswer && faq.where_used_question) {
+setTranslatedText(qEl, fillTemplate(faq.where_used_question, { UNIT: getUnitDisplayName(unit) }));
+setTranslatedText(aEl, translatedAnswer);
+}
+} else if ((m = q.match(/^What is the difference between (.+)\?$/))) {
+const pairKey = m[1];
+const translatedAnswer = seoData.differenceBetween && seoData.differenceBetween[pairKey];
+if (translatedAnswer && faq.difference_question) {
+setTranslatedText(qEl, fillTemplate(faq.difference_question, { PAIR: pairKey }));
+setTranslatedText(aEl, translatedAnswer);
+}
+}
+});
+}
+
+// Related-conversion links are translated purely by re-deriving each
+// link's own from/to unit pair from its href with the SAME
+// deriveConversionFromPath() the converter widget already relies on -
+// matching the "mechanically derived from translated unit names, no
+// separate related-conversion prose dataset required" architecture.
+function translateRelatedConversions(seoData) {
+if (typeof deriveConversionFromPath !== "function") return;
+document.querySelectorAll(".page-card .seo-link-list a").forEach((a) => {
+const href = a.getAttribute("href");
+if (!href) return;
+const linkCtx = deriveConversionFromPath(href);
+if (linkCtx) {
+const category = categoryMap.get(linkCtx.categoryId);
+const fromUnit = category && getUnit(category, linkCtx.fromUnitId);
+const toUnit = category && getUnit(category, linkCtx.toUnitId);
+if (fromUnit && toUnit) {
+setTranslatedText(a, `${getUnitDisplayName(fromUnit)} → ${getUnitDisplayName(toUnit)}`);
+return;
+}
+}
+// "All {category} conversions" style link (single-segment href like
+// "/area/") - translate using the category name only.
+const segments = href.split("/").filter(Boolean);
+if (segments.length === 1) {
+const idForSlug = { "flow-rate": "flow", "fuel-economy": "fuel_economy" };
+const categoryId = idForSlug[segments[0]] || segments[0];
+const category = categoryMap.get(categoryId);
+const chrome = seoData.chrome || {};
+if (category && chrome.all_conversions_prefix) {
+setTranslatedText(a, `${chrome.all_conversions_prefix} ${getCategoryDisplayName(category)}`);
+}
+}
+});
+}
+
+function hydrateSeoArticleContent(seoData) {
+if (!document.body || !document.body.classList.contains("seo-page")) return;
+translateChromeLabels(seoData);
+translateRelatedConversions(seoData);
+if (typeof deriveConversionFromPath !== "function") return;
+const ctx = deriveConversionFromPath(typeof preferredPagePath === "function" ? preferredPagePath() : location.pathname)
+|| deriveConversionFromPath(location.pathname);
+if (!ctx) return;
+const category = categoryMap.get(ctx.categoryId);
+if (!category) return;
+const fromUnit = getUnit(category, ctx.fromUnitId);
+const toUnit = getUnit(category, ctx.toUnitId);
+if (!fromUnit || !toUnit) return;
+translateHeroAndAboutHeading(seoData, fromUnit, toUnit);
+translateFaqItems(seoData, fromUnit, toUnit, category);
+}
+
+// Re-renders the interactive converter widget's language-aware pieces
+// (unit dropdown labels, active category name, definition panel, formula)
+// for the currently selected category/unit pair, reusing the exact
+// selection already in `state` - it does not change what is selected,
+// only how its labels are displayed.
+function refreshLanguageAwareConverter() {
+if (typeof state === "undefined" || !state || !state.categoryId) return;
+if (!byId("fromUnit") || !byId("toUnit")) return;
+const category = categoryMap.get(state.categoryId);
+if (!category) return;
+const nameEl = byId("activeCategoryName");
+if (nameEl) nameEl.textContent = getCategoryDisplayName(category);
+populateSelect(byId("fromUnit"), category.units, state.fromUnitId);
+populateSelect(byId("toUnit"), category.units, state.toUnitId);
+if (typeof updateConversion === "function") updateConversion();
+}
+
+// Entry point, called from applyLanguage() every time the language
+// selector changes (including on initial page load, from the stored
+// preference). English performs a cheap restore/refresh with no network
+// request; every other language lazy-loads its JSON once, then caches it
+// for the rest of the session.
+function applySeoTranslations(langCode) {
+currentLanguageCode = langCode;
+if (langCode === DEFAULT_LANGUAGE_CODE) {
+restoreOriginalSeoText();
+refreshLanguageAwareConverter();
+return;
+}
+loadSeoTranslations(langCode).then((seoData) => {
+// The user may have switched languages again while this was in
+// flight - never apply a stale response on top of a newer choice.
+if (currentLanguageCode !== langCode || !seoData) return;
+hydrateSeoArticleContent(seoData);
+refreshLanguageAwareConverter();
+});
 }
 }());
