@@ -470,23 +470,23 @@
 
     <section class="trust-section" aria-labelledby="trustTitle">
       <div>
-        <p class="eyebrow">Launch status</p>
-        <h2 id="trustTitle">Accurate, transparent, and ready for daily use</h2>
-        <p>Last updated: June 25, 2026. Core SI, metric, imperial, and US customary factors are documented in the converter definitions. Currency rates use offline sample values unless a live API endpoint is connected.</p>
+        <p class="eyebrow" data-i18n="homepage.launchStatusEyebrow">Launch status</p>
+        <h2 id="trustTitle" data-i18n="homepage.launchStatusHeading">Accurate, transparent, and ready for daily use</h2>
+        <p id="launchStatusUpdated" data-i18n-date="June 25, 2026">Last updated: June 25, 2026. Core SI, metric, imperial, and US customary factors are documented in the converter definitions. Currency rates use offline sample values unless a live API endpoint is connected.</p>
       </div>
       <div class="trust-grid">
         <article>
-          <h3>Accuracy information</h3>
-          <p>Exact constants are used where definitions are fixed, including inch, foot, mile, pound, acre, liter, and US gallon relationships.</p>
+          <h3 data-i18n="homepage.launchStatusAccuracyTitle">Accuracy information</h3>
+          <p data-i18n="homepage.launchStatusAccuracyDesc">Exact constants are used where definitions are fixed, including inch, foot, mile, pound, acre, liter, and US gallon relationships.</p>
         </article>
         <article>
-          <h3>Source references</h3>
-          <p>SI definitions are aligned with BIPM and NIST references. Non-SI common units include definition notes in the result panel.</p>
-          <a href="references.html">View references</a>
+          <h3 data-i18n="homepage.launchStatusSourcesTitle">Source references</h3>
+          <p data-i18n="homepage.launchStatusSourcesDesc">SI definitions are aligned with BIPM and NIST references. Non-SI common units include definition notes in the result panel.</p>
+          <a href="references.html" data-i18n="homepage.launchStatusViewReferencesLink">View references</a>
         </article>
         <article>
-          <h3>Offline and private</h3>
-          <p>Converters run in the browser. Favorites, history, newsletter signups, and custom units stay on this device for privacy.</p>
+          <h3 data-i18n="homepage.launchStatusOfflineTitle">Offline and private</h3>
+          <p data-i18n="homepage.launchStatusOfflineDesc">Converters run in the browser. Favorites, history, newsletter signups, and custom units stay on this device for privacy.</p>
         </article>
       </div>
     </section>
@@ -500,42 +500,42 @@
     <section class="tools-section" id="calculators" aria-labelledby="calculatorsTitle">
       <div class="section-heading">
         <div>
-          <h2 id="calculatorsTitle">Business, finance, health, date, and agriculture calculators</h2>
+          <h2 id="calculatorsTitle" data-i18n="calculators.heading">Business, finance, health, date, and agriculture calculators</h2>
         </div>
         <div class="metric-strip">
-          <span>Currency API ready</span>
-          <span>Agriculture suite</span>
-          <span>Client-side results</span>
+          <span data-i18n="calculators.badgeCurrency">Currency API ready</span>
+          <span data-i18n="calculators.badgeAgriculture">Agriculture suite</span>
+          <span data-i18n="calculators.badgeClientSide">Client-side results</span>
         </div>
       </div>
       <div class="calculator-grid">
         <section class="calculator-card" id="currencyTool">
-          <h3>Currency converter</h3>
-          <p>API-ready exchange calculator with offline fallback rates.</p>
+          <h3 data-i18n="calculators.currencyTitle">Currency converter</h3>
+          <p data-i18n="calculators.currencyDesc">API-ready exchange calculator with offline fallback rates.</p>
           <div class="calc-row">
             <input id="currencyAmount" type="number" value="100" min="0" step="any" aria-label="Currency amount">
             <select id="currencyFrom" aria-label="Currency from"></select>
             <select id="currencyTo" aria-label="Currency to"></select>
           </div>
           <label class="calc-api">API endpoint (optional)
-            <input id="currencyApi" type="url" placeholder="Paste a live exchange rate API URL">
+            <input id="currencyApi" type="url" placeholder="Paste a live exchange rate API URL" data-i18n="calculators.currencyApiPlaceholder" data-i18n-attr="placeholder">
           </label>
-          <button type="button" id="currencyRefresh">Refresh rates</button>
+          <button type="button" id="currencyRefresh" data-i18n="calculators.currencyRefreshButton">Refresh rates</button>
           <strong id="currencyResult">100 USD = 92 EUR</strong>
         </section>
 
         <section class="calculator-card">
-          <h3>Percentage calculator</h3>
+          <h3 data-i18n="calculators.percentageTitle">Percentage calculator</h3>
           <div class="calc-row">
             <input id="percentValue" type="number" value="15" step="any" aria-label="Percent value">
-            <span>% of</span>
+            <span data-i18n="calculators.percentOfLabel">% of</span>
             <input id="percentBase" type="number" value="200" step="any" aria-label="Base value">
           </div>
           <strong id="percentageResult">30</strong>
         </section>
 
         <section class="calculator-card">
-          <h3>BMI calculator</h3>
+          <h3 data-i18n="calculators.bmiTitle">BMI calculator</h3>
           <div class="calc-row">
             <input id="bmiWeight" type="number" value="70" min="0" step="any" aria-label="Weight in kilograms">
             <input id="bmiHeight" type="number" value="175" min="0" step="any" aria-label="Height in centimeters">
@@ -544,15 +544,15 @@
         </section>
 
         <section class="calculator-card">
-          <h3>Age calculator</h3>
-          <label>Birth date
+          <h3 data-i18n="calculators.ageTitle">Age calculator</h3>
+          <label class="calc-birthdate">Birth date
             <input id="birthDate" type="date">
           </label>
           <strong id="ageResult">Choose a date</strong>
         </section>
 
         <section class="calculator-card">
-          <h3>Date calculator</h3>
+          <h3 data-i18n="calculators.dateCalcTitle">Date calculator</h3>
           <div class="calc-row">
             <input id="dateStart" type="date" aria-label="Start date">
             <input id="dateOffset" type="number" value="30" step="1" aria-label="Days to add">
@@ -561,7 +561,7 @@
         </section>
 
         <section class="calculator-card">
-          <h3>Mortgage calculator</h3>
+          <h3 data-i18n="calculators.mortgageTitle">Mortgage calculator</h3>
           <div class="calc-row three">
             <input id="loanAmount" type="number" value="250000" min="0" step="any" aria-label="Loan amount">
             <input id="loanRate" type="number" value="6.5" min="0" step="any" aria-label="Annual interest rate">
@@ -571,7 +571,7 @@
         </section>
 
         <section class="calculator-card">
-          <h3>Fuel cost calculator</h3>
+          <h3 data-i18n="calculators.fuelCostTitle">Fuel cost calculator</h3>
           <div class="calc-row three">
             <input id="tripDistance" type="number" value="300" min="0" step="any" aria-label="Trip distance">
             <input id="fuelEfficiency" type="number" value="8" min="0" step="any" aria-label="Liters per 100 kilometers">
@@ -581,12 +581,12 @@
         </section>
 
         <section class="calculator-card agriculture-suite">
-          <h3>Agriculture calculators</h3>
+          <h3 data-i18n="calculators.agricultureTitle">Agriculture calculators</h3>
           <div class="agri-tabs" role="tablist" aria-label="Agriculture calculators">
-            <button type="button" class="active" id="agriTab-seed" role="tab" aria-selected="true" aria-controls="agriPanel-seed" tabindex="0" data-agri-tool="seed">Seed</button>
-            <button type="button" id="agriTab-fertilizer" role="tab" aria-selected="false" aria-controls="agriPanel-fertilizer" tabindex="-1" data-agri-tool="fertilizer">Fertilizer</button>
-            <button type="button" id="agriTab-yield" role="tab" aria-selected="false" aria-controls="agriPanel-yield" tabindex="-1" data-agri-tool="yield">Yield</button>
-            <button type="button" id="agriTab-irrigation" role="tab" aria-selected="false" aria-controls="agriPanel-irrigation" tabindex="-1" data-agri-tool="irrigation">Irrigation</button>
+            <button type="button" class="active" id="agriTab-seed" role="tab" aria-selected="true" aria-controls="agriPanel-seed" tabindex="0" data-agri-tool="seed" data-i18n="calculators.tabSeed">Seed</button>
+            <button type="button" id="agriTab-fertilizer" role="tab" aria-selected="false" aria-controls="agriPanel-fertilizer" tabindex="-1" data-agri-tool="fertilizer" data-i18n="calculators.tabFertilizer">Fertilizer</button>
+            <button type="button" id="agriTab-yield" role="tab" aria-selected="false" aria-controls="agriPanel-yield" tabindex="-1" data-agri-tool="yield" data-i18n="calculators.tabYield">Yield</button>
+            <button type="button" id="agriTab-irrigation" role="tab" aria-selected="false" aria-controls="agriPanel-irrigation" tabindex="-1" data-agri-tool="irrigation" data-i18n="calculators.tabIrrigation">Irrigation</button>
           </div>
           <div class="agri-tool active" id="agriPanel-seed" role="tabpanel" aria-labelledby="agriTab-seed" tabindex="0" data-agri-panel="seed">
             <div class="calc-row three">
@@ -627,9 +627,9 @@
     <section class="category-overview" aria-labelledby="categoryOverviewTitle">
       <div class="section-heading">
         <div>
-          <h2 id="categoryOverviewTitle">All converter categories</h2>
+          <h2 id="categoryOverviewTitle" data-i18n="homepage.categoryOverviewHeading">All converter categories</h2>
         </div>
-        <a class="text-link" href="guides.html">Read conversion guides</a>
+        <a class="text-link" href="guides.html" data-i18n="homepage.readConversionGuidesLink">Read conversion guides</a>
       </div>
       <div class="overview-grid" id="overviewGrid"></div>
     </section>
@@ -637,64 +637,64 @@
     <section class="why-section" aria-labelledby="whyTitle">
       <div class="section-heading">
         <div>
-          <h2 id="whyTitle">Why Universal Converter</h2>
+          <h2 id="whyTitle" data-i18n="homepage.whyHeading">Why Universal Converter</h2>
         </div>
       </div>
       <div class="future-grid">
-        <article><h3>Thousands of units</h3><p>Search SI, imperial, US customary, scientific, engineering, cooking, agriculture, astronomy, and digital units from one place.</p></article>
-        <article><h3>Accurate formulas</h3><p>Exact constants are used where definitions are fixed, and formula notes explain how each result is calculated.</p></article>
-        <article><h3>Free forever</h3><p>The core converter is built as a free public utility with no account required for everyday conversions.</p></article>
-        <article><h3>Works on mobile</h3><p>The calculator, category grid, search, guides, and SEO pages are responsive for phones, tablets, and desktops.</p></article>
-        <article><h3>Offline support</h3><p>PWA caching keeps the main app shell available after installation on a hosted HTTP or HTTPS deployment.</p></article>
+        <article><h3 data-i18n="homepage.whyThousandsTitle">Thousands of units</h3><p data-i18n="homepage.whyThousandsDesc">Search SI, imperial, US customary, scientific, engineering, cooking, agriculture, astronomy, and digital units from one place.</p></article>
+        <article><h3 data-i18n="homepage.whyFormulasTitle">Accurate formulas</h3><p data-i18n="homepage.whyFormulasDesc">Exact constants are used where definitions are fixed, and formula notes explain how each result is calculated.</p></article>
+        <article><h3 data-i18n="homepage.whyFreeTitle">Free forever</h3><p data-i18n="homepage.whyFreeDesc">The core converter is built as a free public utility with no account required for everyday conversions.</p></article>
+        <article><h3 data-i18n="homepage.whyMobileTitle">Works on mobile</h3><p data-i18n="homepage.whyMobileDesc">The calculator, category grid, search, guides, and SEO pages are responsive for phones, tablets, and desktops.</p></article>
+        <article><h3 data-i18n="homepage.whyOfflineTitle">Offline support</h3><p data-i18n="homepage.whyOfflineDesc">PWA caching keeps the main app shell available after installation on a hosted HTTP or HTTPS deployment.</p></article>
       </div>
     </section>
 
     <section class="guide-preview" aria-labelledby="guidePreviewTitle">
       <div class="guide-copy">
-        <p class="eyebrow">SEO-ready utility pages</p>
-        <h2 id="guidePreviewTitle">Helpful guides for common calculations</h2>
-        <p>Explore focused pages for unit converter searches, calculator tasks, high-value measurement searches, formulas, FAQs, and related conversion clusters.</p>
+        <p class="eyebrow" data-i18n="homepage.guidePreviewEyebrow">SEO-ready utility pages</p>
+        <h2 id="guidePreviewTitle" data-i18n="homepage.guidePreviewHeading">Helpful guides for common calculations</h2>
+        <p data-i18n="homepage.guidePreviewDesc">Explore focused pages for unit converter searches, calculator tasks, high-value measurement searches, formulas, FAQs, and related conversion clusters.</p>
       </div>
       <div class="guide-links">
-        <a href="unit-converter.html">Unit converter</a>
-        <a href="online-calculator.html">Online calculator</a>
-        <a href="meter-to-feet/">Meter to feet</a>
-        <a href="kg-to-lbs/">kg to lbs</a>
-        <a href="liter-to-gallon/">Liter to gallon</a>
-        <a href="celsius-to-fahrenheit/">Celsius to Fahrenheit</a>
-        <a href="acre-to-hectare/">Acre to hectare</a>
-        <a href="gb-to-mb/">GB to MB</a>
-        <a href="metric-vs-imperial.html">Metric vs Imperial</a>
-        <a href="digital-storage-units-guide.html">Digital storage</a>
+        <a href="unit-converter.html" data-i18n="homepage.linkUnitConverter">Unit converter</a>
+        <a href="online-calculator.html" data-i18n="homepage.linkOnlineCalculator">Online calculator</a>
+        <a href="meter-to-feet/" data-i18n="homepage.linkMeterToFeet">Meter to feet</a>
+        <a href="kg-to-lbs/" data-i18n="homepage.linkKgToLbs">kg to lbs</a>
+        <a href="liter-to-gallon/" data-i18n="homepage.linkLiterToGallon">Liter to gallon</a>
+        <a href="celsius-to-fahrenheit/" data-i18n="homepage.linkCelsiusToFahrenheit">Celsius to Fahrenheit</a>
+        <a href="acre-to-hectare/" data-i18n="homepage.linkAcreToHectare">Acre to hectare</a>
+        <a href="gb-to-mb/" data-i18n="homepage.linkGbToMb">GB to MB</a>
+        <a href="metric-vs-imperial.html" data-i18n="homepage.linkMetricVsImperial">Metric vs Imperial</a>
+        <a href="digital-storage-units-guide.html" data-i18n="homepage.linkDigitalStorage">Digital storage</a>
       </div>
     </section>
 
     <section class="business-section" id="business" aria-labelledby="businessTitle">
       <div class="section-heading">
         <div>
-          <h2 id="businessTitle">Built like a real conversion business</h2>
+          <h2 id="businessTitle" data-i18n="homepage.businessHeading">Built like a real conversion business</h2>
         </div>
       </div>
       <div class="future-grid">
         <article>
-          <h3>Privacy-friendly analytics</h3>
-          <p>Usage is measured anonymously to guide improvements, without selling or sharing personal conversion data.</p>
+          <h3 data-i18n="homepage.businessAnalyticsTitle">Privacy-friendly analytics</h3>
+          <p data-i18n="homepage.businessAnalyticsDesc">Usage is measured anonymously to guide improvements, without selling or sharing personal conversion data.</p>
         </article>
         <article>
-          <h3>Ad-supported and free</h3>
-          <p>Display ads are placed to stay out of the way of the calculator so every tool stays free to use.</p>
+          <h3 data-i18n="homepage.businessAdsTitle">Ad-supported and free</h3>
+          <p data-i18n="homepage.businessAdsDesc">Display ads are placed to stay out of the way of the calculator so every tool stays free to use.</p>
         </article>
         <article>
-          <h3>Stay in the loop</h3>
-          <p>Subscribe to hear about new calculators, unit coverage, and conversion guides as they launch.</p>
+          <h3 data-i18n="homepage.businessStayLoopTitle">Stay in the loop</h3>
+          <p data-i18n="homepage.businessStayLoopDesc">Subscribe to hear about new calculators, unit coverage, and conversion guides as they launch.</p>
         </article>
         <article>
-          <h3>Custom units</h3>
-          <p>Save unit definitions that matter to your team or industry, right in your browser.</p>
+          <h3 data-i18n="homepage.businessCustomUnitsTitle">Custom units</h3>
+          <p data-i18n="homepage.businessCustomUnitsDesc">Save unit definitions that matter to your team or industry, right in your browser.</p>
         </article>
         <article>
-          <h3>More on the way</h3>
-          <p>Saved workspaces, an ad-free mode, team calculators, CSV export, and API access are on the roadmap.</p>
+          <h3 data-i18n="homepage.businessMoreTitle">More on the way</h3>
+          <p data-i18n="homepage.businessMoreDesc">Saved workspaces, an ad-free mode, team calculators, CSV export, and API access are on the roadmap.</p>
         </article>
       </div>
     </section>
@@ -702,63 +702,63 @@
     <section class="faq-section" aria-labelledby="faqTitle">
       <div class="section-heading">
         <div>
-          <h2 id="faqTitle">Common questions</h2>
+          <h2 id="faqTitle" data-i18n="homepage.faqHeading">Common questions</h2>
         </div>
       </div>
       <div class="page-grid">
-        <article class="page-card"><h3>What is a unit converter?</h3><p>A unit converter changes a number from one measurement unit to another, such as kilograms to pounds, meters to feet, Celsius to Fahrenheit, or GB to MB.</p></article>
-        <article class="page-card"><h3>How accurate are conversions?</h3><p>Many relationships are exact by definition, including inch, foot, pound, liter, and US gallon relationships. Approximate units are described in their definitions.</p></article>
-        <article class="page-card"><h3>Which units are supported?</h3><p>Universal Converter supports metric, imperial, US customary, scientific, engineering, digital, cooking, agriculture, astronomy, electricity, pressure, energy, and more.</p></article>
-        <article class="page-card"><h3>Is Universal Converter free to use?</h3><p>Yes. The core converter, calculators, category browser, and guides are free to use with no account or sign-up required.</p></article>
-        <article class="page-card"><h3>Does it work without an internet connection?</h3><p>Once installed as a PWA, the main app shell is cached and stays available offline. Favorites, history, and custom units are also stored on your device.</p></article>
+        <article class="page-card"><h3 data-i18n="homepage.faqQ1">What is a unit converter?</h3><p data-i18n="homepage.faqA1">A unit converter changes a number from one measurement unit to another, such as kilograms to pounds, meters to feet, Celsius to Fahrenheit, or GB to MB.</p></article>
+        <article class="page-card"><h3 data-i18n="homepage.faqQ2">How accurate are conversions?</h3><p data-i18n="homepage.faqA2">Many relationships are exact by definition, including inch, foot, pound, liter, and US gallon relationships. Approximate units are described in their definitions.</p></article>
+        <article class="page-card"><h3 data-i18n="homepage.faqQ3">Which units are supported?</h3><p data-i18n="homepage.faqA3">Universal Converter supports metric, imperial, US customary, scientific, engineering, digital, cooking, agriculture, astronomy, electricity, pressure, energy, and more.</p></article>
+        <article class="page-card"><h3 data-i18n="homepage.faqQ4">Is Universal Converter free to use?</h3><p data-i18n="homepage.faqA4">Yes. The core converter, calculators, category browser, and guides are free to use with no account or sign-up required.</p></article>
+        <article class="page-card"><h3 data-i18n="homepage.faqQ5">Does it work without an internet connection?</h3><p data-i18n="homepage.faqA5">Once installed as a PWA, the main app shell is cached and stays available offline. Favorites, history, and custom units are also stored on your device.</p></article>
       </div>
     </section>
 
     <section class="featured-guides" aria-labelledby="featuredGuidesTitle">
       <div class="section-heading">
         <div>
-          <h2 id="featuredGuidesTitle">Learn the conversions behind the numbers</h2>
+          <h2 id="featuredGuidesTitle" data-i18n="homepage.featuredGuidesHeading">Learn the conversions behind the numbers</h2>
         </div>
-        <a class="text-link" href="guides.html">View all guides</a>
+        <a class="text-link" href="guides.html" data-i18n="homepage.viewAllGuidesLink">View all guides</a>
       </div>
       <div class="blog-grid">
         <article>
-          <span>Digital storage</span>
-          <h3>How Digital Storage Units Work</h3>
-          <p>Bits, bytes, decimal prefixes, binary prefixes, and the difference between GB to MB and GiB to MiB.</p>
-          <a href="digital-storage-units-guide.html">Read guide</a>
+          <span data-i18n="homepage.fgTag1">Digital storage</span>
+          <h3 data-i18n="homepage.fgTitle1">How Digital Storage Units Work</h3>
+          <p data-i18n="homepage.fgDesc1">Bits, bytes, decimal prefixes, binary prefixes, and the difference between GB to MB and GiB to MiB.</p>
+          <a href="digital-storage-units-guide.html" data-i18n="homepage.readGuideLink">Read guide</a>
         </article>
         <article>
-          <span>Temperature</span>
-          <h3>Celsius vs Fahrenheit</h3>
-          <p>The difference between Celsius and Fahrenheit, conversion formulas, and worked examples.</p>
-          <a href="celsius-vs-fahrenheit.html">Read guide</a>
+          <span data-i18n="homepage.fgTag2">Temperature</span>
+          <h3 data-i18n="homepage.fgTitle2">Celsius vs Fahrenheit</h3>
+          <p data-i18n="homepage.fgDesc2">The difference between Celsius and Fahrenheit, conversion formulas, and worked examples.</p>
+          <a href="celsius-vs-fahrenheit.html" data-i18n="homepage.readGuideLink">Read guide</a>
         </article>
         <article>
-          <span>Measurement systems</span>
-          <h3>Metric vs Imperial System</h3>
-          <p>Common units, exact relationships, and practical tips for converting between metric and imperial.</p>
-          <a href="metric-vs-imperial.html">Read guide</a>
+          <span data-i18n="homepage.fgTag3">Measurement systems</span>
+          <h3 data-i18n="homepage.fgTitle3">Metric vs Imperial System</h3>
+          <p data-i18n="homepage.fgDesc3">Common units, exact relationships, and practical tips for converting between metric and imperial.</p>
+          <a href="metric-vs-imperial.html" data-i18n="homepage.readGuideLink">Read guide</a>
         </article>
         <article>
-          <span>Pressure</span>
-          <h3>How Pressure Units Work</h3>
-          <p>Pascal, bar, PSI, atmosphere, and mmHg compared, with practical conversion formulas.</p>
-          <a href="pressure-units-guide.html">Read guide</a>
+          <span data-i18n="homepage.fgTag4">Pressure</span>
+          <h3 data-i18n="homepage.fgTitle4">How Pressure Units Work</h3>
+          <p data-i18n="homepage.fgDesc4">Pascal, bar, PSI, atmosphere, and mmHg compared, with practical conversion formulas.</p>
+          <a href="pressure-units-guide.html" data-i18n="homepage.readGuideLink">Read guide</a>
         </article>
       </div>
     </section>
 
     <section class="newsletter-section" aria-labelledby="newsletterTitle">
       <div>
-        <p class="eyebrow">Newsletter</p>
-        <h2 id="newsletterTitle">Get new calculators and conversion guides</h2>
-        <p>Subscribe for new formula guides, agriculture tools, engineering units, and platform updates.</p>
+        <p class="eyebrow" data-i18n="homepage.newsletterEyebrow">Newsletter</p>
+        <h2 id="newsletterTitle" data-i18n="homepage.newsletterHeading">Get new calculators and conversion guides</h2>
+        <p data-i18n="homepage.newsletterDesc">Subscribe for new formula guides, agriculture tools, engineering units, and platform updates.</p>
       </div>
       <form id="newsletterForm" class="newsletter-form">
-        <label class="visually-hidden" for="newsletterEmail">Email</label>
-        <input id="newsletterEmail" type="email" placeholder="Enter your email address" required>
-        <button type="submit">Subscribe</button>
+        <label class="visually-hidden" for="newsletterEmail" data-i18n="homepage.newsletterEmailLabel">Email</label>
+        <input id="newsletterEmail" type="email" placeholder="Enter your email address" required data-i18n="homepage.newsletterPlaceholder" data-i18n-attr="placeholder">
+        <button type="submit" data-i18n="homepage.newsletterSubscribeButton">Subscribe</button>
         <span id="newsletterStatus" aria-live="polite"></span>
       </form>
     </section>
@@ -766,17 +766,17 @@
     <section class="blog-system" id="blog" aria-labelledby="blogTitle">
       <div class="section-heading">
         <div>
-          <h2 id="blogTitle">More conversion guides and tips</h2>
+          <h2 id="blogTitle" data-i18n="homepage.moreGuidesHeading">More conversion guides and tips</h2>
         </div>
-        <a class="text-link" href="guides.html">View all guides</a>
+        <a class="text-link" href="guides.html" data-i18n="homepage.viewAllGuidesLink">View all guides</a>
       </div>
       <div class="blog-grid" id="blogGrid"></div>
     </section>
 
     <section class="mission-section" aria-labelledby="missionTitle">
-      <p class="eyebrow">Our mission</p>
-      <h2 id="missionTitle">Making every measurement easy to trust</h2>
-      <p>Universal Converter exists to make unit conversion fast, accurate, and free for everyone, from students and cooks to engineers and business teams. We publish exact definitions and formulas alongside every result, keep the core tool free with no account required, and build for offline use so a converter is available wherever you're working.</p>
+      <p class="eyebrow" data-i18n="homepage.missionEyebrow">Our mission</p>
+      <h2 id="missionTitle" data-i18n="homepage.missionHeading">Making every measurement easy to trust</h2>
+      <p data-i18n="homepage.missionBody">Universal Converter exists to make unit conversion fast, accurate, and free for everyone, from students and cooks to engineers and business teams. We publish exact definitions and formulas alongside every result, keep the core tool free with no account required, and build for offline use so a converter is available wherever you're working.</p>
     </section>
   </main>
 
@@ -786,16 +786,16 @@
         <img src="logo.svg" alt="" width="32" height="32">
         <span>Universal Converter</span>
       </a>
-      <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+      <p data-i18n="homepage.footerTagline">Fast conversions for everyday, scientific, engineering, and business units.</p>
     </div>
     <nav aria-label="Footer navigation">
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="privacy.html">Privacy Policy</a>
-      <a href="terms.html">Terms</a>
-      <a href="references.html">References</a>
-      <a href="guides.html">Guides</a><a href="sitemap.html">Sitemap</a>
-      <a href="#calculators">Calculators</a>
+      <a href="about.html" data-i18n="homepage.footerAbout">About</a>
+      <a href="contact.html" data-i18n="homepage.footerContact">Contact</a>
+      <a href="privacy.html" data-i18n="homepage.footerPrivacy">Privacy Policy</a>
+      <a href="terms.html" data-i18n="homepage.footerTerms">Terms</a>
+      <a href="references.html" data-i18n="homepage.footerReferences">References</a>
+      <a href="guides.html" data-i18n="homepage.footerGuides">Guides</a><a href="sitemap.html" data-i18n="homepage.footerSitemap">Sitemap</a>
+      <a href="#calculators" data-i18n="homepage.footerCalculators">Calculators</a>
     </nav>
   </footer>
 

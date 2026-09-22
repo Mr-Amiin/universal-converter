@@ -111,6 +111,8 @@ banner.className = "uc-cookie-banner";
 banner.setAttribute("role", "dialog");
 banner.setAttribute("aria-live", "polite");
 banner.setAttribute("aria-label", "Cookie notice");
+banner.setAttribute("data-i18n", "cookieBanner.ariaLabel");
+banner.setAttribute("data-i18n-attr", "aria-label");
 var privacyHref = (function () {
 var depth = (window.location.pathname.match(/\//g) || []).length - 1;
 if (depth <= 0) return "privacy.html";
@@ -119,11 +121,11 @@ for (var d = 0; d < depth; d += 1) prefix += "../";
 return prefix + "privacy.html";
 })();
 banner.innerHTML =
-'<p class="uc-cookie-banner-text">We use cookies to improve your experience and to enable Google Analytics and Google AdSense. By continuing, you agree to our ' +
-'<a href="' + privacyHref + '">Privacy Policy</a>.</p>' +
+'<p class="uc-cookie-banner-text"><span data-i18n="cookieBanner.messagePrefix">We use cookies to improve your experience and to enable Google Analytics and Google AdSense. By continuing, you agree to our </span>' +
+'<a href="' + privacyHref + '" data-i18n="cookieBanner.privacyPolicyLink">Privacy Policy</a><span data-i18n="cookieBanner.messageSuffix">.</span></p>' +
 '<div class="uc-cookie-banner-actions">' +
-'<button type="button" class="uc-cookie-decline" id="ucCookieDecline">Decline</button>' +
-'<button type="button" class="uc-cookie-accept" id="ucCookieAccept">Accept</button>' +
+'<button type="button" class="uc-cookie-decline" id="ucCookieDecline" data-i18n="cookieBanner.decline">Decline</button>' +
+'<button type="button" class="uc-cookie-accept" id="ucCookieAccept" data-i18n="cookieBanner.accept">Accept</button>' +
 "</div>";
 document.body.appendChild(banner);
 document.getElementById("ucCookieAccept").addEventListener("click", function () {
