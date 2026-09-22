@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Uzunluk",
-   "description": "SI, emperyal, ABD ve bilimsel uzunluk birimlerini dönüştürün."
+   "description": "SI, emperyal, ABD ve bilimsel uzunluk birimlerini dönüştürün.",
+   "note": "Uzunluk, temel birim olarak metre kullanır."
   },
   "area": {
    "name": "Alan",
-   "description": "Arazi, inşaat, harita ve bilim için alan birimlerini dönüştürün."
+   "description": "Arazi, inşaat, harita ve bilim için alan birimlerini dönüştürün.",
+   "note": "Alan, temel birim olarak metrekare kullanır."
   },
   "volume": {
    "name": "Hacim",
-   "description": "Metrik, ABD, emperyal ve mutfak hacim birimlerini dönüştürün."
+   "description": "Metrik, ABD, emperyal ve mutfak hacim birimlerini dönüştürün.",
+   "note": "Hacim, temel birim olarak metreküp kullanır."
   },
   "weight": {
    "name": "Ağırlık/Kütle",
-   "description": "SI kütle, emperyal ağırlık ve atomik birimleri dönüştürün."
+   "description": "SI kütle, emperyal ağırlık ve atomik birimleri dönüştürün.",
+   "note": "Kütle, temel birim olarak kilogram kullanır."
   },
   "temperature": {
    "name": "Sıcaklık",
-   "description": "Celsius, Fahrenheit, Kelvin ve tarihsel ölçekleri dönüştürün."
+   "description": "Celsius, Fahrenheit, Kelvin ve tarihsel ölçekleri dönüştürün.",
+   "note": "Sıcaklık dönüşümleri dahili olarak mutlak Kelvin kullanır."
   },
   "time": {
    "name": "Zaman",
-   "description": "SI zamanı, sivil zaman ve tarihsel süreleri dönüştürün."
+   "description": "SI zamanı, sivil zaman ve tarihsel süreleri dönüştürün.",
+   "note": "Aylar ve yıllar ortalama Gregoryen yılını kullanır."
   },
   "speed": {
    "name": "Hız",
-   "description": "Kara, havacılık ve deniz hız birimlerini dönüştürün."
+   "description": "Kara, havacılık ve deniz hız birimlerini dönüştürün.",
+   "note": "Hız, temel birim olarak saniyede metre kullanır."
   },
   "pressure": {
    "name": "Basınç",
-   "description": "Paskal, bar, PSI ve atmosfer birimlerini dönüştürün."
+   "description": "Paskal, bar, PSI ve atmosfer birimlerini dönüştürün.",
+   "note": "Basınç, temel birim olarak paskal kullanır."
   },
   "energy": {
    "name": "Enerji",
-   "description": "Jul, kalori, kilovatsaat ve BTU dönüştürün."
+   "description": "Jul, kalori, kilovatsaat ve BTU dönüştürün.",
+   "note": "Enerji, temel birim olarak jul kullanır."
   },
   "power": {
    "name": "Güç",
-   "description": "Vat, beygir gücü ve soğutma tonu dönüştürün."
+   "description": "Vat, beygir gücü ve soğutma tonu dönüştürün.",
+   "note": "Güç, temel birim olarak vat kullanır."
   },
   "force": {
    "name": "Kuvvet",
-   "description": "Newton, dyne ve pound-kuvvet dönüştürün."
+   "description": "Newton, dyne ve pound-kuvvet dönüştürün.",
+   "note": "Kuvvet, temel birim olarak newton kullanır."
   },
   "torque": {
    "name": "Tork",
-   "description": "Newton metre, pound-feet ve pound-inch dönüştürün."
+   "description": "Newton metre, pound-feet ve pound-inch dönüştürün.",
+   "note": "Tork, temel birim olarak newton-metre kullanır."
   },
   "electricity": {
    "name": "Elektrik",
-   "description": "Elektrik birimlerini dönüştürün, gerilim, akım ve direnci hesaplayın."
+   "description": "Elektrik birimlerini dönüştürün, gerilim, akım ve direnci hesaplayın.",
+   "note": "Elektrik birimleri aynı grup içinde doğrudan dönüştürülür; gruplar arası sonuçlarda Ohm yasası ve zaman bağlamı kullanılır."
   },
   "frequency": {
    "name": "Frekans",
-   "description": "Hertz, frekans önekleri ve RPM dönüştürün."
+   "description": "Hertz, frekans önekleri ve RPM dönüştürün.",
+   "note": "Frekans, temel birim olarak hertz kullanır."
   },
   "digital": {
    "name": "Dijital Depolama",
-   "description": "Bit, bayt ve ondalık/ikili depolamayı dönüştürün."
+   "description": "Bit, bayt ve ondalık/ikili depolamayı dönüştürün.",
+   "note": "Dijital depolama, temel birim olarak bit kullanır."
   },
   "angle": {
    "name": "Açı",
-   "description": "Radyan, derece, grad ve tur dönüştürün."
+   "description": "Radyan, derece, grad ve tur dönüştürün.",
+   "note": "Açı, temel birim olarak radyan kullanır."
   },
   "density": {
    "name": "Yoğunluk",
-   "description": "Binlerce kütle/hacim yoğunluk kombinasyonunu dönüştürün."
+   "description": "Binlerce kütle/hacim yoğunluk kombinasyonunu dönüştürün.",
+   "note": "Yoğunluk, temel birim olarak metreküp başına kilogram kullanır."
   },
   "flow": {
    "name": "Akış Hızı",
-   "description": "Metrik ve ABD hacimsel akış hızlarını dönüştürün."
+   "description": "Metrik ve ABD hacimsel akış hızlarını dönüştürün.",
+   "note": "Akış hızı, temel birim olarak saniyede metreküp kullanır."
   },
   "fuel_economy": {
    "name": "Yakıt Ekonomisi",
-   "description": "MPG, km/L ve L/100 km dönüştürün."
+   "description": "MPG, km/L ve L/100 km dönüştürün.",
+   "note": "Yakıt ekonomisi, mesafe/hacim ile hacim/mesafe biçimleri arasında dönüşüm yapar."
   },
   "radiation": {
    "name": "Radyasyon",
-   "description": "Radyoaktivite ve soğurulan doz birimlerini dönüştürün."
+   "description": "Radyoaktivite ve soğurulan doz birimlerini dönüştürün.",
+   "note": "Radyasyon dönüşümleri boyuta bağlıdır."
   },
   "chemistry": {
    "name": "Kimya",
-   "description": "Konsantrasyon, molarite ve laboratuvar birimlerini dönüştürün."
+   "description": "Konsantrasyon, molarite ve laboratuvar birimlerini dönüştürün.",
+   "note": "Kimya dönüşümleri boyuta bağlıdır."
   },
   "agriculture": {
    "name": "Tarım",
-   "description": "Dönüm, hektar, verim ve tarım birimlerini dönüştürün."
+   "description": "Dönüm, hektar, verim ve tarım birimlerini dönüştürün.",
+   "note": "Tarım dönüşümleri alan, kütle oranı, sıvı oranı ve verim oranına göre gruplandırılır."
   },
   "cooking": {
    "name": "Yemek Pişirme",
-   "description": "Tariflerde kullanılan hacim ve kütle birimlerini dönüştürün."
+   "description": "Tariflerde kullanılan hacim ve kütle birimlerini dönüştürün.",
+   "note": "Mutfak birimleri boyuta bağlıdır çünkü hacim ve kütlenin karışması için yoğunluk gerekir."
   },
   "astronomy": {
    "name": "Astronomi",
-   "description": "Astronomik uzunluk, kütle ve zaman birimlerini dönüştürün."
+   "description": "Astronomik uzunluk, kütle ve zaman birimlerini dönüştürün.",
+   "note": "Astronomi dönüşümleri boyuta bağlıdır."
   },
   "engineering": {
    "name": "Mühendislik",
-   "description": "Mühendislikte kullanılan gerilme, kuvvet, tork ve enerji birimlerini dönüştürün."
+   "description": "Mühendislikte kullanılan gerilme, kuvvet, tork ve enerji birimlerini dönüştürün.",
+   "note": "Mühendislik birimleri uyumlu boyutlara göre gruplandırılır."
   },
   "scientific": {
    "name": "Bilimsel",
-   "description": "SI türetilmiş ve bilimsel laboratuvar birimlerini dönüştürün."
+   "description": "SI türetilmiş ve bilimsel laboratuvar birimlerini dönüştürün.",
+   "note": "Bilimsel birimler uyumlu boyutlara göre gruplandırılır."
   },
   "currency": {
    "name": "Para Birimi",
-   "description": "Çevrimdışı yedek kurlarla başlıca dünya para birimlerini dönüştürün."
+   "description": "Çevrimdışı yedek kurlarla başlıca dünya para birimlerini dönüştürün.",
+   "note": "Canlı API kurları yüklenmediği sürece döviz kurları çevrimdışı tahminlerdir."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Dönüşüm tablosu",
   "related_conversions": "İlgili dönüşümler",
   "about_converting": "Dönüştürme hakkında:",
-  "all_conversions_prefix": "Tüm"
+  "all_conversions_prefix": "Tüm",
+  "convert_description_template": "{FROM} ({FROM_SYMBOL}) birimini {TO} ({TO_SYMBOL}) birimine, {TAIL} dönüştürün.",
+  "tail_exact_factor": "tam dönüşüm faktörü kullanılarak",
+  "tail_appropriate_factor": "uygun dönüşüm faktörü kullanılarak",
+  "tail_exact_international_factor": "tam uluslararası dönüşüm faktörü kullanılarak",
+  "tail_density_factor": "geçerli yoğunluk dönüşüm faktörü kullanılarak",
+  "tail_flow_factor": "geçerli akış hızı dönüşüm faktörü kullanılarak",
+  "tail_temperature_formula": "standart sıcaklık dönüşüm formülü kullanılarak",
+  "tail_currency_rates": "güncel döviz kurları kullanılarak",
+  "tail_fuel_formula": "yakıt ekonomisi dönüşüm formülü kullanılarak",
+  "tail_electrical_factor": "geçerli elektriksel dönüşüm faktörü kullanılarak",
+  "tail_applicable_factor": "bu birimler için geçerli dönüşüm faktörü kullanılarak",
+  "formula_temperature": "Kaynak sıcaklığı Kelvin'e dönüştürür, ardından Kelvin'i hedef ölçeğe dönüştürür.",
+  "formula_fuel": "Gerektiğinde tüketim birimlerini tersine çevirerek yakıt ekonomisini mesafe/hacim olarak normalleştirir.",
+  "formula_multi_cross": "Doğrudan dönüşüm için aynı ölçüm ailesinden birimler seçin.",
+  "formula_electricity_cross": "Ohm yasasını ve zamana bağlı enerjiyi kullanır: V = I x R, P = V x I, E = P x zaman.",
+  "formula_same_unit": "Kaynak ve hedef birimler aynıdır.",
+  "formula_input_word": "girilen değer",
+  "formula_factor_template": "Sonuç = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "ABD Doları",

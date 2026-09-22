@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Longitud",
-   "description": "Convierte unidades de longitud del SI, imperiales, estadounidenses y científicas."
+   "description": "Convierte unidades de longitud del SI, imperiales, estadounidenses y científicas.",
+   "note": "Longitud usa el metro como unidad base."
   },
   "area": {
    "name": "Área",
-   "description": "Convierte unidades de área para terrenos, construcción, mapas y ciencia."
+   "description": "Convierte unidades de área para terrenos, construcción, mapas y ciencia.",
+   "note": "Área usa el metro cuadrado como unidad base."
   },
   "volume": {
    "name": "Volumen",
-   "description": "Convierte unidades de volumen métricas, estadounidenses, imperiales y de cocina."
+   "description": "Convierte unidades de volumen métricas, estadounidenses, imperiales y de cocina.",
+   "note": "Volumen usa el metro cúbico como unidad base."
   },
   "weight": {
    "name": "Peso/Masa",
-   "description": "Convierte unidades de masa del SI, peso imperial y unidades atómicas."
+   "description": "Convierte unidades de masa del SI, peso imperial y unidades atómicas.",
+   "note": "Masa usa el kilogramo como unidad base."
   },
   "temperature": {
    "name": "Temperatura",
-   "description": "Convierte Celsius, Fahrenheit, Kelvin y escalas históricas."
+   "description": "Convierte Celsius, Fahrenheit, Kelvin y escalas históricas.",
+   "note": "Las conversiones de temperatura usan Kelvin absoluto internamente."
   },
   "time": {
    "name": "Tiempo",
-   "description": "Convierte tiempo del SI, tiempo civil y duraciones históricas."
+   "description": "Convierte tiempo del SI, tiempo civil y duraciones históricas.",
+   "note": "Los meses y años usan el año gregoriano promedio."
   },
   "speed": {
    "name": "Velocidad",
-   "description": "Convierte unidades de velocidad para carretera, aviación y marina."
+   "description": "Convierte unidades de velocidad para carretera, aviación y marina.",
+   "note": "Velocidad usa los metros por segundo como unidad base."
   },
   "pressure": {
    "name": "Presión",
-   "description": "Convierte pascales, bares, PSI y atmósferas."
+   "description": "Convierte pascales, bares, PSI y atmósferas.",
+   "note": "Presión usa el pascal como unidad base."
   },
   "energy": {
    "name": "Energía",
-   "description": "Convierte julios, calorías, kilovatios-hora y BTU."
+   "description": "Convierte julios, calorías, kilovatios-hora y BTU.",
+   "note": "Energía usa el julio como unidad base."
   },
   "power": {
    "name": "Potencia",
-   "description": "Convierte vatios, caballos de fuerza y toneladas de refrigeración."
+   "description": "Convierte vatios, caballos de fuerza y toneladas de refrigeración.",
+   "note": "Potencia usa el vatio como unidad base."
   },
   "force": {
    "name": "Fuerza",
-   "description": "Convierte newtons, dinas y libras-fuerza."
+   "description": "Convierte newtons, dinas y libras-fuerza.",
+   "note": "Fuerza usa el newton como unidad base."
   },
   "torque": {
    "name": "Par motor",
-   "description": "Convierte newton-metro, libra-pie y libra-pulgada."
+   "description": "Convierte newton-metro, libra-pie y libra-pulgada.",
+   "note": "Torque usa el newton-metro como unidad base."
   },
   "electricity": {
    "name": "Electricidad",
-   "description": "Convierte unidades eléctricas y calcula voltaje, corriente y resistencia."
+   "description": "Convierte unidades eléctricas y calcula voltaje, corriente y resistencia.",
+   "note": "Las unidades eléctricas se convierten directamente dentro de la misma familia; los resultados entre familias distintas usan la ley de Ohm y el contexto de tiempo."
   },
   "frequency": {
    "name": "Frecuencia",
-   "description": "Convierte hercios, prefijos de frecuencia y RPM."
+   "description": "Convierte hercios, prefijos de frecuencia y RPM.",
+   "note": "Frecuencia usa el hercio como unidad base."
   },
   "digital": {
    "name": "Almacenamiento digital",
-   "description": "Convierte bits, bytes y almacenamiento decimal o binario."
+   "description": "Convierte bits, bytes y almacenamiento decimal o binario.",
+   "note": "Almacenamiento digital usa los bits como unidad base."
   },
   "angle": {
    "name": "Ángulo",
-   "description": "Convierte radianes, grados, gradianes y revoluciones."
+   "description": "Convierte radianes, grados, gradianes y revoluciones.",
+   "note": "Ángulo usa los radianes como unidad base."
   },
   "density": {
    "name": "Densidad",
-   "description": "Convierte miles de combinaciones de densidad masa/volumen."
+   "description": "Convierte miles de combinaciones de densidad masa/volumen.",
+   "note": "Densidad usa los kilogramos por metro cúbico como unidad base."
   },
   "flow": {
    "name": "Caudal",
-   "description": "Convierte caudales volumétricos en unidades métricas y estadounidenses."
+   "description": "Convierte caudales volumétricos en unidades métricas y estadounidenses.",
+   "note": "Caudal usa los metros cúbicos por segundo como unidad base."
   },
   "fuel_economy": {
    "name": "Consumo de combustible",
-   "description": "Convierte MPG, km/L y L/100 km."
+   "description": "Convierte MPG, km/L y L/100 km.",
+   "note": "El consumo de combustible convierte entre formatos de distancia por volumen y volumen por distancia."
   },
   "radiation": {
    "name": "Radiación",
-   "description": "Convierte unidades de radiactividad y dosis absorbida."
+   "description": "Convierte unidades de radiactividad y dosis absorbida.",
+   "note": "Las conversiones de radiación dependen de la dimensión."
   },
   "chemistry": {
    "name": "Química",
-   "description": "Convierte unidades de concentración, molaridad y laboratorio."
+   "description": "Convierte unidades de concentración, molaridad y laboratorio.",
+   "note": "Las conversiones de química dependen de la dimensión."
   },
   "agriculture": {
    "name": "Agricultura",
-   "description": "Convierte acres, hectáreas, rendimiento y unidades agrícolas."
+   "description": "Convierte acres, hectáreas, rendimiento y unidades agrícolas.",
+   "note": "Las conversiones de agricultura se agrupan por área, tasa de masa, tasa líquida y tasa de rendimiento."
   },
   "cooking": {
    "name": "Cocina",
-   "description": "Convierte unidades de volumen y masa usadas en recetas."
+   "description": "Convierte unidades de volumen y masa usadas en recetas.",
+   "note": "Las unidades de cocina dependen de la dimensión porque el volumen y la masa requieren densidad para mezclarse."
   },
   "astronomy": {
    "name": "Astronomía",
-   "description": "Convierte unidades astronómicas de longitud, masa y tiempo."
+   "description": "Convierte unidades astronómicas de longitud, masa y tiempo.",
+   "note": "Las conversiones de astronomía dependen de la dimensión."
   },
   "engineering": {
    "name": "Ingeniería",
-   "description": "Convierte unidades comunes de esfuerzo, fuerza, torque y energía."
+   "description": "Convierte unidades comunes de esfuerzo, fuerza, torque y energía.",
+   "note": "Las unidades de ingeniería se agrupan por dimensiones compatibles."
   },
   "scientific": {
    "name": "Científico",
-   "description": "Convierte unidades derivadas del SI y de laboratorio científico."
+   "description": "Convierte unidades derivadas del SI y de laboratorio científico.",
+   "note": "Las unidades científicas se agrupan por dimensiones compatibles."
   },
   "currency": {
    "name": "Divisa",
-   "description": "Convierte las principales monedas mundiales con tasas de respaldo sin conexión."
+   "description": "Convierte las principales monedas mundiales con tasas de respaldo sin conexión.",
+   "note": "Las tasas de moneda son estimaciones sin conexión a menos que se carguen tasas en vivo de la API."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Tabla de conversión",
   "related_conversions": "Conversiones relacionadas",
   "about_converting": "Acerca de convertir",
-  "all_conversions_prefix": "Todas las conversiones de"
+  "all_conversions_prefix": "Todas las conversiones de",
+  "convert_description_template": "Convierte {FROM} ({FROM_SYMBOL}) a {TO} ({TO_SYMBOL}) {TAIL}.",
+  "tail_exact_factor": "usando el factor de conversión exacto",
+  "tail_appropriate_factor": "usando el factor de conversión adecuado",
+  "tail_exact_international_factor": "usando el factor de conversión internacional exacto",
+  "tail_density_factor": "usando el factor de conversión de densidad aplicable",
+  "tail_flow_factor": "usando el factor de conversión de caudal aplicable",
+  "tail_temperature_formula": "usando la fórmula estándar de conversión de temperatura",
+  "tail_currency_rates": "usando los tipos de cambio actuales",
+  "tail_fuel_formula": "usando la fórmula de conversión de consumo de combustible",
+  "tail_electrical_factor": "usando el factor de conversión eléctrico aplicable",
+  "tail_applicable_factor": "usando el factor de conversión aplicable para estas unidades",
+  "formula_temperature": "Convierte la temperatura de origen a Kelvin y luego convierte Kelvin a la escala de destino.",
+  "formula_fuel": "Normaliza el consumo de combustible a distancia por volumen, invirtiendo las unidades de consumo cuando sea necesario.",
+  "formula_multi_cross": "Elige unidades de la misma familia de medición para una conversión directa.",
+  "formula_electricity_cross": "Usa la ley de Ohm y la energía en el tiempo: V = I x R, P = V x I, E = P x tiempo.",
+  "formula_same_unit": "Las unidades de origen y destino son idénticas.",
+  "formula_input_word": "el valor ingresado",
+  "formula_factor_template": "Resultado = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "Dólar estadounidense",

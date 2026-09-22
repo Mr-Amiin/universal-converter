@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Länge",
-   "description": "Längeneinheiten aus SI, imperialem und US-System sowie der Wissenschaft umrechnen."
+   "description": "Längeneinheiten aus SI, imperialem und US-System sowie der Wissenschaft umrechnen.",
+   "note": "Länge verwendet den Meter als Basiseinheit."
   },
   "area": {
    "name": "Fläche",
-   "description": "Flächeneinheiten für Grundstücke, Bau, Kartierung und Wissenschaft umrechnen."
+   "description": "Flächeneinheiten für Grundstücke, Bau, Kartierung und Wissenschaft umrechnen.",
+   "note": "Fläche verwendet den Quadratmeter als Basiseinheit."
   },
   "volume": {
    "name": "Volumen",
-   "description": "Volumeneinheiten aus metrischem, US-, imperialem und Küchensystem umrechnen."
+   "description": "Volumeneinheiten aus metrischem, US-, imperialem und Küchensystem umrechnen.",
+   "note": "Volumen verwendet den Kubikmeter als Basiseinheit."
   },
   "weight": {
    "name": "Gewicht/Masse",
-   "description": "SI-Masseneinheiten, imperiales Gewicht und atomare Einheiten umrechnen."
+   "description": "SI-Masseneinheiten, imperiales Gewicht und atomare Einheiten umrechnen.",
+   "note": "Masse verwendet das Kilogramm als Basiseinheit."
   },
   "temperature": {
    "name": "Temperatur",
-   "description": "Celsius, Fahrenheit, Kelvin und historische Skalen umrechnen."
+   "description": "Celsius, Fahrenheit, Kelvin und historische Skalen umrechnen.",
+   "note": "Temperaturumrechnungen verwenden intern absolutes Kelvin."
   },
   "time": {
    "name": "Zeit",
-   "description": "SI-Zeit, bürgerliche Zeit und historische Zeitspannen umrechnen."
+   "description": "SI-Zeit, bürgerliche Zeit und historische Zeitspannen umrechnen.",
+   "note": "Monate und Jahre verwenden das durchschnittliche gregorianische Jahr."
   },
   "speed": {
    "name": "Geschwindigkeit",
-   "description": "Geschwindigkeitseinheiten für Straße, Luftfahrt und Schifffahrt umrechnen."
+   "description": "Geschwindigkeitseinheiten für Straße, Luftfahrt und Schifffahrt umrechnen.",
+   "note": "Geschwindigkeit verwendet Meter pro Sekunde als Basiseinheit."
   },
   "pressure": {
    "name": "Druck",
-   "description": "Pascal, Bar, PSI und Atmosphären umrechnen."
+   "description": "Pascal, Bar, PSI und Atmosphären umrechnen.",
+   "note": "Druck verwendet das Pascal als Basiseinheit."
   },
   "energy": {
    "name": "Energie",
-   "description": "Joule, Kalorien, Kilowattstunden und BTU umrechnen."
+   "description": "Joule, Kalorien, Kilowattstunden und BTU umrechnen.",
+   "note": "Energie verwendet das Joule als Basiseinheit."
   },
   "power": {
    "name": "Leistung",
-   "description": "Watt, PS und Kühlleistung in Tonnen umrechnen."
+   "description": "Watt, PS und Kühlleistung in Tonnen umrechnen.",
+   "note": "Leistung verwendet das Watt als Basiseinheit."
   },
   "force": {
    "name": "Kraft",
-   "description": "Newton, Dyn und Pfund-Kraft umrechnen."
+   "description": "Newton, Dyn und Pfund-Kraft umrechnen.",
+   "note": "Kraft verwendet das Newton als Basiseinheit."
   },
   "torque": {
    "name": "Drehmoment",
-   "description": "Newtonmeter, Pfund-Fuß und Pfund-Zoll umrechnen."
+   "description": "Newtonmeter, Pfund-Fuß und Pfund-Zoll umrechnen.",
+   "note": "Drehmoment verwendet das Newtonmeter als Basiseinheit."
   },
   "electricity": {
    "name": "Elektrizität",
-   "description": "Elektrische Einheiten umrechnen und Spannung, Strom und Widerstand berechnen."
+   "description": "Elektrische Einheiten umrechnen und Spannung, Strom und Widerstand berechnen.",
+   "note": "Elektrische Einheiten werden innerhalb derselben Familie direkt umgerechnet; familienübergreifende Ergebnisse verwenden das Ohmsche Gesetz und den Zeitkontext."
   },
   "frequency": {
    "name": "Frequenz",
-   "description": "Hertz, Frequenzpräfixe und U/min umrechnen."
+   "description": "Hertz, Frequenzpräfixe und U/min umrechnen.",
+   "note": "Frequenz verwendet das Hertz als Basiseinheit."
   },
   "digital": {
    "name": "Digitaler Speicher",
-   "description": "Bits, Bytes sowie dezimalen und binären Speicher umrechnen."
+   "description": "Bits, Bytes sowie dezimalen und binären Speicher umrechnen.",
+   "note": "Digitaler Speicher verwendet Bits als Basiseinheit."
   },
   "angle": {
    "name": "Winkel",
-   "description": "Radiant, Grad, Neugrad und Umdrehungen umrechnen."
+   "description": "Radiant, Grad, Neugrad und Umdrehungen umrechnen.",
+   "note": "Winkel verwendet Radiant als Basiseinheit."
   },
   "density": {
    "name": "Dichte",
-   "description": "Tausende Masse-Volumen-Dichtekombinationen umrechnen."
+   "description": "Tausende Masse-Volumen-Dichtekombinationen umrechnen.",
+   "note": "Dichte verwendet Kilogramm pro Kubikmeter als Basiseinheit."
   },
   "flow": {
    "name": "Durchflussrate",
-   "description": "Volumenstromraten in metrischen und US-Einheiten umrechnen."
+   "description": "Volumenstromraten in metrischen und US-Einheiten umrechnen.",
+   "note": "Durchfluss verwendet Kubikmeter pro Sekunde als Basiseinheit."
   },
   "fuel_economy": {
    "name": "Kraftstoffverbrauch",
-   "description": "MPG, km/L und L/100 km umrechnen."
+   "description": "MPG, km/L und L/100 km umrechnen.",
+   "note": "Der Kraftstoffverbrauch rechnet zwischen Strecke-pro-Volumen- und Volumen-pro-Strecke-Formaten um."
   },
   "radiation": {
    "name": "Strahlung",
-   "description": "Radioaktivitäts- und Dosiseinheiten umrechnen."
+   "description": "Radioaktivitäts- und Dosiseinheiten umrechnen.",
+   "note": "Strahlungsumrechnungen sind dimensionsabhängig."
   },
   "chemistry": {
    "name": "Chemie",
-   "description": "Konzentrations-, Molaritäts- und Laboreinheiten umrechnen."
+   "description": "Konzentrations-, Molaritäts- und Laboreinheiten umrechnen.",
+   "note": "Chemieumrechnungen sind dimensionsabhängig."
   },
   "agriculture": {
    "name": "Landwirtschaft",
-   "description": "Acres, Hektar, Ertrag und landwirtschaftliche Einheiten umrechnen."
+   "description": "Acres, Hektar, Ertrag und landwirtschaftliche Einheiten umrechnen.",
+   "note": "Landwirtschaftliche Umrechnungen sind nach Fläche, Massenrate, Flüssigkeitsrate und Ertragsrate gruppiert."
   },
   "cooking": {
    "name": "Kochen",
-   "description": "Volumen- und Masseneinheiten für Rezepte umrechnen."
+   "description": "Volumen- und Masseneinheiten für Rezepte umrechnen.",
+   "note": "Kücheneinheiten sind dimensionsabhängig, da Volumen und Masse zum Mischen die Dichte benötigen."
   },
   "astronomy": {
    "name": "Astronomie",
-   "description": "Astronomische Längen-, Massen- und Zeiteinheiten umrechnen."
+   "description": "Astronomische Längen-, Massen- und Zeiteinheiten umrechnen.",
+   "note": "Astronomische Umrechnungen sind dimensionsabhängig."
   },
   "engineering": {
    "name": "Technik",
-   "description": "Gängige Einheiten für Spannung, Kraft, Drehmoment und Energie umrechnen."
+   "description": "Gängige Einheiten für Spannung, Kraft, Drehmoment und Energie umrechnen.",
+   "note": "Technische Einheiten sind nach kompatiblen Dimensionen gruppiert."
   },
   "scientific": {
    "name": "Wissenschaftlich",
-   "description": "SI-abgeleitete und wissenschaftliche Laboreinheiten umrechnen."
+   "description": "SI-abgeleitete und wissenschaftliche Laboreinheiten umrechnen.",
+   "note": "Wissenschaftliche Einheiten sind nach kompatiblen Dimensionen gruppiert."
   },
   "currency": {
    "name": "Währung",
-   "description": "Wichtige Weltwährungen mit Offline-Fallback-Kursen umrechnen."
+   "description": "Wichtige Weltwährungen mit Offline-Fallback-Kursen umrechnen.",
+   "note": "Währungskurse sind Offline-Schätzungen, sofern keine Live-API-Kurse geladen wurden."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Umrechnungstabelle",
   "related_conversions": "Verwandte Umrechnungen",
   "about_converting": "Über die Umrechnung von",
-  "all_conversions_prefix": "Alle Umrechnungen für"
+  "all_conversions_prefix": "Alle Umrechnungen für",
+  "convert_description_template": "Rechnen Sie {FROM} ({FROM_SYMBOL}) in {TO} ({TO_SYMBOL}) um, {TAIL}.",
+  "tail_exact_factor": "unter Verwendung des exakten Umrechnungsfaktors",
+  "tail_appropriate_factor": "unter Verwendung des passenden Umrechnungsfaktors",
+  "tail_exact_international_factor": "unter Verwendung des exakten internationalen Umrechnungsfaktors",
+  "tail_density_factor": "unter Verwendung des zutreffenden Dichte-Umrechnungsfaktors",
+  "tail_flow_factor": "unter Verwendung des zutreffenden Durchfluss-Umrechnungsfaktors",
+  "tail_temperature_formula": "unter Verwendung der Standardformel zur Temperaturumrechnung",
+  "tail_currency_rates": "unter Verwendung der aktuellen Wechselkurse",
+  "tail_fuel_formula": "unter Verwendung der Formel zur Umrechnung des Kraftstoffverbrauchs",
+  "tail_electrical_factor": "unter Verwendung des zutreffenden elektrischen Umrechnungsfaktors",
+  "tail_applicable_factor": "unter Verwendung des zutreffenden Umrechnungsfaktors für diese Einheiten",
+  "formula_temperature": "Wandelt die Quelltemperatur in Kelvin um und rechnet Kelvin dann in die Zielskala um.",
+  "formula_fuel": "Normalisiert den Kraftstoffverbrauch auf Strecke pro Volumen und kehrt dabei bei Bedarf Verbrauchseinheiten um.",
+  "formula_multi_cross": "Wählen Sie Einheiten aus derselben Maßfamilie für eine direkte Umrechnung.",
+  "formula_electricity_cross": "Verwendet das Ohmsche Gesetz und Energie über Zeit: V = I x R, P = V x I, E = P x Zeit.",
+  "formula_same_unit": "Quell- und Zieleinheit sind identisch.",
+  "formula_input_word": "der eingegebene Wert",
+  "formula_factor_template": "Ergebnis = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "US-Dollar",

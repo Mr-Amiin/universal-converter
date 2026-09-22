@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "長さ",
-   "description": "SI、ヤード・ポンド法、米国慣用単位、科学的な長さの単位を変換します。"
+   "description": "SI、ヤード・ポンド法、米国慣用単位、科学的な長さの単位を変換します。",
+   "note": "長さはメートルを基本単位として使用します。"
   },
   "area": {
    "name": "面積",
-   "description": "土地・建築・測量・科学向けの面積単位を変換します。"
+   "description": "土地・建築・測量・科学向けの面積単位を変換します。",
+   "note": "面積は平方メートルを基本単位として使用します。"
   },
   "volume": {
    "name": "体積",
-   "description": "メートル法、米国式、ヤード・ポンド法、料理用の体積単位を変換します。"
+   "description": "メートル法、米国式、ヤード・ポンド法、料理用の体積単位を変換します。",
+   "note": "体積は立方メートルを基本単位として使用します。"
   },
   "weight": {
    "name": "重量/質量",
-   "description": "SI質量、ヤード・ポンド法の重量、原子単位を変換します。"
+   "description": "SI質量、ヤード・ポンド法の重量、原子単位を変換します。",
+   "note": "質量はキログラムを基本単位として使用します。"
   },
   "temperature": {
    "name": "温度",
-   "description": "摂氏、華氏、ケルビンおよび歴史的な温度目盛りを変換します。"
+   "description": "摂氏、華氏、ケルビンおよび歴史的な温度目盛りを変換します。",
+   "note": "温度変換では内部的に絶対ケルビンを使用します。"
   },
   "time": {
    "name": "時間",
-   "description": "SI時間、市民時間、歴史的な期間を変換します。"
+   "description": "SI時間、市民時間、歴史的な期間を変換します。",
+   "note": "月と年は平均的なグレゴリオ暦年を使用します。"
   },
   "speed": {
    "name": "速度",
-   "description": "道路・航空・海事分野の速度単位を変換します。"
+   "description": "道路・航空・海事分野の速度単位を変換します。",
+   "note": "速度はメートル毎秒を基本単位として使用します。"
   },
   "pressure": {
    "name": "圧力",
-   "description": "パスカル、バール、PSI、気圧を変換します。"
+   "description": "パスカル、バール、PSI、気圧を変換します。",
+   "note": "圧力はパスカルを基本単位として使用します。"
   },
   "energy": {
    "name": "エネルギー",
-   "description": "ジュール、カロリー、キロワット時、BTUを変換します。"
+   "description": "ジュール、カロリー、キロワット時、BTUを変換します。",
+   "note": "エネルギーはジュールを基本単位として使用します。"
   },
   "power": {
    "name": "仕事率",
-   "description": "ワット、馬力、冷凍トンを変換します。"
+   "description": "ワット、馬力、冷凍トンを変換します。",
+   "note": "仕事率はワットを基本単位として使用します。"
   },
   "force": {
    "name": "力",
-   "description": "ニュートン、ダイン、重量ポンドを変換します。"
+   "description": "ニュートン、ダイン、重量ポンドを変換します。",
+   "note": "力はニュートンを基本単位として使用します。"
   },
   "torque": {
    "name": "トルク",
-   "description": "ニュートンメートル、重量ポンドフィート、重量ポンドインチを変換します。"
+   "description": "ニュートンメートル、重量ポンドフィート、重量ポンドインチを変換します。",
+   "note": "トルクはニュートンメートルを基本単位として使用します。"
   },
   "electricity": {
    "name": "電気",
-   "description": "電気単位を変換し、電圧・電流・抵抗を計算します。"
+   "description": "電気単位を変換し、電圧・電流・抵抗を計算します。",
+   "note": "同じグループ内の電気単位は直接変換されます。グループをまたぐ結果にはオームの法則と時間の文脈が使用されます。"
   },
   "frequency": {
    "name": "周波数",
-   "description": "ヘルツ、周波数の接頭辞、RPMを変換します。"
+   "description": "ヘルツ、周波数の接頭辞、RPMを変換します。",
+   "note": "周波数はヘルツを基本単位として使用します。"
   },
   "digital": {
    "name": "デジタルストレージ",
-   "description": "ビット、バイト、10進法/2進法のストレージを変換します。"
+   "description": "ビット、バイト、10進法/2進法のストレージを変換します。",
+   "note": "デジタルストレージはビットを基本単位として使用します。"
   },
   "angle": {
    "name": "角度",
-   "description": "ラジアン、度、グラード、回転を変換します。"
+   "description": "ラジアン、度、グラード、回転を変換します。",
+   "note": "角度はラジアンを基本単位として使用します。"
   },
   "density": {
    "name": "密度",
-   "description": "質量/体積の密度の組み合わせを多数変換します。"
+   "description": "質量/体積の密度の組み合わせを多数変換します。",
+   "note": "密度はキログラム毎立方メートルを基本単位として使用します。"
   },
   "flow": {
    "name": "流量",
-   "description": "メートル法・米国式の体積流量を変換します。"
+   "description": "メートル法・米国式の体積流量を変換します。",
+   "note": "流量は立方メートル毎秒を基本単位として使用します。"
   },
   "fuel_economy": {
    "name": "燃費",
-   "description": "MPG、km/L、L/100kmを変換します。"
+   "description": "MPG、km/L、L/100kmを変換します。",
+   "note": "燃費は「距離÷体積」と「体積÷距離」の形式間で変換されます。"
   },
   "radiation": {
    "name": "放射線",
-   "description": "放射能・吸収線量の単位を変換します。"
+   "description": "放射能・吸収線量の単位を変換します。",
+   "note": "放射線の変換は次元に依存します。"
   },
   "chemistry": {
    "name": "化学",
-   "description": "濃度、モル濃度、実験用の単位を変換します。"
+   "description": "濃度、モル濃度、実験用の単位を変換します。",
+   "note": "化学の変換は次元に依存します。"
   },
   "agriculture": {
    "name": "農業",
-   "description": "エーカー、ヘクタール、収量などの農業単位を変換します。"
+   "description": "エーカー、ヘクタール、収量などの農業単位を変換します。",
+   "note": "農業の変換は、面積、質量速度、液体速度、収量速度でグループ分けされています。"
   },
   "cooking": {
    "name": "料理",
-   "description": "レシピで使う体積・質量の単位を変換します。"
+   "description": "レシピで使う体積・質量の単位を変換します。",
+   "note": "料理の単位は、体積と質量を混合する際に密度が必要なため、次元に依存します。"
   },
   "astronomy": {
    "name": "天文学",
-   "description": "天文学的な長さ・質量・時間の単位を変換します。"
+   "description": "天文学的な長さ・質量・時間の単位を変換します。",
+   "note": "天文学の変換は次元に依存します。"
   },
   "engineering": {
    "name": "工学",
-   "description": "工学で使う応力・力・トルク・エネルギーの単位を変換します。"
+   "description": "工学で使う応力・力・トルク・エネルギーの単位を変換します。",
+   "note": "工学単位は互換性のある次元でグループ分けされています。"
   },
   "scientific": {
    "name": "科学",
-   "description": "SI組立単位や科学実験用の単位を変換します。"
+   "description": "SI組立単位や科学実験用の単位を変換します。",
+   "note": "科学単位は互換性のある次元でグループ分けされています。"
   },
   "currency": {
    "name": "通貨",
-   "description": "オフラインの代替レートで主要な世界通貨を変換します。"
+   "description": "オフラインの代替レートで主要な世界通貨を変換します。",
+   "note": "為替レートは、ライブAPIレートが読み込まれない限りオフラインの推定値です。"
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "変換表",
   "related_conversions": "関連する変換",
   "about_converting": "変換について：",
-  "all_conversions_prefix": "すべての"
+  "all_conversions_prefix": "すべての",
+  "convert_description_template": "{FROM}（{FROM_SYMBOL}）を{TO}（{TO_SYMBOL}）に、{TAIL}変換します。",
+  "tail_exact_factor": "正確な換算係数を使用して",
+  "tail_appropriate_factor": "適切な換算係数を使用して",
+  "tail_exact_international_factor": "正確な国際換算係数を使用して",
+  "tail_density_factor": "該当する密度換算係数を使用して",
+  "tail_flow_factor": "該当する流量換算係数を使用して",
+  "tail_temperature_formula": "標準温度換算式を使用して",
+  "tail_currency_rates": "現在の為替レートを使用して",
+  "tail_fuel_formula": "燃費換算式を使用して",
+  "tail_electrical_factor": "該当する電気換算係数を使用して",
+  "tail_applicable_factor": "これらの単位に適用される換算係数を使用して",
+  "formula_temperature": "元の温度をケルビンに変換し、次にケルビンを目標の温度スケールに変換します。",
+  "formula_fuel": "燃費を距離÷体積に正規化し、必要に応じて消費系の単位を逆数にします。",
+  "formula_multi_cross": "直接変換するには、同じ測定系の単位を選択してください。",
+  "formula_electricity_cross": "オームの法則と時間あたりのエネルギーを使用します：V = I x R、P = V x I、E = P x 時間。",
+  "formula_same_unit": "変換元と変換先の単位は同一です。",
+  "formula_input_word": "入力値",
+  "formula_factor_template": "結果 = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}。"
  },
  "currencyNames": {
   "USD": "米ドル",

@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "길이",
-   "description": "SI, 야드파운드법, 미국 관습 단위 및 과학 길이 단위를 변환합니다."
+   "description": "SI, 야드파운드법, 미국 관습 단위 및 과학 길이 단위를 변환합니다.",
+   "note": "길이는 미터를 기본 단위로 사용합니다."
   },
   "area": {
    "name": "면적",
-   "description": "토지, 건설, 지도 제작 및 과학용 면적 단위를 변환합니다."
+   "description": "토지, 건설, 지도 제작 및 과학용 면적 단위를 변환합니다.",
+   "note": "면적는 제곱미터를 기본 단위로 사용합니다."
   },
   "volume": {
    "name": "부피",
-   "description": "미터법, 미국식, 야드파운드법 및 요리용 부피 단위를 변환합니다."
+   "description": "미터법, 미국식, 야드파운드법 및 요리용 부피 단위를 변환합니다.",
+   "note": "부피는 세제곱미터를 기본 단위로 사용합니다."
   },
   "weight": {
    "name": "무게/질량",
-   "description": "SI 질량, 야드파운드법 무게 및 원자 단위를 변환합니다."
+   "description": "SI 질량, 야드파운드법 무게 및 원자 단위를 변환합니다.",
+   "note": "질량는 킬로그램를 기본 단위로 사용합니다."
   },
   "temperature": {
    "name": "온도",
-   "description": "섭씨, 화씨, 켈빈 및 역사적 온도 눈금을 변환합니다."
+   "description": "섭씨, 화씨, 켈빈 및 역사적 온도 눈금을 변환합니다.",
+   "note": "온도 변환은 내부적으로 절대 켈빈을 사용합니다."
   },
   "time": {
    "name": "시간",
-   "description": "SI 시간, 시민 시간 및 역사적 기간을 변환합니다."
+   "description": "SI 시간, 시민 시간 및 역사적 기간을 변환합니다.",
+   "note": "월과 연은 평균 그레고리력 연도를 사용합니다."
   },
   "speed": {
    "name": "속도",
-   "description": "도로, 항공 및 해양 속도 단위를 변환합니다."
+   "description": "도로, 항공 및 해양 속도 단위를 변환합니다.",
+   "note": "속도는 초당 미터를 기본 단위로 사용합니다."
   },
   "pressure": {
    "name": "압력",
-   "description": "파스칼, 바, PSI 및 기압을 변환합니다."
+   "description": "파스칼, 바, PSI 및 기압을 변환합니다.",
+   "note": "압력는 파스칼를 기본 단위로 사용합니다."
   },
   "energy": {
    "name": "에너지",
-   "description": "줄, 칼로리, 킬로와트시 및 BTU를 변환합니다."
+   "description": "줄, 칼로리, 킬로와트시 및 BTU를 변환합니다.",
+   "note": "에너지는 줄를 기본 단위로 사용합니다."
   },
   "power": {
    "name": "일률",
-   "description": "와트, 마력 및 냉동톤을 변환합니다."
+   "description": "와트, 마력 및 냉동톤을 변환합니다.",
+   "note": "일률는 와트를 기본 단위로 사용합니다."
   },
   "force": {
    "name": "힘",
-   "description": "뉴턴, 다인 및 파운드힘을 변환합니다."
+   "description": "뉴턴, 다인 및 파운드힘을 변환합니다.",
+   "note": "힘는 뉴턴를 기본 단위로 사용합니다."
   },
   "torque": {
    "name": "토크",
-   "description": "뉴턴미터, 파운드피트 및 파운드인치를 변환합니다."
+   "description": "뉴턴미터, 파운드피트 및 파운드인치를 변환합니다.",
+   "note": "토크는 뉴턴미터를 기본 단위로 사용합니다."
   },
   "electricity": {
    "name": "전기",
-   "description": "전기 단위를 변환하고 전압, 전류, 저항을 계산합니다."
+   "description": "전기 단위를 변환하고 전압, 전류, 저항을 계산합니다.",
+   "note": "같은 그룹 내의 전기 단위는 직접 변환됩니다. 그룹 간 결과에는 옴의 법칙과 시간 맥락이 사용됩니다."
   },
   "frequency": {
    "name": "주파수",
-   "description": "헤르츠, 주파수 접두사 및 RPM을 변환합니다."
+   "description": "헤르츠, 주파수 접두사 및 RPM을 변환합니다.",
+   "note": "주파수는 헤르츠를 기본 단위로 사용합니다."
   },
   "digital": {
    "name": "디지털 저장",
-   "description": "비트, 바이트 및 10진수/2진수 저장 단위를 변환합니다."
+   "description": "비트, 바이트 및 10진수/2진수 저장 단위를 변환합니다.",
+   "note": "디지털 저장 용량는 비트를 기본 단위로 사용합니다."
   },
   "angle": {
    "name": "각도",
-   "description": "라디안, 도, 그레이드 및 회전을 변환합니다."
+   "description": "라디안, 도, 그레이드 및 회전을 변환합니다.",
+   "note": "각도는 라디안를 기본 단위로 사용합니다."
   },
   "density": {
    "name": "밀도",
-   "description": "수천 가지의 질량/부피 밀도 조합을 변환합니다."
+   "description": "수천 가지의 질량/부피 밀도 조합을 변환합니다.",
+   "note": "밀도는 세제곱미터당 킬로그램를 기본 단위로 사용합니다."
   },
   "flow": {
    "name": "유량",
-   "description": "미터법 및 미국식 체적 유량을 변환합니다."
+   "description": "미터법 및 미국식 체적 유량을 변환합니다.",
+   "note": "유량는 초당 세제곱미터를 기본 단위로 사용합니다."
   },
   "fuel_economy": {
    "name": "연비",
-   "description": "MPG, km/L, L/100km를 변환합니다."
+   "description": "MPG, km/L, L/100km를 변환합니다.",
+   "note": "연비는 거리/부피 형식과 부피/거리 형식 간에 변환됩니다."
   },
   "radiation": {
    "name": "방사선",
-   "description": "방사능 및 흡수선량 단위를 변환합니다."
+   "description": "방사능 및 흡수선량 단위를 변환합니다.",
+   "note": "방사선 변환은 차원에 따라 달라집니다."
   },
   "chemistry": {
    "name": "화학",
-   "description": "농도, 몰농도 및 실험실 단위를 변환합니다."
+   "description": "농도, 몰농도 및 실험실 단위를 변환합니다.",
+   "note": "화학 변환은 차원에 따라 달라집니다."
   },
   "agriculture": {
    "name": "농업",
-   "description": "에이커, 헥타르, 수확량 등 농업 단위를 변환합니다."
+   "description": "에이커, 헥타르, 수확량 등 농업 단위를 변환합니다.",
+   "note": "농업 변환은 면적, 질량 비율, 액체 비율, 수확량 비율로 그룹화됩니다."
   },
   "cooking": {
    "name": "요리",
-   "description": "레시피에 사용되는 부피 및 질량 단위를 변환합니다."
+   "description": "레시피에 사용되는 부피 및 질량 단위를 변환합니다.",
+   "note": "요리 단위는 부피와 질량을 혼합하려면 밀도가 필요하므로 차원에 따라 달라집니다."
   },
   "astronomy": {
    "name": "천문학",
-   "description": "천문학적 길이, 질량 및 시간 단위를 변환합니다."
+   "description": "천문학적 길이, 질량 및 시간 단위를 변환합니다.",
+   "note": "천문학 변환은 차원에 따라 달라집니다."
   },
   "engineering": {
    "name": "공학",
-   "description": "공학에서 사용하는 응력, 힘, 토크 및 에너지 단위를 변환합니다."
+   "description": "공학에서 사용하는 응력, 힘, 토크 및 에너지 단위를 변환합니다.",
+   "note": "공학 단위는 호환되는 차원별로 그룹화됩니다."
   },
   "scientific": {
    "name": "과학",
-   "description": "SI 유도 단위 및 과학 실험실 단위를 변환합니다."
+   "description": "SI 유도 단위 및 과학 실험실 단위를 변환합니다.",
+   "note": "과학 단위는 호환되는 차원별로 그룹화됩니다."
   },
   "currency": {
    "name": "통화",
-   "description": "오프라인 대체 환율로 주요 세계 통화를 변환합니다."
+   "description": "오프라인 대체 환율로 주요 세계 통화를 변환합니다.",
+   "note": "실시간 API 환율을 불러오지 않는 한 환율은 오프라인 추정치입니다."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "변환표",
   "related_conversions": "관련 변환",
   "about_converting": "변환 정보:",
-  "all_conversions_prefix": "모든"
+  "all_conversions_prefix": "모든",
+  "convert_description_template": "{FROM}({FROM_SYMBOL}) → {TO}({TO_SYMBOL}) 변환: {TAIL}.",
+  "tail_exact_factor": "정확한 환산 계수 사용",
+  "tail_appropriate_factor": "적절한 환산 계수 사용",
+  "tail_exact_international_factor": "정확한 국제 환산 계수 사용",
+  "tail_density_factor": "해당 밀도 환산 계수 사용",
+  "tail_flow_factor": "해당 유량 환산 계수 사용",
+  "tail_temperature_formula": "표준 온도 환산 공식 사용",
+  "tail_currency_rates": "현재 환율 사용",
+  "tail_fuel_formula": "연비 환산 공식 사용",
+  "tail_electrical_factor": "해당 전기 환산 계수 사용",
+  "tail_applicable_factor": "해당 단위에 적용되는 환산 계수 사용",
+  "formula_temperature": "원본 온도를 켈빈으로 변환한 다음, 켈빈을 목표 눈금으로 변환합니다.",
+  "formula_fuel": "필요한 경우 소비 단위를 반전하여 연비를 거리/부피로 정규화합니다.",
+  "formula_multi_cross": "직접 변환하려면 동일한 측정 계열의 단위를 선택하세요.",
+  "formula_electricity_cross": "옴의 법칙과 시간에 따른 에너지를 사용합니다: V = I x R, P = V x I, E = P x 시간.",
+  "formula_same_unit": "원본 단위와 대상 단위가 동일합니다.",
+  "formula_input_word": "입력값",
+  "formula_factor_template": "결과 = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "미국 달러",

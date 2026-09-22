@@ -402,98 +402,126 @@ nav: { home: "Home", converter: "Converter", categories: "Categories", allCatego
 converter: { searchAllUnits: "Search all units", fromUnit: "From Unit", toUnit: "To Unit", swap: "Swap units", decimalControl: "Decimal control", notation: "Notation", notationAuto: "Auto", notationDecimal: "Decimal", notationScientific: "Scientific", notationEngineering: "Engineering", result: "Result", copyResult: "Copy result", share: "Share", favorite: "Favorite", contextValues: "Context values", fromDefinition: "From definition", toDefinition: "To definition", formula: "Formula", enterValue: "Enter a number to convert", useDecimalNotation: "Use decimal or scientific notation, such as 1.25e6." },
 sidebar: { advertisement: "Advertisement", favoriteConverters: "Favorite converters", recentlyUsed: "Recently used", conversionHistory: "Conversion history", clear: "Clear", noFavorites: "No favorites yet. Save a converter to keep it here.", noRecent: "Recent converters will appear here after you use them.", noHistory: "Your latest conversions stay on this device and work offline." },
 common: { resultCopied: "Result copied to clipboard.", copyUnavailable: "Copy is unavailable in this browser, but the result is ready to select.", shareOpened: "Share dialog opened.", shareCopied: "Share text copied to clipboard.", shareCancelled: "Share was cancelled or unavailable.", addApiEndpoint: "Add an API endpoint or use offline fallback rates.", couldNotLoadRates: "Could not load live rates. Offline fallback remains active." },
-categories: { unitsLabel: "units", conversionPagesLabel: "conversion pages" }
+categories: { unitsLabel: "units", conversionPagesLabel: "conversion pages" },
+homepage: { heroTitle: "Convert Any Unit Instantly", heroDescription: "Universal Converter is a free, all-in-one conversion platform covering 27 measurement categories and over 6,400 units, including length, weight, temperature, volume, currency, digital storage, pressure, agriculture, astronomy, cooking, and engineering. Search or browse by category, get instant accurate results with source definitions and formulas, and use the same converter for everyday tasks, scientific work, and business calculations, online or offline.", chipLength: "Length", chipWeight: "Weight", chipTemperature: "Temperature", chipVolume: "Volume", chipPressure: "Pressure", chipDigital: "Digital Storage", chipCurrency: "Currency", chipAgriculture: "Agriculture", chipFlow: "Flow Rate", adSpace: "Ad space", adSpaceCalculatorText: "Display ads help keep this calculator free to use.", adSpaceSiteText: "Display ads help keep this site free to use." },
+messages: { sameUnit: "Same-unit conversion.", currencyOfflineNote: "Currency uses offline fallback rates unless live API rates were loaded.", temperatureNote: "Temperature conversion uses Kelvin as the intermediate absolute scale.", chooseCompatibleFamiliesMessage: "Choose compatible unit families", differentThingsNote: "{FROM} and {TO} measure different things.", fuelZeroMessage: "Enter a nonzero fuel economy value", fuelInvertNote: "Consumption units invert the efficiency value.", fuelSupportsNote: "Fuel economy supports both distance-per-volume and volume-per-distance units.", electricitySameFamilyNote: "Electrical units in the same family convert directly.", electricityNeedContextMessage: "Add the needed electrical context", electricityNeedContextNote: "Cross-family electrical calculations need voltage, current, resistance, or hours.", electricityContextNote: "Electrical result uses the context values shown above.", conversionUnavailableMessage: "Conversion unavailable", needCompatibleUnitsNote: "This conversion needs compatible units.", resultsUpdateNote: "Results update instantly as you type." }
 },
 es: {
 nav: { home: "Inicio", converter: "Conversor", categories: "Categorías", allCategories: "Todas las categorías", calculators: "Calculadoras", popular: "Popular", guides: "Guías", sitemap: "Mapa del sitio", about: "Acerca de", contact: "Contacto", search: "Buscar", language: "Idioma", theme: "Tema", menu: "Menú" },
 converter: { searchAllUnits: "Buscar todas las unidades", fromUnit: "Unidad de origen", toUnit: "Unidad de destino", swap: "Intercambiar unidades", decimalControl: "Control de decimales", notation: "Notación", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Ingeniería", result: "Resultado", copyResult: "Copiar resultado", share: "Compartir", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definición de origen", toDefinition: "Definición de destino", formula: "Fórmula", enterValue: "Introduce un número para convertir", useDecimalNotation: "Usa notación decimal o científica, como 1.25e6." },
 sidebar: { advertisement: "Publicidad", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recientemente", conversionHistory: "Historial de conversiones", clear: "Borrar", noFavorites: "Aún no hay favoritos. Guarda un conversor para verlo aquí.", noRecent: "Los conversores recientes aparecerán aquí después de usarlos.", noHistory: "Tus conversiones más recientes permanecen en este dispositivo y funcionan sin conexión." },
 common: { resultCopied: "Resultado copiado al portapapeles.", copyUnavailable: "Copiar no está disponible en este navegador, pero el resultado está listo para seleccionar.", shareOpened: "Se abrió el diálogo para compartir.", shareCopied: "Texto para compartir copiado al portapapeles.", shareCancelled: "Se canceló o no está disponible la función de compartir.", addApiEndpoint: "Agrega un endpoint de API o usa las tasas sin conexión.", couldNotLoadRates: "No se pudieron cargar las tasas en vivo. Sigue activo el modo sin conexión." },
-categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversión" }
+categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversión" },
+homepage: { heroTitle: "Convierte cualquier unidad al instante", heroDescription: "Universal Converter es una plataforma de conversión gratuita y todo en uno que cubre 27 categorías de medición y más de 6400 unidades, incluyendo longitud, peso, temperatura, volumen, moneda, almacenamiento digital, presión, agricultura, astronomía, cocina e ingeniería. Busca o navega por categoría, obtén resultados precisos al instante con definiciones y fórmulas de referencia, y usa el mismo conversor para tareas cotidianas, trabajo científico y cálculos empresariales, en línea o sin conexión.", chipLength: "Longitud", chipWeight: "Peso", chipTemperature: "Temperatura", chipVolume: "Volumen", chipPressure: "Presión", chipDigital: "Almacenamiento digital", chipCurrency: "Moneda", chipAgriculture: "Agricultura", chipFlow: "Caudal", adSpace: "Espacio publicitario", adSpaceCalculatorText: "Los anuncios ayudan a mantener esta calculadora gratuita.", adSpaceSiteText: "Los anuncios ayudan a mantener este sitio gratuito." },
+messages: { sameUnit: "Conversión entre la misma unidad.", currencyOfflineNote: "La moneda usa tasas de referencia sin conexión a menos que se hayan cargado tasas en vivo de la API.", temperatureNote: "La conversión de temperatura usa Kelvin como escala absoluta intermedia.", chooseCompatibleFamiliesMessage: "Elige familias de unidades compatibles", differentThingsNote: "{FROM} y {TO} miden cosas diferentes.", fuelZeroMessage: "Introduce un valor de consumo de combustible distinto de cero", fuelInvertNote: "Las unidades de consumo invierten el valor de eficiencia.", fuelSupportsNote: "El consumo de combustible admite unidades de distancia por volumen y de volumen por distancia.", electricitySameFamilyNote: "Las unidades eléctricas de la misma familia se convierten directamente.", electricityNeedContextMessage: "Añade el contexto eléctrico necesario", electricityNeedContextNote: "Los cálculos eléctricos entre familias distintas necesitan voltaje, corriente, resistencia u horas.", electricityContextNote: "El resultado eléctrico usa los valores de contexto mostrados arriba.", conversionUnavailableMessage: "Conversión no disponible", needCompatibleUnitsNote: "Esta conversión necesita unidades compatibles.", resultsUpdateNote: "Los resultados se actualizan al instante mientras escribes." }
 },
 fr: {
 nav: { home: "Accueil", converter: "Convertisseur", categories: "Catégories", allCategories: "Toutes les catégories", calculators: "Calculatrices", popular: "Populaire", guides: "Guides", sitemap: "Plan du site", about: "À propos", contact: "Contact", search: "Rechercher", language: "Langue", theme: "Thème", menu: "Menu" },
 converter: { searchAllUnits: "Rechercher toutes les unités", fromUnit: "Unité de départ", toUnit: "Unité d'arrivée", swap: "Inverser les unités", decimalControl: "Contrôle des décimales", notation: "Notation", notationAuto: "Automatique", notationDecimal: "Décimale", notationScientific: "Scientifique", notationEngineering: "Ingénierie", result: "Résultat", copyResult: "Copier le résultat", share: "Partager", favorite: "Favori", contextValues: "Valeurs de contexte", fromDefinition: "Définition de départ", toDefinition: "Définition d'arrivée", formula: "Formule", enterValue: "Entrez un nombre à convertir", useDecimalNotation: "Utilisez la notation décimale ou scientifique, par exemple 1.25e6." },
 sidebar: { advertisement: "Publicité", favoriteConverters: "Convertisseurs favoris", recentlyUsed: "Utilisés récemment", conversionHistory: "Historique des conversions", clear: "Effacer", noFavorites: "Aucun favori pour l'instant. Enregistrez un convertisseur pour le retrouver ici.", noRecent: "Les convertisseurs récents apparaîtront ici après utilisation.", noHistory: "Vos dernières conversions restent sur cet appareil et fonctionnent hors ligne." },
 common: { resultCopied: "Résultat copié dans le presse-papiers.", copyUnavailable: "La copie n'est pas disponible dans ce navigateur, mais le résultat peut être sélectionné.", shareOpened: "Boîte de dialogue de partage ouverte.", shareCopied: "Texte de partage copié dans le presse-papiers.", shareCancelled: "Le partage a été annulé ou n'est pas disponible.", addApiEndpoint: "Ajoutez un point d'accès API ou utilisez les taux hors ligne.", couldNotLoadRates: "Impossible de charger les taux en direct. Le mode hors ligne reste actif." },
-categories: { unitsLabel: "unités", conversionPagesLabel: "pages de conversion" }
+categories: { unitsLabel: "unités", conversionPagesLabel: "pages de conversion" },
+homepage: { heroTitle: "Convertissez n'importe quelle unité instantanément", heroDescription: "Universal Converter est une plateforme de conversion gratuite et tout-en-un couvrant 27 catégories de mesure et plus de 6 400 unités, notamment la longueur, le poids, la température, le volume, la devise, le stockage numérique, la pression, l'agriculture, l'astronomie, la cuisine et l'ingénierie. Recherchez ou parcourez par catégorie, obtenez des résultats précis et instantanés avec des définitions et formules sources, et utilisez le même convertisseur pour les tâches quotidiennes, le travail scientifique et les calculs professionnels, en ligne ou hors ligne.", chipLength: "Longueur", chipWeight: "Poids", chipTemperature: "Température", chipVolume: "Volume", chipPressure: "Pression", chipDigital: "Stockage numérique", chipCurrency: "Devise", chipAgriculture: "Agriculture", chipFlow: "Débit", adSpace: "Espace publicitaire", adSpaceCalculatorText: "Les publicités aident à garder cette calculatrice gratuite.", adSpaceSiteText: "Les publicités aident à garder ce site gratuit." },
+messages: { sameUnit: "Conversion entre unités identiques.", currencyOfflineNote: "La devise utilise des taux de référence hors ligne, sauf si des taux en direct de l'API ont été chargés.", temperatureNote: "La conversion de température utilise le Kelvin comme échelle absolue intermédiaire.", chooseCompatibleFamiliesMessage: "Choisissez des familles d'unités compatibles", differentThingsNote: "{FROM} et {TO} mesurent des choses différentes.", fuelZeroMessage: "Entrez une valeur de consommation de carburant non nulle", fuelInvertNote: "Les unités de consommation inversent la valeur d'efficacité.", fuelSupportsNote: "La consommation de carburant prend en charge les unités de distance par volume et de volume par distance.", electricitySameFamilyNote: "Les unités électriques de la même famille se convertissent directement.", electricityNeedContextMessage: "Ajoutez le contexte électrique nécessaire", electricityNeedContextNote: "Les calculs électriques entre familles différentes nécessitent une tension, un courant, une résistance ou des heures.", electricityContextNote: "Le résultat électrique utilise les valeurs de contexte affichées ci-dessus.", conversionUnavailableMessage: "Conversion indisponible", needCompatibleUnitsNote: "Cette conversion nécessite des unités compatibles.", resultsUpdateNote: "Les résultats se mettent à jour instantanément pendant que vous tapez." }
 },
 de: {
 nav: { home: "Startseite", converter: "Umrechner", categories: "Kategorien", allCategories: "Alle Kategorien", calculators: "Rechner", popular: "Beliebt", guides: "Anleitungen", sitemap: "Sitemap", about: "Über uns", contact: "Kontakt", search: "Suche", language: "Sprache", theme: "Design", menu: "Menü" },
 converter: { searchAllUnits: "Alle Einheiten durchsuchen", fromUnit: "Von-Einheit", toUnit: "Zu-Einheit", swap: "Einheiten tauschen", decimalControl: "Dezimalstellen", notation: "Schreibweise", notationAuto: "Automatisch", notationDecimal: "Dezimal", notationScientific: "Wissenschaftlich", notationEngineering: "Technisch", result: "Ergebnis", copyResult: "Ergebnis kopieren", share: "Teilen", favorite: "Favorit", contextValues: "Kontextwerte", fromDefinition: "Definition (von)", toDefinition: "Definition (zu)", formula: "Formel", enterValue: "Zahl zum Umrechnen eingeben", useDecimalNotation: "Verwenden Sie Dezimal- oder wissenschaftliche Schreibweise, z. B. 1.25e6." },
 sidebar: { advertisement: "Werbung", favoriteConverters: "Favorisierte Umrechner", recentlyUsed: "Zuletzt verwendet", conversionHistory: "Umrechnungsverlauf", clear: "Löschen", noFavorites: "Noch keine Favoriten. Speichern Sie einen Umrechner, damit er hier erscheint.", noRecent: "Zuletzt verwendete Umrechner erscheinen hier nach der Nutzung.", noHistory: "Ihre letzten Umrechnungen bleiben auf diesem Gerät gespeichert und funktionieren offline." },
 common: { resultCopied: "Ergebnis in die Zwischenablage kopiert.", copyUnavailable: "Kopieren ist in diesem Browser nicht verfügbar, das Ergebnis kann aber markiert werden.", shareOpened: "Teilen-Dialog geöffnet.", shareCopied: "Text zum Teilen in die Zwischenablage kopiert.", shareCancelled: "Teilen wurde abgebrochen oder ist nicht verfügbar.", addApiEndpoint: "Fügen Sie einen API-Endpunkt hinzu oder nutzen Sie die Offline-Kurse.", couldNotLoadRates: "Live-Kurse konnten nicht geladen werden. Der Offline-Modus bleibt aktiv." },
-categories: { unitsLabel: "Einheiten", conversionPagesLabel: "Umrechnungsseiten" }
+categories: { unitsLabel: "Einheiten", conversionPagesLabel: "Umrechnungsseiten" },
+homepage: { heroTitle: "Beliebige Einheiten sofort umrechnen", heroDescription: "Universal Converter ist eine kostenlose Alles-in-einem-Umrechnungsplattform mit 27 Maßkategorien und über 6.400 Einheiten, darunter Länge, Gewicht, Temperatur, Volumen, Währung, digitaler Speicher, Druck, Landwirtschaft, Astronomie, Kochen und Technik. Suchen oder durchsuchen Sie nach Kategorie, erhalten Sie sofort genaue Ergebnisse mit Quellendefinitionen und Formeln, und verwenden Sie denselben Umrechner für alltägliche Aufgaben, wissenschaftliche Arbeit und geschäftliche Berechnungen, online oder offline.", chipLength: "Länge", chipWeight: "Gewicht", chipTemperature: "Temperatur", chipVolume: "Volumen", chipPressure: "Druck", chipDigital: "Digitaler Speicher", chipCurrency: "Währung", chipAgriculture: "Landwirtschaft", chipFlow: "Durchfluss", adSpace: "Werbefläche", adSpaceCalculatorText: "Anzeigen helfen, diesen Rechner kostenlos zu halten.", adSpaceSiteText: "Anzeigen helfen, diese Website kostenlos zu halten." },
+messages: { sameUnit: "Umrechnung innerhalb derselben Einheit.", currencyOfflineNote: "Bei Währungen werden Offline-Ersatzkurse verwendet, sofern keine Live-API-Kurse geladen wurden.", temperatureNote: "Die Temperaturumrechnung verwendet Kelvin als absolute Zwischenskala.", chooseCompatibleFamiliesMessage: "Wählen Sie kompatible Einheitenfamilien", differentThingsNote: "{FROM} und {TO} messen unterschiedliche Dinge.", fuelZeroMessage: "Geben Sie einen Kraftstoffverbrauchswert ungleich null ein", fuelInvertNote: "Verbrauchseinheiten kehren den Effizienzwert um.", fuelSupportsNote: "Der Kraftstoffverbrauch unterstützt sowohl Strecke-pro-Volumen- als auch Volumen-pro-Strecke-Einheiten.", electricitySameFamilyNote: "Elektrische Einheiten derselben Familie werden direkt umgerechnet.", electricityNeedContextMessage: "Fügen Sie den benötigten elektrischen Kontext hinzu", electricityNeedContextNote: "Familienübergreifende elektrische Berechnungen benötigen Spannung, Strom, Widerstand oder Stunden.", electricityContextNote: "Das elektrische Ergebnis verwendet die oben gezeigten Kontextwerte.", conversionUnavailableMessage: "Umrechnung nicht verfügbar", needCompatibleUnitsNote: "Diese Umrechnung benötigt kompatible Einheiten.", resultsUpdateNote: "Die Ergebnisse werden beim Tippen sofort aktualisiert." }
 },
 pt: {
 nav: { home: "Início", converter: "Conversor", categories: "Categorias", allCategories: "Todas as categorias", calculators: "Calculadoras", popular: "Popular", guides: "Guias", sitemap: "Mapa do site", about: "Sobre", contact: "Contato", search: "Pesquisar", language: "Idioma", theme: "Tema", menu: "Menu" },
 converter: { searchAllUnits: "Pesquisar todas as unidades", fromUnit: "Unidade de origem", toUnit: "Unidade de destino", swap: "Trocar unidades", decimalControl: "Controle de casas decimais", notation: "Notação", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Engenharia", result: "Resultado", copyResult: "Copiar resultado", share: "Compartilhar", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definição de origem", toDefinition: "Definição de destino", formula: "Fórmula", enterValue: "Digite um número para converter", useDecimalNotation: "Use notação decimal ou científica, como 1.25e6." },
 sidebar: { advertisement: "Publicidade", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recentemente", conversionHistory: "Histórico de conversões", clear: "Limpar", noFavorites: "Ainda não há favoritos. Salve um conversor para vê-lo aqui.", noRecent: "Os conversores recentes aparecerão aqui após o uso.", noHistory: "Suas conversões mais recentes ficam neste dispositivo e funcionam offline." },
 common: { resultCopied: "Resultado copiado para a área de transferência.", copyUnavailable: "A cópia não está disponível neste navegador, mas o resultado pode ser selecionado.", shareOpened: "Caixa de diálogo de compartilhamento aberta.", shareCopied: "Texto de compartilhamento copiado para a área de transferência.", shareCancelled: "O compartilhamento foi cancelado ou não está disponível.", addApiEndpoint: "Adicione um endpoint de API ou use as taxas offline.", couldNotLoadRates: "Não foi possível carregar as taxas em tempo real. O modo offline continua ativo." },
-categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversão" }
+categories: { unitsLabel: "unidades", conversionPagesLabel: "páginas de conversão" },
+homepage: { heroTitle: "Converta qualquer unidade instantaneamente", heroDescription: "Universal Converter é uma plataforma de conversão gratuita e completa que abrange 27 categorias de medição e mais de 6.400 unidades, incluindo comprimento, peso, temperatura, volume, moeda, armazenamento digital, pressão, agricultura, astronomia, culinária e engenharia. Pesquise ou navegue por categoria, obtenha resultados precisos instantâneos com definições e fórmulas de referência, e use o mesmo conversor para tarefas do dia a dia, trabalho científico e cálculos empresariais, on-line ou off-line.", chipLength: "Comprimento", chipWeight: "Peso", chipTemperature: "Temperatura", chipVolume: "Volume", chipPressure: "Pressão", chipDigital: "Armazenamento digital", chipCurrency: "Moeda", chipAgriculture: "Agricultura", chipFlow: "Vazão", adSpace: "Espaço publicitário", adSpaceCalculatorText: "Os anúncios ajudam a manter esta calculadora gratuita.", adSpaceSiteText: "Os anúncios ajudam a manter este site gratuito." },
+messages: { sameUnit: "Conversão entre a mesma unidade.", currencyOfflineNote: "A moeda usa taxas de referência offline, a menos que taxas da API em tempo real tenham sido carregadas.", temperatureNote: "A conversão de temperatura usa Kelvin como escala absoluta intermediária.", chooseCompatibleFamiliesMessage: "Escolha famílias de unidades compatíveis", differentThingsNote: "{FROM} e {TO} medem coisas diferentes.", fuelZeroMessage: "Insira um valor de consumo de combustível diferente de zero", fuelInvertNote: "As unidades de consumo invertem o valor de eficiência.", fuelSupportsNote: "O consumo de combustível aceita unidades de distância por volume e de volume por distância.", electricitySameFamilyNote: "Unidades elétricas da mesma família são convertidas diretamente.", electricityNeedContextMessage: "Adicione o contexto elétrico necessário", electricityNeedContextNote: "Cálculos elétricos entre famílias diferentes precisam de tensão, corrente, resistência ou horas.", electricityContextNote: "O resultado elétrico usa os valores de contexto mostrados acima.", conversionUnavailableMessage: "Conversão indisponível", needCompatibleUnitsNote: "Esta conversão precisa de unidades compatíveis.", resultsUpdateNote: "Os resultados são atualizados instantaneamente enquanto você digita." }
 },
 it: {
 nav: { home: "Home", converter: "Convertitore", categories: "Categorie", allCategories: "Tutte le categorie", calculators: "Calcolatrici", popular: "Popolare", guides: "Guide", sitemap: "Mappa del sito", about: "Chi siamo", contact: "Contatti", search: "Cerca", language: "Lingua", theme: "Tema", menu: "Menu" },
 converter: { searchAllUnits: "Cerca tutte le unità", fromUnit: "Unità di partenza", toUnit: "Unità di arrivo", swap: "Scambia unità", decimalControl: "Controllo decimali", notation: "Notazione", notationAuto: "Automatica", notationDecimal: "Decimale", notationScientific: "Scientifica", notationEngineering: "Ingegneristica", result: "Risultato", copyResult: "Copia risultato", share: "Condividi", favorite: "Preferito", contextValues: "Valori di contesto", fromDefinition: "Definizione di partenza", toDefinition: "Definizione di arrivo", formula: "Formula", enterValue: "Inserisci un numero da convertire", useDecimalNotation: "Usa la notazione decimale o scientifica, ad esempio 1.25e6." },
 sidebar: { advertisement: "Pubblicità", favoriteConverters: "Convertitori preferiti", recentlyUsed: "Usati di recente", conversionHistory: "Cronologia conversioni", clear: "Cancella", noFavorites: "Nessun preferito ancora. Salva un convertitore per trovarlo qui.", noRecent: "I convertitori recenti appariranno qui dopo l'uso.", noHistory: "Le tue conversioni più recenti restano su questo dispositivo e funzionano offline." },
 common: { resultCopied: "Risultato copiato negli appunti.", copyUnavailable: "La copia non è disponibile in questo browser, ma il risultato è pronto per essere selezionato.", shareOpened: "Finestra di condivisione aperta.", shareCopied: "Testo di condivisione copiato negli appunti.", shareCancelled: "La condivisione è stata annullata o non è disponibile.", addApiEndpoint: "Aggiungi un endpoint API oppure usa i tassi offline.", couldNotLoadRates: "Impossibile caricare i tassi in tempo reale. La modalità offline resta attiva." },
-categories: { unitsLabel: "unità", conversionPagesLabel: "pagine di conversione" }
+categories: { unitsLabel: "unità", conversionPagesLabel: "pagine di conversione" },
+homepage: { heroTitle: "Converti qualsiasi unità all'istante", heroDescription: "Universal Converter è una piattaforma di conversione gratuita e completa che copre 27 categorie di misura e oltre 6.400 unità, tra cui lunghezza, peso, temperatura, volume, valuta, archiviazione digitale, pressione, agricoltura, astronomia, cucina e ingegneria. Cerca o sfoglia per categoria, ottieni risultati accurati e immediati con definizioni e formule di riferimento, e usa lo stesso convertitore per attività quotidiane, lavoro scientifico e calcoli aziendali, online o offline.", chipLength: "Lunghezza", chipWeight: "Peso", chipTemperature: "Temperatura", chipVolume: "Volume", chipPressure: "Pressione", chipDigital: "Archiviazione digitale", chipCurrency: "Valuta", chipAgriculture: "Agricoltura", chipFlow: "Portata", adSpace: "Spazio pubblicitario", adSpaceCalculatorText: "Gli annunci aiutano a mantenere gratuita questa calcolatrice.", adSpaceSiteText: "Gli annunci aiutano a mantenere gratuito questo sito." },
+messages: { sameUnit: "Conversione tra la stessa unità.", currencyOfflineNote: "La valuta utilizza tassi di riferimento offline, a meno che non siano stati caricati tassi API in tempo reale.", temperatureNote: "La conversione della temperatura utilizza il Kelvin come scala assoluta intermedia.", chooseCompatibleFamiliesMessage: "Scegli famiglie di unità compatibili", differentThingsNote: "{FROM} e {TO} misurano cose diverse.", fuelZeroMessage: "Inserisci un valore di consumo carburante diverso da zero", fuelInvertNote: "Le unità di consumo invertono il valore di efficienza.", fuelSupportsNote: "Il consumo di carburante supporta sia unità di distanza per volume sia di volume per distanza.", electricitySameFamilyNote: "Le unità elettriche della stessa famiglia si convertono direttamente.", electricityNeedContextMessage: "Aggiungi il contesto elettrico necessario", electricityNeedContextNote: "I calcoli elettrici tra famiglie diverse richiedono tensione, corrente, resistenza o ore.", electricityContextNote: "Il risultato elettrico utilizza i valori di contesto mostrati sopra.", conversionUnavailableMessage: "Conversione non disponibile", needCompatibleUnitsNote: "Questa conversione richiede unità compatibili.", resultsUpdateNote: "I risultati si aggiornano istantaneamente mentre digiti." }
 },
 ar: {
 nav: { home: "الرئيسية", converter: "المحوّل", categories: "الفئات", allCategories: "كل الفئات", calculators: "الحاسبات", popular: "الأكثر استخدامًا", guides: "الأدلة", sitemap: "خريطة الموقع", about: "من نحن", contact: "تواصل معنا", search: "بحث", language: "اللغة", theme: "المظهر", menu: "القائمة" },
 converter: { searchAllUnits: "ابحث في كل الوحدات", fromUnit: "الوحدة الأصلية", toUnit: "الوحدة الهدف", swap: "تبديل الوحدتين", decimalControl: "عدد الخانات العشرية", notation: "طريقة العرض", notationAuto: "تلقائي", notationDecimal: "عشري", notationScientific: "علمي", notationEngineering: "هندسي", result: "النتيجة", copyResult: "نسخ النتيجة", share: "مشاركة", favorite: "المفضلة", contextValues: "قيم سياقية إضافية", fromDefinition: "تعريف الوحدة الأصلية", toDefinition: "تعريف الوحدة الهدف", formula: "المعادلة", enterValue: "أدخل رقمًا للتحويل", useDecimalNotation: "استخدم الصيغة العشرية أو العلمية، مثل 1.25e6." },
 sidebar: { advertisement: "إعلان", favoriteConverters: "المحوّلات المفضّلة", recentlyUsed: "المستخدَمة مؤخرًا", conversionHistory: "سجل التحويلات", clear: "مسح", noFavorites: "لا توجد مفضلة بعد. احفظ محوّلًا ليظهر هنا.", noRecent: "ستظهر المحوّلات المستخدمة مؤخرًا هنا بعد استخدامها.", noHistory: "تبقى آخر تحويلاتك محفوظة على هذا الجهاز وتعمل دون اتصال بالإنترنت." },
 common: { resultCopied: "تم نسخ النتيجة إلى الحافظة.", copyUnavailable: "النسخ غير متاح في هذا المتصفح، لكن النتيجة جاهزة للتحديد.", shareOpened: "تم فتح نافذة المشاركة.", shareCopied: "تم نسخ نص المشاركة إلى الحافظة.", shareCancelled: "تم إلغاء المشاركة أو أنها غير متاحة.", addApiEndpoint: "أضف نقطة وصول API أو استخدم الأسعار غير المتصلة.", couldNotLoadRates: "تعذّر تحميل الأسعار المباشرة. لا يزال الوضع غير المتصل نشطًا." },
-categories: { unitsLabel: "وحدة", conversionPagesLabel: "صفحة تحويل" }
+categories: { unitsLabel: "وحدة", conversionPagesLabel: "صفحة تحويل" },
+homepage: { heroTitle: "حوّل أي وحدة فورًا", heroDescription: "Universal Converter منصة تحويل مجانية شاملة تغطي 27 فئة قياس وأكثر من 6400 وحدة، بما في ذلك الطول والوزن ودرجة الحرارة والحجم والعملة والتخزين الرقمي والضغط والزراعة والفلك والطهي والهندسة. ابحث أو تصفّح حسب الفئة، واحصل على نتائج دقيقة فورية مع التعريفات والصيغ المرجعية، واستخدم نفس المحوّل للمهام اليومية والعمل العلمي والحسابات التجارية، سواء عبر الإنترنت أو بدونه.", chipLength: "الطول", chipWeight: "الوزن", chipTemperature: "درجة الحرارة", chipVolume: "الحجم", chipPressure: "الضغط", chipDigital: "التخزين الرقمي", chipCurrency: "العملة", chipAgriculture: "الزراعة", chipFlow: "معدل التدفق", adSpace: "مساحة إعلانية", adSpaceCalculatorText: "تساعد الإعلانات في إبقاء هذه الحاسبة مجانية.", adSpaceSiteText: "تساعد الإعلانات في إبقاء هذا الموقع مجانيًا." },
+messages: { sameUnit: "تحويل بين نفس الوحدة.", currencyOfflineNote: "تستخدم العملة أسعارًا احتياطية غير متصلة ما لم يتم تحميل أسعار مباشرة من واجهة برمجة التطبيقات.", temperatureNote: "يستخدم تحويل درجة الحرارة مقياس كلفن كمقياس مطلق وسيط.", chooseCompatibleFamiliesMessage: "اختر عائلات وحدات متوافقة", differentThingsNote: "{FROM} و{TO} تقيسان أشياء مختلفة.", fuelZeroMessage: "أدخل قيمة كفاءة وقود غير صفرية", fuelInvertNote: "تعكس وحدات الاستهلاك قيمة الكفاءة.", fuelSupportsNote: "تدعم كفاءة استهلاك الوقود وحدات المسافة لكل حجم ووحدات الحجم لكل مسافة.", electricitySameFamilyNote: "تتحول الوحدات الكهربائية من نفس العائلة مباشرة.", electricityNeedContextMessage: "أضف السياق الكهربائي المطلوب", electricityNeedContextNote: "تحتاج الحسابات الكهربائية بين العائلات المختلفة إلى الجهد أو التيار أو المقاومة أو الساعات.", electricityContextNote: "تستخدم النتيجة الكهربائية قيم السياق الموضحة أعلاه.", conversionUnavailableMessage: "التحويل غير متاح", needCompatibleUnitsNote: "يحتاج هذا التحويل إلى وحدات متوافقة.", resultsUpdateNote: "يتم تحديث النتائج فوريًا أثناء الكتابة." }
 },
 zh: {
 nav: { home: "首页", converter: "换算器", categories: "分类", allCategories: "所有分类", calculators: "计算器", popular: "热门", guides: "指南", sitemap: "网站地图", about: "关于我们", contact: "联系我们", search: "搜索", language: "语言", theme: "主题", menu: "菜单" },
 converter: { searchAllUnits: "搜索所有单位", fromUnit: "原单位", toUnit: "目标单位", swap: "交换单位", decimalControl: "小数位数", notation: "表示法", notationAuto: "自动", notationDecimal: "小数", notationScientific: "科学计数法", notationEngineering: "工程计数法", result: "结果", copyResult: "复制结果", share: "分享", favorite: "收藏", contextValues: "附加参数", fromDefinition: "原单位定义", toDefinition: "目标单位定义", formula: "换算公式", enterValue: "输入要换算的数值", useDecimalNotation: "请使用小数或科学计数法，例如 1.25e6。" },
 sidebar: { advertisement: "广告", favoriteConverters: "收藏的换算器", recentlyUsed: "最近使用", conversionHistory: "换算记录", clear: "清除", noFavorites: "暂无收藏。保存一个换算器后会显示在这里。", noRecent: "使用过的换算器会在此处显示。", noHistory: "最近的换算记录保存在本设备上，离线也可使用。" },
 common: { resultCopied: "结果已复制到剪贴板。", copyUnavailable: "此浏览器不支持复制，但结果已可供选中。", shareOpened: "已打开分享窗口。", shareCopied: "分享文本已复制到剪贴板。", shareCancelled: "分享已取消或不可用。", addApiEndpoint: "请添加 API 端点，或使用离线备用汇率。", couldNotLoadRates: "无法加载实时汇率，已继续使用离线备用汇率。" },
-categories: { unitsLabel: "个单位", conversionPagesLabel: "个换算页面" }
+categories: { unitsLabel: "个单位", conversionPagesLabel: "个换算页面" },
+homepage: { heroTitle: "即时换算任意单位", heroDescription: "Universal Converter 是一个免费的一体化换算平台，涵盖 27 个计量类别和超过 6,400 个单位，包括长度、重量、温度、体积、货币、数字存储、压力、农业、天文、烹饪和工程。按类别搜索或浏览，即时获得带有原始定义和公式的精确结果，并可将同一换算器用于日常任务、科学工作和商业计算，无论在线还是离线。", chipLength: "长度", chipWeight: "重量", chipTemperature: "温度", chipVolume: "体积", chipPressure: "压力", chipDigital: "数字存储", chipCurrency: "货币", chipAgriculture: "农业", chipFlow: "流量", adSpace: "广告位", adSpaceCalculatorText: "展示广告有助于让这个计算器保持免费。", adSpaceSiteText: "展示广告有助于让本网站保持免费。" },
+messages: { sameUnit: "相同单位之间的换算。", currencyOfflineNote: "除非已加载实时 API 汇率，否则货币换算使用离线备用汇率。", temperatureNote: "温度换算以开尔文作为中间绝对温标。", chooseCompatibleFamiliesMessage: "请选择兼容的单位族", differentThingsNote: "{FROM} 和 {TO} 衡量的是不同的量。", fuelZeroMessage: "请输入非零的燃油经济性数值", fuelInvertNote: "消耗类单位会将效率值取倒数。", fuelSupportsNote: "燃油经济性同时支持“距离每体积”和“体积每距离”两类单位。", electricitySameFamilyNote: "同一族的电气单位可直接换算。", electricityNeedContextMessage: "请添加所需的电气上下文参数", electricityNeedContextNote: "跨族电气计算需要电压、电流、电阻或时间（小时）。", electricityContextNote: "电气结果使用上方显示的上下文参数值。", conversionUnavailableMessage: "无法进行换算", needCompatibleUnitsNote: "此换算需要兼容的单位。", resultsUpdateNote: "结果会随着输入即时更新。" }
 },
 ja: {
 nav: { home: "ホーム", converter: "コンバーター", categories: "カテゴリー", allCategories: "すべてのカテゴリー", calculators: "計算ツール", popular: "人気", guides: "ガイド", sitemap: "サイトマップ", about: "サイトについて", contact: "お問い合わせ", search: "検索", language: "言語", theme: "テーマ", menu: "メニュー" },
 converter: { searchAllUnits: "すべての単位を検索", fromUnit: "変換元の単位", toUnit: "変換先の単位", swap: "単位を入れ替え", decimalControl: "小数点以下の桁数", notation: "表記形式", notationAuto: "自動", notationDecimal: "小数", notationScientific: "指数表記", notationEngineering: "工学表記", result: "結果", copyResult: "結果をコピー", share: "共有", favorite: "お気に入り", contextValues: "追加パラメータ", fromDefinition: "変換元単位の定義", toDefinition: "変換先単位の定義", formula: "計算式", enterValue: "変換する数値を入力してください", useDecimalNotation: "1.25e6 のように小数表記または指数表記を使用してください。" },
 sidebar: { advertisement: "広告", favoriteConverters: "お気に入りのコンバーター", recentlyUsed: "最近使用したもの", conversionHistory: "変換履歴", clear: "削除", noFavorites: "お気に入りはまだありません。コンバーターを保存するとここに表示されます。", noRecent: "使用したコンバーターがここに表示されます。", noHistory: "最近の変換履歴はこの端末に保存され、オフラインでも利用できます。" },
 common: { resultCopied: "結果をクリップボードにコピーしました。", copyUnavailable: "このブラウザではコピーを利用できませんが、結果は選択できます。", shareOpened: "共有ダイアログを開きました。", shareCopied: "共有用のテキストをクリップボードにコピーしました。", shareCancelled: "共有がキャンセルされたか、利用できません。", addApiEndpoint: "APIエンドポイントを追加するか、オフラインの参考レートを使用してください。", couldNotLoadRates: "最新レートを取得できませんでした。オフラインの参考レートを引き続き使用します。" },
-categories: { unitsLabel: "単位", conversionPagesLabel: "変換ページ" }
+categories: { unitsLabel: "単位", conversionPagesLabel: "変換ページ" },
+homepage: { heroTitle: "あらゆる単位を即座に変換", heroDescription: "Universal Converterは、長さ、重さ、温度、体積、通貨、デジタルストレージ、圧力、農業、天文学、料理、工学など、27の測定カテゴリーと6,400以上の単位をカバーする無料のオールインワン変換プラットフォームです。カテゴリーで検索・閲覧し、出典となる定義や計算式とともに即座に正確な結果を取得でき、日常のタスクから科学的作業、ビジネス計算まで、オンラインでもオフラインでも同じコンバーターを使用できます。", chipLength: "長さ", chipWeight: "重さ", chipTemperature: "温度", chipVolume: "体積", chipPressure: "圧力", chipDigital: "デジタルストレージ", chipCurrency: "通貨", chipAgriculture: "農業", chipFlow: "流量", adSpace: "広告スペース", adSpaceCalculatorText: "広告の表示は、この計算ツールを無料で提供するのに役立っています。", adSpaceSiteText: "広告の表示は、このサイトを無料で提供するのに役立っています。" },
+messages: { sameUnit: "同一単位間の変換です。", currencyOfflineNote: "ライブAPIレートが読み込まれていない場合、通貨はオフラインの参考レートを使用します。", temperatureNote: "温度変換では、絶対温度の中間スケールとしてケルビンを使用します。", chooseCompatibleFamiliesMessage: "互換性のある単位グループを選択してください", differentThingsNote: "{FROM}と{TO}は異なる量を測定します。", fuelZeroMessage: "0以外の燃費値を入力してください", fuelInvertNote: "消費量系の単位は効率値を逆数にします。", fuelSupportsNote: "燃費は「距離÷体積」と「体積÷距離」の両方の単位に対応しています。", electricitySameFamilyNote: "同じグループの電気単位は直接変換されます。", electricityNeedContextMessage: "必要な電気パラメータを追加してください", electricityNeedContextNote: "グループをまたぐ電気計算には、電圧・電流・抵抗・時間のいずれかが必要です。", electricityContextNote: "電気の結果には上記のパラメータ値が使用されています。", conversionUnavailableMessage: "この変換は利用できません", needCompatibleUnitsNote: "この変換には互換性のある単位が必要です。", resultsUpdateNote: "入力すると結果が即座に更新されます。" }
 },
 ko: {
 nav: { home: "홈", converter: "변환기", categories: "카테고리", allCategories: "전체 카테고리", calculators: "계산기", popular: "인기", guides: "가이드", sitemap: "사이트맵", about: "소개", contact: "문의하기", search: "검색", language: "언어", theme: "테마", menu: "메뉴" },
 converter: { searchAllUnits: "모든 단위 검색", fromUnit: "변환 전 단위", toUnit: "변환 후 단위", swap: "단위 바꾸기", decimalControl: "소수점 자릿수", notation: "표기 방식", notationAuto: "자동", notationDecimal: "소수", notationScientific: "지수 표기", notationEngineering: "공학 표기", result: "결과", copyResult: "결과 복사", share: "공유", favorite: "즐겨찾기", contextValues: "추가 값", fromDefinition: "변환 전 단위 정의", toDefinition: "변환 후 단위 정의", formula: "공식", enterValue: "변환할 숫자를 입력하세요", useDecimalNotation: "1.25e6과 같은 소수 또는 지수 표기를 사용하세요." },
 sidebar: { advertisement: "광고", favoriteConverters: "즐겨찾는 변환기", recentlyUsed: "최근 사용", conversionHistory: "변환 기록", clear: "지우기", noFavorites: "아직 즐겨찾기가 없습니다. 변환기를 저장하면 여기에 표시됩니다.", noRecent: "최근에 사용한 변환기가 여기에 표시됩니다.", noHistory: "최근 변환 기록은 이 기기에 저장되며 오프라인에서도 사용할 수 있습니다." },
 common: { resultCopied: "결과가 클립보드에 복사되었습니다.", copyUnavailable: "이 브라우저에서는 복사를 사용할 수 없지만 결과를 선택할 수 있습니다.", shareOpened: "공유 대화상자가 열렸습니다.", shareCopied: "공유 텍스트가 클립보드에 복사되었습니다.", shareCancelled: "공유가 취소되었거나 사용할 수 없습니다.", addApiEndpoint: "API 엔드포인트를 추가하거나 오프라인 참고 환율을 사용하세요.", couldNotLoadRates: "실시간 환율을 불러오지 못했습니다. 오프라인 참고 환율이 계속 사용됩니다." },
-categories: { unitsLabel: "개 단위", conversionPagesLabel: "개 변환 페이지" }
+categories: { unitsLabel: "개 단위", conversionPagesLabel: "개 변환 페이지" },
+homepage: { heroTitle: "모든 단위를 즉시 변환하세요", heroDescription: "Universal Converter는 길이, 무게, 온도, 부피, 통화, 디지털 저장 용량, 압력, 농업, 천문학, 요리, 공학을 포함해 27개 측정 카테고리와 6,400개 이상의 단위를 다루는 무료 올인원 변환 플랫폼입니다. 카테고리별로 검색하거나 둘러보고, 출처가 명확한 정의와 공식으로 즉시 정확한 결과를 얻으며, 온라인이든 오프라인이든 일상 업무, 과학 연구, 비즈니스 계산에 동일한 변환기를 사용할 수 있습니다.", chipLength: "길이", chipWeight: "무게", chipTemperature: "온도", chipVolume: "부피", chipPressure: "압력", chipDigital: "디지털 저장 용량", chipCurrency: "통화", chipAgriculture: "농업", chipFlow: "유량", adSpace: "광고 영역", adSpaceCalculatorText: "광고 표시는 이 계산기를 무료로 유지하는 데 도움이 됩니다.", adSpaceSiteText: "광고 표시는 이 사이트를 무료로 유지하는 데 도움이 됩니다." },
+messages: { sameUnit: "동일 단위 간 변환입니다.", currencyOfflineNote: "실시간 API 환율을 불러오지 않은 경우 통화는 오프라인 참고 환율을 사용합니다.", temperatureNote: "온도 변환은 켈빈을 중간 절대 눈금으로 사용합니다.", chooseCompatibleFamiliesMessage: "호환되는 단위 그룹을 선택하세요", differentThingsNote: "{FROM}와(과) {TO}는(은) 서로 다른 대상을 측정합니다.", fuelZeroMessage: "0이 아닌 연비 값을 입력하세요", fuelInvertNote: "소비량 단위는 효율 값을 역수로 변환합니다.", fuelSupportsNote: "연비는 거리/부피 단위와 부피/거리 단위를 모두 지원합니다.", electricitySameFamilyNote: "같은 그룹의 전기 단위는 직접 변환됩니다.", electricityNeedContextMessage: "필요한 전기 관련 값을 추가하세요", electricityNeedContextNote: "다른 그룹 간 전기 계산에는 전압, 전류, 저항 또는 시간이 필요합니다.", electricityContextNote: "전기 결과는 위에 표시된 값을 사용합니다.", conversionUnavailableMessage: "변환을 사용할 수 없습니다", needCompatibleUnitsNote: "이 변환에는 호환되는 단위가 필요합니다.", resultsUpdateNote: "입력하는 즉시 결과가 업데이트됩니다." }
 },
 hi: {
 nav: { home: "होम", converter: "कनवर्टर", categories: "श्रेणियाँ", allCategories: "सभी श्रेणियाँ", calculators: "कैलकुलेटर", popular: "लोकप्रिय", guides: "गाइड", sitemap: "साइटमैप", about: "हमारे बारे में", contact: "संपर्क करें", search: "खोजें", language: "भाषा", theme: "थीम", menu: "मेनू" },
 converter: { searchAllUnits: "सभी इकाइयाँ खोजें", fromUnit: "मूल इकाई", toUnit: "लक्ष्य इकाई", swap: "इकाइयाँ बदलें", decimalControl: "दशमलव अंकों की संख्या", notation: "संकेतन", notationAuto: "स्वतः", notationDecimal: "दशमलव", notationScientific: "वैज्ञानिक", notationEngineering: "इंजीनियरिंग", result: "परिणाम", copyResult: "परिणाम कॉपी करें", share: "साझा करें", favorite: "पसंदीदा", contextValues: "अतिरिक्त मान", fromDefinition: "मूल इकाई की परिभाषा", toDefinition: "लक्ष्य इकाई की परिभाषा", formula: "सूत्र", enterValue: "बदलने के लिए एक संख्या दर्ज करें", useDecimalNotation: "दशमलव या वैज्ञानिक संकेतन का उपयोग करें, जैसे 1.25e6।" },
 sidebar: { advertisement: "विज्ञापन", favoriteConverters: "पसंदीदा कनवर्टर", recentlyUsed: "हाल ही में उपयोग किए गए", conversionHistory: "रूपांतरण इतिहास", clear: "साफ़ करें", noFavorites: "अभी तक कोई पसंदीदा नहीं है। कनवर्टर सहेजें ताकि वह यहाँ दिखे।", noRecent: "हाल ही में उपयोग किए गए कनवर्टर उपयोग के बाद यहाँ दिखाई देंगे।", noHistory: "आपके नवीनतम रूपांतरण इस डिवाइस पर सुरक्षित रहते हैं और ऑफ़लाइन भी काम करते हैं।" },
 common: { resultCopied: "परिणाम क्लिपबोर्ड पर कॉपी किया गया।", copyUnavailable: "इस ब्राउज़र में कॉपी करना उपलब्ध नहीं है, लेकिन परिणाम चुनने के लिए तैयार है।", shareOpened: "शेयर डायलॉग खोला गया।", shareCopied: "शेयर टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया।", shareCancelled: "शेयर रद्द कर दिया गया या उपलब्ध नहीं है।", addApiEndpoint: "कोई API एंडपॉइंट जोड़ें या ऑफ़लाइन दरें उपयोग करें।", couldNotLoadRates: "लाइव दरें लोड नहीं हो सकीं। ऑफ़लाइन दरें सक्रिय रहेंगी।" },
-categories: { unitsLabel: "इकाइयाँ", conversionPagesLabel: "रूपांतरण पेज" }
+categories: { unitsLabel: "इकाइयाँ", conversionPagesLabel: "रूपांतरण पेज" },
+homepage: { heroTitle: "किसी भी इकाई को तुरंत बदलें", heroDescription: "Universal Converter एक मुफ़्त, सर्व-समावेशी रूपांतरण प्लेटफ़ॉर्म है जो 27 मापन श्रेणियों और 6,400 से अधिक इकाइयों को कवर करता है, जिनमें लंबाई, वज़न, तापमान, आयतन, मुद्रा, डिजिटल स्टोरेज, दबाव, कृषि, खगोल विज्ञान, खाना पकाना और इंजीनियरिंग शामिल हैं। श्रेणी के अनुसार खोजें या ब्राउज़ करें, स्रोत परिभाषाओं और सूत्रों के साथ तुरंत सटीक परिणाम पाएं, और रोज़मर्रा के कार्यों, वैज्ञानिक कार्य और व्यावसायिक गणनाओं के लिए ऑनलाइन या ऑफ़लाइन एक ही कनवर्टर का उपयोग करें।", chipLength: "लंबाई", chipWeight: "वज़न", chipTemperature: "तापमान", chipVolume: "आयतन", chipPressure: "दबाव", chipDigital: "डिजिटल स्टोरेज", chipCurrency: "मुद्रा", chipAgriculture: "कृषि", chipFlow: "प्रवाह दर", adSpace: "विज्ञापन स्थान", adSpaceCalculatorText: "विज्ञापन इस कैलकुलेटर को मुफ़्त रखने में मदद करते हैं।", adSpaceSiteText: "विज्ञापन इस साइट को मुफ़्त रखने में मदद करते हैं।" },
+messages: { sameUnit: "समान इकाई के बीच रूपांतरण।", currencyOfflineNote: "जब तक लाइव API दरें लोड न हों, मुद्रा ऑफ़लाइन फ़ॉलबैक दरों का उपयोग करती है।", temperatureNote: "तापमान रूपांतरण मध्यवर्ती निरपेक्ष पैमाने के रूप में केल्विन का उपयोग करता है।", chooseCompatibleFamiliesMessage: "संगत इकाई समूह चुनें", differentThingsNote: "{FROM} और {TO} अलग-अलग चीज़ें मापते हैं।", fuelZeroMessage: "एक शून्येतर ईंधन दक्षता मान दर्ज करें", fuelInvertNote: "खपत इकाइयाँ दक्षता मान को व्युत्क्रम कर देती हैं।", fuelSupportsNote: "ईंधन दक्षता दूरी-प्रति-आयतन और आयतन-प्रति-दूरी, दोनों प्रकार की इकाइयों का समर्थन करती है।", electricitySameFamilyNote: "एक ही समूह की विद्युत इकाइयाँ सीधे रूपांतरित होती हैं।", electricityNeedContextMessage: "आवश्यक विद्युत संदर्भ मान जोड़ें", electricityNeedContextNote: "भिन्न समूहों के बीच विद्युत गणना के लिए वोल्टेज, करंट, प्रतिरोध या घंटे आवश्यक हैं।", electricityContextNote: "विद्युत परिणाम ऊपर दिखाए गए संदर्भ मानों का उपयोग करता है।", conversionUnavailableMessage: "रूपांतरण उपलब्ध नहीं है", needCompatibleUnitsNote: "इस रूपांतरण के लिए संगत इकाइयाँ आवश्यक हैं।", resultsUpdateNote: "टाइप करते ही परिणाम तुरंत अपडेट होते हैं।" }
 },
 tr: {
 nav: { home: "Ana Sayfa", converter: "Dönüştürücü", categories: "Kategoriler", allCategories: "Tüm kategoriler", calculators: "Hesap Makineleri", popular: "Popüler", guides: "Rehberler", sitemap: "Site Haritası", about: "Hakkımızda", contact: "İletişim", search: "Ara", language: "Dil", theme: "Tema", menu: "Menü" },
 converter: { searchAllUnits: "Tüm birimlerde ara", fromUnit: "Kaynak Birim", toUnit: "Hedef Birim", swap: "Birimleri değiştir", decimalControl: "Ondalık basamak sayısı", notation: "Gösterim", notationAuto: "Otomatik", notationDecimal: "Ondalık", notationScientific: "Bilimsel", notationEngineering: "Mühendislik", result: "Sonuç", copyResult: "Sonucu kopyala", share: "Paylaş", favorite: "Favori", contextValues: "Ek bağlam değerleri", fromDefinition: "Kaynak birim tanımı", toDefinition: "Hedef birim tanımı", formula: "Formül", enterValue: "Dönüştürülecek sayıyı girin", useDecimalNotation: "1.25e6 gibi ondalık veya bilimsel gösterim kullanın." },
 sidebar: { advertisement: "Reklam", favoriteConverters: "Favori dönüştürücüler", recentlyUsed: "Son kullanılanlar", conversionHistory: "Dönüştürme geçmişi", clear: "Temizle", noFavorites: "Henüz favori yok. Burada görünmesi için bir dönüştürücü kaydedin.", noRecent: "Kullandığınız dönüştürücüler burada görünecek.", noHistory: "Son dönüştürmeleriniz bu cihazda saklanır ve çevrimdışı da çalışır." },
 common: { resultCopied: "Sonuç panoya kopyalandı.", copyUnavailable: "Bu tarayıcıda kopyalama kullanılamıyor, ancak sonuç seçilmeye hazır.", shareOpened: "Paylaşım penceresi açıldı.", shareCopied: "Paylaşım metni panoya kopyalandı.", shareCancelled: "Paylaşım iptal edildi veya kullanılamıyor.", addApiEndpoint: "Bir API uç noktası ekleyin veya çevrimdışı kurları kullanın.", couldNotLoadRates: "Anlık kurlar yüklenemedi. Çevrimdışı kurlar kullanılmaya devam ediyor." },
-categories: { unitsLabel: "birim", conversionPagesLabel: "dönüştürme sayfası" }
+categories: { unitsLabel: "birim", conversionPagesLabel: "dönüştürme sayfası" },
+homepage: { heroTitle: "Herhangi Bir Birimi Anında Dönüştürün", heroDescription: "Universal Converter; uzunluk, ağırlık, sıcaklık, hacim, para birimi, dijital depolama, basınç, tarım, astronomi, mutfak ve mühendislik dahil olmak üzere 27 ölçüm kategorisini ve 6.400'den fazla birimi kapsayan ücretsiz, hepsi bir arada bir dönüştürme platformudur. Kategoriye göre arama yapın veya göz atın, kaynak tanımları ve formüllerle anında doğru sonuçlar alın ve aynı dönüştürücüyü günlük görevler, bilimsel çalışmalar ve iş hesaplamaları için çevrimiçi veya çevrimdışı kullanın.", chipLength: "Uzunluk", chipWeight: "Ağırlık", chipTemperature: "Sıcaklık", chipVolume: "Hacim", chipPressure: "Basınç", chipDigital: "Dijital Depolama", chipCurrency: "Para Birimi", chipAgriculture: "Tarım", chipFlow: "Akış Hızı", adSpace: "Reklam alanı", adSpaceCalculatorText: "Reklamlar bu hesap makinesinin ücretsiz kalmasına yardımcı olur.", adSpaceSiteText: "Reklamlar bu sitenin ücretsiz kalmasına yardımcı olur." },
+messages: { sameUnit: "Aynı birim arasında dönüştürme.", currencyOfflineNote: "Canlı API kurları yüklenmediği sürece para birimi çevrimdışı yedek kurları kullanır.", temperatureNote: "Sıcaklık dönüşümü, ara mutlak ölçek olarak Kelvin'i kullanır.", chooseCompatibleFamiliesMessage: "Uyumlu birim gruplarını seçin", differentThingsNote: "{FROM} ve {TO} farklı şeyleri ölçer.", fuelZeroMessage: "Sıfırdan farklı bir yakıt ekonomisi değeri girin", fuelInvertNote: "Tüketim birimleri verimlilik değerini ters çevirir.", fuelSupportsNote: "Yakıt ekonomisi, hem mesafe/hacim hem de hacim/mesafe birimlerini destekler.", electricitySameFamilyNote: "Aynı gruptaki elektrik birimleri doğrudan dönüştürülür.", electricityNeedContextMessage: "Gerekli elektriksel bağlamı ekleyin", electricityNeedContextNote: "Farklı gruplar arasındaki elektrik hesaplamaları için gerilim, akım, direnç veya saat gerekir.", electricityContextNote: "Elektrik sonucu yukarıda gösterilen bağlam değerlerini kullanır.", conversionUnavailableMessage: "Dönüştürme kullanılamıyor", needCompatibleUnitsNote: "Bu dönüştürme için uyumlu birimler gereklidir.", resultsUpdateNote: "Sonuçlar siz yazarken anında güncellenir." }
 },
 id: {
 nav: { home: "Beranda", converter: "Konverter", categories: "Kategori", allCategories: "Semua kategori", calculators: "Kalkulator", popular: "Populer", guides: "Panduan", sitemap: "Peta situs", about: "Tentang", contact: "Kontak", search: "Cari", language: "Bahasa", theme: "Tema", menu: "Menu" },
 converter: { searchAllUnits: "Cari semua satuan", fromUnit: "Satuan Asal", toUnit: "Satuan Tujuan", swap: "Tukar satuan", decimalControl: "Kontrol desimal", notation: "Notasi", notationAuto: "Otomatis", notationDecimal: "Desimal", notationScientific: "Ilmiah", notationEngineering: "Rekayasa", result: "Hasil", copyResult: "Salin hasil", share: "Bagikan", favorite: "Favorit", contextValues: "Nilai konteks tambahan", fromDefinition: "Definisi satuan asal", toDefinition: "Definisi satuan tujuan", formula: "Rumus", enterValue: "Masukkan angka yang akan dikonversi", useDecimalNotation: "Gunakan notasi desimal atau ilmiah, misalnya 1.25e6." },
 sidebar: { advertisement: "Iklan", favoriteConverters: "Konverter favorit", recentlyUsed: "Baru digunakan", conversionHistory: "Riwayat konversi", clear: "Hapus", noFavorites: "Belum ada favorit. Simpan konverter agar muncul di sini.", noRecent: "Konverter yang baru digunakan akan muncul di sini.", noHistory: "Konversi terbaru Anda tersimpan di perangkat ini dan tetap berfungsi secara offline." },
 common: { resultCopied: "Hasil disalin ke clipboard.", copyUnavailable: "Salin tidak tersedia di browser ini, tetapi hasil siap untuk dipilih.", shareOpened: "Dialog berbagi terbuka.", shareCopied: "Teks berbagi disalin ke clipboard.", shareCancelled: "Berbagi dibatalkan atau tidak tersedia.", addApiEndpoint: "Tambahkan endpoint API atau gunakan kurs offline.", couldNotLoadRates: "Kurs langsung tidak dapat dimuat. Kurs offline tetap digunakan." },
-categories: { unitsLabel: "satuan", conversionPagesLabel: "halaman konversi" }
+categories: { unitsLabel: "satuan", conversionPagesLabel: "halaman konversi" },
+homepage: { heroTitle: "Konversi Satuan Apa Pun secara Instan", heroDescription: "Universal Converter adalah platform konversi gratis dan serba guna yang mencakup 27 kategori pengukuran dan lebih dari 6.400 satuan, termasuk panjang, berat, suhu, volume, mata uang, penyimpanan digital, tekanan, pertanian, astronomi, memasak, dan teknik. Cari atau jelajahi berdasarkan kategori, dapatkan hasil akurat secara instan lengkap dengan definisi dan rumus sumber, dan gunakan konverter yang sama untuk tugas sehari-hari, pekerjaan ilmiah, dan perhitungan bisnis, baik online maupun offline.", chipLength: "Panjang", chipWeight: "Berat", chipTemperature: "Suhu", chipVolume: "Volume", chipPressure: "Tekanan", chipDigital: "Penyimpanan Digital", chipCurrency: "Mata Uang", chipAgriculture: "Pertanian", chipFlow: "Laju Aliran", adSpace: "Ruang iklan", adSpaceCalculatorText: "Iklan membantu menjaga kalkulator ini tetap gratis.", adSpaceSiteText: "Iklan membantu menjaga situs ini tetap gratis." },
+messages: { sameUnit: "Konversi antar satuan yang sama.", currencyOfflineNote: "Mata uang menggunakan kurs cadangan offline kecuali kurs API langsung telah dimuat.", temperatureNote: "Konversi suhu menggunakan Kelvin sebagai skala absolut perantara.", chooseCompatibleFamiliesMessage: "Pilih kelompok satuan yang kompatibel", differentThingsNote: "{FROM} dan {TO} mengukur hal yang berbeda.", fuelZeroMessage: "Masukkan nilai ekonomi bahan bakar bukan nol", fuelInvertNote: "Satuan konsumsi membalik nilai efisiensi.", fuelSupportsNote: "Ekonomi bahan bakar mendukung satuan jarak-per-volume maupun volume-per-jarak.", electricitySameFamilyNote: "Satuan listrik dalam kelompok yang sama dikonversi secara langsung.", electricityNeedContextMessage: "Tambahkan konteks listrik yang diperlukan", electricityNeedContextNote: "Perhitungan listrik lintas kelompok memerlukan tegangan, arus, resistansi, atau jam.", electricityContextNote: "Hasil listrik menggunakan nilai konteks yang ditampilkan di atas.", conversionUnavailableMessage: "Konversi tidak tersedia", needCompatibleUnitsNote: "Konversi ini memerlukan satuan yang kompatibel.", resultsUpdateNote: "Hasil diperbarui secara instan saat Anda mengetik." }
 },
 so: {
 nav: { home: "Bogga hore", converter: "Beddelaha", categories: "Qaybaha", allCategories: "Dhammaan qaybaha", calculators: "Xisaabiyayaasha", popular: "Caanka ah", guides: "Hagayaasha", sitemap: "Khariidadda bogga", about: "Nagu saabsan", contact: "Nala soo xiriir", search: "Raadi", language: "Luqadda", theme: "Muuqaalka", menu: "Menu-ga" },
 converter: { searchAllUnits: "Ka raadi dhammaan cabbirrada", fromUnit: "Cabbirka laga beddelayo", toUnit: "Cabbirka loo beddelayo", swap: "Isbeddel cabbirrada", decimalControl: "Xakameynta tirooyinka jajabka", notation: "Habka muujinta", notationAuto: "Si toos ah", notationDecimal: "Jajab tobanle", notationScientific: "Sayniska", notationEngineering: "Injineernimo", result: "Natiijada", copyResult: "Koobi natiijada", share: "La wadaag", favorite: "Ku dar door bidaan", contextValues: "Qiyamka dheeraadka ah", fromDefinition: "Sharaxaadda cabbirka laga beddelayo", toDefinition: "Sharaxaadda cabbirka loo beddelayo", formula: "Qaacidada", enterValue: "Geli lambar aad beddesho", useDecimalNotation: "Isticmaal habka jajabka tobanlaha ah ama kan sayniska, sida 1.25e6." },
 sidebar: { advertisement: "Xayeysiin", favoriteConverters: "Beddelayaasha door bidan", recentlyUsed: "Dhawaan la isticmaalay", conversionHistory: "Taariikhda beddelka", clear: "Nadiifi", noFavorites: "Wali ma jiraan door bidaan. Kaydi beddelaha si uu halkan uga soo muuqdo.", noRecent: "Beddelayaasha dhawaan la isticmaalay ayaa halkan ka soo muuqan doona.", noHistory: "Beddelladaada ugu dambeeyay ayaa ku hadhaya qalabkan waxayna u shaqeeyaan offline." },
 common: { resultCopied: "Natiijadu waxay ku koobiyowday xarunta xusuusta.", copyUnavailable: "Koobiyaha lama heli karo biraawsarkan, laakiin natiijadu diyaar bay u tahay in la doorto.", shareOpened: "Sanduuqa wadaagista ayaa la furay.", shareCopied: "Qoraalka wadaagista ayaa ku koobiyowday xarunta xusuusta.", shareCancelled: "Wadaagistu waa la joojiyay ama lama heli karo.", addApiEndpoint: "Ku dar dhamaadka API ama isticmaal qiimayaasha offline-ka ah.", couldNotLoadRates: "Qiimayaasha toos ah lama soo geli karin. Qiimayaasha offline-ku wali way shaqeynayaan." },
-categories: { unitsLabel: "cabbir", conversionPagesLabel: "bog beddel" }
+categories: { unitsLabel: "cabbir", conversionPagesLabel: "bog beddel" },
+homepage: { heroTitle: "Isla Markiiba U Beddel Cabbir Kasta", heroDescription: "Universal Converter waa madal beddelid oo bilaash ah oo wax walba ku jira, kaas oo daboolaya 27 qayb oo cabbir ah iyo in ka badan 6,400 oo cabbir, oo ay ku jiraan dhererka, miisaanka, heerkulka, xajmiga, lacagta, kaydinta dhijitaalka ah, cadaadiska, beeraha, xiddigiska, karinta, iyo injineernimada. Ka raadi ama ka baadh qayb ahaan, natiijooyin sax ah oo degdeg ah la hel adigoo leh sharraxaad iyo qaacido asal ah, oo isticmaal isla beddelahaas hawlaha maalinlaha ah, shaqada sayniska, iyo xisaabinta ganacsiga, si aad u xiran tahay internetka ama aadan u xirnayn.", chipLength: "Dhererka", chipWeight: "Miisaanka", chipTemperature: "Heerkulka", chipVolume: "Xajmiga", chipPressure: "Cadaadiska", chipDigital: "Kaydinta Dhijitaalka ah", chipCurrency: "Lacagta", chipAgriculture: "Beeraha", chipFlow: "Xawaaraha Qulqulka", adSpace: "Booska xayeysiiska", adSpaceCalculatorText: "Xayeysiinta waxay caawisaa in xisaabiyahan lagu sii hayo bilaash.", adSpaceSiteText: "Xayeysiinta waxay caawisaa in boggan lagu sii hayo bilaash." },
+messages: { sameUnit: "Beddelka u dhexeeya isla cabbirka.", currencyOfflineNote: "Lacagtu waxay isticmaashaa qiimayaasha offline-ka ah illaa iyo inta aan la soo geli qiimayaasha API-ga toos ah.", temperatureNote: "Beddelka heerkulku wuxuu isticmaalaa Kelvin sida heerka guud ee u dhexeeya.", chooseCompatibleFamiliesMessage: "Dooro qoysaska cabbirrada is waafaqsan", differentThingsNote: "{FROM} iyo {TO} waxay cabbiraan waxyaabo kala duwan.", fuelZeroMessage: "Geli qiime dhaqaale shidaal oo aan eber ahayn", fuelInvertNote: "Cabbirrada isticmaalku waxay rogaan qiimaha waxtarka.", fuelSupportsNote: "Dhaqaalaha shidaalku wuu taageeraa labadaba cabbirrada masaafo-kor-xajmi iyo xajmi-kor-masaafo.", electricitySameFamilyNote: "Cabbirrada koronto ee isla qoyska si toos ah ayaa loo beddelaa.", electricityNeedContextMessage: "Ku dar macluumaadka korontada ee loo baahan yahay", electricityNeedContextNote: "Xisaabinta korontada ee u dhexeysa qoysas kala duwan waxay u baahan tahay voltage, current, resistance, ama saacado.", electricityContextNote: "Natiijada korontadu waxay isticmaashaa qiyamka macluumaadka ee kor lagu muujiyay.", conversionUnavailableMessage: "Beddelku ma jiro", needCompatibleUnitsNote: "Beddelkani wuxuu u baahan yahay cabbirro is waafaqsan.", resultsUpdateNote: "Natiijooyinku si degdeg ah ayey u cusboonaysiiyaan marka aad qorto." }
 }
 };
 const prefixes = [
@@ -2276,7 +2304,7 @@ button.innerHTML = `
 <span class="category-row">
 <span class="category-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
 <span>
-<span class="category-name">${escapeHtml(category.name)}</span>
+<span class="category-name">${escapeHtml(getCategoryDisplayName(category))}</span>
 <span class="category-meta">${category.units.length.toLocaleString("en-US")} units</span>
 </span>
 </span>
@@ -2298,11 +2326,13 @@ overviewGrid.innerHTML = categories.map((category) => {
 const unitCount = category.units.length.toLocaleString("en-US");
 const pageCount = conversionPageCountFor(category.id).toLocaleString("en-US");
 const href = categoryPageUrl(category.id);
+const displayName = getCategoryDisplayName(category);
+const displayDescription = getCategoryDisplayDescription(category);
 return `
-<a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(category.name)}: ${unitCount} ${escapeAttribute(unitsLabel)}, ${pageCount} ${escapeAttribute(pagesLabel)}">
+<a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(displayName)}: ${unitCount} ${escapeAttribute(unitsLabel)}, ${pageCount} ${escapeAttribute(pagesLabel)}">
 <span class="overview-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
-<h3>${escapeHtml(category.name)}</h3>
-<p>${escapeHtml(category.description)}</p>
+<h3>${escapeHtml(displayName)}</h3>
+<p>${escapeHtml(displayDescription)}</p>
 <div class="unit-chips">
 <span>${unitCount} ${escapeHtml(unitsLabel)}</span>
 <span>${pageCount} ${escapeHtml(pagesLabel)}</span>
@@ -2779,6 +2809,30 @@ angle: "using the exact conversion factor",
 density: "using the applicable density conversion factor",
 flow: "using the applicable flow rate conversion factor"
 };
+// Maps each category id to the i18n-seo `chrome.<key>` lookup that holds
+// the translated version of its CATEGORY_CONVERSION_TAIL string above -
+// one key per distinct English tail phrase actually used there, so
+// categories that share the same English tail also share one translated
+// string instead of needing 16 separate near-duplicate entries per
+// language.
+const CATEGORY_CONVERSION_TAIL_KEYS = {
+length: "tail_exact_factor",
+area: "tail_exact_factor",
+volume: "tail_appropriate_factor",
+weight: "tail_exact_international_factor",
+time: "tail_exact_factor",
+speed: "tail_exact_factor",
+pressure: "tail_exact_factor",
+energy: "tail_exact_factor",
+power: "tail_appropriate_factor",
+force: "tail_exact_factor",
+torque: "tail_exact_factor",
+frequency: "tail_exact_factor",
+digital: "tail_exact_factor",
+angle: "tail_exact_factor",
+density: "tail_density_factor",
+flow: "tail_flow_factor"
+};
 function pluralizeWord(word) {
 if (!word) return word;
 const lower = word.toLowerCase();
@@ -2810,28 +2864,97 @@ const lowerLastWord = lastWord.toLowerCase();
 if (UNCOUNTABLE_UNIT_WORDS.has(lowerLastWord) || lowerLastWord.endsWith("s")) return name;
 return `${prefix}${pluralizeWord(lastWord)}`;
 }
+// Builds the localized version of the "Convert X (sym) to Y (sym) using
+// ..." sentence frame from the existing Phase 3 i18n-seo `chrome` template
+// data, reusing the exact fillTemplateSafe()/{PLACEHOLDER} mechanism the
+// FAQ translations already use (see translateFaqItems() above) rather than
+// inventing a second translation mechanism. Returns null - never a
+// partially-translated string - whenever the current language's JSON
+// doesn't yet carry the sentence-frame template or this specific tail key,
+// so buildConversionDescription() always has a complete English sentence
+// to fall back to (the same graceful-degradation contract every other
+// getXDisplayY()/translate*() lookup in this file already follows).
+function localizedConversionDescription(tailKey, vars) {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return null;
+const seoData = currentSeoData();
+const chrome = seoData && seoData.chrome;
+if (!chrome || !chrome.convert_description_template) return null;
+const tail = chrome[tailKey];
+if (!tail) return null;
+return fillTemplateSafe(chrome.convert_description_template, Object.assign({}, vars, { TAIL: tail }));
+}
+// Same fillTemplateSafe()/chrome.* mechanism as localizedConversionDescription()
+// above, reused (not duplicated) for the #formulaText value shown in the
+// definition panel. Returns null - never a partially-translated string -
+// whenever the language is English or the current language's JSON doesn't
+// yet carry the requested chrome.formula_* key, so every caller always has
+// a complete English fallback string to use instead.
+function localizedFormula(key, vars) {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return null;
+const seoData = currentSeoData();
+const chrome = seoData && seoData.chrome;
+if (!chrome || !chrome[key]) return null;
+return vars ? fillTemplateSafe(chrome[key], vars) : chrome[key];
+}
+
+// Localized version of the generic "Result = <amount> x <factor> /
+// <factor>." formula line. amountText is either a formatted numeric amount
+// (formatNumber(amount), already typed by the visitor) or the translated
+// word for "input" (chrome.formula_input_word) when nothing has been typed
+// yet - both share the same chrome.formula_factor_template so only one
+// template key is needed for both call sites. Numbers/factors themselves
+// are never translated, matching every other numeric value in this file.
+function localizedFactorFormula(amountText, fromFactor, toFactor) {
+const localized = localizedFormula("formula_factor_template", { AMOUNT: amountText, FROM_FACTOR: compactNumber(fromFactor), TO_FACTOR: compactNumber(toFactor) });
+return localized || `Result = ${amountText} x ${compactNumber(fromFactor)} / ${compactNumber(toFactor)}.`;
+}
+function localizedInputWord() {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return "input";
+const seoData = currentSeoData();
+const chrome = seoData && seoData.chrome;
+return (chrome && chrome.formula_input_word) || "input";
+}
 function buildConversionDescription(category, fromUnit, toUnit) {
 if (!category) return "";
 if (!fromUnit || !toUnit) return getCategoryDisplayDescription(category);
 if (category.type === "temperature") {
 const fromLabel = fromUnit.id === "kelvin" ? fromUnit.symbol : `\u00b0${fromUnit.symbol}`;
 const toLabel = toUnit.id === "kelvin" ? toUnit.symbol : `\u00b0${toUnit.symbol}`;
-return `Convert ${getUnitDisplayName(fromUnit)} (${fromLabel}) to ${getUnitDisplayName(toUnit)} (${toLabel}) using the standard temperature conversion formula.`;
+const fromName = getUnitDisplayName(fromUnit);
+const toName = getUnitDisplayName(toUnit);
+const localized = localizedConversionDescription("tail_temperature_formula", { FROM: fromName, FROM_SYMBOL: fromLabel, TO: toName, TO_SYMBOL: toLabel });
+return localized || `Convert ${fromName} (${fromLabel}) to ${toName} (${toLabel}) using the standard temperature conversion formula.`;
 }
 if (category.type === "currency") {
-return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.id}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.id}) using current exchange rates.`;
+const fromName = pluralizeUnitDisplayName(fromUnit);
+const toName = pluralizeUnitDisplayName(toUnit);
+const localized = localizedConversionDescription("tail_currency_rates", { FROM: fromName, FROM_SYMBOL: fromUnit.id, TO: toName, TO_SYMBOL: toUnit.id });
+return localized || `Convert ${fromName} (${fromUnit.id}) to ${toName} (${toUnit.id}) using current exchange rates.`;
 }
 if (category.type === "fuel") {
-return `Convert ${getUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${getUnitDisplayName(toUnit)} (${toUnit.symbol}) using the fuel economy conversion formula.`;
+const fromName = getUnitDisplayName(fromUnit);
+const toName = getUnitDisplayName(toUnit);
+const localized = localizedConversionDescription("tail_fuel_formula", { FROM: fromName, FROM_SYMBOL: fromUnit.symbol, TO: toName, TO_SYMBOL: toUnit.symbol });
+return localized || `Convert ${fromName} (${fromUnit.symbol}) to ${toName} (${toUnit.symbol}) using the fuel economy conversion formula.`;
 }
 if (category.type === "electricity") {
-return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) using the applicable electrical conversion factor.`;
+const fromName = pluralizeUnitDisplayName(fromUnit);
+const toName = pluralizeUnitDisplayName(toUnit);
+const localized = localizedConversionDescription("tail_electrical_factor", { FROM: fromName, FROM_SYMBOL: fromUnit.symbol, TO: toName, TO_SYMBOL: toUnit.symbol });
+return localized || `Convert ${fromName} (${fromUnit.symbol}) to ${toName} (${toUnit.symbol}) using the applicable electrical conversion factor.`;
 }
 if (category.type === "multi") {
-return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) using the applicable conversion factor for these units.`;
+const fromName = pluralizeUnitDisplayName(fromUnit);
+const toName = pluralizeUnitDisplayName(toUnit);
+const localized = localizedConversionDescription("tail_applicable_factor", { FROM: fromName, FROM_SYMBOL: fromUnit.symbol, TO: toName, TO_SYMBOL: toUnit.symbol });
+return localized || `Convert ${fromName} (${fromUnit.symbol}) to ${toName} (${toUnit.symbol}) using the applicable conversion factor for these units.`;
 }
+const tailKey = CATEGORY_CONVERSION_TAIL_KEYS[category.id] || "tail_exact_factor";
 const tail = CATEGORY_CONVERSION_TAIL[category.id] || "using the exact conversion factor";
-return `Convert ${pluralizeUnitDisplayName(fromUnit)} (${fromUnit.symbol}) to ${pluralizeUnitDisplayName(toUnit)} (${toUnit.symbol}) ${tail}.`;
+const fromName = pluralizeUnitDisplayName(fromUnit);
+const toName = pluralizeUnitDisplayName(toUnit);
+const localized = localizedConversionDescription(tailKey, { FROM: fromName, FROM_SYMBOL: fromUnit.symbol, TO: toName, TO_SYMBOL: toUnit.symbol });
+return localized || `Convert ${fromName} (${fromUnit.symbol}) to ${toName} (${toUnit.symbol}) ${tail}.`;
 }
 function updateActiveCategoryDescription(category, fromUnit, toUnit) {
 const node = byId("activeCategoryDescription");
@@ -2851,8 +2974,8 @@ const output = byId("toValue");
 const resultText = byId("resultText");
 if (!Number.isFinite(amount)) {
 output.value = "";
-resultText.textContent = "Enter a number to convert";
-note.textContent = "Use decimal or scientific notation, such as 1.25e6.";
+resultText.textContent = getTranslation("converter.enterValue", currentLanguageCode);
+note.textContent = getTranslation("converter.useDecimalNotation", currentLanguageCode);
 updateDefinitionPanel(category, from, to, null);
 return;
 }
@@ -2860,14 +2983,14 @@ const result = convert(category, amount, from, to);
 if (!result.ok) {
 output.value = "";
 resultText.textContent = result.message;
-note.textContent = result.note || category.note || "This conversion needs compatible units.";
+note.textContent = result.note || getCategoryDisplayNote(category) || getTranslation("messages.needCompatibleUnitsNote", currentLanguageCode);
 updateDefinitionPanel(category, from, to, result);
 return;
 }
 const formatted = formatNumber(result.value);
 output.value = formatted;
-resultText.textContent = `${formatNumber(amount)} ${from.name} = ${formatted} ${to.name}`;
-note.textContent = result.note || category.note || "Results update instantly as you type.";
+resultText.textContent = `${formatNumber(amount)} ${getUnitDisplayName(from)} = ${formatted} ${getUnitDisplayName(to)}`;
+note.textContent = result.note || getCategoryDisplayNote(category) || getTranslation("messages.resultsUpdateNote", currentLanguageCode);
 updateDefinitionPanel(category, from, to, result);
 scheduleHistoryRecord(category, amount, from, result.value, to);
 }
@@ -2881,11 +3004,11 @@ byId("formulaText").textContent = result && result.formula
 : formulaFor(category, from, to);
 }
 function formulaFor(category, from, to) {
-if (category.type === "temperature") return "Convert the source temperature to Kelvin, then convert Kelvin to the target scale.";
-if (category.type === "fuel") return "Normalize fuel economy to distance per volume, inverting consumption units when needed.";
-if (category.type === "multi" && from.dimension !== to.dimension) return "Choose units from the same measurement family for a direct conversion.";
-if (category.type === "electricity" && from.dimension !== to.dimension) return "Use Ohm's law and energy over time: V = I x R, P = V x I, E = P x time.";
-return `Result = input x ${compactNumber(from.factor)} / ${compactNumber(to.factor)}.`;
+if (category.type === "temperature") return localizedFormula("formula_temperature") || "Convert the source temperature to Kelvin, then convert Kelvin to the target scale.";
+if (category.type === "fuel") return localizedFormula("formula_fuel") || "Normalize fuel economy to distance per volume, inverting consumption units when needed.";
+if (category.type === "multi" && from.dimension !== to.dimension) return localizedFormula("formula_multi_cross") || "Choose units from the same measurement family for a direct conversion.";
+if (category.type === "electricity" && from.dimension !== to.dimension) return localizedFormula("formula_electricity_cross") || "Use Ohm's law and energy over time: V = I x R, P = V x I, E = P x time.";
+return localizedFactorFormula(localizedInputWord(), from.factor, to.factor);
 }
 function parseInput(value) {
 if (typeof value !== "string") return NaN;
@@ -2977,28 +3100,35 @@ function normalizeRouteValue(value) {
 return String(value || "").trim().toLowerCase().replace(/\+/g, " ").replace(/[_\s-]+/g, "_");
 }
 function convert(category, amount, from, to) {
-if (from.id === to.id) return { ok: true, value: amount, note: "Same-unit conversion.", formula: "Source and target units are identical." };
+if (from.id === to.id) return { ok: true, value: amount, note: getTranslation("messages.sameUnit", currentLanguageCode), formula: localizedFormula("formula_same_unit") || "Source and target units are identical." };
 if (category.type === "linear" || category.type === "currency") {
 return {
 ok: true,
 value: amount * from.factor / to.factor,
-note: category.type === "currency" ? "Currency uses offline fallback rates unless live API rates were loaded." : category.note,
-formula: `Result = ${formatNumber(amount)} x ${compactNumber(from.factor)} / ${compactNumber(to.factor)}.`
+note: category.type === "currency" ? getTranslation("messages.currencyOfflineNote", currentLanguageCode) : getCategoryDisplayNote(category),
+formula: localizedFactorFormula(formatNumber(amount), from.factor, to.factor)
 };
 }
 if (category.type === "temperature") {
 const kelvin = toKelvin(amount, from.id);
-return { ok: true, value: fromKelvin(kelvin, to.id), note: "Temperature conversion uses Kelvin as the intermediate absolute scale.", formula: formulaFor(category, from, to) };
+return { ok: true, value: fromKelvin(kelvin, to.id), note: getTranslation("messages.temperatureNote", currentLanguageCode), formula: formulaFor(category, from, to) };
 }
 if (category.type === "multi") {
 if (from.dimension !== to.dimension) {
-return { ok: false, message: "Choose compatible unit families", note: `${from.name} and ${to.name} measure different things.` };
+// The dimension name itself (from.dimension, e.g. "mass_concentration")
+// is deliberately left untranslated here: there is no per-dimension
+// translation table for these internal identifiers, and translating
+// only the surrounding words while leaving the dimension name in
+// English would recreate the exact mixed-language leak this pass was
+// meant to fix elsewhere. The surrounding sentence is translated; the
+// interpolated unit names are translated via getUnitDisplayName().
+return { ok: false, message: getTranslation("messages.chooseCompatibleFamiliesMessage", currentLanguageCode), note: fillTemplate(getTranslation("messages.differentThingsNote", currentLanguageCode), { FROM: getUnitDisplayName(from), TO: getUnitDisplayName(to) }) };
 }
-return { ok: true, value: amount * from.factor / to.factor, note: `${titleCase(from.dimension.replace(/_/g, " "))} units are compatible.`, formula: `Result = ${formatNumber(amount)} x ${compactNumber(from.factor)} / ${compactNumber(to.factor)}.` };
+return { ok: true, value: amount * from.factor / to.factor, note: `${titleCase(from.dimension.replace(/_/g, " "))} units are compatible.`, formula: localizedFactorFormula(formatNumber(amount), from.factor, to.factor) };
 }
 if (category.type === "electricity") return convertElectricity(amount, from, to);
 if (category.type === "fuel") return convertFuel(amount, from, to);
-return { ok: false, message: "Conversion unavailable" };
+return { ok: false, message: getTranslation("messages.conversionUnavailableMessage", currentLanguageCode) };
 }
 function toKelvin(value, unitId) {
 if (unitId === "celsius") return value + 273.15;
@@ -3023,12 +3153,12 @@ return value;
 function convertFuel(amount, from, to) {
 const base = from.mode === "consumption" ? 1 / (amount * from.factor) : amount * from.factor;
 const value = to.mode === "consumption" ? 1 / (base * to.factor) : base / to.factor;
-if (!Number.isFinite(value)) return { ok: false, message: "Enter a nonzero fuel economy value", note: "Consumption units invert the efficiency value." };
-return { ok: true, value, note: "Fuel economy supports both distance-per-volume and volume-per-distance units.", formula: formulaFor(categoryMap.get("fuel_economy"), from, to) };
+if (!Number.isFinite(value)) return { ok: false, message: getTranslation("messages.fuelZeroMessage", currentLanguageCode), note: getTranslation("messages.fuelInvertNote", currentLanguageCode) };
+return { ok: true, value, note: getTranslation("messages.fuelSupportsNote", currentLanguageCode), formula: formulaFor(categoryMap.get("fuel_economy"), from, to) };
 }
 function convertElectricity(amount, from, to) {
 if (from.dimension === to.dimension) {
-return { ok: true, value: amount * from.factor / to.factor, note: "Electrical units in the same family convert directly.", formula: `Result = ${formatNumber(amount)} x ${compactNumber(from.factor)} / ${compactNumber(to.factor)}.` };
+return { ok: true, value: amount * from.factor / to.factor, note: getTranslation("messages.electricitySameFamilyNote", currentLanguageCode), formula: localizedFactorFormula(formatNumber(amount), from.factor, to.factor) };
 }
 const source = amount * from.factor;
 const voltage = positiveContext("contextVoltage");
@@ -3069,9 +3199,9 @@ if (seconds) baseByDimension.power = source / seconds;
 if (baseByDimension.power && seconds) baseByDimension.energy = baseByDimension.power * seconds;
 const value = baseByDimension[to.dimension];
 if (!Number.isFinite(value)) {
-return { ok: false, message: "Add the needed electrical context", note: "Cross-family electrical calculations need voltage, current, resistance, or hours." };
+return { ok: false, message: getTranslation("messages.electricityNeedContextMessage", currentLanguageCode), note: getTranslation("messages.electricityNeedContextNote", currentLanguageCode) };
 }
-return { ok: true, value: value / to.factor, note: "Electrical result uses the context values shown above.", formula: "V = I x R, P = V x I, and E = P x time." };
+return { ok: true, value: value / to.factor, note: getTranslation("messages.electricityContextNote", currentLanguageCode), formula: localizedFormula("formula_electricity_cross") || "V = I x R, P = V x I, and E = P x time." };
 }
 function positiveContext(id) {
 const input = byId(id);
@@ -3290,7 +3420,7 @@ validIds.forEach((id) => {
 const category = categoryMap.get(id);
 const button = document.createElement("button");
 button.type = "button";
-button.textContent = category.name;
+button.textContent = getCategoryDisplayName(category);
 button.addEventListener("click", () => selectCategory(id));
 element.appendChild(button);
 });
@@ -4444,6 +4574,14 @@ if (!seoData || !seoData.categories || !seoData.categories[category.id]) return 
 return seoData.categories[category.id].description;
 }
 
+function getCategoryDisplayNote(category) {
+if (!category) return "";
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return category.note;
+const seoData = currentSeoData();
+if (!seoData || !seoData.categories || !seoData.categories[category.id] || !seoData.categories[category.id].note) return category.note;
+return seoData.categories[category.id].note;
+}
+
 // ---------------------------------------------------------------------
 // DOM rewriting for the static, pre-generated SEO article (About/FAQ/
 // Related conversions/info-card labels). Every element this touches has
@@ -4710,6 +4848,30 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
 // selection already in `state` - it does not change what is selected,
 // only how its labels are displayed.
 function refreshLanguageAwareConverter() {
+// The left category sidebar (#categoryList) and the homepage category
+// overview (#overviewGrid) are independent render targets from the
+// active-converter widget below - each writes its own category
+// name/description directly, so a language switch has to re-run them
+// too, not just re-populate the unit dropdowns. Both renderCategoryList()
+// and renderOverview() already no-op safely when their target element
+// isn't present on the current page (category pages have no
+// #overviewGrid; the homepage has no #categoryList), so it's safe to
+// call both unconditionally here rather than branch on page type.
+if (typeof renderCategoryList === "function") {
+renderCategoryList(byId("unitSearch") ? byId("unitSearch").value || "" : "");
+}
+if (typeof renderOverview === "function") renderOverview();
+// Same reasoning as the two calls above: applyTranslations() also calls
+// renderStoredLists() (favorites/recent list), but it does so BEFORE
+// applySeoTranslations() (which calls this function) has updated the
+// global currentLanguageCode - so that earlier call renders with the
+// previous language's getCategoryDisplayName() results. Re-running it
+// here, after currentLanguageCode is current, is what actually localizes
+// the favorites/recent button text (added for targeted homepage
+// remediation item 6; previously invisible because the list items used
+// the raw English category.name unconditionally, which happened to be
+// correct or not depending on this exact ordering).
+if (typeof renderStoredLists === "function") renderStoredLists();
 if (typeof state === "undefined" || !state || !state.categoryId) return;
 if (!byId("fromUnit") || !byId("toUnit")) return;
 const category = categoryMap.get(state.categoryId);

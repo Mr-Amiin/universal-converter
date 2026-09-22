@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Panjang",
-   "description": "Konversi satuan panjang SI, imperial, AS, dan ilmiah."
+   "description": "Konversi satuan panjang SI, imperial, AS, dan ilmiah.",
+   "note": "Panjang menggunakan meter sebagai satuan dasar."
   },
   "area": {
    "name": "Luas",
-   "description": "Konversi satuan luas untuk lahan, konstruksi, pemetaan, dan sains."
+   "description": "Konversi satuan luas untuk lahan, konstruksi, pemetaan, dan sains.",
+   "note": "Luas menggunakan meter persegi sebagai satuan dasar."
   },
   "volume": {
    "name": "Volume",
-   "description": "Konversi satuan volume metrik, AS, imperial, dan memasak."
+   "description": "Konversi satuan volume metrik, AS, imperial, dan memasak.",
+   "note": "Volume menggunakan meter kubik sebagai satuan dasar."
   },
   "weight": {
    "name": "Berat/Massa",
-   "description": "Konversi satuan massa SI, berat imperial, dan satuan atom."
+   "description": "Konversi satuan massa SI, berat imperial, dan satuan atom.",
+   "note": "Massa menggunakan kilogram sebagai satuan dasar."
   },
   "temperature": {
    "name": "Suhu",
-   "description": "Konversi Celsius, Fahrenheit, Kelvin, dan skala historis."
+   "description": "Konversi Celsius, Fahrenheit, Kelvin, dan skala historis.",
+   "note": "Konversi suhu menggunakan Kelvin absolut secara internal."
   },
   "time": {
    "name": "Waktu",
-   "description": "Konversi waktu SI, waktu sipil, dan durasi historis."
+   "description": "Konversi waktu SI, waktu sipil, dan durasi historis.",
+   "note": "Bulan dan tahun menggunakan rata-rata tahun Gregorian."
   },
   "speed": {
    "name": "Kecepatan",
-   "description": "Konversi satuan kecepatan jalan raya, penerbangan, dan maritim."
+   "description": "Konversi satuan kecepatan jalan raya, penerbangan, dan maritim.",
+   "note": "Kecepatan menggunakan meter per detik sebagai satuan dasar."
   },
   "pressure": {
    "name": "Tekanan",
-   "description": "Konversi pascal, bar, PSI, dan atmosfer."
+   "description": "Konversi pascal, bar, PSI, dan atmosfer.",
+   "note": "Tekanan menggunakan pascal sebagai satuan dasar."
   },
   "energy": {
    "name": "Energi",
-   "description": "Konversi joule, kalori, kilowatt-jam, dan BTU."
+   "description": "Konversi joule, kalori, kilowatt-jam, dan BTU.",
+   "note": "Energi menggunakan joule sebagai satuan dasar."
   },
   "power": {
    "name": "Daya",
-   "description": "Konversi watt, tenaga kuda, dan ton pendinginan."
+   "description": "Konversi watt, tenaga kuda, dan ton pendinginan.",
+   "note": "Daya menggunakan watt sebagai satuan dasar."
   },
   "force": {
    "name": "Gaya",
-   "description": "Konversi newton, dyne, dan pound-force."
+   "description": "Konversi newton, dyne, dan pound-force.",
+   "note": "Gaya menggunakan newton sebagai satuan dasar."
   },
   "torque": {
    "name": "Torsi",
-   "description": "Konversi newton meter, pound-foot, dan pound-inch."
+   "description": "Konversi newton meter, pound-foot, dan pound-inch.",
+   "note": "Torsi menggunakan newton-meter sebagai satuan dasar."
   },
   "electricity": {
    "name": "Listrik",
-   "description": "Konversi satuan listrik dan hitung tegangan, arus, dan resistansi."
+   "description": "Konversi satuan listrik dan hitung tegangan, arus, dan resistansi.",
+   "note": "Satuan listrik dikonversi langsung dalam kelompok yang sama; hasil lintas kelompok menggunakan hukum Ohm dan konteks waktu."
   },
   "frequency": {
    "name": "Frekuensi",
-   "description": "Konversi hertz, awalan frekuensi, dan RPM."
+   "description": "Konversi hertz, awalan frekuensi, dan RPM.",
+   "note": "Frekuensi menggunakan hertz sebagai satuan dasar."
   },
   "digital": {
    "name": "Penyimpanan Digital",
-   "description": "Konversi bit, byte, dan penyimpanan desimal atau biner."
+   "description": "Konversi bit, byte, dan penyimpanan desimal atau biner.",
+   "note": "Penyimpanan digital menggunakan bit sebagai satuan dasar."
   },
   "angle": {
    "name": "Sudut",
-   "description": "Konversi radian, derajat, gradian, dan putaran."
+   "description": "Konversi radian, derajat, gradian, dan putaran.",
+   "note": "Sudut menggunakan radian sebagai satuan dasar."
   },
   "density": {
    "name": "Densitas",
-   "description": "Konversi ribuan kombinasi densitas massa/volume."
+   "description": "Konversi ribuan kombinasi densitas massa/volume.",
+   "note": "Densitas menggunakan kilogram per meter kubik sebagai satuan dasar."
   },
   "flow": {
    "name": "Laju Aliran",
-   "description": "Konversi laju aliran volumetrik dalam satuan metrik dan AS."
+   "description": "Konversi laju aliran volumetrik dalam satuan metrik dan AS.",
+   "note": "Laju aliran menggunakan meter kubik per detik sebagai satuan dasar."
   },
   "fuel_economy": {
    "name": "Efisiensi Bahan Bakar",
-   "description": "Konversi MPG, km/L, dan L/100 km."
+   "description": "Konversi MPG, km/L, dan L/100 km.",
+   "note": "Ekonomi bahan bakar mengonversi antara format jarak-per-volume dan volume-per-jarak."
   },
   "radiation": {
    "name": "Radiasi",
-   "description": "Konversi satuan radioaktivitas dan dosis serap."
+   "description": "Konversi satuan radioaktivitas dan dosis serap.",
+   "note": "Konversi radiasi bergantung pada dimensi."
   },
   "chemistry": {
    "name": "Kimia",
-   "description": "Konversi satuan konsentrasi, molaritas, dan laboratorium."
+   "description": "Konversi satuan konsentrasi, molaritas, dan laboratorium.",
+   "note": "Konversi kimia bergantung pada dimensi."
   },
   "agriculture": {
    "name": "Pertanian",
-   "description": "Konversi acre, hektar, hasil panen, dan satuan pertanian."
+   "description": "Konversi acre, hektar, hasil panen, dan satuan pertanian.",
+   "note": "Konversi pertanian dikelompokkan berdasarkan luas, laju massa, laju cairan, dan laju hasil panen."
   },
   "cooking": {
    "name": "Memasak",
-   "description": "Konversi satuan volume dan massa untuk resep masakan."
+   "description": "Konversi satuan volume dan massa untuk resep masakan.",
+   "note": "Satuan memasak bergantung pada dimensi karena volume dan massa memerlukan densitas untuk dicampur."
   },
   "astronomy": {
    "name": "Astronomi",
-   "description": "Konversi satuan astronomi untuk panjang, massa, dan waktu."
+   "description": "Konversi satuan astronomi untuk panjang, massa, dan waktu.",
+   "note": "Konversi astronomi bergantung pada dimensi."
   },
   "engineering": {
    "name": "Teknik",
-   "description": "Konversi satuan tegangan, gaya, torsi, dan energi untuk teknik."
+   "description": "Konversi satuan tegangan, gaya, torsi, dan energi untuk teknik.",
+   "note": "Satuan teknik dikelompokkan berdasarkan dimensi yang kompatibel."
   },
   "scientific": {
    "name": "Ilmiah",
-   "description": "Konversi satuan turunan SI dan satuan laboratorium ilmiah."
+   "description": "Konversi satuan turunan SI dan satuan laboratorium ilmiah.",
+   "note": "Satuan ilmiah dikelompokkan berdasarkan dimensi yang kompatibel."
   },
   "currency": {
    "name": "Mata Uang",
-   "description": "Konversi mata uang dunia utama dengan kurs cadangan luring."
+   "description": "Konversi mata uang dunia utama dengan kurs cadangan luring.",
+   "note": "Kurs mata uang adalah estimasi offline kecuali kurs API langsung telah dimuat."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Tabel konversi",
   "related_conversions": "Konversi terkait",
   "about_converting": "Tentang mengonversi",
-  "all_conversions_prefix": "Semua konversi"
+  "all_conversions_prefix": "Semua konversi",
+  "convert_description_template": "Konversi {FROM} ({FROM_SYMBOL}) ke {TO} ({TO_SYMBOL}) {TAIL}.",
+  "tail_exact_factor": "menggunakan faktor konversi yang tepat",
+  "tail_appropriate_factor": "menggunakan faktor konversi yang sesuai",
+  "tail_exact_international_factor": "menggunakan faktor konversi internasional yang tepat",
+  "tail_density_factor": "menggunakan faktor konversi densitas yang berlaku",
+  "tail_flow_factor": "menggunakan faktor konversi laju aliran yang berlaku",
+  "tail_temperature_formula": "menggunakan rumus konversi suhu standar",
+  "tail_currency_rates": "menggunakan nilai tukar saat ini",
+  "tail_fuel_formula": "menggunakan rumus konversi ekonomi bahan bakar",
+  "tail_electrical_factor": "menggunakan faktor konversi listrik yang berlaku",
+  "tail_applicable_factor": "menggunakan faktor konversi yang berlaku untuk satuan ini",
+  "formula_temperature": "Mengonversi suhu sumber ke Kelvin, lalu mengonversi Kelvin ke skala target.",
+  "formula_fuel": "Menormalkan ekonomi bahan bakar menjadi jarak per volume, membalik satuan konsumsi jika diperlukan.",
+  "formula_multi_cross": "Pilih satuan dari keluarga pengukuran yang sama untuk konversi langsung.",
+  "formula_electricity_cross": "Menggunakan hukum Ohm dan energi terhadap waktu: V = I x R, P = V x I, E = P x waktu.",
+  "formula_same_unit": "Satuan sumber dan target identik.",
+  "formula_input_word": "nilai yang dimasukkan",
+  "formula_factor_template": "Hasil = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "Dolar AS",

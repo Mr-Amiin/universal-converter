@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "长度",
-   "description": "转换国际单位制、英制、美制和科学长度单位。"
+   "description": "转换国际单位制、英制、美制和科学长度单位。",
+   "note": "长度以米作为基本单位。"
   },
   "area": {
    "name": "面积",
-   "description": "转换用于土地、建筑、测绘和科学的面积单位。"
+   "description": "转换用于土地、建筑、测绘和科学的面积单位。",
+   "note": "面积以平方米作为基本单位。"
   },
   "volume": {
    "name": "体积",
-   "description": "转换公制、美制、英制和烹饪体积单位。"
+   "description": "转换公制、美制、英制和烹饪体积单位。",
+   "note": "体积以立方米作为基本单位。"
   },
   "weight": {
    "name": "重量/质量",
-   "description": "转换国际单位制质量、英制重量和原子单位。"
+   "description": "转换国际单位制质量、英制重量和原子单位。",
+   "note": "质量以千克作为基本单位。"
   },
   "temperature": {
    "name": "温度",
-   "description": "转换摄氏度、华氏度、开尔文和历史温标。"
+   "description": "转换摄氏度、华氏度、开尔文和历史温标。",
+   "note": "温度换算内部使用绝对开尔文温标。"
   },
   "time": {
    "name": "时间",
-   "description": "转换国际单位制时间、民用时间和历史时长。"
+   "description": "转换国际单位制时间、民用时间和历史时长。",
+   "note": "月和年使用格里高利平均年。"
   },
   "speed": {
    "name": "速度",
-   "description": "转换公路、航空和海事速度单位。"
+   "description": "转换公路、航空和海事速度单位。",
+   "note": "速度以米/秒作为基本单位。"
   },
   "pressure": {
    "name": "压力",
-   "description": "转换帕斯卡、巴、PSI 和大气压。"
+   "description": "转换帕斯卡、巴、PSI 和大气压。",
+   "note": "压力以帕斯卡作为基本单位。"
   },
   "energy": {
    "name": "能量",
-   "description": "转换焦耳、卡路里、千瓦时和英热单位。"
+   "description": "转换焦耳、卡路里、千瓦时和英热单位。",
+   "note": "能量以焦耳作为基本单位。"
   },
   "power": {
    "name": "功率",
-   "description": "转换瓦特、马力和制冷吨。"
+   "description": "转换瓦特、马力和制冷吨。",
+   "note": "功率以瓦特作为基本单位。"
   },
   "force": {
    "name": "力",
-   "description": "转换牛顿、达因和磅力。"
+   "description": "转换牛顿、达因和磅力。",
+   "note": "力以牛顿作为基本单位。"
   },
   "torque": {
    "name": "扭矩",
-   "description": "转换牛顿米、磅英尺和磅英寸。"
+   "description": "转换牛顿米、磅英尺和磅英寸。",
+   "note": "扭矩以牛顿米作为基本单位。"
   },
   "electricity": {
    "name": "电学",
-   "description": "转换电学单位并计算电压、电流和电阻。"
+   "description": "转换电学单位并计算电压、电流和电阻。",
+   "note": "同一族的电气单位可直接换算；跨族结果使用欧姆定律和时间参数。"
   },
   "frequency": {
    "name": "频率",
-   "description": "转换赫兹、频率前缀和转速。"
+   "description": "转换赫兹、频率前缀和转速。",
+   "note": "频率以赫兹作为基本单位。"
   },
   "digital": {
    "name": "数字存储",
-   "description": "转换比特、字节以及十进制或二进制存储。"
+   "description": "转换比特、字节以及十进制或二进制存储。",
+   "note": "数字存储以比特作为基本单位。"
   },
   "angle": {
    "name": "角度",
-   "description": "转换弧度、度、百分度和圈。"
+   "description": "转换弧度、度、百分度和圈。",
+   "note": "角度以弧度作为基本单位。"
   },
   "density": {
    "name": "密度",
-   "description": "转换成千上万种质量/体积密度组合。"
+   "description": "转换成千上万种质量/体积密度组合。",
+   "note": "密度以千克每立方米作为基本单位。"
   },
   "flow": {
    "name": "流量",
-   "description": "转换公制和美制体积流量单位。"
+   "description": "转换公制和美制体积流量单位。",
+   "note": "流量以立方米每秒作为基本单位。"
   },
   "fuel_economy": {
    "name": "燃油经济性",
-   "description": "转换 MPG、km/L 和 L/100km。"
+   "description": "转换 MPG、km/L 和 L/100km。",
+   "note": "燃油经济性在“距离每体积”和“体积每距离”两种格式之间换算。"
   },
   "radiation": {
    "name": "辐射",
-   "description": "转换放射性和吸收剂量单位。"
+   "description": "转换放射性和吸收剂量单位。",
+   "note": "辐射换算与量纲相关。"
   },
   "chemistry": {
    "name": "化学",
-   "description": "转换浓度、摩尔浓度和实验室单位。"
+   "description": "转换浓度、摩尔浓度和实验室单位。",
+   "note": "化学换算与量纲相关。"
   },
   "agriculture": {
    "name": "农业",
-   "description": "转换英亩、公顷、产量等农业单位。"
+   "description": "转换英亩、公顷、产量等农业单位。",
+   "note": "农业换算按面积、质量速率、液体速率和产量速率分组。"
   },
   "cooking": {
    "name": "烹饪",
-   "description": "转换食谱中使用的体积和质量单位。"
+   "description": "转换食谱中使用的体积和质量单位。",
+   "note": "烹饪单位与量纲相关，因为体积和质量需要密度才能换算。"
   },
   "astronomy": {
    "name": "天文学",
-   "description": "转换天文长度、质量和时间单位。"
+   "description": "转换天文长度、质量和时间单位。",
+   "note": "天文换算与量纲相关。"
   },
   "engineering": {
    "name": "工程",
-   "description": "转换工程中常见的应力、力、扭矩和能量单位。"
+   "description": "转换工程中常见的应力、力、扭矩和能量单位。",
+   "note": "工程单位按兼容量纲分组。"
   },
   "scientific": {
    "name": "科学",
-   "description": "转换国际单位制导出单位和科学实验室单位。"
+   "description": "转换国际单位制导出单位和科学实验室单位。",
+   "note": "科学单位按兼容量纲分组。"
   },
   "currency": {
    "name": "货币",
-   "description": "使用离线备用汇率转换主要世界货币。"
+   "description": "使用离线备用汇率转换主要世界货币。",
+   "note": "除非已加载实时 API 汇率，否则货币汇率均为离线估算值。"
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "换算表",
   "related_conversions": "相关换算",
   "about_converting": "关于换算",
-  "all_conversions_prefix": "全部"
+  "all_conversions_prefix": "全部",
+  "convert_description_template": "将 {FROM}（{FROM_SYMBOL}）换算为 {TO}（{TO_SYMBOL}），{TAIL}。",
+  "tail_exact_factor": "使用精确换算系数",
+  "tail_appropriate_factor": "使用适用的换算系数",
+  "tail_exact_international_factor": "使用精确的国际换算系数",
+  "tail_density_factor": "使用适用的密度换算系数",
+  "tail_flow_factor": "使用适用的流量换算系数",
+  "tail_temperature_formula": "使用标准温度换算公式",
+  "tail_currency_rates": "使用当前汇率",
+  "tail_fuel_formula": "使用燃油经济性换算公式",
+  "tail_electrical_factor": "使用适用的电气换算系数",
+  "tail_applicable_factor": "使用适用于这些单位的换算系数",
+  "formula_temperature": "将源温度转换为开尔文，再将开尔文转换为目标温标。",
+  "formula_fuel": "将燃油经济性归一化为“距离每体积”，必要时对消耗类单位取倒数。",
+  "formula_multi_cross": "请选择同一测量族的单位以进行直接换算。",
+  "formula_electricity_cross": "使用欧姆定律和随时间变化的能量：V = I x R，P = V x I，E = P x 时间。",
+  "formula_same_unit": "源单位与目标单位相同。",
+  "formula_input_word": "输入值",
+  "formula_factor_template": "结果 = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}。"
  },
  "currencyNames": {
   "USD": "美元",

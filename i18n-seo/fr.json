@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Longueur",
-   "description": "Convertissez les unités de longueur SI, impériales, américaines et scientifiques."
+   "description": "Convertissez les unités de longueur SI, impériales, américaines et scientifiques.",
+   "note": "Longueur utilise le mètre comme unité de base."
   },
   "area": {
    "name": "Superficie",
-   "description": "Convertissez les unités de superficie pour le foncier, la construction et la cartographie."
+   "description": "Convertissez les unités de superficie pour le foncier, la construction et la cartographie.",
+   "note": "Superficie utilise le mètre carré comme unité de base."
   },
   "volume": {
    "name": "Volume",
-   "description": "Convertissez les unités de volume métriques, américaines, impériales et culinaires."
+   "description": "Convertissez les unités de volume métriques, américaines, impériales et culinaires.",
+   "note": "Volume utilise le mètre cube comme unité de base."
   },
   "weight": {
    "name": "Poids/Masse",
-   "description": "Convertissez les unités de masse SI, de poids impérial et atomiques."
+   "description": "Convertissez les unités de masse SI, de poids impérial et atomiques.",
+   "note": "Masse utilise le kilogramme comme unité de base."
   },
   "temperature": {
    "name": "Température",
-   "description": "Convertissez Celsius, Fahrenheit, Kelvin et les échelles historiques."
+   "description": "Convertissez Celsius, Fahrenheit, Kelvin et les échelles historiques.",
+   "note": "Les conversions de température utilisent le Kelvin absolu en interne."
   },
   "time": {
    "name": "Temps",
-   "description": "Convertissez le temps SI, le temps civil et les durées historiques."
+   "description": "Convertissez le temps SI, le temps civil et les durées historiques.",
+   "note": "Les mois et les années utilisent l'année grégorienne moyenne."
   },
   "speed": {
    "name": "Vitesse",
-   "description": "Convertissez les unités de vitesse routière, aéronautique et marine."
+   "description": "Convertissez les unités de vitesse routière, aéronautique et marine.",
+   "note": "Vitesse utilise les mètres par seconde comme unité de base."
   },
   "pressure": {
    "name": "Pression",
-   "description": "Convertissez pascals, bars, PSI et atmosphères."
+   "description": "Convertissez pascals, bars, PSI et atmosphères.",
+   "note": "Pression utilise le pascal comme unité de base."
   },
   "energy": {
    "name": "Énergie",
-   "description": "Convertissez joules, calories, kilowattheures et BTU."
+   "description": "Convertissez joules, calories, kilowattheures et BTU.",
+   "note": "Énergie utilise le joule comme unité de base."
   },
   "power": {
    "name": "Puissance",
-   "description": "Convertissez watts, chevaux-vapeur et tonnes de réfrigération."
+   "description": "Convertissez watts, chevaux-vapeur et tonnes de réfrigération.",
+   "note": "Puissance utilise le watt comme unité de base."
   },
   "force": {
    "name": "Force",
-   "description": "Convertissez newtons, dynes et livres-force."
+   "description": "Convertissez newtons, dynes et livres-force.",
+   "note": "Force utilise le newton comme unité de base."
   },
   "torque": {
    "name": "Couple",
-   "description": "Convertissez newton-mètre, livre-pied et livre-pouce."
+   "description": "Convertissez newton-mètre, livre-pied et livre-pouce.",
+   "note": "Couple utilise le newton-mètre comme unité de base."
   },
   "electricity": {
    "name": "Électricité",
-   "description": "Convertissez les unités électriques et calculez tension, courant et résistance."
+   "description": "Convertissez les unités électriques et calculez tension, courant et résistance.",
+   "note": "Les unités électriques se convertissent directement au sein d'une même famille ; les résultats entre familles différentes utilisent la loi d'Ohm et le contexte temporel."
   },
   "frequency": {
    "name": "Fréquence",
-   "description": "Convertissez hertz, préfixes de fréquence et tr/min."
+   "description": "Convertissez hertz, préfixes de fréquence et tr/min.",
+   "note": "Fréquence utilise le hertz comme unité de base."
   },
   "digital": {
    "name": "Stockage numérique",
-   "description": "Convertissez bits, octets et stockage décimal ou binaire."
+   "description": "Convertissez bits, octets et stockage décimal ou binaire.",
+   "note": "Stockage numérique utilise les bits comme unité de base."
   },
   "angle": {
    "name": "Angle",
-   "description": "Convertissez radians, degrés, grades et tours."
+   "description": "Convertissez radians, degrés, grades et tours.",
+   "note": "Angle utilise les radians comme unité de base."
   },
   "density": {
    "name": "Densité",
-   "description": "Convertissez des milliers de combinaisons de densité masse/volume."
+   "description": "Convertissez des milliers de combinaisons de densité masse/volume.",
+   "note": "Densité utilise les kilogrammes par mètre cube comme unité de base."
   },
   "flow": {
    "name": "Débit",
-   "description": "Convertissez les débits volumétriques en unités métriques et américaines."
+   "description": "Convertissez les débits volumétriques en unités métriques et américaines.",
+   "note": "Débit utilise les mètres cubes par seconde comme unité de base."
   },
   "fuel_economy": {
    "name": "Consommation de carburant",
-   "description": "Convertissez MPG, km/L et L/100 km."
+   "description": "Convertissez MPG, km/L et L/100 km.",
+   "note": "La consommation de carburant convertit entre les formats distance par volume et volume par distance."
   },
   "radiation": {
    "name": "Radiation",
-   "description": "Convertissez les unités de radioactivité et de dose absorbée."
+   "description": "Convertissez les unités de radioactivité et de dose absorbée.",
+   "note": "Les conversions de radiation dépendent de la dimension."
   },
   "chemistry": {
    "name": "Chimie",
-   "description": "Convertissez les unités de concentration, molarité et laboratoire."
+   "description": "Convertissez les unités de concentration, molarité et laboratoire.",
+   "note": "Les conversions de chimie dépendent de la dimension."
   },
   "agriculture": {
    "name": "Agriculture",
-   "description": "Convertissez acres, hectares, rendement et unités agricoles."
+   "description": "Convertissez acres, hectares, rendement et unités agricoles.",
+   "note": "Les conversions agricoles sont regroupées par surface, taux de masse, taux liquide et taux de rendement."
   },
   "cooking": {
    "name": "Cuisine",
-   "description": "Convertissez les unités de volume et de masse utilisées en cuisine."
+   "description": "Convertissez les unités de volume et de masse utilisées en cuisine.",
+   "note": "Les unités de cuisine dépendent de la dimension car le volume et la masse nécessitent la densité pour se mélanger."
   },
   "astronomy": {
    "name": "Astronomie",
-   "description": "Convertissez les unités astronomiques de longueur, masse et temps."
+   "description": "Convertissez les unités astronomiques de longueur, masse et temps.",
+   "note": "Les conversions astronomiques dépendent de la dimension."
   },
   "engineering": {
    "name": "Ingénierie",
-   "description": "Convertissez les unités courantes de contrainte, force, couple et énergie."
+   "description": "Convertissez les unités courantes de contrainte, force, couple et énergie.",
+   "note": "Les unités d'ingénierie sont regroupées par dimensions compatibles."
   },
   "scientific": {
    "name": "Scientifique",
-   "description": "Convertissez les unités dérivées SI et de laboratoire scientifique."
+   "description": "Convertissez les unités dérivées SI et de laboratoire scientifique.",
+   "note": "Les unités scientifiques sont regroupées par dimensions compatibles."
   },
   "currency": {
    "name": "Devise",
-   "description": "Convertissez les principales devises mondiales avec des taux de secours hors ligne."
+   "description": "Convertissez les principales devises mondiales avec des taux de secours hors ligne.",
+   "note": "Les taux de change sont des estimations hors ligne, sauf si des taux en direct de l'API ont été chargés."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Table de conversion",
   "related_conversions": "Conversions associées",
   "about_converting": "À propos de la conversion de",
-  "all_conversions_prefix": "Toutes les conversions de"
+  "all_conversions_prefix": "Toutes les conversions de",
+  "convert_description_template": "Convertissez {FROM} ({FROM_SYMBOL}) en {TO} ({TO_SYMBOL}) {TAIL}.",
+  "tail_exact_factor": "en utilisant le facteur de conversion exact",
+  "tail_appropriate_factor": "en utilisant le facteur de conversion approprié",
+  "tail_exact_international_factor": "en utilisant le facteur de conversion international exact",
+  "tail_density_factor": "en utilisant le facteur de conversion de densité applicable",
+  "tail_flow_factor": "en utilisant le facteur de conversion de débit applicable",
+  "tail_temperature_formula": "en utilisant la formule standard de conversion de température",
+  "tail_currency_rates": "en utilisant les taux de change actuels",
+  "tail_fuel_formula": "en utilisant la formule de conversion de consommation de carburant",
+  "tail_electrical_factor": "en utilisant le facteur de conversion électrique applicable",
+  "tail_applicable_factor": "en utilisant le facteur de conversion applicable pour ces unités",
+  "formula_temperature": "Convertit la température source en Kelvin, puis convertit le Kelvin vers l'échelle cible.",
+  "formula_fuel": "Normalise la consommation de carburant en distance par volume, en inversant les unités de consommation si nécessaire.",
+  "formula_multi_cross": "Choisissez des unités de la même famille de mesure pour une conversion directe.",
+  "formula_electricity_cross": "Utilise la loi d'Ohm et l'énergie dans le temps : V = I x R, P = V x I, E = P x temps.",
+  "formula_same_unit": "Les unités source et cible sont identiques.",
+  "formula_input_word": "la valeur saisie",
+  "formula_factor_template": "Résultat = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "Dollar américain",

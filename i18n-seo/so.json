@@ -3,111 +3,138 @@
  "categories": {
   "length": {
    "name": "Dhererka",
-   "description": "U beddel cabbirrada dhererka SI, boqortooyada, Mareykanka, iyo kuwa sayniska."
+   "description": "U beddel cabbirrada dhererka SI, boqortooyada, Mareykanka, iyo kuwa sayniska.",
+   "note": "Dhererka wuxuu u isticmaalaa mitirka sida cabbirka aasaasiga ah."
   },
   "area": {
    "name": "Cabbirka",
-   "description": "U beddel cabbirrada dhulka, dhismaha, khariidadaynta, iyo sayniska."
+   "description": "U beddel cabbirrada dhulka, dhismaha, khariidadaynta, iyo sayniska.",
+   "note": "Aagga wuxuu u isticmaalaa mitirka laba jibaaran sida cabbirka aasaasiga ah."
   },
   "volume": {
    "name": "Baaxadda",
-   "description": "U beddel cabbirrada baaxadda mitirka, Mareykanka, boqortooyada, iyo kariska."
+   "description": "U beddel cabbirrada baaxadda mitirka, Mareykanka, boqortooyada, iyo kariska.",
+   "note": "Xajmiga wuxuu u isticmaalaa mitirka saddex jibaaran sida cabbirka aasaasiga ah."
   },
   "weight": {
    "name": "Miisaanka/Cufnaanta",
-   "description": "U beddel cufnaanta SI, miisaanka boqortooyada, iyo cutubyada atomiga."
+   "description": "U beddel cufnaanta SI, miisaanka boqortooyada, iyo cutubyada atomiga.",
+   "note": "Miisaanka wuxuu u isticmaalaa kiiloogaraamka sida cabbirka aasaasiga ah."
   },
   "temperature": {
    "name": "Heerkulka",
-   "description": "U beddel Celsius, Fahrenheit, Kelvin, iyo miisaannada taariikhiga ah."
+   "description": "U beddel Celsius, Fahrenheit, Kelvin, iyo miisaannada taariikhiga ah.",
+   "note": "Beddellada heerkulku waxay gudaha isticmaalaan Kelvin oo saldhig ah."
   },
   "time": {
    "name": "Waqtiga",
-   "description": "U beddel waqtiga SI, waqtiga rayidka, iyo muddooyinka taariikhiga ah."
+   "description": "U beddel waqtiga SI, waqtiga rayidka, iyo muddooyinka taariikhiga ah.",
+   "note": "Bilaha iyo sannadaha waxay isticmaalaan celceliska sannadka Gregorian-ka."
   },
   "speed": {
    "name": "Xawaaraha",
-   "description": "U beddel cabbirrada xawaaraha waddada, duulimaadka, iyo badda."
+   "description": "U beddel cabbirrada xawaaraha waddada, duulimaadka, iyo badda.",
+   "note": "Xawaaraha wuxuu u isticmaalaa mitir ilbiriqsi kasta sida cabbirka aasaasiga ah."
   },
   "pressure": {
    "name": "Cadaadiska",
-   "description": "U beddel pascal, bar, PSI, iyo cirka."
+   "description": "U beddel pascal, bar, PSI, iyo cirka.",
+   "note": "Cadaadiska wuxuu u isticmaalaa baaskaalka sida cabbirka aasaasiga ah."
   },
   "energy": {
    "name": "Tamarta",
-   "description": "U beddel joule, calorie, kilowatt-hour, iyo BTU."
+   "description": "U beddel joule, calorie, kilowatt-hour, iyo BTU.",
+   "note": "Tamarta wuxuu u isticmaalaa juulka sida cabbirka aasaasiga ah."
   },
   "power": {
    "name": "Awoodda",
-   "description": "U beddel watt, xoogga faraska, iyo tan qaboojinta."
+   "description": "U beddel watt, xoogga faraska, iyo tan qaboojinta.",
+   "note": "Awoodda wuxuu u isticmaalaa waatka sida cabbirka aasaasiga ah."
   },
   "force": {
    "name": "Xoogga",
-   "description": "U beddel newton, dyne, iyo pound-force."
+   "description": "U beddel newton, dyne, iyo pound-force.",
+   "note": "Xoogga wuxuu u isticmaalaa nyuutonka sida cabbirka aasaasiga ah."
   },
   "torque": {
    "name": "Torque",
-   "description": "U beddel newton meter, pound-foot, iyo pound-inch."
+   "description": "U beddel newton meter, pound-foot, iyo pound-inch.",
+   "note": "Isbeddelka wareegga wuxuu u isticmaalaa nyuuton-mitirka sida cabbirka aasaasiga ah."
   },
   "electricity": {
    "name": "Korontada",
-   "description": "U beddel cutubyada korontada oo xisaabi voltage, current, iyo resistance."
+   "description": "U beddel cutubyada korontada oo xisaabi voltage, current, iyo resistance.",
+   "note": "Cabbirrada koronto ee isla qoyska si toos ah ayaa loo beddelaa; natiijooyinka u dhexeeya qoysas kala duwan waxay isticmaalaan sharciga Ohm iyo macluumaadka wakhtiga."
   },
   "frequency": {
    "name": "Baaxadda-mowjadaha",
-   "description": "U beddel hertz, horgalayaasha frequency-ga, iyo RPM."
+   "description": "U beddel hertz, horgalayaasha frequency-ga, iyo RPM.",
+   "note": "Inta jeer (frequency) wuxuu u isticmaalaa hertz-ka sida cabbirka aasaasiga ah."
   },
   "digital": {
    "name": "Kaydinta Dhijitaalka",
-   "description": "U beddel bits, bytes, iyo kaydinta tobanle ama labanle."
+   "description": "U beddel bits, bytes, iyo kaydinta tobanle ama labanle.",
+   "note": "Kaydinta Dhijitaalka ah wuxuu u isticmaalaa bits-ka sida cabbirka aasaasiga ah."
   },
   "angle": {
    "name": "Gollaha",
-   "description": "U beddel radian, digrii, gradian, iyo wareeg."
+   "description": "U beddel radian, digrii, gradian, iyo wareeg.",
+   "note": "Xagalka wuxuu u isticmaalaa radian-ka sida cabbirka aasaasiga ah."
   },
   "density": {
    "name": "Cufnaanta",
-   "description": "U beddel kumanaan isku-dar cufnaanta cufka/baaxadda."
+   "description": "U beddel kumanaan isku-dar cufnaanta cufka/baaxadda.",
+   "note": "Cufnaanta wuxuu u isticmaalaa kiiloogaraam mitir saddex jibaaran kasta sida cabbirka aasaasiga ah."
   },
   "flow": {
    "name": "Heerka Qulqulka",
-   "description": "U beddel heerarka qulqulka baaxadda ee mitirka iyo Mareykanka."
+   "description": "U beddel heerarka qulqulka baaxadda ee mitirka iyo Mareykanka.",
+   "note": "Xawaaraha Qulqulka wuxuu u isticmaalaa mitir saddex jibaaran ilbiriqsi kasta sida cabbirka aasaasiga ah."
   },
   "fuel_economy": {
    "name": "Dhaqaalaha Shidaalka",
-   "description": "U beddel MPG, km/L, iyo L/100 km."
+   "description": "U beddel MPG, km/L, iyo L/100 km.",
+   "note": "Dhaqaalaha shidaalku wuxuu u rogayaa u dhexeeya qaabka masaafo-kor-xajmi iyo xajmi-kor-masaafo."
   },
   "radiation": {
    "name": "Shucaaca",
-   "description": "U beddel cutubyada shucaaca iyo qiyaasta la nuugay."
+   "description": "U beddel cutubyada shucaaca iyo qiyaasta la nuugay.",
+   "note": "Beddellada shucaaca waxay kuxirantahay cabbirka (dimension)."
   },
   "chemistry": {
    "name": "Kiimikada",
-   "description": "U beddel cutubyada isku-dhafka, molarity-ga, iyo shaybaarka."
+   "description": "U beddel cutubyada isku-dhafka, molarity-ga, iyo shaybaarka.",
+   "note": "Beddellada kiimikada waxay kuxirantahay cabbirka (dimension)."
   },
   "agriculture": {
    "name": "Beeraha",
-   "description": "U beddel acre, hectare, wax-soosaarka, iyo cutubyada beeraha."
+   "description": "U beddel acre, hectare, wax-soosaarka, iyo cutubyada beeraha.",
+   "note": "Beddellada beeraha waxaa loo kooxeeyaa aagga, heerka miisaanka, heerka dareeraha, iyo heerka wax-soo-saarka."
   },
   "cooking": {
    "name": "Karinta",
-   "description": "U beddel cutubyada baaxadda iyo cufka ee cuntooyinka lagu isticmaalo."
+   "description": "U beddel cutubyada baaxadda iyo cufka ee cuntooyinka lagu isticmaalo.",
+   "note": "Cabbirrada karinta waxay kuxirantahay cabbirka (dimension) sababtoo ah xajmiga iyo miisaanku waxay u baahan yihiin cufnaanta si loo isku daro."
   },
   "astronomy": {
    "name": "Cilmiga Xiddigiska",
-   "description": "U beddel cutubyada cilmiga xiddigiska ee dhererka, cufka, iyo waqtiga."
+   "description": "U beddel cutubyada cilmiga xiddigiska ee dhererka, cufka, iyo waqtiga.",
+   "note": "Beddellada xiddigiska waxay kuxirantahay cabbirka (dimension)."
   },
   "engineering": {
    "name": "Injineernimada",
-   "description": "U beddel cutubyada injineernimada ee cadaadiska, xoogga, torque-ga, iyo tamarta."
+   "description": "U beddel cutubyada injineernimada ee cadaadiska, xoogga, torque-ga, iyo tamarta.",
+   "note": "Cabbirrada injineernimada waxaa loo kooxeeyaa cabbirro is waafaqsan."
   },
   "scientific": {
    "name": "Sayniska",
-   "description": "U beddel cutubyada ka soo jeeda SI iyo shaybaarka sayniska."
+   "description": "U beddel cutubyada ka soo jeeda SI iyo shaybaarka sayniska.",
+   "note": "Cabbirrada sayniska waxaa loo kooxeeyaa cabbirro is waafaqsan."
   },
   "currency": {
    "name": "Lacagta",
-   "description": "U beddel lacagaha ugu waaweyn adduunka iyadoo la adeegsanayo qiimayaal khadka-ka-baxsan."
+   "description": "U beddel lacagaha ugu waaweyn adduunka iyadoo la adeegsanayo qiimayaal khadka-ka-baxsan.",
+   "note": "Qiimayaasha lacagtu waa qiyaasyo offline-ka ah illaa iyo inta aan la soo geli qiimayaasha API-ga toos ah."
   }
  },
  "prefixes": {
@@ -547,7 +574,25 @@
   "conversion_table": "Jadwalka Isbeddelka",
   "related_conversions": "Isbeddellada La Xiriira",
   "about_converting": "Ku Saabsan Isbeddelka",
-  "all_conversions_prefix": "Dhammaan Isbeddellada"
+  "all_conversions_prefix": "Dhammaan Isbeddellada",
+  "convert_description_template": "U beddel {FROM} ({FROM_SYMBOL}) ilaa {TO} ({TO_SYMBOL}) {TAIL}.",
+  "tail_exact_factor": "adigoo isticmaalaya factorka beddelka saxda ah",
+  "tail_appropriate_factor": "adigoo isticmaalaya factorka beddelka ku habboon",
+  "tail_exact_international_factor": "adigoo isticmaalaya factorka beddelka caalamiga ah ee saxda ah",
+  "tail_density_factor": "adigoo isticmaalaya factorka beddelka cufnaanta khuseeya",
+  "tail_flow_factor": "adigoo isticmaalaya factorka beddelka qulqulka khuseeya",
+  "tail_temperature_formula": "adigoo isticmaalaya qaacidada caadiga ah ee beddelka heerkulka",
+  "tail_currency_rates": "adigoo isticmaalaya qiimaha sarrifka ee hadda jira",
+  "tail_fuel_formula": "adigoo isticmaalaya qaacidada beddelka dhaqaalaha shidaalka",
+  "tail_electrical_factor": "adigoo isticmaalaya factorka beddelka korontada khuseeya",
+  "tail_applicable_factor": "adigoo isticmaalaya factorka beddelka ku khuseeya cutubyadan",
+  "formula_temperature": "U beddel heerkulka isha Kelvin, ka dibna Kelvin u beddel miisaanka bartilmaameedka.",
+  "formula_fuel": "Caadi ka dhig dhaqaalaha shidaalka masaafo-kor-xajmi, adigoo rogaya cabbirrada isticmaalka marka loo baahdo.",
+  "formula_multi_cross": "Dooro cabbirro ka tirsan isla qoyska cabbirka si aad u samayso beddel toos ah.",
+  "formula_electricity_cross": "Waxay isticmaashaa sharciga Ohm iyo tamarta wakhtiga: V = I x R, P = V x I, E = P x wakhtiga.",
+  "formula_same_unit": "Cabbirka isha iyo kan bartilmaameedku waa isku mid.",
+  "formula_input_word": "qiimaha la geliyay",
+  "formula_factor_template": "Natiijo = {AMOUNT} x {FROM_FACTOR} / {TO_FACTOR}."
  },
  "currencyNames": {
   "USD": "Doolar Mareykan",
