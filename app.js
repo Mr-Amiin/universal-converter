@@ -45,8 +45,15 @@ function renderCategoryDropdownMenus() {
 const menus = document.querySelectorAll("#categoriesNavMenu, #categoriesNavMenuMobile");
 if (!menus.length) return;
 const itemsHtml = NAV_CATEGORIES.map((category) => {
+// English keeps NAV_CATEGORIES' own short label ("Length", "Area", ...)
+// unchanged, exactly as originally authored for this dropdown -
+// getCategoryDisplayName() is only consulted for non-English languages,
+// since for English it falls through to the `categories` array's long
+// name ("Length Converter"), which is correct for the category grid/
+// Popular Conversions/sidebar elsewhere on the page but is NOT the
+// short label this dropdown has always used in English.
 let label = category.label;
-if (typeof categories !== "undefined" && typeof getCategoryDisplayName === "function") {
+if (typeof currentLanguageCode !== "undefined" && currentLanguageCode !== DEFAULT_LANGUAGE_CODE && typeof categories !== "undefined" && typeof getCategoryDisplayName === "function") {
 const match = categories.find((c) => c.id === category.catId);
 if (match) label = getCategoryDisplayName(match);
 }
@@ -177,8 +184,10 @@ const navCategorySource = restrictedHref
 const categoryItemsHtml = navCategorySource.map((category) => {
 const slug = categorySlugFromHref(category.href);
 const icon = CATEGORY_ICONS[slug] || DEFAULT_CATEGORY_ICON;
+// Same English-keeps-its-own-short-label reasoning as
+// renderCategoryDropdownMenus() above.
 let label = category.label;
-if (typeof categories !== "undefined" && typeof getCategoryDisplayName === "function") {
+if (typeof currentLanguageCode !== "undefined" && currentLanguageCode !== DEFAULT_LANGUAGE_CODE && typeof categories !== "undefined" && typeof getCategoryDisplayName === "function") {
 const match = categories.find((c) => c.id === category.catId);
 if (match) label = getCategoryDisplayName(match);
 }

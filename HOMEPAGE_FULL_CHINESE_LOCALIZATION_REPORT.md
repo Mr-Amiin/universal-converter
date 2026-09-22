@@ -75,3 +75,22 @@ The one failure — **Somali (`so`) at 1440px has a header overflow of ~94px** �
 
 - **aria-label attributes** on header controls (mobile menu toggle, theme toggle, language toggle, brand link) remain hardcoded English. These are accessibility metadata, not visible text, so they fall outside the "user-facing UI" / visible-text scope this pass targeted (consistent with the same scoping decision made in the earlier remediation pass for calculator input `aria-label`s). Flagging for a future pass if screen-reader-facing text is in scope.
 - **Somali header overflow at 1440px**, described above — pre-existing, not caused by this pass, left alone since fixing it means changing header layout/CSS.
+
+## Addendum — header "Categories" dropdown follow-up fix
+
+A later screenshot flagged the header 分类 dropdown as still showing English ("Length", "Area", "Volume", …) in Chinese. Investigating found two things:
+
+1. **Chinese was already correct in the working tree.** `renderCategoryDropdownMenus()`/`renderMobileDrawer()` were fixed earlier in this pass (see the "header's Categories dropdown was never localized at all" bug above) and, when tested directly, the `zh` dropdown already showed the exact authoritative short names from `i18n-seo/zh.json`'s `categories[id].name` field (长度, 面积, 体积, 重量/质量, 温度, …) — matching the reporter's expected list exactly. The screenshot was from the live/deployed site, which is still on the pre-existing code since nothing has been pushed or deployed yet; it doesn't reflect the current working tree.
+2. **Testing did surface a real side effect of the earlier fix**, though: English's dropdown had changed from its original short labels ("Length", "Area", …) to the long `category.name` form ("Length Converter", "Area Converter", …), because `getCategoryDisplayName()` falls through to that long form for English (there's no `i18n-seo/en.json` — English is the base language stored directly on the `categories` array, where names are intentionally long, e.g. `c("length", "Length Converter", …)`, for the category grid/Popular Conversions/sidebar elsewhere on the page). That long form is correct everywhere else but was never what this specific dropdown showed in English before. Fixed by keeping `NAV_CATEGORIES`'s own original short `label` for English, and only calling `getCategoryDisplayName()` for non-English languages, in both `renderCategoryDropdownMenus()` and `renderMobileDrawer()`. No new category mapping was created — this uses the same pre-existing `NAV_CATEGORIES.label` field (English) and the same `getCategoryDisplayName()`/`i18n-seo` lookup (every other language) already in place.
+
+**Validation**, in real Chromium, at 1440/1024/768/390px, cycling zh → en → zh → ar → zh → es → zh (specifically to exercise Chinese-to-other-and-back-to-Chinese):
+
+- All 27 categories present, in the unchanged `NAV_CATEGORIES` order, with unchanged hrefs, at every viewport and every language in the cycle.
+- 0 English category names leaking into zh/ar/es.
+- English confirmed showing its exact original short labels ("Length", "Area", "Volume", …), unchanged from before this addendum.
+- 0 occurrences of `undefined`, `null`, or `[object Object]`.
+- Mobile drawer's categories submenu (opened via the hamburger menu → Categories toggle) checked at all 4 viewports in Chinese: 27 items, 0 English leaks, 0 bad text.
+- 0 page errors, 0 console errors, across the full sweep.
+- Re-ran the full 14-language × 4-viewport regression and the whole-page English-leak audit afterward: no new failures beyond the already-documented, pre-existing Somali 1440px header-overflow issue; the rendered `zh` DOM's Latin-letter text node count is unchanged (521) from before this fix, confirming nothing else regressed.
+
+No commit, push, or deploy was made. No SEO pages were touched.
