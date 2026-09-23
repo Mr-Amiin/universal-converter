@@ -3682,7 +3682,24 @@ route: pageData.path || window.location.pathname
 }
 const lastSlugSegment = slug.includes("/") ? slug.split("/").filter(Boolean).pop() : slug;
 const config = seoMap.get(slug) || (lastSlugSegment ? seoMap.get(lastSlugSegment) : null);
-if (config) {
+// seoMap is keyed by bare slug only (e.g. "acre-to-hectare"), but a
+// handful of those curated slugs are reused by a separately-generated
+// page nested under a DIFFERENT category folder (e.g. the curated
+// "acre-to-hectare" -> area entry vs. the real generated page at
+// /agriculture/acre-to-hectare/, or curated "psi-to-bar" -> pressure vs.
+// /engineering/psi-to-bar/). Without this check the bare-slug match wins
+// for those nested pages too and hands the converter the wrong
+// category's units even though the page's own breadcrumb/category
+// sidebar correctly show its real category. When the URL's own
+// category-folder segment names a real, different category, trust that
+// folder (the page's own authoritative location) and fall through to
+// deriveConversionFromPath() below instead, which already resolves these
+// correctly via the same folder hint.
+const pathForFolderHint = preferredPagePath() || window.location.pathname || "";
+const folderHintSegments = pathForFolderHint.split("/").filter(Boolean);
+const folderHintId = folderHintSegments.length > 1 ? folderHintSegments[0] : null;
+const configMatchesFolderHint = !folderHintId || !categoryMap.has(folderHintId) || !config || config.categoryId === folderHintId;
+if (config && configMatchesFolderHint) {
 return {
 categoryId: config.categoryId,
 fromUnitId: config.from,
