@@ -4905,9 +4905,34 @@ if (!el || text == null) return;
 originalText(el);
 el.textContent = text;
 }
+// Same original-caching/restore contract as originalText()/setTranslatedText()
+// above, but for elements whose translation needs to preserve a CHILD
+// ELEMENT in place (e.g. a paragraph reading "...see <a>Are to Acre</a>."
+// where only the surrounding words change, never the link itself) rather
+// than replacing the whole node with plain text. Plain textContent
+// mutation loses child elements entirely, and directly splicing text
+// nodes around a preserved child - the first approach tried here - is
+// NOT covered by restoreOriginalSeoText() (which only walks elements
+// carrying data-i18n-seo-original, never bare text nodes), so switching
+// back to English left stale translated text behind. innerHTML caching
+// fixes that the same way the text-only path already works: cache once,
+// restore by full assignment. Every caller must escapeHtml() any
+// variable text it interpolates into the HTML string it passes in.
+function originalHtml(el) {
+if (el.dataset.i18nSeoOriginalHtml === undefined) el.dataset.i18nSeoOriginalHtml = el.innerHTML;
+return el.dataset.i18nSeoOriginalHtml;
+}
+function setTranslatedHtml(el, html) {
+if (!el || html == null) return;
+originalHtml(el);
+el.innerHTML = html;
+}
 function restoreOriginalSeoText() {
 document.querySelectorAll("[data-i18n-seo-original]").forEach((el) => {
 el.textContent = el.dataset.i18nSeoOriginal;
+});
+document.querySelectorAll("[data-i18n-seo-original-html]").forEach((el) => {
+el.innerHTML = el.dataset.i18nSeoOriginalHtml;
 });
 }
 
@@ -4951,7 +4976,7 @@ setTranslatedText(el, chrome.related_conversions);
 });
 }
 
-function translateHeroAndAboutHeading(seoData, fromUnit, toUnit) {
+function translateHeroAndAboutHeading(seoData, fromUnit, toUnit, category) {
 const fromName = getUnitDisplayName(fromUnit);
 const toName = getUnitDisplayName(toUnit);
 const h1 = document.querySelector(".hero-content h1");
@@ -4971,6 +4996,24 @@ const breadcrumbCurrent = document.querySelector(".breadcrumb span:last-child");
 if (breadcrumbCurrent) setTranslatedText(breadcrumbCurrent, `${fromName} → ${toName}`);
 const converterTitle = document.getElementById("converterTitle");
 if (converterTitle) setTranslatedText(converterTitle, `${fromName} → ${toName}`);
+// Hero paragraph's core clause ("Convert X (sym) to Y (sym) using
+// ..."): reuses buildConversionDescription() - the SAME per-category-
+// type-aware sentence builder already used for #activeCategoryDescription
+// (confirmed to already produce the identical clause, minus the trailing
+// factor parenthetical, for every category type: temperature/currency/
+// fuel/electricity/multi/default). The hero paragraph's second sentence
+// ("See the formula, worked examples, ... and common uses.") and the
+// factor-equation parenthetical vary per page based on which optional
+// sections that specific page happens to have, with no template or
+// translated data for that variability anywhere in this codebase -
+// reconstructing it would mean guessing at page structure rather than
+// reusing existing content, so it is intentionally left in English
+// rather than risk an inaccurate claim about the page's own contents.
+const heroP = document.querySelector(".hero-content p");
+if (heroP && category) {
+const localized = buildConversionDescription(category, fromUnit, toUnit);
+if (localized) setTranslatedText(heroP, localized);
+}
 }
 
 // Pulls the actual number the site's own generator already printed out of
@@ -5107,6 +5150,363 @@ setTranslatedText(aEl, translatedAnswer);
 });
 }
 
+// ---------------------------------------------------------------------
+// Long-form SEO article body localization (About/Reverse-conversion/
+// Understanding/Where-it's-used/Unit-comparison/Uses-today/History/
+// Sources sections). This is a deliberately BOUNDED extension of the
+// existing i18n-seo architecture, not a new framework: every fix below
+// either (a) re-renders a NUMBER-AND-UNIT-NAME sentence purely from data
+// already used elsewhere on the page (getUnitDisplayName()/
+// pluralizeUnitDisplayName(), and the ORIGINAL numbers/symbols, both
+// left completely unchanged), or (b) re-applies i18n-seo data that is
+// ALREADY authored and ALREADY used for a different occurrence of the
+// exact same content (seoData.whereUsed / seoData.differenceBetween,
+// already used by translateFaqItems() above), or (c) uses a small set of
+// new, purely STRUCTURAL heading/label templates added to the existing
+// `chrome` namespace in i18n-seo/*.json (parallel to the pre-existing
+// chrome.formula/chrome.about_converting/chrome.related_conversions
+// keys) for section headings whose wording is 100% mechanical
+// ("Understanding {UNIT}", "History of {UNIT}", etc.) and therefore
+// carries no invented factual claim.
+//
+// Deliberately NOT touched (left as canonical English, matching this
+// project's existing precedent of leaving the untranslated FAQ
+// "difference between" pair-LABEL as English - see translateFaqItems()
+// above): the per-category-pair comparison intro paragraph under "About
+// Converting X to Y", the "This factor comes from..." formula
+// explanation paragraph, the bullet lists under "Uses of the X today",
+// the historical narrative paragraphs under "History of the X", and the
+// citation text under "{Unit} — sources". None of these have ANY
+// translated source anywhere in i18n-seo/*.json, and reconstructing them
+// would mean inventing new prose/claims rather than reusing existing,
+// authored content - out of scope per this task's explicit instruction
+// not to invent unsupported SEO claims. See
+// SEO_PAGE_FULL_CONTENT_LOCALIZATION_REPORT.md for the full audit.
+// ---------------------------------------------------------------------
+
+// Matches a unit-name token (allowing spaces and "/") captured from
+// visible text against fromUnit/toUnit by name, case-insensitively, in
+// either singular or plural form - the one shared primitive every
+// helper below uses instead of assuming DOM position/order.
+function matchUnitByName(token, fromUnit, toUnit) {
+if (!token) return null;
+const norm = String(token).trim().toLowerCase();
+const candidates = [fromUnit, toUnit];
+for (const unit of candidates) {
+if (!unit) continue;
+const singular = String(unit.name || "").toLowerCase();
+const plural = String(pluralizeUnitName(unit.name) || "").toLowerCase();
+if (norm === singular || norm === plural) return unit;
+}
+return null;
+}
+
+// Rebuilds a "{names} = {names} × {factor}" or "{amount} {name} = {amount}
+// {name}." style sentence using translated, pluralized unit names in the
+// SAME left/right order as the original, while leaving every number
+// completely untouched (extracted verbatim from the cached original
+// text, never recomputed). Returns null whenever the original text
+// doesn't match one of these two purely mechanical shapes, or when
+// either side's unit name can't be matched back to fromUnit/toUnit -
+// callers leave the element as the original English in that case,
+// exactly like every other translate*() helper's graceful-degradation
+// contract in this file.
+function translateNameFormulaLine(original, fromUnit, toUnit) {
+let m = original.match(/^([A-Za-z][A-Za-z\s/]*?)\s*=\s*([A-Za-z][A-Za-z\s/]*?)\s*[×x]\s*([\d.,]+(?:e[+-]?\d+)?)$/i);
+if (m) {
+const left = matchUnitByName(m[1], fromUnit, toUnit);
+const right = matchUnitByName(m[2], fromUnit, toUnit);
+if (!left || !right || left === right) return null;
+return `${pluralizeUnitDisplayName(left)} = ${pluralizeUnitDisplayName(right)} × ${m[3]}`;
+}
+m = original.match(/^([\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/]*?)\s*=\s*([\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/]*?)\.?$/i);
+if (m) {
+const left = matchUnitByName(m[2], fromUnit, toUnit);
+const right = matchUnitByName(m[4], fromUnit, toUnit);
+if (!left || !right || left === right) return null;
+const period = /\.$/.test(original.trim()) ? "." : "";
+return `${m[1]} ${pluralizeUnitDisplayName(left)} = ${m[3]} ${pluralizeUnitDisplayName(right)}${period}`;
+}
+return null;
+}
+
+// "Acre (ac)" -> "英亩（ac）" style table header / heading fragment:
+// translated unit name, original symbol and punctuation shape preserved
+// exactly. Returns null (leave English) if the captured name doesn't
+// match fromUnit/toUnit.
+function translateNameSymbolFragment(original, fromUnit, toUnit) {
+const m = original.match(/^([A-Za-z][A-Za-z\s/]*?)\s*\(([^)]+)\)$/);
+if (!m) return null;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (!unit) return null;
+return `${getUnitDisplayName(unit)} (${m[2]})`;
+}
+
+function translateSeoArticleLongform(seoData, fromUnit, toUnit, category) {
+const chrome = seoData.chrome || {};
+const faq = seoData.faq || {};
+const article = document.querySelector(".seo-article");
+if (!article) return;
+
+// Formula-card and reverse-conversion-card lines that restate the
+// factor using unit NAMES (not symbols) - see translateNameFormulaLine()
+// above. Lines using unit SYMBOLS (e.g. "1 ac × 0.404... = 0.404... a")
+// intentionally do not match either pattern and are left as-is, matching
+// this project's established convention that unit symbols stay in Latin
+// script in every language.
+article.querySelectorAll(".info-card-formula, .info-card p > strong").forEach((el) => {
+const original = originalText(el);
+const translated = translateNameFormulaLine(original, fromUnit, toUnit);
+if (translated) setTranslatedText(el, translated);
+});
+
+// Conversion-table column headers ("Acre (ac)" / "Are (a)").
+article.querySelectorAll(".info-card-table th").forEach((el) => {
+const translated = translateNameSymbolFragment(originalText(el), fromUnit, toUnit);
+if (translated) setTranslatedText(el, translated);
+});
+
+// "{FromUnit} vs. {ToUnit}" side-by-side comparison table - a distinct
+// structural block (heading + <table class="info-card-table"> with
+// Aspect/Family/Typical use/Where it's used rows) that only appears when
+// the generator judges the two units meaningfully different in "family"
+// (e.g. Angstrom vs. Astronomical unit). Not to be confused with the
+// unit-distinction-note ("International acre vs. US survey acre.") block
+// above, which compares two *variant* units via a differenceBetween(...)
+// lookup - this table always compares the page's own fromUnit/toUnit, so
+// its heading and the table's column headers can always be rebuilt
+// directly from getUnitDisplayName(), and its "Where it's used" row can
+// always be rebuilt from the same seoData.whereUsed(...) data used above.
+// The Family/Typical use row CONTENT (free descriptive prose) has no
+// translated source anywhere in i18n-seo/*.json, so - same as the
+// "This factor comes from..." formula explanation - it is intentionally
+// left in English (C, documented gap).
+if (chrome.comparison_vs_connector) {
+article.querySelectorAll("h3").forEach((h3) => {
+const original = originalText(h3);
+const m = original.match(/^(.+?)\s+vs\.\s+(.+)$/);
+if (!m) return;
+const sideA = matchUnitByName(m[1], fromUnit, toUnit);
+const sideB = matchUnitByName(m[2], fromUnit, toUnit);
+if (!sideA || !sideB || sideA === sideB) return;
+const table = h3.nextElementSibling && h3.nextElementSibling.tagName === "TABLE" ? h3.nextElementSibling : null;
+if (!table || !table.classList.contains("info-card-table")) return;
+setTranslatedText(h3, `${getUnitDisplayName(sideA)}${chrome.comparison_vs_connector}${getUnitDisplayName(sideB)}`);
+const headRow = table.querySelector("thead tr");
+if (headRow) {
+const ths = headRow.querySelectorAll("th");
+if (ths.length === 3) {
+if (chrome.comparison_aspect_label) setTranslatedText(ths[0], chrome.comparison_aspect_label);
+setTranslatedText(ths[1], getUnitDisplayName(sideA));
+setTranslatedText(ths[2], getUnitDisplayName(sideB));
+}
+}
+table.querySelectorAll("tbody tr").forEach((tr) => {
+const cells = tr.querySelectorAll("td");
+if (cells.length !== 3) return;
+const rowLabel = originalText(cells[0]);
+if (/^Family$/i.test(rowLabel) && chrome.comparison_family_label) {
+setTranslatedText(cells[0], chrome.comparison_family_label);
+} else if (/^Typical use$/i.test(rowLabel) && chrome.comparison_typical_use_label) {
+setTranslatedText(cells[0], chrome.comparison_typical_use_label);
+} else if (/^Where it's used$/i.test(rowLabel) && chrome.where_used_label) {
+setTranslatedText(cells[0], chrome.where_used_label.replace(/[:：]\s*$/, ""));
+const wu = seoData.whereUsed || {};
+if (wu[sideA.id]) setTranslatedText(cells[1], wu[sideA.id]);
+if (wu[sideB.id]) setTranslatedText(cells[2], wu[sideB.id]);
+}
+});
+});
+}
+
+// "Reverse conversion: {TO} to {FROM}" heading.
+if (chrome.reverse_conversion_template) {
+article.querySelectorAll("h3").forEach((el) => {
+const m = originalText(el).match(/^Reverse conversion:\s*(.+?)\s+to\s+(.+)$/i);
+if (!m) return;
+const toSide = matchUnitByName(m[1], fromUnit, toUnit);
+const fromSide = matchUnitByName(m[2], fromUnit, toUnit);
+if (!toSide || !fromSide) return;
+setTranslatedText(el, fillTemplateSafe(chrome.reverse_conversion_template, { TO: getUnitDisplayName(toSide), FROM: getUnitDisplayName(fromSide) }));
+});
+}
+
+// "For a page dedicated to this direction, see {link}." - the link text
+// itself is translated the same way translateRelatedConversions() below
+// translates every other related-conversion link. Rebuilt via
+// setTranslatedHtml() (not text-node splicing) so restoreOriginalSeoText()
+// can put the original English sentence AND its original link text back
+// correctly when the user switches back to English.
+if (chrome.see_dedicated_page_prefix && chrome.see_dedicated_page_suffix) {
+article.querySelectorAll("p").forEach((p) => {
+if (p.children.length !== 1 || p.children[0].tagName !== "A") return;
+const original = originalText(p);
+if (!/^For a page dedicated to this direction, see .+\.$/.test(original)) return;
+const a = p.children[0];
+const href = a.getAttribute("href") || "";
+let linkText = a.textContent;
+if (typeof deriveConversionFromPath === "function") {
+const linkCtx = href && deriveConversionFromPath(href);
+const linkCategory = linkCtx && categoryMap.get(linkCtx.categoryId);
+const linkFrom = linkCategory && getUnit(linkCategory, linkCtx.fromUnitId);
+const linkTo = linkCategory && getUnit(linkCategory, linkCtx.toUnitId);
+if (linkFrom && linkTo) linkText = `${getUnitDisplayName(linkFrom)} → ${getUnitDisplayName(linkTo)}`;
+}
+setTranslatedHtml(p, `${escapeHtml(chrome.see_dedicated_page_prefix)}<a href="${escapeHtml(href)}">${escapeHtml(linkText)}</a>${escapeHtml(chrome.see_dedicated_page_suffix)}`);
+});
+}
+
+// "Understanding the {UNIT}" / "Understanding the {UNIT} ({SYMBOL})"
+// heading, plus its immediately-following definition paragraph -
+// simplified, for every language, to the same "{UNIT} ({SYMBOL}).
+// {DEFINITION}" shape the FAQ's own "What is a {UNIT}?" answer already
+// uses (faq.q4_answer) rather than attempting to reproduce the longer
+// English sentence's additional "measures {dimension}"/"classified as
+// {type}" clauses, for which no translated data exists anywhere in
+// i18n-seo/*.json.
+article.querySelectorAll("h3").forEach((el) => {
+const m = originalText(el).match(/^Understanding the (.+?)(?:\s*\(([^)]+)\))?$/);
+if (!m) return;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (!unit) return;
+const hasSymbol = !!m[2];
+const key = hasSymbol ? "understanding_with_symbol_template" : "understanding_template";
+if (chrome[key]) {
+setTranslatedText(el, fillTemplateSafe(chrome[key], { UNIT: getUnitDisplayName(unit), SYMBOL: unit.symbol }));
+}
+if (!faq.q4_answer) return;
+const bodyP = el.nextElementSibling;
+if (!bodyP || bodyP.tagName !== "P" || bodyP.classList.contains("unit-distinction-note") || bodyP.classList.contains("unit-origin-note")) return;
+const def = getUnitDisplayDefinition(unit);
+if (def) setTranslatedText(bodyP, fillTemplateSafe(faq.q4_answer, { UNIT: getUnitDisplayName(unit), SYMBOL: unit.symbol, DEFINITION: def }));
+});
+
+// "Where it's used:" paragraphs - reuses seoData.whereUsed[unit.id],
+// the SAME already-translated data translateFaqItems() above uses for
+// the "Where is the {UNIT} still used today?" FAQ answer. Assigned in
+// document order to whichever of fromUnit/toUnit actually has an entry
+// (the generator always places the from-unit's "Understanding" section
+// before the to-unit's, so first-in-document-order reliably means
+// from-unit first when both have entries).
+if (chrome.where_used_label) {
+const whereUsedCandidates = [fromUnit, toUnit].filter((u) => seoData.whereUsed && seoData.whereUsed[u.id]);
+let cursor = 0;
+article.querySelectorAll("p > strong").forEach((strongEl) => {
+// setTranslatedHtml() below replaces the whole paragraph's innerHTML,
+// so on a second language switch this <strong> is a freshly-created
+// element, not the one whose original text originalText() cached -
+// the paragraph itself (p) is what persists across repeated switches,
+// so once its true original HTML is cached, matching against THAT
+// (rather than against strongEl's possibly-already-translated text)
+// is what makes this correctly identify the same paragraph again on
+// every subsequent switch, not just the first one.
+const p = strongEl.parentElement;
+const knownOriginal = p.dataset.i18nSeoOriginalHtml !== undefined ? p.dataset.i18nSeoOriginalHtml : originalText(strongEl);
+const plainKnownOriginal = knownOriginal.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+if (!/^Where it's used:/.test(plainKnownOriginal)) return;
+const unit = whereUsedCandidates[cursor];
+if (!unit) return;
+cursor += 1;
+const translated = seoData.whereUsed[unit.id];
+setTranslatedHtml(p, `<strong>${escapeHtml(chrome.where_used_label)}</strong> ${escapeHtml(translated)}`);
+});
+}
+
+// Unit-comparison note (e.g. "International acre vs. US survey acre.")
+// - reuses seoData.differenceBetween[pairKey], the SAME already-
+// translated data translateFaqItems() above uses for the "What is the
+// difference between {PAIR}?" FAQ answer. The bold pair-LABEL itself has
+// no translated form anywhere in i18n-seo/*.json (same documented gap as
+// the FAQ's own question heading) and is intentionally left in English.
+article.querySelectorAll("p.unit-distinction-note").forEach((p) => {
+const strongEl = p.querySelector("strong");
+if (!strongEl) return;
+const label = originalText(strongEl).replace(/\.$/, "");
+const pairKey = Object.keys(seoData.differenceBetween || {}).find((k) => k.toLowerCase() === label.toLowerCase());
+const translated = pairKey && seoData.differenceBetween[pairKey];
+if (!translated) return;
+// The bold label is never translated (stays exactly as originalText()
+// cached it, the same English wording every pass), so rebuilding it
+// via setTranslatedHtml() - which lets restoreOriginalSeoText() put the
+// full original paragraph back correctly - is safe on repeated switches.
+setTranslatedHtml(p, `<strong>${escapeHtml(originalText(strongEl))}</strong> ${escapeHtml(translated)}`);
+});
+
+// "Uses of the {UNIT} today" heading (bullet list beneath is left in
+// English - no translated source exists for its per-unit content).
+if (chrome.uses_today_template) {
+article.querySelectorAll("h4").forEach((el) => {
+const m = originalText(el).match(/^Uses of the (.+) today$/);
+if (!m) return;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (unit) setTranslatedText(el, fillTemplateSafe(chrome.uses_today_template, { UNIT: getUnitDisplayName(unit) }));
+});
+}
+
+// "History of the {UNIT}" heading (narrative paragraphs beneath are left
+// in English - no translated source exists for their per-unit content).
+if (chrome.history_of_template) {
+article.querySelectorAll("h4").forEach((el) => {
+const m = originalText(el).match(/^History of the (.+)$/);
+if (!m) return;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (unit) setTranslatedText(el, fillTemplateSafe(chrome.history_of_template, { UNIT: getUnitDisplayName(unit) }));
+});
+}
+
+// "Historical origin." label + its fixed, mechanical "{UNIT} was not the
+// invention of a single named person..." sentence (confirmed identical,
+// verbatim except for the unit name, across every sampled page/unit).
+// Rebuilt via setTranslatedHtml() on the paragraph itself, not on the
+// <strong> label alone - caching the label's own original text with
+// originalText() would ALSO register the surrounding <p> for the
+// plain-text restore path the first time its (unrelated) textContent
+// got read, which would destroy the <strong> element (and its bold
+// styling) the next time the user switches back to English. Matched
+// against the paragraph's own cached original HTML (once set on the
+// first pass) rather than the <strong> element's current text, since
+// setTranslatedHtml() replaces that <strong> with a fresh element on
+// every subsequent language switch - see the identical reasoning on the
+// "Where it's used:" block above.
+article.querySelectorAll("p.unit-origin-note > strong").forEach((strongEl) => {
+const p = strongEl.parentElement;
+const knownOriginal = p.dataset.i18nSeoOriginalHtml !== undefined ? p.dataset.i18nSeoOriginalHtml : p.textContent;
+const plainOriginal = knownOriginal.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+if (!/^Historical origin\./.test(plainOriginal) || !chrome.historical_origin_label) return;
+const m = plainOriginal.match(/Historical origin\.\s*(.+?) was not the invention of a single named person; it developed through the process described above\.$/);
+if (!m || !chrome.no_named_inventor_template) return;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (!unit) return;
+setTranslatedHtml(p, `<strong>${escapeHtml(chrome.historical_origin_label)}</strong> ${escapeHtml(fillTemplateSafe(chrome.no_named_inventor_template, { UNIT: getUnitDisplayName(unit) }))}`);
+});
+
+// "Exchange rate notice." label + its fixed sentence - the currency
+// category's own variant of the SAME p.unit-origin-note structural slot
+// used by "Historical origin." above (currency pages render one or the
+// other, never both). Confirmed byte-identical, with zero variable
+// content, across every sampled currency pair, so - unlike the
+// per-category Family/Typical-use prose elsewhere in this function -
+// this is safe to translate as a flat, non-templated fixed string.
+article.querySelectorAll("p.unit-origin-note > strong").forEach((strongEl) => {
+const p = strongEl.parentElement;
+const knownOriginal = p.dataset.i18nSeoOriginalHtml !== undefined ? p.dataset.i18nSeoOriginalHtml : p.textContent;
+const plainOriginal = knownOriginal.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim();
+if (!/^Exchange rate notice\./.test(plainOriginal) || !chrome.exchange_rate_notice_label || !chrome.exchange_rate_notice_text) return;
+setTranslatedHtml(p, `<strong>${escapeHtml(chrome.exchange_rate_notice_label)}</strong> ${escapeHtml(chrome.exchange_rate_notice_text)}`);
+});
+
+// "{UNIT} — sources" heading (citation text beneath is left in English -
+// no translated source exists for source-citation content).
+if (chrome.sources_label_template) {
+article.querySelectorAll(".about-sources h4").forEach((el) => {
+const m = originalText(el).match(/^(.+?)\s*—\s*sources$/);
+if (!m) return;
+const unit = matchUnitByName(m[1], fromUnit, toUnit);
+if (unit) setTranslatedText(el, fillTemplateSafe(chrome.sources_label_template, { UNIT: getUnitDisplayName(unit) }));
+});
+}
+}
+
 // Related-conversion links are translated purely by re-deriving each
 // link's own from/to unit pair from its href with the SAME
 // deriveConversionFromPath() the converter widget already relies on -
@@ -5155,8 +5555,9 @@ if (!category) return;
 const fromUnit = getUnit(category, ctx.fromUnitId);
 const toUnit = getUnit(category, ctx.toUnitId);
 if (!fromUnit || !toUnit) return;
-translateHeroAndAboutHeading(seoData, fromUnit, toUnit);
+translateHeroAndAboutHeading(seoData, fromUnit, toUnit, category);
 translateFaqItems(seoData, fromUnit, toUnit, category);
+translateSeoArticleLongform(seoData, fromUnit, toUnit, category);
 }
 
 // Re-renders the interactive converter widget's language-aware pieces

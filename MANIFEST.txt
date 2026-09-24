@@ -1,0 +1,96 @@
+CURRENT_CHANGES push package
+=============================
+
+Base commit:  e8e27efc4b2242709b282e5ad229e7ec1a368b1d
+              (2026-09-22 21:57:39 +0300)
+
+Generated:    2026-09-24
+
+Verification performed on this package before delivery:
+  - CURRENT_CHANGES.patch applies cleanly against the base commit
+    (`git apply --check` — clean, 0 rejects) in an isolated worktree.
+  - After applying the patch: `node --check app.js` passes (no syntax
+    errors).
+  - After applying the patch: all 13 i18n-seo/*.json files parse as
+    valid JSON.
+  - The real working tree at the base repo was NOT modified to produce
+    this package — verification was done in a separate isolated
+    worktree, then discarded.
+
+Files included (current, full contents — not diffs, except for the
+patch itself):
+  app.js
+  index.html
+  adsense.js
+  i18n-seo/ar.json
+  i18n-seo/de.json
+  i18n-seo/es.json
+  i18n-seo/fr.json
+  i18n-seo/hi.json
+  i18n-seo/id.json
+  i18n-seo/it.json
+  i18n-seo/ja.json
+  i18n-seo/ko.json
+  i18n-seo/pt.json
+  i18n-seo/so.json
+  i18n-seo/tr.json
+  i18n-seo/zh.json
+
+Also included:
+  CURRENT_CHANGES.patch  — a git patch of the same 16 files' changes
+                           relative to the base commit above. Apply
+                           with `git apply CURRENT_CHANGES.patch` (or
+                           `git am` if you want it as a commit) from
+                           the root of a checkout at that base commit.
+
+How to push this yourself
+--------------------------
+Option A — apply the patch:
+  1. Check out or update your local repo to commit
+     e8e27efc4b2242709b282e5ad229e7ec1a368b1d (or any later commit
+     that hasn't touched these 16 files, in which case merge conflicts
+     are on you to resolve).
+  2. Copy CURRENT_CHANGES.patch into the repo root.
+  3. Run: git apply CURRENT_CHANGES.patch
+  4. Review with `git diff`, then commit and push as you normally would.
+
+Option B — copy the files directly:
+  1. Copy app.js, index.html, adsense.js, and the 13 i18n-seo/*.json
+     files from this package over the corresponding paths in your
+     local checkout.
+  2. Review with `git diff`, then commit and push as you normally would.
+
+Scope of these changes (no other files were touched):
+  - SEO shared-UI localization (homepage + SEO page shell: labels,
+    breadcrumb, H1, hero paragraph, FAQ common pattern, related
+    conversions) across all 14 supported languages.
+  - SEO single-category sidebar fix (including the Agriculture/
+    Engineering duplicate-slug resolver fix).
+  - SEO long-form article-body localization: "Understanding the X"
+    heading + definition sentence, "Where it's used:", "Uses of X
+    today"/"History of X" headings, "Historical origin."/"Exchange
+    rate notice." boilerplate, "{Unit} — sources" heading, the
+    "{FromUnit} vs. {ToUnit}" comparison table, unit-distinction-note
+    body, reverse-conversion heading/link sentence, name-based formula
+    lines and conversion-table headers.
+  - 17 new structural "chrome" template keys added to all 13
+    non-English i18n-seo/*.json files (chrome grew from 25 to 42 keys
+    per language), all verified present and non-empty.
+  - Repeated-language-switch and English-restoration bug fixes in the
+    originalText/originalHtml caching mechanism.
+
+Explicitly NOT included/changed by these files:
+  - None of the 327,527 generated SEO conversion-page HTML files.
+  - Sitemaps, canonical URLs, SEO titles.
+  - Conversion factors, formulas, UNIT_META, unit IDs, category IDs,
+    category order, resolver logic.
+  - Any new long-form translation prose (uses-today lists, history
+    narratives, source citations, comparison "Family"/"Typical use"
+    free text, or the "measures {quantity}"/"classified as {family}"
+    clauses) — none of that exists anywhere in this repo yet; see
+    SEO_PAGE_LONGFORM_LOCALIZATION_ARCHITECTURE_AUDIT.md (delivered
+    separately) for what would be needed to add it.
+
+Nothing in this package was committed, pushed, or otherwise applied to
+any git history — it is being handed to you to push yourself, as
+requested.
