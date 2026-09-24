@@ -840,5 +840,43 @@
   "mass_application_rate": "Taux d'application de masse.",
   "liquid_application_rate": "Taux d'application liquide.",
   "yield_rate": "Taux de rendement agricole."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Mesure des terres agricoles, des ranchs et des propriétés rurales aux États-Unis",
+   "Annonces immobilières et zonage des parcelles de terrain",
+   "Rapports de foresterie et de gestion des terres"
+  ],
+  "kilogram": [
+   "Tarification et étiquetage des marchandises vendues au poids dans le commerce de détail et des matières premières",
+   "Calculs de dosage en médecine, notamment pour les prescriptions pédiatriques et fondées sur le poids",
+   "Spécifications structurelles et de matériaux dans l'ingénierie fondée sur le système métrique",
+   "Mesure scientifique de la masse en chimie, en physique et dans la recherche sur les matériaux"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "L'acre trouve son origine dans l'Angleterre médiévale comme mesure pratique de champ : la surface qu'un attelage de bœufs pouvait labourer en une journée, longue d'environ un furlong (660 pieds) sur une chaîne (66 pieds) de large, ce qui donne les 43 560 pieds carrés encore utilisés aujourd'hui.",
+   "Le statut d'Édouard Ier de 1305 a officialisé ce chiffre. En 1959, le même Accord international sur le yard et la livre qui a fixé la livre a également fixé l'acre international à exactement 4046,8564224 m², bien que les États-Unis aient conservé séparément un 'acre d'arpentage américain' légèrement différent pour certains registres fonciers historiques jusqu'à son abandon en 2023."
+  ],
+  "kilogram": [
+   "Le prédécesseur direct du kilogramme était la “grave”, définie par l'Académie des sciences française en 1793 comme la masse d'un décimètre cube d'eau à sa température de densité maximale. Comme “grave” évoquait le titre aristocratique de “graf”, le décret révolutionnaire français du 18 germinal an III (7 avril 1795) renomma le système : le gramme devint l'unité de référence, défini comme la masse d'un centimètre cube d'eau au point de fusion de la glace, et le kilogramme - mille grammes - reprit le rôle pratique de la grave.",
+   "Transformer cette définition fondée sur l'eau en un objet physique exigea un véritable travail expérimental : le chimiste Louis Lefèvre-Gineau fut chargé en 1795 de mesurer précisément le poids d'un décimètre cube d'eau, puis l'ancien joaillier royal Marc-Étienne Janety fabriqua un cylindre de platine incarnant cette masse mesurée. Déposé aux Archives nationales françaises en 1799, il devint connu sous le nom de Kilogramme des Archives.",
+   "La diffusion du système métrique fut inégale - Napoléon en restreignit brièvement l'usage -, mais la France le rendit obligatoire en 1840, et la Convention du Mètre de 1875 (signée par dix-sept nations, dont les États-Unis) établit le BIPM et un prototype international commun. Le Prototype international du kilogramme, en platine iridié, adopté en 1889 et surnommé “Le Grand K”, servit de référence mondiale de masse pendant plus d'un siècle.",
+   "Le 20 mai 2019, le kilogramme a été redéfini en fixant la constante de Planck à exactement 6,62607015 × 10⁻³⁴ joule-seconde, de sorte qu'il peut désormais être réalisé en laboratoire (au moyen d'une balance de Kibble) sans référence à un objet physique."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documente la définition de l'acre international de 1959 et l'abandon du pied d'arpentage en 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — Le kilogramme (unité de base du SI) — Définition officielle et histoire depuis la redéfinition de 2019.",
+   "NIST — Kilogram: The Past — Histoire de l'étalon du kilogramme, de la grave au Prototype international du kilogramme.",
+   "Brochure sur le SI, 9e édition (2019), Annexe 2 — BIPM — Texte officiel de la définition du kilogramme fondée sur la constante de Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Acre international par rapport à l'acre d'arpentage américain."
  }
 }

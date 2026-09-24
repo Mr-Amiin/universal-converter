@@ -840,5 +840,43 @@
   "mass_application_rate": "Massenausbringungsrate.",
   "liquid_application_rate": "Flüssigkeitsausbringungsrate.",
   "yield_rate": "Landwirtschaftliche Ertragsrate."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Vermessung von Ackerland, Ranches und ländlichem Grundbesitz in den USA",
+   "Immobilienanzeigen und Flächennutzungspläne für Grundstücke",
+   "Forstwirtschaft und Berichte zum Landmanagement"
+  ],
+  "kilogram": [
+   "Preisgestaltung und Kennzeichnung von nach Gewicht verkaufter Ware im Einzelhandel und Rohstoffhandel",
+   "Dosierungsberechnungen in der Medizin, insbesondere bei gewichtsabhängigen und pädiatrischen Verschreibungen",
+   "Bauliche und werkstofftechnische Spezifikationen in der auf dem metrischen System basierenden Technik",
+   "Wissenschaftliche Massemessung in Chemie, Physik und Materialforschung"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "Der Acre entstand im mittelalterlichen England als praktisches Feldmaß: die Fläche, die ein Ochsengespann an einem Tag pflügen konnte, etwa ein Furlong (660 ft) lang und eine Chain (66 ft) breit, was die bis heute verwendeten 43.560 Quadratfuß ergibt.",
+   "Das Statut Eduards I. von 1305 machte dieses Maß offiziell. 1959 legte dasselbe Internationale Yard-und-Pfund-Abkommen, das auch das Pfund festlegte, den internationalen Acre exakt auf 4046,8564224 m² fest, wobei die USA separat einen leicht abweichenden 'US-Vermessungs-Acre' für einige ältere Grundbucheinträge beibehielten, bis dieser 2023 abgeschafft wurde."
+  ],
+  "kilogram": [
+   "Der unmittelbare Vorläufer des Kilogramms war das “Grave”, das die Französische Akademie der Wissenschaften 1793 als die Masse eines Kubikdezimeters Wasser bei seiner Temperatur maximaler Dichte definierte. Da “Grave” an den Adelstitel “Graf” erinnerte, benannte das revolutionäre Dekret Frankreichs vom 18. Germinal des Jahres III (7. April 1795) das System um: Das Gramm wurde zur Bezugseinheit, definiert als die Masse eines Kubikzentimeters Wasser am Schmelzpunkt von Eis, und das Kilogramm - eintausend Gramm - übernahm die praktische Rolle des Grave.",
+   "Diese auf Wasser basierende Definition in ein physisches Objekt umzusetzen, erforderte reale experimentelle Arbeit: Der Chemiker Louis Lefèvre-Gineau wurde 1795 damit beauftragt, präzise zu messen, wie viel ein Kubikdezimeter Wasser wog, und der frühere königliche Juwelier Marc-Étienne Janety fertigte daraufhin einen Platinzylinder, der diese gemessene Masse verkörperte. 1799 im Französischen Nationalarchiv hinterlegt, wurde er als Kilogramme des Archives bekannt.",
+   "Die Verbreitung des metrischen Systems verlief uneinheitlich - Napoleon schränkte seine Nutzung kurzzeitig ein -, doch Frankreich machte es 1840 verbindlich, und die Meterkonvention von 1875 (unterzeichnet von siebzehn Staaten, darunter die USA) begründete das BIPM und einen gemeinsamen internationalen Prototyp. Der aus Platin-Iridium gefertigte Internationale Kilogrammprototyp, 1889 angenommen und “Le Grand K” genannt, diente über ein Jahrhundert lang als weltweite Massereferenz.",
+   "Am 20. Mai 2019 wurde das Kilogramm neu definiert, indem die Planck-Konstante auf exakt 6,62607015 × 10⁻³⁴ Joulesekunden festgelegt wurde, sodass es nun im Labor (mittels einer Kibble-Waage) ohne Bezug auf ein physisches Objekt realisiert werden kann."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Dokumentiert die internationale Acre-Definition von 1959 und die Abschaffung des Vermessungsfußes 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — Das Kilogramm (SI-Basiseinheit) — Offizielle Definition und Geschichte seit der Neudefinition von 2019.",
+   "NIST — Kilogram: The Past — Geschichte des Kilogrammstandards vom Grave bis zum Internationalen Kilogrammprototyp.",
+   "SI-Broschüre, 9. Auflage (2019), Anhang 2 — BIPM — Offizieller Text der auf der Planck-Konstante basierenden Definition des Kilogramms."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Internationaler Acre im Vergleich zu US-Vermessungs-Acre."
  }
 }

@@ -1,86 +1,137 @@
-CURRENT CHANGES PUSH PACKAGE
-=============================
+CURRENT CHANGES PUSH PACKAGE — MANIFEST
+=========================================
 Base commit: e8e27efc4b2242709b282e5ad229e7ec1a368b1d
-Base commit date: 2026-09-22 21:57:39 +0300
-Generated: 2026-09-24 14:20:10 UTC
+Generated:   2026-09-24
 
-Files changed (all included as full current copies below, plus as a unified
-git patch against the base commit above):
-  - app.js
-  - index.html
-  - adsense.js
-  - i18n-seo/ar.json
-  - i18n-seo/de.json
-  - i18n-seo/es.json
-  - i18n-seo/fr.json
-  - i18n-seo/hi.json
-  - i18n-seo/id.json
-  - i18n-seo/it.json
-  - i18n-seo/ja.json
-  - i18n-seo/ko.json
-  - i18n-seo/pt.json
-  - i18n-seo/so.json
-  - i18n-seo/tr.json
-  - i18n-seo/zh.json
+Patch file CURRENT_CHANGES.patch has been verified to apply cleanly
+against the base commit above (checked via `git apply --check` in an
+isolated worktree). Files in this package are the full, current
+copies of every changed file — apply the patch OR copy these files
+directly over the base commit, not both.
 
-CURRENT_CHANGES.patch has been verified to apply cleanly with
-"git apply --check" against the base commit above, in an isolated worktree
-(not the real working tree). app.js passed "node --check" and all 13
-i18n-seo/*.json files parsed as valid JSON after the patch was applied.
+FILES CHANGED
+-------------
+- app.js
+- index.html
+- adsense.js
+- i18n-seo/ar.json
+- i18n-seo/de.json
+- i18n-seo/es.json
+- i18n-seo/fr.json
+- i18n-seo/hi.json
+- i18n-seo/id.json
+- i18n-seo/it.json
+- i18n-seo/ja.json
+- i18n-seo/ko.json
+- i18n-seo/pt.json
+- i18n-seo/so.json
+- i18n-seo/tr.json
+- i18n-seo/zh.json
 
-To apply:
-  git checkout e8e27efc4b2242709b282e5ad229e7ec1a368b1d   # or your current branch, if it is at/after this commit
-  git apply CURRENT_CHANGES.patch
-  git add app.js index.html adsense.js i18n-seo/
-  git commit -m "..."
-  git push
+No generated SEO HTML pages, sitemap files, canonicals, or URLs were
+touched by any of this work — everything is confined to the runtime
+app logic and the 13 translation data files.
 
-Summary of what's in this patch (cumulative, this session):
-  1. Fixed translateSeoArticleLongform() restoration/repeated-switch bugs
-     (HTML-tag-leaking regex; parent-cached-HTML matching).
-  2. Added "{FromUnit} vs. {ToUnit}" comparison table localization and a
-     currency "Exchange rate notice." block localization.
-  3. Wired getUnitDisplayDefinition() into the "Understanding the X"
-     definition paragraph, with a dimensionDefinitions fallback for
-     compound/rate units, using setTranslatedHtml()/escapeHtml() to fix a
-     <strong> tag being destroyed by the English-restore round trip.
-  4. Added formula-explanation paragraph localization (generic template,
-     verified across categories) plus currency/temperature-specific fixed
-     boilerplate variants.
-  5. Closed the unitDefinitions coverage gap: added 35 new translated
-     definitions per language (455 records total across 13 languages) for
-     previously-English-fallback units (centimeter, millimeter, nanometer,
-     milligram, milliliter, kilojoule, kilowatt, megawatt, kilopascal,
-     millibar, kilonewton, kiloohm, milliampere, millivolt, kilovolt,
-     microfarad, kilohertz, megahertz, gigahertz, kilocalorie, kilobit,
-     megabit, gigabit, terabit, petabyte, terabyte, cubic_meter, cubic_foot,
-     square_mile, square_yard, kilowatt_hour, square_kilometer,
-     kilometer_per_liter, liter_per_100_kilometer, mile_per_gallon_us), plus
-     a small generic fallback in getUnitDisplayDefinition() that reuses
-     square_meter's/cubic_meter's translation for any other generated
-     square_*/cubic_* metric-prefix unit sharing the identical English
-     source string (fixes square_centimeter, square_millimeter, and ~48
-     other generated units without duplicating records).
-  6. Fixed abbreviated digital-storage unit routing: added "kbit"/"mbit"/
-     "gbit"/"tbit"/"pbit"/"ebit" as aliases on the corresponding decimal-bit
-     units in digitalStorageUnits(), fixing SEO-page translation hydration
-     (and general unit-alias resolution) for the 162 digital/ pages that
-     use these abbreviated URL slugs, which previously stayed English-only
-     on every language switch because resolveUnitAlias() could not match
-     those tokens to any unit.
+=========================================
+SUMMARY OF CHANGES IN THIS PACKAGE
+=========================================
 
-Known pre-existing, NOT fixed (out of scope, documented only):
-  - digital/eb-to-ebit does not localize: exabit's bare symbol "Eb" and
-    exabyte's bare symbol "EB" already collided (both normalize to "eb")
-    before this session's changes, so the URL's first token "eb" resolves
-    to the same unit ("exabit") that "ebit" also resolves to, and the
-    from/to-must-differ check in deriveConversionFromPath() rejects the
-    match. This page was already broken before this session (for a
-    different reason - "ebit" was simply unresolvable) and remains broken
-    after it for this separate, deeper symbol-collision reason. Fixing it
-    would require deciding whether bare "eb" should mean exabit or exabyte,
-    which was not part of this task.
-  - digital/bit-to-kb and other abbreviated *bit pages whose slug used the
-    unabbreviated "kbit"/"mbit"/etc. work correctly now; pages using the
-    abbreviated slugs still routed through no analog for petabit/exabit's
-    bare symbol collisions.
+1. FIXED: translateSeoArticleLongform() restoration/repeated-switch
+   bugs; added comparison-table and exchange-rate-notice
+   localization; wired getUnitDisplayDefinition() into the
+   "Understanding the X" paragraph with a dimensionDefinitions
+   fallback and a <strong>-preservation fix; added formula-explanation
+   paragraph localization.
+
+2. FIXED: unitDefinitions coverage gap — 39 units had a units[id]
+   entry but no unitDefinitions[id] translation; added 35 new
+   translated entries x 13 languages (455 records), plus a generic
+   fallback in getUnitDisplayDefinition() (app.js) that reuses the
+   square_meter/cubic_meter translation for any other unit whose raw
+   English definition exactly matches the generic
+   "Square/Cubic metric area/volume unit." pattern — covering ~50
+   more SI-prefixed generated units without duplicating records.
+
+3. FIXED: abbreviated digital-storage *bit URL routing bug —
+   resolveUnitAlias() could not match kbit/mbit/gbit/tbit/pbit/ebit
+   URL tokens to any unit because only bare symbols existed (which
+   collide case-insensitively with the byte-family symbols), causing
+   deriveConversionFromPath() to return null and the entire SEO
+   article (H1, breadcrumb, hero, FAQ, long-form content) to stay
+   unhydrated on ~162 of 254 digital/ pages. Fixed by adding the
+   missing aliases to the 6 affected decimal-bit unit entries in
+   digitalStorageUnits().
+   NOTE: one adjacent pre-existing bug was found but NOT fixed, per
+   scope: digital/eb-to-ebit still fails because exabit's symbol
+   "Eb" and exabyte's symbol "EB" already collided before this
+   session's changes (both lowercase to "eb"), so fromUnit.id equals
+   toUnit.id for that specific pair. This needs a separate decision
+   about which unit "eb" should resolve to by default.
+
+4. NEW — Unit-scoped localization of "Uses of the X today",
+   "History of the X", "X — sources", and the unit-distinction-note
+   bold label ("International acre vs. US survey acre." etc.):
+
+   These blocks were previously left in English after a language
+   switch even though every other part of the SEO article translated
+   correctly (this was reported directly from a live production
+   screenshot of area/acres-to-ares/ in Japanese). They are now
+   wired into the same runtime translation architecture as everything
+   else, via four new top-level keys in each i18n-seo/<lang>.json:
+   unitUsesToday, unitHistory, unitSources, unitDistinctionLabel —
+   all keyed by unit.id (or, for unitDistinctionLabel, by the same
+   pair-key format already used by the existing differenceBetween
+   object).
+
+   IMPORTANT — this is a professional-translation content project,
+   not a one-time code fix. The English content for each unit is
+   real, already-published, researched historical/technical prose
+   (not boilerplate) — e.g. kilogram's History section alone is four
+   dense paragraphs covering the "grave," the 1795 Kilogramme des
+   Archives, the 1889 International Prototype of the Kilogram, and
+   the 2019 Planck-constant redefinition. There is no shortcut
+   database (the unit_facts/ directory referenced by
+   generate_about_section.py was never populated) — each unit's
+   authoritative English source must be extracted from its own live
+   published page before translation.
+
+   Every consuming call site in app.js checks for the presence of
+   translated data AND an exact item-count match against the
+   original English content before using it, falling back to leaving
+   that block in English otherwise. This means partial coverage is
+   completely safe: a unit with no entry yet, or a page pairing a
+   covered unit with an uncovered one (e.g. kg-to-lbs, where
+   kilogram translates and pound does not yet), degrades gracefully
+   with no errors, no duplication, and no partial/broken content.
+
+   COVERAGE IN THIS PACKAGE: 2 of ~190 eligible units are fully
+   translated across all 13 languages — acre (the original pilot,
+   reported live in Japanese) and kilogram (added as a second,
+   larger pilot to prove the architecture on denser content). Both
+   have been validated with a full Playwright regression suite:
+   - Exact English restoration after en -> zh -> [other langs] -> en
+   - No duplication on repeated same-language switches
+   - Structural integrity unchanged (link/strong/table/<li> counts)
+   - Zero JS errors
+   - Arabic and Chinese spot-checked for translation quality, correct
+     RTL handling, and exact preservation of every number/date in
+     the source facts
+
+   No further app.js changes are needed to extend coverage — adding
+   more units is purely a matter of authoring and injecting more
+   translated JSON records using this same schema and pipeline.
+
+=========================================
+VALIDATION EVIDENCE (this session)
+=========================================
+Pages tested: area/acres-to-ares/, area/acres-to-square-centimeters/,
+agriculture/acre-to-hectare/, weight/kilograms-to-grams/, kg-to-lbs/,
+length/angstroms-to-astronomical-units/, temperature/celsius-to-delisle/,
+currency/aed-to-afn/
+
+All pages: en -> zh -> [other language] -> [other language] -> zh -> en
+sequences confirmed byte-identical restoration, byte-identical repeated
+zh renders (no duplication), unchanged structural counts, and zero JS
+console/page errors.
+
+node --check app.js: passed after every edit in this package.

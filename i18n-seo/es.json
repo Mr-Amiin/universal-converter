@@ -840,5 +840,43 @@
   "mass_application_rate": "Tasa de aplicación de masa.",
   "liquid_application_rate": "Tasa de aplicación líquida.",
   "yield_rate": "Tasa de rendimiento agrícola."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Medición de tierras de cultivo, ranchos y propiedades rurales en EE. UU.",
+   "Anuncios inmobiliarios y zonificación de parcelas de tierra",
+   "Informes de silvicultura y gestión de tierras"
+  ],
+  "kilogram": [
+   "Fijación de precios y etiquetado de productos vendidos por peso en el comercio minorista y de materias primas",
+   "Cálculos de dosificación en medicina, especialmente en prescripciones pediátricas y basadas en el peso",
+   "Especificación estructural y de materiales en la ingeniería basada en el sistema métrico",
+   "Medición científica de la masa en química, física e investigación de materiales"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "El acre se originó en la Inglaterra medieval como una medida práctica de campo: el área que una yunta de bueyes podía arar en un día, aproximadamente un furlong (660 pies) de largo por una cadena (66 pies) de ancho, lo que da los 43.560 pies cuadrados que aún se usan hoy.",
+   "El estatuto de Eduardo I de 1305 formalizó esta cifra. En 1959, el mismo Acuerdo Internacional de la Yarda y la Libra que fijó la libra también fijó el acre internacional en exactamente 4046,8564224 m², aunque EE. UU. conservó por separado un 'acre de agrimensura de EE. UU.' ligeramente distinto para algunos registros de tierras heredados hasta que fue eliminado en 2023."
+  ],
+  "kilogram": [
+   "El predecesor directo del kilogramo fue la “grave”, definida por la Academia de Ciencias de Francia en 1793 como la masa de un decímetro cúbico de agua a su temperatura de densidad máxima. Como “grave” recordaba al título aristocrático “graf”, el decreto revolucionario francés del 18 de germinal del año III (7 de abril de 1795) renombró el sistema: el gramo pasó a ser la unidad de referencia, definido como la masa de un centímetro cúbico de agua en el punto de fusión del hielo, y el kilogramo - mil gramos - asumió el papel práctico de la grave.",
+   "Convertir esa definición basada en el agua en un objeto físico exigió un trabajo experimental real: en 1795 se encargó al químico Louis Lefèvre-Gineau que midiera con precisión cuánto pesaba un decímetro cúbico de agua, y el antiguo joyero real Marc-Étienne Janety fabricó después un cilindro de platino para materializar esa masa medida. Depositado en los Archivos Nacionales de Francia en 1799, pasó a conocerse como el Kilogramme des Archives.",
+   "El sistema métrico se difundió de forma desigual - Napoleón restringió brevemente su uso -, pero Francia lo hizo obligatorio en 1840, y la Convención del Metro de 1875 (firmada por diecisiete naciones, entre ellas Estados Unidos) creó el BIPM y un prototipo internacional compartido. El Prototipo Internacional del Kilogramo, de platino-iridio, adoptado en 1889 y apodado “Le Grand K”, sirvió como referencia mundial de masa durante más de un siglo.",
+   "El 20 de mayo de 2019, el kilogramo se redefinió fijando la constante de Planck en exactamente 6,62607015 × 10⁻³⁴ julios·segundo, de modo que ahora puede materializarse en un laboratorio (mediante una balanza de Kibble) sin necesidad de referirse a ningún objeto físico."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta la definición del acre internacional de 1959 y la eliminación del pie de agrimensura en 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — El kilogramo (unidad básica del SI) — Definición oficial e historia desde la redefinición de 2019.",
+   "NIST — Kilogram: The Past — Historia del patrón del kilogramo desde la grave hasta el Prototipo Internacional del Kilogramo.",
+   "Folleto del SI, 9.ª edición (2019), Apéndice 2 — BIPM — Texto oficial de la definición del kilogramo basada en la constante de Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Acre internacional frente a acre de agrimensura de EE. UU."
  }
 }

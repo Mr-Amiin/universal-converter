@@ -840,5 +840,43 @@
   "mass_application_rate": "Tasso di applicazione di massa.",
   "liquid_application_rate": "Tasso di applicazione liquida.",
   "yield_rate": "Tasso di resa agricola."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Misurazione di terreni agricoli, ranch e proprietà rurali negli Stati Uniti",
+   "Annunci immobiliari e zonizzazione dei lotti di terreno",
+   "Rendicontazione forestale e di gestione del territorio"
+  ],
+  "kilogram": [
+   "Determinazione dei prezzi ed etichettatura delle merci vendute a peso nel commercio al dettaglio e delle materie prime",
+   "Calcoli di dosaggio in medicina, in particolare per le prescrizioni pediatriche e basate sul peso",
+   "Specifiche strutturali e dei materiali nell'ingegneria basata sul sistema metrico",
+   "Misurazione scientifica della massa in chimica, fisica e ricerca sui materiali"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "L'acro ha origine nell'Inghilterra medievale come misura pratica di campo: l'area che una coppia di buoi poteva arare in un giorno, lunga circa un furlong (660 piedi) e larga una chain (66 piedi), il che dà i 43.560 piedi quadrati ancora usati oggi.",
+   "Lo statuto di Edoardo I del 1305 formalizzò questa cifra. Nel 1959, lo stesso Accordo internazionale su iarda e libbra che fissò la libbra fissò anche l'acro internazionale a esattamente 4046,8564224 m², sebbene gli USA abbiano mantenuto separatamente un 'acro di rilevamento statunitense' leggermente diverso per alcuni registri catastali storici fino alla sua dismissione nel 2023."
+  ],
+  "kilogram": [
+   "Il diretto predecessore del chilogrammo fu la “grave”, definita dall'Accademia delle Scienze francese nel 1793 come la massa di un decimetro cubo d'acqua alla sua temperatura di densità massima. Poiché “grave” richiamava il titolo aristocratico “graf”, il decreto rivoluzionario francese del 18 germinale dell'anno III (7 aprile 1795) rinominò il sistema: il grammo divenne l'unità di riferimento, definito come la massa di un centimetro cubo d'acqua al punto di fusione del ghiaccio, e il chilogrammo - mille grammi - assunse il ruolo pratico della grave.",
+   "Trasformare quella definizione basata sull'acqua in un oggetto fisico richiese un vero lavoro sperimentale: nel 1795 al chimico Louis Lefèvre-Gineau fu affidato il compito di misurare con precisione quanto pesasse un decimetro cubo d'acqua, e l'ex gioielliere reale Marc-Étienne Janety fabbricò poi un cilindro di platino per incarnare quella massa misurata. Depositato negli Archivi Nazionali francesi nel 1799, divenne noto come il Kilogramme des Archives.",
+   "La diffusione del sistema metrico fu irregolare - Napoleone ne limitò brevemente l'uso - ma la Francia lo rese obbligatorio nel 1840, e la Convenzione del Metro del 1875 (firmata da diciassette nazioni, tra cui gli Stati Uniti) istituì il BIPM e un prototipo internazionale condiviso. Il Prototipo Internazionale del Chilogrammo, in platino-iridio, adottato nel 1889 e soprannominato “Le Grand K”, servì come riferimento mondiale della massa per oltre un secolo.",
+   "Il 20 maggio 2019, il chilogrammo è stato ridefinito fissando la costante di Planck a esattamente 6,62607015 × 10⁻³⁴ joule al secondo, cosicché ora può essere realizzato in laboratorio (tramite una bilancia di Kibble) senza fare riferimento ad alcun oggetto fisico."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta la definizione dell'acro internazionale del 1959 e il ritiro del piede di rilevamento nel 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — Il chilogrammo (unità di base del SI) — Definizione ufficiale e storia dalla ridefinizione del 2019.",
+   "NIST — Kilogram: The Past — Storia del campione del chilogrammo dalla grave al Prototipo Internazionale del Chilogrammo.",
+   "Opuscolo del SI, 9ª edizione (2019), Appendice 2 — BIPM — Testo ufficiale della definizione del chilogrammo basata sulla costante di Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Acro internazionale rispetto all'acro di rilevamento statunitense."
  }
 }

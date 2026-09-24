@@ -840,5 +840,43 @@
   "mass_application_rate": "Kütle uygulama oranı.",
   "liquid_application_rate": "Sıvı uygulama oranı.",
   "yield_rate": "Tarımsal verim oranı."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "ABD'de tarım arazisi, çiftlik ve kırsal mülk büyüklüğünün ölçülmesi",
+   "Arazi parselleri için emlak ilanları ve imar planlaması",
+   "Ormancılık ve arazi yönetimi raporlaması"
+  ],
+  "kilogram": [
+   "Perakende ve emtia ticaretinde ağırlığa göre satılan malların fiyatlandırılması ve etiketlenmesi",
+   "Tıpta, özellikle pediatrik ve ağırlığa dayalı reçetelerde doz hesaplamaları",
+   "Metrik sisteme dayalı mühendislikte yapısal ve malzeme spesifikasyonu",
+   "Kimya, fizik ve malzeme araştırmalarında bilimsel kütle ölçümü"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "Dönüm, ortaçağ İngiltere'sinde pratik bir tarla ölçüsü olarak ortaya çıktı: bir çift öküzün bir günde sürebileceği alan, yaklaşık bir furlong (660 fit) uzunluğunda ve bir chain (66 fit) genişliğinde olup, günümüzde hâlâ kullanılan 43.560 kare fit'i verir.",
+   "I. Edward'ın 1305 yasası bu rakamı resmileştirdi. 1959'da, libreyi sabitleyen aynı Uluslararası Yarda ve Libre Anlaşması, uluslararası dönümü de tam olarak 4046,8564224 m² olarak sabitledi; ancak ABD, bazı eski arazi kayıtları için hafifçe farklı olan 'ABD survey dönümünü' 2023'te kaldırılana kadar ayrıca sürdürdü."
+  ],
+  "kilogram": [
+   "Kilogramın doğrudan öncülü, Fransız Bilimler Akademisi'nin 1793'te maksimum yoğunluk sıcaklığında bir kübik desimetre suyun kütlesi olarak tanımladığı “grave” idi. “Grave” asil unvanı “graf”ı çağrıştırdığından, devrimci Fransa'nın 18 Germinal Yıl III (7 Nisan 1795) tarihli kararnamesi sistemi yeniden adlandırdı: gram, buzun erime noktasındaki bir kübik santimetre suyun kütlesi olarak tanımlanan referans birim hâline geldi ve kilogram - bin gram - grave'in pratik rolünü devraldı.",
+   "Bu suya dayalı tanımı fiziksel bir nesneye dönüştürmek gerçek deneysel çalışma gerektirdi: kimyager Louis Lefèvre-Gineau, 1795'te bir kübik desimetre suyun ağırlığını hassas şekilde ölçmekle görevlendirildi ve eski kraliyet kuyumcusu Marc-Étienne Janety, ardından bu ölçülen kütleyi somutlaştıran bir platin silindir üretti. 1799'da Fransız Ulusal Arşivi'ne bırakılan bu silindir, Kilogramme des Archives olarak tanınır hâle geldi.",
+   "Metrik sistemin yayılması düzensiz seyretti - Napolyon bir süre kullanımını kısıtladı - ancak Fransa 1840'ta bunu zorunlu kıldı ve ABD dâhil on yedi ulusun imzaladığı 1875 Metre Sözleşmesi, BIPM'i ve ortak bir uluslararası prototipi kurdu. 1889'da kabul edilen ve “Le Grand K” lakabıyla anılan platin-iridyum Uluslararası Kilogram Prototipi, bir asırdan uzun süre dünyanın kütle referansı olarak hizmet verdi.",
+   "20 Mayıs 2019'da, Planck sabiti tam olarak 6,62607015 × 10⁻³⁴ jul-saniye olarak sabitlenerek kilogram yeniden tanımlandı; böylece artık herhangi bir fiziksel nesneye başvurmadan laboratuvarda (bir Kibble terazisi aracılığıyla) gerçekleştirilebiliyor."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — 1959 uluslararası dönüm tanımını ve 2022/2023 survey ayağının kaldırılmasını belgeler."
+  ],
+  "kilogram": [
+   "BIPM — Kilogram (SI temel birimi) — 2019 yeniden tanımından bu yana resmî tanım ve tarihçe.",
+   "NIST — Kilogram: The Past — Grave'den Uluslararası Kilogram Prototipine kadar kilogram standardının tarihi.",
+   "SI Broşürü, 9. baskı (2019), Ek 2 — BIPM — Planck sabitine dayalı kilogram tanımının resmî metni."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Uluslararası dönüm (acre) karşı ABD survey dönümü."
  }
 }

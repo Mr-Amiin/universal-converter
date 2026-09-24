@@ -5192,30 +5192,32 @@ setTranslatedText(aEl, translatedAnswer);
 // either (a) re-renders a NUMBER-AND-UNIT-NAME sentence purely from data
 // already used elsewhere on the page (getUnitDisplayName()/
 // pluralizeUnitDisplayName(), and the ORIGINAL numbers/symbols, both
-// left completely unchanged), or (b) re-applies i18n-seo data that is
+// left completely unchanged), (b) re-applies i18n-seo data that is
 // ALREADY authored and ALREADY used for a different occurrence of the
 // exact same content (seoData.whereUsed / seoData.differenceBetween,
-// already used by translateFaqItems() above), or (c) uses a small set of
-// new, purely STRUCTURAL heading/label templates added to the existing
-// `chrome` namespace in i18n-seo/*.json (parallel to the pre-existing
-// chrome.formula/chrome.about_converting/chrome.related_conversions
-// keys) for section headings whose wording is 100% mechanical
-// ("Understanding {UNIT}", "History of {UNIT}", etc.) and therefore
-// carries no invented factual claim.
-//
-// Deliberately NOT touched (left as canonical English, matching this
-// project's existing precedent of leaving the untranslated FAQ
-// "difference between" pair-LABEL as English - see translateFaqItems()
-// above): the per-category-pair comparison intro paragraph under "About
-// Converting X to Y", the "This factor comes from..." formula
-// explanation paragraph, the bullet lists under "Uses of the X today",
-// the historical narrative paragraphs under "History of the X", and the
-// citation text under "{Unit} — sources". None of these have ANY
-// translated source anywhere in i18n-seo/*.json, and reconstructing them
-// would mean inventing new prose/claims rather than reusing existing,
-// authored content - out of scope per this task's explicit instruction
-// not to invent unsupported SEO claims. See
-// SEO_PAGE_FULL_CONTENT_LOCALIZATION_REPORT.md for the full audit.
+// already used by translateFaqItems() above), (c) uses a small set of
+// purely STRUCTURAL heading/label templates in the `chrome` namespace
+// (parallel to the pre-existing chrome.formula/chrome.about_converting/
+// chrome.related_conversions keys) for section headings whose wording is
+// 100% mechanical ("Understanding {UNIT}", "History of {UNIT}", etc.) and
+// therefore carries no invented factual claim, or (d) reuses new,
+// per-unit-scoped data added to i18n-seo/*.json - seoData.unitUsesToday /
+// seoData.unitHistory / seoData.unitSources (each keyed by unit.id) and
+// seoData.unitDistinctionLabel (keyed by the same pairKey as
+// differenceBetween) - which are professionally translated copies of the
+// EXACT English sentences/bullets/citations already published on the
+// site for that unit (numbers, dates, and unit symbols preserved
+// verbatim; only the surrounding prose is translated), never invented
+// facts. This data is curated incrementally, unit by unit (started with
+// "acre" as the reference/pilot unit); every translateSeoArticleLongform()
+// call site above that reads one of these four keys checks for its
+// presence (and, for the bullet/paragraph lists, an exact item-count
+// match against the original English content) before using it, so a unit
+// that hasn't been curated yet - or a page whose English content ever
+// changes out from under a stale translation - safely falls back to
+// leaving that block in English rather than risk mismatching translated
+// text to the wrong facts. See SEO_PAGE_FULL_CONTENT_LOCALIZATION_REPORT.md
+// for the original audit that identified this gap.
 // ---------------------------------------------------------------------
 
 // Matches a unit-name token (allowing spaces and "/") captured from
@@ -5511,9 +5513,12 @@ setTranslatedHtml(p, `<strong>${escapeHtml(chrome.where_used_label)}</strong> ${
 // Unit-comparison note (e.g. "International acre vs. US survey acre.")
 // - reuses seoData.differenceBetween[pairKey], the SAME already-
 // translated data translateFaqItems() above uses for the "What is the
-// difference between {PAIR}?" FAQ answer. The bold pair-LABEL itself has
-// no translated form anywhere in i18n-seo/*.json (same documented gap as
-// the FAQ's own question heading) and is intentionally left in English.
+// difference between {PAIR}?" FAQ answer. The bold pair-LABEL itself is
+// looked up in the new seoData.unitDistinctionLabel[pairKey] (keyed by the
+// exact same pairKey as differenceBetween, since both describe the same
+// pair) - falling back to the original English label, unchanged, when a
+// pair hasn't been curated yet, so uncovered pairs degrade exactly as
+// before rather than showing a blank or mismatched label.
 article.querySelectorAll("p.unit-distinction-note").forEach((p) => {
 const strongEl = p.querySelector("strong");
 if (!strongEl) return;
@@ -5521,32 +5526,66 @@ const label = originalText(strongEl).replace(/\.$/, "");
 const pairKey = Object.keys(seoData.differenceBetween || {}).find((k) => k.toLowerCase() === label.toLowerCase());
 const translated = pairKey && seoData.differenceBetween[pairKey];
 if (!translated) return;
-// The bold label is never translated (stays exactly as originalText()
-// cached it, the same English wording every pass), so rebuilding it
-// via setTranslatedHtml() - which lets restoreOriginalSeoText() put the
-// full original paragraph back correctly - is safe on repeated switches.
-setTranslatedHtml(p, `<strong>${escapeHtml(originalText(strongEl))}</strong> ${escapeHtml(translated)}`);
+const translatedLabel = (pairKey && seoData.unitDistinctionLabel && seoData.unitDistinctionLabel[pairKey]) || originalText(strongEl);
+setTranslatedHtml(p, `<strong>${escapeHtml(translatedLabel)}</strong> ${escapeHtml(translated)}`);
 });
 
-// "Uses of the {UNIT} today" heading (bullet list beneath is left in
-// English - no translated source exists for its per-unit content).
+// "Uses of the {UNIT} today" heading, plus the bullet list beneath it -
+// reuses the new seoData.unitUsesToday[unit.id] (an array of translated
+// bullet strings, authored one-for-one from the already-published English
+// <li> facts - never invented). originalHtml(list) caches the list's TRUE
+// original innerHTML on first touch, so counting <li> occurrences in that
+// cached string (not the possibly-already-translated live DOM) is what
+// makes the length check reliable on a second or third language switch,
+// not just the first. Only applied when the counts match exactly, so a
+// unit that isn't curated yet (or whose English bullet count ever changes)
+// safely falls back to leaving the list in English rather than
+// mismatching a translated bullet to the wrong fact.
 if (chrome.uses_today_template) {
 article.querySelectorAll("h4").forEach((el) => {
 const m = originalText(el).match(/^Uses of the (.+) today$/);
 if (!m) return;
 const unit = matchUnitByName(m[1], fromUnit, toUnit);
 if (unit) setTranslatedText(el, fillTemplateSafe(chrome.uses_today_template, { UNIT: getUnitDisplayName(unit) }));
+if (!unit) return;
+const list = el.nextElementSibling;
+if (!list || list.tagName !== "UL") return;
+const translatedItems = seoData.unitUsesToday && seoData.unitUsesToday[unit.id];
+if (!translatedItems) return;
+const originalItemCount = (originalHtml(list).match(/<li>/g) || []).length;
+if (originalItemCount !== translatedItems.length) return;
+setTranslatedHtml(list, translatedItems.map((item) => `<li>${escapeHtml(item)}</li>`).join(""));
 });
 }
 
-// "History of the {UNIT}" heading (narrative paragraphs beneath are left
-// in English - no translated source exists for their per-unit content).
+// "History of the {UNIT}" heading, plus the narrative paragraph(s)
+// beneath it - reuses the new seoData.unitHistory[unit.id] (an array of
+// translated paragraph strings, one per already-authored English <p>).
+// Every number, date, and unit symbol inside these paragraphs is
+// preserved verbatim in the translated text - only the surrounding prose
+// is translated, so the underlying facts never change. Collects the
+// contiguous run of plain <p> siblings after the heading, stopping at the
+// first non-<p> or at the "Historical origin."/unit-distinction-note
+// paragraph (both already handled by their own blocks elsewhere in this
+// function), and only applies the translation when the paragraph counts
+// match exactly - the same conservative guard used for the Uses-today
+// bullet list above.
 if (chrome.history_of_template) {
 article.querySelectorAll("h4").forEach((el) => {
 const m = originalText(el).match(/^History of the (.+)$/);
 if (!m) return;
 const unit = matchUnitByName(m[1], fromUnit, toUnit);
 if (unit) setTranslatedText(el, fillTemplateSafe(chrome.history_of_template, { UNIT: getUnitDisplayName(unit) }));
+if (!unit) return;
+const paragraphs = [];
+let node = el.nextElementSibling;
+while (node && node.tagName === "P" && !node.classList.contains("unit-origin-note") && !node.classList.contains("unit-distinction-note")) {
+paragraphs.push(node);
+node = node.nextElementSibling;
+}
+const translatedParas = seoData.unitHistory && seoData.unitHistory[unit.id];
+if (!translatedParas || translatedParas.length !== paragraphs.length) return;
+paragraphs.forEach((p, index) => setTranslatedText(p, translatedParas[index]));
 });
 }
 
@@ -5591,14 +5630,29 @@ if (!/^Exchange rate notice\./.test(plainOriginal) || !chrome.exchange_rate_noti
 setTranslatedHtml(p, `<strong>${escapeHtml(chrome.exchange_rate_notice_label)}</strong> ${escapeHtml(chrome.exchange_rate_notice_text)}`);
 });
 
-// "{UNIT} — sources" heading (citation text beneath is left in English -
-// no translated source exists for source-citation content).
+// "{UNIT} — sources" heading, plus the citation list beneath it - reuses
+// the new seoData.unitSources[unit.id] (an array of translated citation
+// strings, one per already-authored English <li>). The organization name
+// and document-title portion of each citation (e.g. "NIST — US Survey
+// Foot: Revised Unit Conversion Factors") names a real, citable English
+// publication and is kept verbatim in every language - only the
+// descriptive clause after it is translated - so the citation stays
+// findable. Same originalHtml()-based count guard as the Uses-today
+// bullet list above.
 if (chrome.sources_label_template) {
 article.querySelectorAll(".about-sources h4").forEach((el) => {
 const m = originalText(el).match(/^(.+?)\s*—\s*sources$/);
 if (!m) return;
 const unit = matchUnitByName(m[1], fromUnit, toUnit);
 if (unit) setTranslatedText(el, fillTemplateSafe(chrome.sources_label_template, { UNIT: getUnitDisplayName(unit) }));
+if (!unit) return;
+const list = el.nextElementSibling;
+if (!list || list.tagName !== "UL") return;
+const translatedItems = seoData.unitSources && seoData.unitSources[unit.id];
+if (!translatedItems) return;
+const originalItemCount = (originalHtml(list).match(/<li>/g) || []).length;
+if (originalItemCount !== translatedItems.length) return;
+setTranslatedHtml(list, translatedItems.map((item) => `<li>${escapeHtml(item)}</li>`).join(""));
 });
 }
 }

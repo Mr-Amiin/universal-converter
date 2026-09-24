@@ -28,7 +28,7 @@ index d4cffb23f8b..2764b8a6529 100644
  document.body.appendChild(banner);
  document.getElementById("ucCookieAccept").addEventListener("click", function () {
 diff --git a/app.js b/app.js
-index c900c1e6850..39f316a71e9 100644
+index c900c1e6850..ada0ae113cb 100644
 --- a/app.js
 +++ b/app.js
 @@ -5,41 +5,60 @@
@@ -1371,7 +1371,7 @@ index c900c1e6850..39f316a71e9 100644
  }
  
  // Pulls the actual number the site's own generator already printed out of
-@@ -4652,6 +5184,425 @@ setTranslatedText(aEl, translatedAnswer);
+@@ -4652,6 +5184,479 @@ setTranslatedText(aEl, translatedAnswer);
  });
  }
  
@@ -1383,30 +1383,32 @@ index c900c1e6850..39f316a71e9 100644
 +// either (a) re-renders a NUMBER-AND-UNIT-NAME sentence purely from data
 +// already used elsewhere on the page (getUnitDisplayName()/
 +// pluralizeUnitDisplayName(), and the ORIGINAL numbers/symbols, both
-+// left completely unchanged), or (b) re-applies i18n-seo data that is
++// left completely unchanged), (b) re-applies i18n-seo data that is
 +// ALREADY authored and ALREADY used for a different occurrence of the
 +// exact same content (seoData.whereUsed / seoData.differenceBetween,
-+// already used by translateFaqItems() above), or (c) uses a small set of
-+// new, purely STRUCTURAL heading/label templates added to the existing
-+// `chrome` namespace in i18n-seo/*.json (parallel to the pre-existing
-+// chrome.formula/chrome.about_converting/chrome.related_conversions
-+// keys) for section headings whose wording is 100% mechanical
-+// ("Understanding {UNIT}", "History of {UNIT}", etc.) and therefore
-+// carries no invented factual claim.
-+//
-+// Deliberately NOT touched (left as canonical English, matching this
-+// project's existing precedent of leaving the untranslated FAQ
-+// "difference between" pair-LABEL as English - see translateFaqItems()
-+// above): the per-category-pair comparison intro paragraph under "About
-+// Converting X to Y", the "This factor comes from..." formula
-+// explanation paragraph, the bullet lists under "Uses of the X today",
-+// the historical narrative paragraphs under "History of the X", and the
-+// citation text under "{Unit} — sources". None of these have ANY
-+// translated source anywhere in i18n-seo/*.json, and reconstructing them
-+// would mean inventing new prose/claims rather than reusing existing,
-+// authored content - out of scope per this task's explicit instruction
-+// not to invent unsupported SEO claims. See
-+// SEO_PAGE_FULL_CONTENT_LOCALIZATION_REPORT.md for the full audit.
++// already used by translateFaqItems() above), (c) uses a small set of
++// purely STRUCTURAL heading/label templates in the `chrome` namespace
++// (parallel to the pre-existing chrome.formula/chrome.about_converting/
++// chrome.related_conversions keys) for section headings whose wording is
++// 100% mechanical ("Understanding {UNIT}", "History of {UNIT}", etc.) and
++// therefore carries no invented factual claim, or (d) reuses new,
++// per-unit-scoped data added to i18n-seo/*.json - seoData.unitUsesToday /
++// seoData.unitHistory / seoData.unitSources (each keyed by unit.id) and
++// seoData.unitDistinctionLabel (keyed by the same pairKey as
++// differenceBetween) - which are professionally translated copies of the
++// EXACT English sentences/bullets/citations already published on the
++// site for that unit (numbers, dates, and unit symbols preserved
++// verbatim; only the surrounding prose is translated), never invented
++// facts. This data is curated incrementally, unit by unit (started with
++// "acre" as the reference/pilot unit); every translateSeoArticleLongform()
++// call site above that reads one of these four keys checks for its
++// presence (and, for the bullet/paragraph lists, an exact item-count
++// match against the original English content) before using it, so a unit
++// that hasn't been curated yet - or a page whose English content ever
++// changes out from under a stale translation - safely falls back to
++// leaving that block in English rather than risk mismatching translated
++// text to the wrong facts. See SEO_PAGE_FULL_CONTENT_LOCALIZATION_REPORT.md
++// for the original audit that identified this gap.
 +// ---------------------------------------------------------------------
 +
 +// Matches a unit-name token (allowing spaces and "/") captured from
@@ -1702,9 +1704,12 @@ index c900c1e6850..39f316a71e9 100644
 +// Unit-comparison note (e.g. "International acre vs. US survey acre.")
 +// - reuses seoData.differenceBetween[pairKey], the SAME already-
 +// translated data translateFaqItems() above uses for the "What is the
-+// difference between {PAIR}?" FAQ answer. The bold pair-LABEL itself has
-+// no translated form anywhere in i18n-seo/*.json (same documented gap as
-+// the FAQ's own question heading) and is intentionally left in English.
++// difference between {PAIR}?" FAQ answer. The bold pair-LABEL itself is
++// looked up in the new seoData.unitDistinctionLabel[pairKey] (keyed by the
++// exact same pairKey as differenceBetween, since both describe the same
++// pair) - falling back to the original English label, unchanged, when a
++// pair hasn't been curated yet, so uncovered pairs degrade exactly as
++// before rather than showing a blank or mismatched label.
 +article.querySelectorAll("p.unit-distinction-note").forEach((p) => {
 +const strongEl = p.querySelector("strong");
 +if (!strongEl) return;
@@ -1712,32 +1717,66 @@ index c900c1e6850..39f316a71e9 100644
 +const pairKey = Object.keys(seoData.differenceBetween || {}).find((k) => k.toLowerCase() === label.toLowerCase());
 +const translated = pairKey && seoData.differenceBetween[pairKey];
 +if (!translated) return;
-+// The bold label is never translated (stays exactly as originalText()
-+// cached it, the same English wording every pass), so rebuilding it
-+// via setTranslatedHtml() - which lets restoreOriginalSeoText() put the
-+// full original paragraph back correctly - is safe on repeated switches.
-+setTranslatedHtml(p, `<strong>${escapeHtml(originalText(strongEl))}</strong> ${escapeHtml(translated)}`);
++const translatedLabel = (pairKey && seoData.unitDistinctionLabel && seoData.unitDistinctionLabel[pairKey]) || originalText(strongEl);
++setTranslatedHtml(p, `<strong>${escapeHtml(translatedLabel)}</strong> ${escapeHtml(translated)}`);
 +});
 +
-+// "Uses of the {UNIT} today" heading (bullet list beneath is left in
-+// English - no translated source exists for its per-unit content).
++// "Uses of the {UNIT} today" heading, plus the bullet list beneath it -
++// reuses the new seoData.unitUsesToday[unit.id] (an array of translated
++// bullet strings, authored one-for-one from the already-published English
++// <li> facts - never invented). originalHtml(list) caches the list's TRUE
++// original innerHTML on first touch, so counting <li> occurrences in that
++// cached string (not the possibly-already-translated live DOM) is what
++// makes the length check reliable on a second or third language switch,
++// not just the first. Only applied when the counts match exactly, so a
++// unit that isn't curated yet (or whose English bullet count ever changes)
++// safely falls back to leaving the list in English rather than
++// mismatching a translated bullet to the wrong fact.
 +if (chrome.uses_today_template) {
 +article.querySelectorAll("h4").forEach((el) => {
 +const m = originalText(el).match(/^Uses of the (.+) today$/);
 +if (!m) return;
 +const unit = matchUnitByName(m[1], fromUnit, toUnit);
 +if (unit) setTranslatedText(el, fillTemplateSafe(chrome.uses_today_template, { UNIT: getUnitDisplayName(unit) }));
++if (!unit) return;
++const list = el.nextElementSibling;
++if (!list || list.tagName !== "UL") return;
++const translatedItems = seoData.unitUsesToday && seoData.unitUsesToday[unit.id];
++if (!translatedItems) return;
++const originalItemCount = (originalHtml(list).match(/<li>/g) || []).length;
++if (originalItemCount !== translatedItems.length) return;
++setTranslatedHtml(list, translatedItems.map((item) => `<li>${escapeHtml(item)}</li>`).join(""));
 +});
 +}
 +
-+// "History of the {UNIT}" heading (narrative paragraphs beneath are left
-+// in English - no translated source exists for their per-unit content).
++// "History of the {UNIT}" heading, plus the narrative paragraph(s)
++// beneath it - reuses the new seoData.unitHistory[unit.id] (an array of
++// translated paragraph strings, one per already-authored English <p>).
++// Every number, date, and unit symbol inside these paragraphs is
++// preserved verbatim in the translated text - only the surrounding prose
++// is translated, so the underlying facts never change. Collects the
++// contiguous run of plain <p> siblings after the heading, stopping at the
++// first non-<p> or at the "Historical origin."/unit-distinction-note
++// paragraph (both already handled by their own blocks elsewhere in this
++// function), and only applies the translation when the paragraph counts
++// match exactly - the same conservative guard used for the Uses-today
++// bullet list above.
 +if (chrome.history_of_template) {
 +article.querySelectorAll("h4").forEach((el) => {
 +const m = originalText(el).match(/^History of the (.+)$/);
 +if (!m) return;
 +const unit = matchUnitByName(m[1], fromUnit, toUnit);
 +if (unit) setTranslatedText(el, fillTemplateSafe(chrome.history_of_template, { UNIT: getUnitDisplayName(unit) }));
++if (!unit) return;
++const paragraphs = [];
++let node = el.nextElementSibling;
++while (node && node.tagName === "P" && !node.classList.contains("unit-origin-note") && !node.classList.contains("unit-distinction-note")) {
++paragraphs.push(node);
++node = node.nextElementSibling;
++}
++const translatedParas = seoData.unitHistory && seoData.unitHistory[unit.id];
++if (!translatedParas || translatedParas.length !== paragraphs.length) return;
++paragraphs.forEach((p, index) => setTranslatedText(p, translatedParas[index]));
 +});
 +}
 +
@@ -1782,14 +1821,29 @@ index c900c1e6850..39f316a71e9 100644
 +setTranslatedHtml(p, `<strong>${escapeHtml(chrome.exchange_rate_notice_label)}</strong> ${escapeHtml(chrome.exchange_rate_notice_text)}`);
 +});
 +
-+// "{UNIT} — sources" heading (citation text beneath is left in English -
-+// no translated source exists for source-citation content).
++// "{UNIT} — sources" heading, plus the citation list beneath it - reuses
++// the new seoData.unitSources[unit.id] (an array of translated citation
++// strings, one per already-authored English <li>). The organization name
++// and document-title portion of each citation (e.g. "NIST — US Survey
++// Foot: Revised Unit Conversion Factors") names a real, citable English
++// publication and is kept verbatim in every language - only the
++// descriptive clause after it is translated - so the citation stays
++// findable. Same originalHtml()-based count guard as the Uses-today
++// bullet list above.
 +if (chrome.sources_label_template) {
 +article.querySelectorAll(".about-sources h4").forEach((el) => {
 +const m = originalText(el).match(/^(.+?)\s*—\s*sources$/);
 +if (!m) return;
 +const unit = matchUnitByName(m[1], fromUnit, toUnit);
 +if (unit) setTranslatedText(el, fillTemplateSafe(chrome.sources_label_template, { UNIT: getUnitDisplayName(unit) }));
++if (!unit) return;
++const list = el.nextElementSibling;
++if (!list || list.tagName !== "UL") return;
++const translatedItems = seoData.unitSources && seoData.unitSources[unit.id];
++if (!translatedItems) return;
++const originalItemCount = (originalHtml(list).match(/<li>/g) || []).length;
++if (originalItemCount !== translatedItems.length) return;
++setTranslatedHtml(list, translatedItems.map((item) => `<li>${escapeHtml(item)}</li>`).join(""));
 +});
 +}
 +}
@@ -1797,7 +1851,7 @@ index c900c1e6850..39f316a71e9 100644
  // Related-conversion links are translated purely by re-deriving each
  // link's own from/to unit pair from its href with the SAME
  // deriveConversionFromPath() the converter widget already relies on -
-@@ -4700,8 +5651,9 @@ if (!category) return;
+@@ -4700,8 +5705,9 @@ if (!category) return;
  const fromUnit = getUnit(category, ctx.fromUnitId);
  const toUnit = getUnit(category, ctx.toUnitId);
  if (!fromUnit || !toUnit) return;
@@ -1808,7 +1862,7 @@ index c900c1e6850..39f316a71e9 100644
  }
  
  // Re-renders the interactive converter widget's language-aware pieces
-@@ -4710,12 +5662,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
+@@ -4710,12 +5716,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
  // selection already in `state` - it does not change what is selected,
  // only how its labels are displayed.
  function refreshLanguageAwareConverter() {
@@ -1880,7 +1934,7 @@ index c900c1e6850..39f316a71e9 100644
  populateSelect(byId("toUnit"), category.units, state.toUnitId);
  if (typeof updateConversion === "function") updateConversion();
 diff --git a/i18n-seo/ar.json b/i18n-seo/ar.json
-index aef43ca2187..4c8158c2f4b 100644
+index aef43ca2187..603a2c1c76a 100644
 --- a/i18n-seo/ar.json
 +++ b/i18n-seo/ar.json
 @@ -3,111 +3,138 @@
@@ -2140,15 +2194,54 @@ index aef43ca2187..4c8158c2f4b 100644
   },
   "currencyNames": {
    "USD": "دولار أمريكي",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "معدل تطبيق الكتلة.",
    "liquid_application_rate": "معدل تطبيق السائل.",
    "yield_rate": "معدل الإنتاجية الزراعية."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "قياس مساحة الأراضي الزراعية والمزارع والعقارات الريفية في الولايات المتحدة",
++   "إعلانات العقارات والتقسيم المناطقي لقطع الأراضي",
++   "تقارير الحراجة وإدارة الأراضي"
++  ],
++  "kilogram": [
++   "تسعير ووسم البضائع المباعة بالوزن في تجارة التجزئة والسلع",
++   "حسابات الجرعات الدوائية في الطب، خصوصًا الوصفات المعتمدة على وزن الأطفال",
++   "المواصفات الإنشائية ومواصفات المواد في الهندسة المعتمدة على النظام المتري",
++   "القياس العلمي للكتلة في الكيمياء والفيزياء وأبحاث المواد"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "نشأ الفدان في إنجلترا في العصور الوسطى كمقياس عملي للحقول: وهو المساحة التي يستطيع ثوران يجران محراثًا حرثها في يوم واحد، بطول فرلنغ تقريبًا (660 قدمًا) وعرض تشين (66 قدمًا)، مما ينتج عنه 43,560 قدمًا مربعًا وهو الرقم المستخدم حتى اليوم.",
++   "أضفى مرسوم الملك إدوارد الأول عام 1305 الطابع الرسمي على هذا الرقم. في عام 1959، حدّدت نفس اتفاقية الياردة والرطل الدولية التي ثبّتت الرطل أيضًا الفدان الدولي عند 4046.8564224 مترًا مربعًا بالضبط، رغم أن الولايات المتحدة احتفظت بشكل منفصل بـ'فدان المساحة الأمريكي' المختلف قليلًا لبعض سجلات الأراضي القديمة حتى تم إلغاؤه عام 2023."
++  ],
++  "kilogram": [
++   "كان السلف المباشر للكيلوغرام هو “الغراف” (grave)، الذي عرّفته أكاديمية العلوم الفرنسية عام 1793 بأنه كتلة ديسيمتر مكعب واحد من الماء عند درجة حرارة أقصى كثافة له. ولأن كلمة “غراف” كانت تُذكّر بلقب النبلاء “غراف” (graf)، فإن مرسوم فرنسا الثوري الصادر في 18 جرميناب من السنة الثالثة (7 أبريل 1795) أعاد تسمية النظام: أصبح الغرام هو الوحدة المرجعية، معرَّفًا بأنه كتلة سنتيمتر مكعب واحد من الماء عند نقطة انصهار الجليد، وحلّ الكيلوغرام - أي ألف غرام - محل الدور العملي للغراف.",
++   "وتحويل هذا التعريف القائم على الماء إلى جسم مادي فعلي تطلّب عملاً تجريبيًا حقيقيًا: فقد كُلِّف الكيميائي لوي لوفيفر-جينو عام 1795 بقياس وزن ديسيمتر مكعب من الماء بدقة، ثم صنع الصائغ الملكي السابق مارك-إتيان جانيتي أسطوانة من البلاتين لتجسيد تلك الكتلة المقيسة. وأُودعت في المحفوظات الوطنية الفرنسية عام 1799، فعُرفت باسم “كيلوغرام المحفوظات” (Kilogramme des Archives).",
++   "انتشر النظام المتري بشكل غير متساوٍ - إذ قيّد نابليون استخدامه لفترة وجيزة - غير أن فرنسا جعلته إلزاميًا عام 1840، وأسّست اتفاقية المتر لعام 1875 (التي وقّعتها سبع عشرة دولة، من بينها الولايات المتحدة) المكتب الدولي للأوزان والمقاييس (BIPM) ونموذجًا دوليًا مشتركًا. وقد ظل النموذج الدولي للكيلوغرام المصنوع من البلاتين والإيريديوم، الذي اعتُمد عام 1889 وأُطلق عليه لقب “لو غران كاي” (Le Grand K)، المرجع العالمي للكتلة لأكثر من قرن.",
++   "وفي 20 مايو 2019، أُعيد تعريف الكيلوغرام بتثبيت ثابت بلانك عند القيمة الدقيقة 6.62607015 × 10⁻³⁴ جول·ثانية، بحيث أصبح بالإمكان تحقيقه في المختبر (عبر ميزان كيبل) دون الرجوع إلى أي جسم مادي."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — يوثق تعريف الفدان الدولي لعام 1959 وإلغاء قدم المساحة في 2022/2023."
++  ],
++  "kilogram": [
++   "المكتب الدولي للأوزان والمقاييس (BIPM) — الكيلوغرام (الوحدة الأساسية في النظام الدولي) — التعريف الرسمي وتاريخه منذ إعادة التعريف عام 2019.",
++   "المعهد الوطني للمعايير والتقنية (NIST) — Kilogram: The Past — تاريخ معيار الكيلوغرام من الغراف إلى النموذج الأولي الدولي للكيلوغرام.",
++   "كتيب النظام الدولي للوحدات، الطبعة التاسعة (2019)، الملحق 2 — BIPM — النص الرسمي لتعريف الكيلوغرام المستند إلى ثابت بلانك."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "الفدان الدولي مقابل فدان المساحة الأمريكي."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/de.json b/i18n-seo/de.json
-index c265901d60e..96299ec2e6c 100644
+index c265901d60e..a7fca0f7218 100644
 --- a/i18n-seo/de.json
 +++ b/i18n-seo/de.json
 @@ -3,111 +3,138 @@
@@ -2408,15 +2501,54 @@ index c265901d60e..96299ec2e6c 100644
   },
   "currencyNames": {
    "USD": "US-Dollar",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Massenausbringungsrate.",
    "liquid_application_rate": "Flüssigkeitsausbringungsrate.",
    "yield_rate": "Landwirtschaftliche Ertragsrate."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Vermessung von Ackerland, Ranches und ländlichem Grundbesitz in den USA",
++   "Immobilienanzeigen und Flächennutzungspläne für Grundstücke",
++   "Forstwirtschaft und Berichte zum Landmanagement"
++  ],
++  "kilogram": [
++   "Preisgestaltung und Kennzeichnung von nach Gewicht verkaufter Ware im Einzelhandel und Rohstoffhandel",
++   "Dosierungsberechnungen in der Medizin, insbesondere bei gewichtsabhängigen und pädiatrischen Verschreibungen",
++   "Bauliche und werkstofftechnische Spezifikationen in der auf dem metrischen System basierenden Technik",
++   "Wissenschaftliche Massemessung in Chemie, Physik und Materialforschung"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "Der Acre entstand im mittelalterlichen England als praktisches Feldmaß: die Fläche, die ein Ochsengespann an einem Tag pflügen konnte, etwa ein Furlong (660 ft) lang und eine Chain (66 ft) breit, was die bis heute verwendeten 43.560 Quadratfuß ergibt.",
++   "Das Statut Eduards I. von 1305 machte dieses Maß offiziell. 1959 legte dasselbe Internationale Yard-und-Pfund-Abkommen, das auch das Pfund festlegte, den internationalen Acre exakt auf 4046,8564224 m² fest, wobei die USA separat einen leicht abweichenden 'US-Vermessungs-Acre' für einige ältere Grundbucheinträge beibehielten, bis dieser 2023 abgeschafft wurde."
++  ],
++  "kilogram": [
++   "Der unmittelbare Vorläufer des Kilogramms war das “Grave”, das die Französische Akademie der Wissenschaften 1793 als die Masse eines Kubikdezimeters Wasser bei seiner Temperatur maximaler Dichte definierte. Da “Grave” an den Adelstitel “Graf” erinnerte, benannte das revolutionäre Dekret Frankreichs vom 18. Germinal des Jahres III (7. April 1795) das System um: Das Gramm wurde zur Bezugseinheit, definiert als die Masse eines Kubikzentimeters Wasser am Schmelzpunkt von Eis, und das Kilogramm - eintausend Gramm - übernahm die praktische Rolle des Grave.",
++   "Diese auf Wasser basierende Definition in ein physisches Objekt umzusetzen, erforderte reale experimentelle Arbeit: Der Chemiker Louis Lefèvre-Gineau wurde 1795 damit beauftragt, präzise zu messen, wie viel ein Kubikdezimeter Wasser wog, und der frühere königliche Juwelier Marc-Étienne Janety fertigte daraufhin einen Platinzylinder, der diese gemessene Masse verkörperte. 1799 im Französischen Nationalarchiv hinterlegt, wurde er als Kilogramme des Archives bekannt.",
++   "Die Verbreitung des metrischen Systems verlief uneinheitlich - Napoleon schränkte seine Nutzung kurzzeitig ein -, doch Frankreich machte es 1840 verbindlich, und die Meterkonvention von 1875 (unterzeichnet von siebzehn Staaten, darunter die USA) begründete das BIPM und einen gemeinsamen internationalen Prototyp. Der aus Platin-Iridium gefertigte Internationale Kilogrammprototyp, 1889 angenommen und “Le Grand K” genannt, diente über ein Jahrhundert lang als weltweite Massereferenz.",
++   "Am 20. Mai 2019 wurde das Kilogramm neu definiert, indem die Planck-Konstante auf exakt 6,62607015 × 10⁻³⁴ Joulesekunden festgelegt wurde, sodass es nun im Labor (mittels einer Kibble-Waage) ohne Bezug auf ein physisches Objekt realisiert werden kann."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Dokumentiert die internationale Acre-Definition von 1959 und die Abschaffung des Vermessungsfußes 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — Das Kilogramm (SI-Basiseinheit) — Offizielle Definition und Geschichte seit der Neudefinition von 2019.",
++   "NIST — Kilogram: The Past — Geschichte des Kilogrammstandards vom Grave bis zum Internationalen Kilogrammprototyp.",
++   "SI-Broschüre, 9. Auflage (2019), Anhang 2 — BIPM — Offizieller Text der auf der Planck-Konstante basierenden Definition des Kilogramms."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Internationaler Acre im Vergleich zu US-Vermessungs-Acre."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/es.json b/i18n-seo/es.json
-index 7d73ac4fc40..3157c45ee55 100644
+index 7d73ac4fc40..f2e5fa82799 100644
 --- a/i18n-seo/es.json
 +++ b/i18n-seo/es.json
 @@ -3,111 +3,138 @@
@@ -2676,15 +2808,54 @@ index 7d73ac4fc40..3157c45ee55 100644
   },
   "currencyNames": {
    "USD": "Dólar estadounidense",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Tasa de aplicación de masa.",
    "liquid_application_rate": "Tasa de aplicación líquida.",
    "yield_rate": "Tasa de rendimiento agrícola."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Medición de tierras de cultivo, ranchos y propiedades rurales en EE. UU.",
++   "Anuncios inmobiliarios y zonificación de parcelas de tierra",
++   "Informes de silvicultura y gestión de tierras"
++  ],
++  "kilogram": [
++   "Fijación de precios y etiquetado de productos vendidos por peso en el comercio minorista y de materias primas",
++   "Cálculos de dosificación en medicina, especialmente en prescripciones pediátricas y basadas en el peso",
++   "Especificación estructural y de materiales en la ingeniería basada en el sistema métrico",
++   "Medición científica de la masa en química, física e investigación de materiales"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "El acre se originó en la Inglaterra medieval como una medida práctica de campo: el área que una yunta de bueyes podía arar en un día, aproximadamente un furlong (660 pies) de largo por una cadena (66 pies) de ancho, lo que da los 43.560 pies cuadrados que aún se usan hoy.",
++   "El estatuto de Eduardo I de 1305 formalizó esta cifra. En 1959, el mismo Acuerdo Internacional de la Yarda y la Libra que fijó la libra también fijó el acre internacional en exactamente 4046,8564224 m², aunque EE. UU. conservó por separado un 'acre de agrimensura de EE. UU.' ligeramente distinto para algunos registros de tierras heredados hasta que fue eliminado en 2023."
++  ],
++  "kilogram": [
++   "El predecesor directo del kilogramo fue la “grave”, definida por la Academia de Ciencias de Francia en 1793 como la masa de un decímetro cúbico de agua a su temperatura de densidad máxima. Como “grave” recordaba al título aristocrático “graf”, el decreto revolucionario francés del 18 de germinal del año III (7 de abril de 1795) renombró el sistema: el gramo pasó a ser la unidad de referencia, definido como la masa de un centímetro cúbico de agua en el punto de fusión del hielo, y el kilogramo - mil gramos - asumió el papel práctico de la grave.",
++   "Convertir esa definición basada en el agua en un objeto físico exigió un trabajo experimental real: en 1795 se encargó al químico Louis Lefèvre-Gineau que midiera con precisión cuánto pesaba un decímetro cúbico de agua, y el antiguo joyero real Marc-Étienne Janety fabricó después un cilindro de platino para materializar esa masa medida. Depositado en los Archivos Nacionales de Francia en 1799, pasó a conocerse como el Kilogramme des Archives.",
++   "El sistema métrico se difundió de forma desigual - Napoleón restringió brevemente su uso -, pero Francia lo hizo obligatorio en 1840, y la Convención del Metro de 1875 (firmada por diecisiete naciones, entre ellas Estados Unidos) creó el BIPM y un prototipo internacional compartido. El Prototipo Internacional del Kilogramo, de platino-iridio, adoptado en 1889 y apodado “Le Grand K”, sirvió como referencia mundial de masa durante más de un siglo.",
++   "El 20 de mayo de 2019, el kilogramo se redefinió fijando la constante de Planck en exactamente 6,62607015 × 10⁻³⁴ julios·segundo, de modo que ahora puede materializarse en un laboratorio (mediante una balanza de Kibble) sin necesidad de referirse a ningún objeto físico."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta la definición del acre internacional de 1959 y la eliminación del pie de agrimensura en 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — El kilogramo (unidad básica del SI) — Definición oficial e historia desde la redefinición de 2019.",
++   "NIST — Kilogram: The Past — Historia del patrón del kilogramo desde la grave hasta el Prototipo Internacional del Kilogramo.",
++   "Folleto del SI, 9.ª edición (2019), Apéndice 2 — BIPM — Texto oficial de la definición del kilogramo basada en la constante de Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Acre internacional frente a acre de agrimensura de EE. UU."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/fr.json b/i18n-seo/fr.json
-index 9c414d5287d..22fe0c9c3b9 100644
+index 9c414d5287d..4288d8253da 100644
 --- a/i18n-seo/fr.json
 +++ b/i18n-seo/fr.json
 @@ -3,111 +3,138 @@
@@ -2944,15 +3115,54 @@ index 9c414d5287d..22fe0c9c3b9 100644
   },
   "currencyNames": {
    "USD": "Dollar américain",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Taux d'application de masse.",
    "liquid_application_rate": "Taux d'application liquide.",
    "yield_rate": "Taux de rendement agricole."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Mesure des terres agricoles, des ranchs et des propriétés rurales aux États-Unis",
++   "Annonces immobilières et zonage des parcelles de terrain",
++   "Rapports de foresterie et de gestion des terres"
++  ],
++  "kilogram": [
++   "Tarification et étiquetage des marchandises vendues au poids dans le commerce de détail et des matières premières",
++   "Calculs de dosage en médecine, notamment pour les prescriptions pédiatriques et fondées sur le poids",
++   "Spécifications structurelles et de matériaux dans l'ingénierie fondée sur le système métrique",
++   "Mesure scientifique de la masse en chimie, en physique et dans la recherche sur les matériaux"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "L'acre trouve son origine dans l'Angleterre médiévale comme mesure pratique de champ : la surface qu'un attelage de bœufs pouvait labourer en une journée, longue d'environ un furlong (660 pieds) sur une chaîne (66 pieds) de large, ce qui donne les 43 560 pieds carrés encore utilisés aujourd'hui.",
++   "Le statut d'Édouard Ier de 1305 a officialisé ce chiffre. En 1959, le même Accord international sur le yard et la livre qui a fixé la livre a également fixé l'acre international à exactement 4046,8564224 m², bien que les États-Unis aient conservé séparément un 'acre d'arpentage américain' légèrement différent pour certains registres fonciers historiques jusqu'à son abandon en 2023."
++  ],
++  "kilogram": [
++   "Le prédécesseur direct du kilogramme était la “grave”, définie par l'Académie des sciences française en 1793 comme la masse d'un décimètre cube d'eau à sa température de densité maximale. Comme “grave” évoquait le titre aristocratique de “graf”, le décret révolutionnaire français du 18 germinal an III (7 avril 1795) renomma le système : le gramme devint l'unité de référence, défini comme la masse d'un centimètre cube d'eau au point de fusion de la glace, et le kilogramme - mille grammes - reprit le rôle pratique de la grave.",
++   "Transformer cette définition fondée sur l'eau en un objet physique exigea un véritable travail expérimental : le chimiste Louis Lefèvre-Gineau fut chargé en 1795 de mesurer précisément le poids d'un décimètre cube d'eau, puis l'ancien joaillier royal Marc-Étienne Janety fabriqua un cylindre de platine incarnant cette masse mesurée. Déposé aux Archives nationales françaises en 1799, il devint connu sous le nom de Kilogramme des Archives.",
++   "La diffusion du système métrique fut inégale - Napoléon en restreignit brièvement l'usage -, mais la France le rendit obligatoire en 1840, et la Convention du Mètre de 1875 (signée par dix-sept nations, dont les États-Unis) établit le BIPM et un prototype international commun. Le Prototype international du kilogramme, en platine iridié, adopté en 1889 et surnommé “Le Grand K”, servit de référence mondiale de masse pendant plus d'un siècle.",
++   "Le 20 mai 2019, le kilogramme a été redéfini en fixant la constante de Planck à exactement 6,62607015 × 10⁻³⁴ joule-seconde, de sorte qu'il peut désormais être réalisé en laboratoire (au moyen d'une balance de Kibble) sans référence à un objet physique."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documente la définition de l'acre international de 1959 et l'abandon du pied d'arpentage en 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — Le kilogramme (unité de base du SI) — Définition officielle et histoire depuis la redéfinition de 2019.",
++   "NIST — Kilogram: The Past — Histoire de l'étalon du kilogramme, de la grave au Prototype international du kilogramme.",
++   "Brochure sur le SI, 9e édition (2019), Annexe 2 — BIPM — Texte officiel de la définition du kilogramme fondée sur la constante de Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Acre international par rapport à l'acre d'arpentage américain."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/hi.json b/i18n-seo/hi.json
-index 0e768217d49..e5858bc6f2b 100644
+index 0e768217d49..0916552e2fe 100644
 --- a/i18n-seo/hi.json
 +++ b/i18n-seo/hi.json
 @@ -3,111 +3,138 @@
@@ -3212,15 +3422,54 @@ index 0e768217d49..e5858bc6f2b 100644
   },
   "currencyNames": {
    "USD": "अमेरिकी डॉलर",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "द्रव्यमान प्रयोग दर।",
    "liquid_application_rate": "तरल प्रयोग दर।",
    "yield_rate": "कृषि उपज दर।"
++ },
++ "unitUsesToday": {
++  "acre": [
++   "अमेरिका में कृषि भूमि, फार्म और ग्रामीण संपत्ति के आकार का मापन",
++   "भूमि खंडों के लिए रियल एस्टेट लिस्टिंग और ज़ोनिंग",
++   "वानिकी और भूमि-प्रबंधन रिपोर्टिंग"
++  ],
++  "kilogram": [
++   "खुदरा और वस्तु व्यापार में वजन के अनुसार बेचे जाने वाले सामान का मूल्य निर्धारण और लेबलिंग",
++   "चिकित्सा में खुराक की गणना, विशेष रूप से बाल-चिकित्सा और वजन-आधारित नुस्खों के लिए",
++   "मीट्रिक-प्रणाली इंजीनियरिंग में संरचनात्मक और सामग्री विनिर्देश",
++   "रसायन विज्ञान, भौतिकी और सामग्री अनुसंधान में द्रव्यमान का वैज्ञानिक मापन"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "एकड़ की उत्पत्ति मध्यकालीन इंग्लैंड में एक व्यावहारिक खेत-मापन के रूप में हुई: वह क्षेत्रफल जिसे बैलों की एक जोड़ी एक दिन में जोत सकती थी, लगभग एक फर्लांग (660 फ़ुट) लंबा और एक चेन (66 फ़ुट) चौड़ा, जिससे आज भी प्रयोग होने वाला 43,560 वर्ग फ़ुट प्राप्त होता है।",
++   "एडवर्ड प्रथम के 1305 के क़ानून ने इस आँकड़े को औपचारिक रूप दिया। 1959 में, उसी अंतरराष्ट्रीय यार्ड और पाउंड समझौते ने, जिसने पाउंड को निर्धारित किया, अंतरराष्ट्रीय एकड़ को ठीक 4046.8564224 वर्ग मीटर पर भी निर्धारित किया, हालांकि अमेरिका ने कुछ पुराने भूमि अभिलेखों के लिए थोड़ा भिन्न 'अमेरिकी सर्वे एकड़' अलग से बनाए रखा जब तक कि इसे 2023 में समाप्त नहीं कर दिया गया।"
++  ],
++  "kilogram": [
++   "किलोग्राम का सीधा पूर्ववर्ती “ग्रेव” (grave) था, जिसे फ्रांसीसी विज्ञान अकादमी ने 1793 में अधिकतम घनत्व वाले तापमान पर एक घन डेसीमीटर जल के द्रव्यमान के रूप में परिभाषित किया था। चूँकि “ग्रेव” शब्द कुलीन उपाधि “ग्राफ” (graf) जैसा प्रतीत होता था, इसलिए क्रांतिकारी फ्रांस के 18 जर्मिनल, वर्ष III (7 अप्रैल 1795) के आदेश ने इस प्रणाली का नाम बदल दिया: ग्राम संदर्भ इकाई बन गया, जिसे बर्फ के गलनांक पर एक घन सेंटीमीटर जल के द्रव्यमान के रूप में परिभाषित किया गया, और किलोग्राम - अर्थात एक हज़ार ग्राम - ने ग्रेव की व्यावहारिक भूमिका ले ली।",
++   "जल-आधारित इस परिभाषा को एक भौतिक वस्तु में बदलने के लिए वास्तविक प्रायोगिक कार्य आवश्यक था: 1795 में रसायनज्ञ लुई लेफ़ेवर-जीनो को यह सटीक मापने का कार्य सौंपा गया कि एक घन डेसीमीटर जल का भार कितना होता है, और उसके बाद पूर्व शाही जौहरी मार्क-एतिएन जानेती ने उस मापे गए द्रव्यमान को मूर्त रूप देने के लिए प्लैटिनम का एक बेलन बनाया। 1799 में फ्रांसीसी राष्ट्रीय अभिलेखागार में जमा किया गया यह बेलन “किलोग्रामे देस आर्काइव्स” (Kilogramme des Archives) के नाम से जाना जाने लगा।",
++   "मीट्रिक प्रणाली का प्रसार असमान रूप से हुआ - नेपोलियन ने कुछ समय के लिए इसके उपयोग को सीमित कर दिया था - लेकिन फ्रांस ने 1840 में इसे अनिवार्य बना दिया, और 1875 के मीटर कन्वेंशन (जिस पर अमेरिका सहित सत्रह देशों ने हस्ताक्षर किए) ने BIPM और एक साझा अंतरराष्ट्रीय प्रोटोटाइप की स्थापना की। प्लैटिनम-इरिडियम से बना किलोग्राम का अंतरराष्ट्रीय प्रोटोटाइप, जिसे 1889 में अपनाया गया और जिसे “ले ग्रां के” (Le Grand K) उपनाम दिया गया, एक सदी से अधिक समय तक विश्व के द्रव्यमान संदर्भ के रूप में कार्य करता रहा।",
++   "20 मई 2019 को, प्लांक स्थिरांक को ठीक 6.62607015 × 10⁻³⁴ जूल-सेकंड पर निर्धारित करके किलोग्राम को पुनः परिभाषित किया गया, जिससे अब इसे किसी भौतिक वस्तु के संदर्भ के बिना प्रयोगशाला में (किब्बल तुला के माध्यम से) प्राप्त किया जा सकता है।"
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — 1959 की अंतरराष्ट्रीय एकड़ परिभाषा और 2022/2023 में सर्वे फ़ुट की समाप्ति का दस्तावेज़ीकरण करता है।"
++  ],
++  "kilogram": [
++   "BIPM — किलोग्राम (SI आधार इकाई) — 2019 के पुनर्परिभाषण के बाद से आधिकारिक परिभाषा और इतिहास।",
++   "NIST — Kilogram: The Past — ग्रेव से लेकर किलोग्राम के अंतरराष्ट्रीय प्रोटोटाइप तक किलोग्राम मानक का इतिहास।",
++   "SI ब्रोशर, 9वां संस्करण (2019), परिशिष्ट 2 — BIPM — प्लांक स्थिरांक पर आधारित किलोग्राम की परिभाषा का आधिकारिक पाठ।"
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "अंतरराष्ट्रीय एकड़ बनाम अमेरिकी सर्वे एकड़।"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/id.json b/i18n-seo/id.json
-index fb3a6648ddd..74086e52fdc 100644
+index fb3a6648ddd..0d0ca385d30 100644
 --- a/i18n-seo/id.json
 +++ b/i18n-seo/id.json
 @@ -3,111 +3,138 @@
@@ -3480,15 +3729,54 @@ index fb3a6648ddd..74086e52fdc 100644
   },
   "currencyNames": {
    "USD": "Dolar AS",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Laju aplikasi massa.",
    "liquid_application_rate": "Laju aplikasi cairan.",
    "yield_rate": "Laju hasil pertanian."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Mengukur lahan pertanian, peternakan, dan properti pedesaan di AS",
++   "Listing real estat dan zonasi untuk bidang tanah",
++   "Pelaporan kehutanan dan pengelolaan lahan"
++  ],
++  "kilogram": [
++   "Penetapan harga dan pelabelan barang yang dijual berdasarkan berat dalam perdagangan ritel dan komoditas",
++   "Perhitungan dosis dalam kedokteran, khususnya untuk resep pediatrik dan berbasis berat badan",
++   "Spesifikasi struktural dan material dalam rekayasa berbasis sistem metrik",
++   "Pengukuran ilmiah massa dalam kimia, fisika, dan penelitian material"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "Acre berasal dari Inggris abad pertengahan sebagai satuan pengukuran ladang praktis: luas area yang dapat dibajak oleh sepasang lembu dalam satu hari, kira-kira sepanjang satu furlong (660 kaki) dan selebar satu chain (66 kaki), sehingga menghasilkan 43.560 kaki persegi yang masih digunakan hingga saat ini.",
++   "Statuta Edward I tahun 1305 meresmikan angka ini. Pada tahun 1959, Perjanjian Yard dan Pound Internasional yang sama yang menetapkan pound juga menetapkan acre internasional tepat pada 4046,8564224 m², meskipun AS secara terpisah mempertahankan 'acre survei AS' yang sedikit berbeda untuk beberapa catatan tanah lama hingga dihapuskan pada tahun 2023."
++  ],
++  "kilogram": [
++   "Pendahulu langsung kilogram adalah “grave”, yang didefinisikan oleh Akademi Ilmu Pengetahuan Prancis pada 1793 sebagai massa satu desimeter kubik air pada suhu kepadatan maksimumnya. Karena “grave” terdengar seperti gelar bangsawan “graf”, dekrit revolusioner Prancis tanggal 18 Germinal, Tahun III (7 April 1795) mengganti nama sistem tersebut: gram menjadi satuan acuan, didefinisikan sebagai massa satu sentimeter kubik air pada titik leleh es, dan kilogram - seribu gram - mengambil alih peran praktis grave.",
++   "Mengubah definisi berbasis air itu menjadi benda fisik memerlukan kerja eksperimental yang nyata: kimiawan Louis Lefèvre-Gineau ditugaskan pada 1795 untuk mengukur secara presisi berapa berat satu desimeter kubik air, dan mantan perhiasan kerajaan Marc-Étienne Janety kemudian membuat silinder platinum untuk mewujudkan massa yang terukur itu. Disimpan di Arsip Nasional Prancis pada 1799, benda ini dikenal sebagai Kilogramme des Archives.",
++   "Penyebaran sistem metrik berlangsung tidak merata - Napoleon sempat membatasi penggunaannya - tetapi Prancis mewajibkannya pada 1840, dan Konvensi Meter 1875 (ditandatangani oleh tujuh belas negara termasuk AS) membentuk BIPM dan prototipe internasional bersama. Prototipe Internasional Kilogram berbahan platina-iridium, diadopsi pada 1889 dan dijuluki “Le Grand K”, menjadi acuan massa dunia selama lebih dari satu abad.",
++   "Pada 20 Mei 2019, kilogram didefinisikan ulang dengan menetapkan konstanta Planck secara pasti pada 6,62607015 × 10⁻³⁴ joule-detik, sehingga kini dapat direalisasikan di laboratorium (melalui neraca Kibble) tanpa mengacu pada benda fisik apa pun."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Mendokumentasikan definisi acre internasional tahun 1959 dan penghapusan kaki survei pada 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — Kilogram (satuan dasar SI) — Definisi resmi dan sejarah sejak redefinisi 2019.",
++   "NIST — Kilogram: The Past — Sejarah standar kilogram dari grave hingga Prototipe Internasional Kilogram.",
++   "Brosur SI, edisi ke-9 (2019), Lampiran 2 — BIPM — Teks resmi definisi kilogram berbasis konstanta Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Acre internasional vs acre survei AS."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/it.json b/i18n-seo/it.json
-index 385ace59804..e5188156902 100644
+index 385ace59804..18d2585b6c0 100644
 --- a/i18n-seo/it.json
 +++ b/i18n-seo/it.json
 @@ -3,111 +3,138 @@
@@ -3748,15 +4036,54 @@ index 385ace59804..e5188156902 100644
   },
   "currencyNames": {
    "USD": "Dollaro statunitense",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Tasso di applicazione di massa.",
    "liquid_application_rate": "Tasso di applicazione liquida.",
    "yield_rate": "Tasso di resa agricola."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Misurazione di terreni agricoli, ranch e proprietà rurali negli Stati Uniti",
++   "Annunci immobiliari e zonizzazione dei lotti di terreno",
++   "Rendicontazione forestale e di gestione del territorio"
++  ],
++  "kilogram": [
++   "Determinazione dei prezzi ed etichettatura delle merci vendute a peso nel commercio al dettaglio e delle materie prime",
++   "Calcoli di dosaggio in medicina, in particolare per le prescrizioni pediatriche e basate sul peso",
++   "Specifiche strutturali e dei materiali nell'ingegneria basata sul sistema metrico",
++   "Misurazione scientifica della massa in chimica, fisica e ricerca sui materiali"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "L'acro ha origine nell'Inghilterra medievale come misura pratica di campo: l'area che una coppia di buoi poteva arare in un giorno, lunga circa un furlong (660 piedi) e larga una chain (66 piedi), il che dà i 43.560 piedi quadrati ancora usati oggi.",
++   "Lo statuto di Edoardo I del 1305 formalizzò questa cifra. Nel 1959, lo stesso Accordo internazionale su iarda e libbra che fissò la libbra fissò anche l'acro internazionale a esattamente 4046,8564224 m², sebbene gli USA abbiano mantenuto separatamente un 'acro di rilevamento statunitense' leggermente diverso per alcuni registri catastali storici fino alla sua dismissione nel 2023."
++  ],
++  "kilogram": [
++   "Il diretto predecessore del chilogrammo fu la “grave”, definita dall'Accademia delle Scienze francese nel 1793 come la massa di un decimetro cubo d'acqua alla sua temperatura di densità massima. Poiché “grave” richiamava il titolo aristocratico “graf”, il decreto rivoluzionario francese del 18 germinale dell'anno III (7 aprile 1795) rinominò il sistema: il grammo divenne l'unità di riferimento, definito come la massa di un centimetro cubo d'acqua al punto di fusione del ghiaccio, e il chilogrammo - mille grammi - assunse il ruolo pratico della grave.",
++   "Trasformare quella definizione basata sull'acqua in un oggetto fisico richiese un vero lavoro sperimentale: nel 1795 al chimico Louis Lefèvre-Gineau fu affidato il compito di misurare con precisione quanto pesasse un decimetro cubo d'acqua, e l'ex gioielliere reale Marc-Étienne Janety fabbricò poi un cilindro di platino per incarnare quella massa misurata. Depositato negli Archivi Nazionali francesi nel 1799, divenne noto come il Kilogramme des Archives.",
++   "La diffusione del sistema metrico fu irregolare - Napoleone ne limitò brevemente l'uso - ma la Francia lo rese obbligatorio nel 1840, e la Convenzione del Metro del 1875 (firmata da diciassette nazioni, tra cui gli Stati Uniti) istituì il BIPM e un prototipo internazionale condiviso. Il Prototipo Internazionale del Chilogrammo, in platino-iridio, adottato nel 1889 e soprannominato “Le Grand K”, servì come riferimento mondiale della massa per oltre un secolo.",
++   "Il 20 maggio 2019, il chilogrammo è stato ridefinito fissando la costante di Planck a esattamente 6,62607015 × 10⁻³⁴ joule al secondo, cosicché ora può essere realizzato in laboratorio (tramite una bilancia di Kibble) senza fare riferimento ad alcun oggetto fisico."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta la definizione dell'acro internazionale del 1959 e il ritiro del piede di rilevamento nel 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — Il chilogrammo (unità di base del SI) — Definizione ufficiale e storia dalla ridefinizione del 2019.",
++   "NIST — Kilogram: The Past — Storia del campione del chilogrammo dalla grave al Prototipo Internazionale del Chilogrammo.",
++   "Opuscolo del SI, 9ª edizione (2019), Appendice 2 — BIPM — Testo ufficiale della definizione del chilogrammo basata sulla costante di Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Acro internazionale rispetto all'acro di rilevamento statunitense."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ja.json b/i18n-seo/ja.json
-index dd70c06e6f2..6af0baeb32c 100644
+index dd70c06e6f2..8a616cc4a4f 100644
 --- a/i18n-seo/ja.json
 +++ b/i18n-seo/ja.json
 @@ -3,111 +3,138 @@
@@ -4016,15 +4343,54 @@ index dd70c06e6f2..6af0baeb32c 100644
   },
   "currencyNames": {
    "USD": "米ドル",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "質量散布率。",
    "liquid_application_rate": "液体散布率。",
    "yield_rate": "農業収量率。"
++ },
++ "unitUsesToday": {
++  "acre": [
++   "米国における農地、牧場、農村部の不動産面積の測定",
++   "土地区画の不動産広告とゾーニング",
++   "林業および土地管理の報告"
++  ],
++  "kilogram": [
++   "小売業や商品取引において重量で販売される商品の価格設定とラベル表示",
++   "医療における投与量の計算、特に小児向けや体重に基づく処方",
++   "メートル法に基づく工学における構造・材料仕様の決定",
++   "化学・物理学・材料研究における質量の科学的測定"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "エーカーは中世イングランドで実用的な畑の測定単位として生まれた。雄牛のひと組が一日で耕せる面積で、長さ約1ファーロング（660フィート）、幅1チェーン（66フィート）であり、これが今日も使われる43,560平方フィートとなる。",
++   "エドワード1世の1305年の法令によりこの数値が正式化された。1959年、ポンドを定めたのと同じ国際ヤード・ポンド協定により、国際エーカーも正確に4046.8564224平方メートルと定められたが、米国は一部の旧来の土地記録のためにわずかに異なる「米国測量エーカー」を別途維持し、2023年に廃止された。"
++  ],
++  "kilogram": [
++   "キログラムの直接の前身は“グラーヴ(grave)”であり、フランス科学アカデミーが1793年に、最大密度となる温度における1立方デシメートルの水の質量として定義した。“グラーヴ”が貴族の称号“グラーフ(graf)”を連想させたため、革命期フランスの共和暦3年ジェルミナル18日(1795年4月7日)の法令によって体系が改称された。グラムが基準単位となり、氷の融点における1立方センチメートルの水の質量として定義され、キログラム(グラムの1000倍)がグラーヴの実用的な役割を引き継いだ。",
++   "この水に基づく定義を物理的な物体に落とし込むには、実際の実験作業が必要だった。1795年、化学者ルイ・ルフェーヴル=ジノーが1立方デシメートルの水の重さを正確に測定する任務を負い、その後、元王室宝石商のマルク=エティエンヌ・ジャネティがその測定質量を具現化する白金製の円柱を製作した。1799年にフランス国立文書館に寄託されたこの円柱は“アルシーブのキログラム(Kilogramme des Archives)”として知られるようになった。",
++   "メートル法の普及は一様ではなく、ナポレオンが一時その使用を制限したこともあったが、フランスは1840年にこれを義務化し、1875年のメートル条約(アメリカを含む17か国が署名)によってBIPM(国際度量衡局)と共通の国際原器が設立された。1889年に採用され“ル・グラン・カー(Le Grand K)”の愛称で呼ばれた白金イリジウム製の国際キログラム原器は、1世紀以上にわたり世界の質量の基準として用いられた。",
++   "2019年5月20日、プランク定数を正確に6.62607015×10⁻³⁴ジュール秒に固定することでキログラムが再定義され、これにより現在では(キブル天秤を用いて)いかなる物理的な物体を参照することなく実験室で実現できるようになった。"
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — 1959年の国際エーカーの定義と2022/2023年の測量フィート廃止について記載。"
++  ],
++  "kilogram": [
++   "BIPM(国際度量衡局) — キログラム(SI基本単位) — 2019年の再定義以降の公式な定義と歴史。",
++   "NIST — Kilogram: The Past — グラーヴから国際キログラム原器に至るキログラム標準の歴史。",
++   "SIブロシュール第9版(2019年)付録2 — BIPM — プランク定数に基づくキログラムの定義の公式文書。"
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "国際エーカー 対 米国測量エーカー。"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ko.json b/i18n-seo/ko.json
-index 3e5e3468ea5..8d8172a877c 100644
+index 3e5e3468ea5..500d0823a23 100644
 --- a/i18n-seo/ko.json
 +++ b/i18n-seo/ko.json
 @@ -3,111 +3,138 @@
@@ -4284,15 +4650,54 @@ index 3e5e3468ea5..8d8172a877c 100644
   },
   "currencyNames": {
    "USD": "미국 달러",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "질량 살포율.",
    "liquid_application_rate": "액체 살포율.",
    "yield_rate": "농업 수확률."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "미국에서 농지, 목장, 농촌 부동산 면적 측정",
++   "토지 구획에 대한 부동산 매물 등록 및 용도지역 지정",
++   "임업 및 토지 관리 보고"
++  ],
++  "kilogram": [
++   "소매 및 원자재 거래에서 무게로 판매되는 상품의 가격 책정 및 라벨 표시",
++   "의료 분야에서의 투여량 계산, 특히 소아용 및 체중 기반 처방",
++   "미터법 기반 공학에서의 구조 및 재료 사양 결정",
++   "화학, 물리학, 재료 연구 전반에 걸친 질량의 과학적 측정"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "에이커는 중세 잉글랜드에서 실용적인 농지 측정 단위로 시작되었다. 황소 한 쌍이 하루에 갈 수 있는 면적으로, 길이는 약 1펄롱(660피트), 너비는 1체인(66피트)이며, 이는 오늘날에도 사용되는 43,560제곱피트가 된다.",
++   "에드워드 1세의 1305년 법령이 이 수치를 공식화했다. 1959년, 파운드를 정한 것과 같은 국제 야드-파운드 협정이 국제 에이커도 정확히 4046.8564224제곱미터로 정했지만, 미국은 일부 오래된 토지 기록을 위해 약간 다른 '미국 측량 에이커'를 별도로 유지하다가 2023년에 폐지했다."
++  ],
++  "kilogram": [
++   "킬로그램의 직접적인 전신은 “그라브(grave)”로, 프랑스 과학 아카데미가 1793년에 최대 밀도 온도에서의 물 1세제곱데시미터의 질량으로 정의했다. “그라브”가 귀족 칭호인 “그라프(graf)”를 연상시켰기 때문에, 혁명기 프랑스의 공화력 3년 제르미날 18일(1795년 4월 7일) 법령은 이 체계의 명칭을 바꾸었다. 그램이 기준 단위가 되어 얼음의 녹는점에서의 물 1세제곱센티미터의 질량으로 정의되었고, 킬로그램(그램의 1000배)이 그라브의 실용적 역할을 대신하게 되었다.",
++   "물을 기준으로 한 이 정의를 실제 물체로 구현하려면 실질적인 실험 작업이 필요했다. 1795년 화학자 루이 르페브르-지노가 물 1세제곱데시미터의 무게를 정밀하게 측정하는 임무를 맡았고, 이후 전직 왕실 보석세공사였던 마르크-에티엔 자네티가 측정된 질량을 구현한 백금 원기둥을 제작했다. 1799년 프랑스 국립문서보관소에 보관된 이 원기둥은 “아르카이브의 킬로그램(Kilogramme des Archives)”으로 알려지게 되었다.",
++   "미터법의 확산은 고르지 않았다 - 나폴레옹이 한때 그 사용을 제한하기도 했다 - 그러나 프랑스는 1840년에 이를 의무화했고, 1875년 미터협약(미국을 포함한 17개국이 서명)은 BIPM(국제도량형국)과 공동의 국제 원기를 설립했다. 1889년에 채택되어 “르 그랑 케이(Le Grand K)”라는 별칭으로 불린 백금-이리듐 합금의 국제 킬로그램 원기는 한 세기 넘게 세계 질량의 기준으로 사용되었다.",
++   "2019년 5월 20일, 플랑크 상수를 정확히 6.62607015 × 10⁻³⁴ 줄초로 고정함으로써 킬로그램이 재정의되었고, 이에 따라 이제는 어떠한 물리적 물체를 참조하지 않고도 실험실에서(키블 저울을 통해) 구현할 수 있게 되었다."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — 1959년 국제 에이커 정의와 2022/2023년 측량 피트 폐지를 기록함."
++  ],
++  "kilogram": [
++   "BIPM(국제도량형국) — 킬로그램(SI 기본 단위) — 2019년 재정의 이후의 공식 정의와 역사.",
++   "NIST — Kilogram: The Past — 그라브에서 국제 킬로그램 원기에 이르는 킬로그램 표준의 역사.",
++   "SI 브로슈어 제9판(2019년) 부록 2 — BIPM — 플랑크 상수에 기반한 킬로그램 정의의 공식 문서."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "국제 에이커 대 미국 측량 에이커."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/pt.json b/i18n-seo/pt.json
-index b2f234b6835..da9ae94be34 100644
+index b2f234b6835..4b90ab311e6 100644
 --- a/i18n-seo/pt.json
 +++ b/i18n-seo/pt.json
 @@ -3,111 +3,138 @@
@@ -4552,15 +4957,54 @@ index b2f234b6835..da9ae94be34 100644
   },
   "currencyNames": {
    "USD": "Dólar americano",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Taxa de aplicação de massa.",
    "liquid_application_rate": "Taxa de aplicação líquida.",
    "yield_rate": "Taxa de rendimento agrícola."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Medição de terras agrícolas, fazendas e propriedades rurais nos EUA",
++   "Anúncios imobiliários e zoneamento de lotes de terra",
++   "Relatórios de silvicultura e gestão de terras"
++  ],
++  "kilogram": [
++   "Precificação e rotulagem de mercadorias vendidas por peso no varejo e no comércio de commodities",
++   "Cálculos de dosagem em medicina, especialmente em prescrições pediátricas e baseadas em peso",
++   "Especificação estrutural e de materiais na engenharia baseada no sistema métrico",
++   "Medição científica de massa em química, física e pesquisa de materiais"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "O acre teve origem na Inglaterra medieval como uma medida prática de campo: a área que uma junta de bois conseguia arar em um dia, com cerca de um furlong (660 pés) de comprimento por uma chain (66 pés) de largura, resultando nos 43.560 pés quadrados ainda usados hoje.",
++   "O estatuto de Eduardo I de 1305 formalizou esse valor. Em 1959, o mesmo Acordo Internacional de Jarda e Libra que fixou a libra também fixou o acre internacional em exatamente 4046,8564224 m², embora os EUA tenham mantido separadamente um 'acre de agrimensura dos EUA' ligeiramente diferente para alguns registros de terras antigos até ser eliminado em 2023."
++  ],
++  "kilogram": [
++   "O predecessor direto do quilograma foi a “grave”, definida pela Academia de Ciências da França em 1793 como a massa de um decímetro cúbico de água na sua temperatura de densidade máxima. Como “grave” lembrava o título aristocrático “graf”, o decreto revolucionário francês de 18 de germinal do ano III (7 de abril de 1795) renomeou o sistema: o grama passou a ser a unidade de referência, definido como a massa de um centímetro cúbico de água no ponto de fusão do gelo, e o quilograma - mil gramas - assumiu o papel prático da grave.",
++   "Transformar essa definição baseada em água em um objeto físico exigiu trabalho experimental real: em 1795, o químico Louis Lefèvre-Gineau foi encarregado de medir com precisão quanto pesava um decímetro cúbico de água, e o antigo joalheiro real Marc-Étienne Janety fabricou então um cilindro de platina para materializar essa massa medida. Depositado nos Arquivos Nacionais da França em 1799, passou a ser conhecido como o Kilogramme des Archives.",
++   "A difusão do sistema métrico foi desigual - Napoleão restringiu brevemente seu uso -, mas a França o tornou obrigatório em 1840, e a Convenção do Metro de 1875 (assinada por dezessete nações, incluindo os EUA) estabeleceu o BIPM e um protótipo internacional compartilhado. O Protótipo Internacional do Quilograma, de platina-irídio, adotado em 1889 e apelidado de “Le Grand K”, serviu como referência mundial de massa por mais de um século.",
++   "Em 20 de maio de 2019, o quilograma foi redefinido fixando a constante de Planck em exatamente 6,62607015 × 10⁻³⁴ joule-segundo, de modo que agora pode ser realizado em laboratório (por meio de uma balança de Kibble) sem referência a nenhum objeto físico."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta a definição do acre internacional de 1959 e a eliminação do pé de agrimensura em 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — O quilograma (unidade de base do SI) — Definição oficial e histórico desde a redefinição de 2019.",
++   "NIST — Kilogram: The Past — História do padrão do quilograma, da grave ao Protótipo Internacional do Quilograma.",
++   "Brochura do SI, 9ª edição (2019), Apêndice 2 — BIPM — Texto oficial da definição do quilograma baseada na constante de Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Acre internacional em comparação com o acre de agrimensura dos EUA."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/so.json b/i18n-seo/so.json
-index 5d1dd740fe4..42b4c047513 100644
+index 5d1dd740fe4..7d43fe9cf33 100644
 --- a/i18n-seo/so.json
 +++ b/i18n-seo/so.json
 @@ -3,111 +3,138 @@
@@ -4820,15 +5264,54 @@ index 5d1dd740fe4..42b4c047513 100644
   },
   "currencyNames": {
    "USD": "Doolar Mareykan",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Heerka isticmaalka cufka.",
    "liquid_application_rate": "Heerka isticmaalka dareeraha.",
    "yield_rate": "Heerka wax-soo-saarka beeraha."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "Cabbiraadda dhulka beeraha, dhulka xoolaha, iyo hantida miyiga ee Mareykanka",
++   "Liisaska guryaha iyo qorshaynta dhulka ee qaybaha dhulka",
++   "Warbixinnada kaynta iyo maaraynta dhulka"
++  ],
++  "kilogram": [
++   "Qiimaynta iyo summadaynta alaabta lagu iibiyo miisaanka ganacsiga tafaariiqda iyo alaabta",
++   "Xisaabinta qiyaasta daawooyinka caafimaadka, gaar ahaan qoraallada caafimaadka carruurta iyo kuwa ku salaysan miisaanka",
++   "Qeexitaanka dhismaha iyo alaabta ee injineernimada ku salaysan nidaamka mitirka",
++   "Qiyaasta sayniska ee cufnaanta kimikada, fiisigiska, iyo cilmi-baarista alaabta"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "Eekerku wuxuu ka soo jeedaa dhulka Ingriiska dhexe sida cabbir dhul oo waxtar leh: dhul ay laba dibi ay geeddi karaan hal maalin, oo dhererkiisu yahay ku dhawaad hal furlong (660 fuudh) balaadhkiisuna yahay hal chain (66 fuudh), taasoo bixisa 43,560 fuudh oo laba jibaaran ah oo wali la isticmaalo maanta.",
++   "Sharciga Edward I ee 1305 ayaa rasmi ka dhigay tirakan. Sannadkii 1959, isla Heshiiskii Caalamiga ah ee Yaadka iyo Rodolka ee go'aamiyay rodolka ayaa sidoo kale go'aamiyay eekerka caalamiga ah oo ah 4046.8564224 mitir laba jibaaran, in kastoo Mareykanku uu si gooni ah u sii haystay 'eekerka sahanka Mareykanka' oo yar ku duwan diiwaannada dhulka qaarkood ilaa la joojiyay 2023."
++  ],
++  "kilogram": [
++   "Kii ugu horreeyay ee horseeday kiilogaraamka wuxuu ahaa “grave”, oo Akadeemiyada Sayniska ee Faransiiska ay 1793 ku qeexday cufnaanta hal desimitir jibbaaran oo biyo ah oo ku jira heerkuulka cufnaanta ugu badan. Sababtoo ah erayga “grave” wuxuu la mid ahaa magaca sharafta leh ee “graf”, amarkii kacaanka Faransiiska ee 18-kii Germinal, Sanadka III (7-kii Abriil 1795) ayaa nidaamka magac cusub u baxshay: garaamku wuxuu noqday cabbirka tixraaca, oo lagu qeexay cufnaanta hal sentimitir jibbaaran oo biyo ah oo ku jira heerka barafku ku dhalaalo, kiilogaraamkuna - oo ah kun garaam - wuxuu qaatay doorkii camalka ahaa ee “grave”.",
++   "Beddelidda qeexitaankaas ku saleysan biyaha si loo dhigo shay dhab ah waxay u baahnayd shaqo tijaabo ah oo dhab ah: kiimikaystihii Louis Lefèvre-Gineau ayaa 1795 loo xilsaaray inuu si sax ah u qiyaaso miisaanka hal desimitir jibbaaran oo biyo ah, dabadeedna dahabkaristihii boqortooyada hore ee Marc-Étienne Janety ayaa sameeyay silsilad bareeti ah oo matalaysa cufnaantaas la qiyaasay. Waxaa lagu kaydiyay Kaydka Qaranka Faransiiska 1799, waxaana loo yaqaanay Kilogramme des Archives.",
++   "Fideynta nidaamka mitirka si siman uma bixin - Napoleon wuxuu wakhti gaaban xaddiday isticmaalkiisa - laakiin Faransiisku wuxuu ka dhigay mid waajib ah 1840, Heshiiska Mitirka ee 1875 (oo ay saxeexeen toddoba iyo toban dal oo ay ku jiraan Mareykanka) ayaana aasaasay BIPM iyo qaab caalami ah oo la wadaago. Qaabka Caalamiga ah ee Kiilogaraamka, oo laga sameeyay biraha baladhiyeem-iridiyeem, oo la aqbalay 1889 loona bixiyay naanays “Le Grand K”, ayaa in ka badan boqol sano u ahaa tixraaca cufnaanta caalamka.",
++   "20-kii Maajo 2019, kiilogaraamka ayaa dib loo qeexay iyadoo la go'aamiyay joogtaynta Planck oo ah 6.62607015 × 10⁻³⁴ joule-ilbiriqsi, taasoo hadda suurtagelinaysa in laga sameeyo shaybaar (adoo isticmaalaya miisaanka Kibble) iyada oo aan loo baahnayn shay dhab ah oo la tixraaco."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — Ku qeexaysa qeexitaanka eekerka caalamiga ah ee 1959 iyo joojinta fuudhka sahanka 2022/2023."
++  ],
++  "kilogram": [
++   "BIPM — Kiilogaraamka (cabbirka aasaasiga ah ee SI) — Qeexitaanka rasmiga ah iyo taariikhdiisa tan iyo dib-u-qeexitaankii 2019.",
++   "NIST — Kilogram: The Past — Taariikhda cabbirka kiilogaraamka laga bilaabo grave ilaa Qaabka Caalamiga ah ee Kiilogaraamka.",
++   "Buug-yaraha SI, daabacaadda 9-aad (2019), Lifaaqa 2 — BIPM — Qoraalka rasmiga ah ee qeexitaanka kiilogaraamka ee ku salaysan joogtaynta Planck."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Eeker caalami ah iyo eekerka sahanka Mareykanka."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/tr.json b/i18n-seo/tr.json
-index 64d9c84e7a0..174b53fdb96 100644
+index 64d9c84e7a0..e94e854a881 100644
 --- a/i18n-seo/tr.json
 +++ b/i18n-seo/tr.json
 @@ -3,111 +3,138 @@
@@ -5088,15 +5571,54 @@ index 64d9c84e7a0..174b53fdb96 100644
   },
   "currencyNames": {
    "USD": "ABD Doları",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "Kütle uygulama oranı.",
    "liquid_application_rate": "Sıvı uygulama oranı.",
    "yield_rate": "Tarımsal verim oranı."
++ },
++ "unitUsesToday": {
++  "acre": [
++   "ABD'de tarım arazisi, çiftlik ve kırsal mülk büyüklüğünün ölçülmesi",
++   "Arazi parselleri için emlak ilanları ve imar planlaması",
++   "Ormancılık ve arazi yönetimi raporlaması"
++  ],
++  "kilogram": [
++   "Perakende ve emtia ticaretinde ağırlığa göre satılan malların fiyatlandırılması ve etiketlenmesi",
++   "Tıpta, özellikle pediatrik ve ağırlığa dayalı reçetelerde doz hesaplamaları",
++   "Metrik sisteme dayalı mühendislikte yapısal ve malzeme spesifikasyonu",
++   "Kimya, fizik ve malzeme araştırmalarında bilimsel kütle ölçümü"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "Dönüm, ortaçağ İngiltere'sinde pratik bir tarla ölçüsü olarak ortaya çıktı: bir çift öküzün bir günde sürebileceği alan, yaklaşık bir furlong (660 fit) uzunluğunda ve bir chain (66 fit) genişliğinde olup, günümüzde hâlâ kullanılan 43.560 kare fit'i verir.",
++   "I. Edward'ın 1305 yasası bu rakamı resmileştirdi. 1959'da, libreyi sabitleyen aynı Uluslararası Yarda ve Libre Anlaşması, uluslararası dönümü de tam olarak 4046,8564224 m² olarak sabitledi; ancak ABD, bazı eski arazi kayıtları için hafifçe farklı olan 'ABD survey dönümünü' 2023'te kaldırılana kadar ayrıca sürdürdü."
++  ],
++  "kilogram": [
++   "Kilogramın doğrudan öncülü, Fransız Bilimler Akademisi'nin 1793'te maksimum yoğunluk sıcaklığında bir kübik desimetre suyun kütlesi olarak tanımladığı “grave” idi. “Grave” asil unvanı “graf”ı çağrıştırdığından, devrimci Fransa'nın 18 Germinal Yıl III (7 Nisan 1795) tarihli kararnamesi sistemi yeniden adlandırdı: gram, buzun erime noktasındaki bir kübik santimetre suyun kütlesi olarak tanımlanan referans birim hâline geldi ve kilogram - bin gram - grave'in pratik rolünü devraldı.",
++   "Bu suya dayalı tanımı fiziksel bir nesneye dönüştürmek gerçek deneysel çalışma gerektirdi: kimyager Louis Lefèvre-Gineau, 1795'te bir kübik desimetre suyun ağırlığını hassas şekilde ölçmekle görevlendirildi ve eski kraliyet kuyumcusu Marc-Étienne Janety, ardından bu ölçülen kütleyi somutlaştıran bir platin silindir üretti. 1799'da Fransız Ulusal Arşivi'ne bırakılan bu silindir, Kilogramme des Archives olarak tanınır hâle geldi.",
++   "Metrik sistemin yayılması düzensiz seyretti - Napolyon bir süre kullanımını kısıtladı - ancak Fransa 1840'ta bunu zorunlu kıldı ve ABD dâhil on yedi ulusun imzaladığı 1875 Metre Sözleşmesi, BIPM'i ve ortak bir uluslararası prototipi kurdu. 1889'da kabul edilen ve “Le Grand K” lakabıyla anılan platin-iridyum Uluslararası Kilogram Prototipi, bir asırdan uzun süre dünyanın kütle referansı olarak hizmet verdi.",
++   "20 Mayıs 2019'da, Planck sabiti tam olarak 6,62607015 × 10⁻³⁴ jul-saniye olarak sabitlenerek kilogram yeniden tanımlandı; böylece artık herhangi bir fiziksel nesneye başvurmadan laboratuvarda (bir Kibble terazisi aracılığıyla) gerçekleştirilebiliyor."
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — 1959 uluslararası dönüm tanımını ve 2022/2023 survey ayağının kaldırılmasını belgeler."
++  ],
++  "kilogram": [
++   "BIPM — Kilogram (SI temel birimi) — 2019 yeniden tanımından bu yana resmî tanım ve tarihçe.",
++   "NIST — Kilogram: The Past — Grave'den Uluslararası Kilogram Prototipine kadar kilogram standardının tarihi.",
++   "SI Broşürü, 9. baskı (2019), Ek 2 — BIPM — Planck sabitine dayalı kilogram tanımının resmî metni."
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "Uluslararası dönüm (acre) karşı ABD survey dönümü."
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/zh.json b/i18n-seo/zh.json
-index 5fc03334d09..99ba578a5e3 100644
+index 5fc03334d09..6bf1c8f4704 100644
 --- a/i18n-seo/zh.json
 +++ b/i18n-seo/zh.json
 @@ -3,111 +3,138 @@
@@ -5356,9 +5878,48 @@ index 5fc03334d09..99ba578a5e3 100644
   },
   "currencyNames": {
    "USD": "美元",
-@@ -741,4 +841,4 @@
+@@ -740,5 +840,43 @@
+   "mass_application_rate": "施用质量速率。",
    "liquid_application_rate": "施用液体速率。",
    "yield_rate": "农业产量速率。"
++ },
++ "unitUsesToday": {
++  "acre": [
++   "测量美国的农田、牧场和农村地产面积",
++   "地块的房地产挂牌和分区规划",
++   "林业和土地管理报告"
++  ],
++  "kilogram": [
++   "在零售和大宗商品贸易中按重量销售商品的定价与标注",
++   "医学中的剂量计算,尤其是儿科及按体重计算的处方",
++   "公制工程中的结构和材料规格制定",
++   "化学、物理学和材料研究中的质量科学测量"
++  ]
++ },
++ "unitHistory": {
++  "acre": [
++   "英亩起源于中世纪英格兰的一种实用田地测量方式：即一对牛一天能耕种的面积，长约1弗隆（660英尺），宽约1链（66英尺），由此得出至今仍在使用的43,560平方英尺。",
++   "爱德华一世1305年的法令使这一数值正式化。1959年，确定磅的同一份《国际码磅协定》也将国际英亩精确定为4046.8564224平方米，不过美国为部分历史地籍记录单独保留了略有不同的“美国测量英亩”，直至2023年才废止。"
++  ],
++  "kilogram": [
++   "千克的直接前身是“格拉夫”(grave),法国科学院于1793年将其定义为在密度最大时的温度下1立方分米水的质量。由于“grave”一词与贵族头衔“graf”谐音,法国大革命时期共和三年芽月18日(1795年4月7日)的法令重新命名了该体系:克成为基准单位,定义为在冰的熔点下1立方厘米水的质量,而千克(即1000克)则取代了格拉夫的实际作用。",
++   "要将这一以水为基础的定义转化为实物,需要真正的实验工作:1795年,化学家路易·勒费夫尔-吉诺被委派精确测定1立方分米水的重量,随后前王室珠宝匠马克-艾蒂安·雅内蒂据此制作了一个铂质圆柱体来体现这一测得的质量。1799年,该圆柱体被存放于法国国家档案馆,因此被称为“档案千克”(Kilogramme des Archives)。",
++   "公制系统的推广并不均衡——拿破仑曾一度限制其使用——但法国于1840年将其定为强制标准,1875年的《米制公约》(由包括美国在内的十七个国家签署)则建立了国际计量局(BIPM)和一件共同的国际原器。这件采用铂铱合金制成、1889年被采用并绰号“大K”(Le Grand K)的国际千克原器,在一个多世纪的时间里一直是全世界的质量基准。",
++   "2019年5月20日,通过将普朗克常数精确固定为6.62607015 × 10⁻³⁴焦耳秒,千克被重新定义,如今已可在实验室中(通过基布尔天平)实现,而无需参照任何实物。"
++  ]
++ },
++ "unitSources": {
++  "acre": [
++   "NIST — US Survey Foot: Revised Unit Conversion Factors — 记录了1959年国际英亩定义及2022/2023年测量英尺的废止。"
++  ],
++  "kilogram": [
++   "BIPM(国际计量局) — 千克(SI基本单位) — 2019年重新定义以来的官方定义与历史。",
++   "NIST——Kilogram: The Past——从格拉夫到国际千克原器的千克标准历史。",
++   "《国际单位制手册》第9版(2019年)附录2——BIPM——基于普朗克常数的千克定义官方文本。"
++  ]
++ },
++ "unitDistinctionLabel": {
++  "international acre vs. us survey acre": "国际英亩 对比 美国测量英亩。"
   }
 -}
 \ No newline at end of file

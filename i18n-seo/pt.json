@@ -840,5 +840,43 @@
   "mass_application_rate": "Taxa de aplicação de massa.",
   "liquid_application_rate": "Taxa de aplicação líquida.",
   "yield_rate": "Taxa de rendimento agrícola."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Medição de terras agrícolas, fazendas e propriedades rurais nos EUA",
+   "Anúncios imobiliários e zoneamento de lotes de terra",
+   "Relatórios de silvicultura e gestão de terras"
+  ],
+  "kilogram": [
+   "Precificação e rotulagem de mercadorias vendidas por peso no varejo e no comércio de commodities",
+   "Cálculos de dosagem em medicina, especialmente em prescrições pediátricas e baseadas em peso",
+   "Especificação estrutural e de materiais na engenharia baseada no sistema métrico",
+   "Medição científica de massa em química, física e pesquisa de materiais"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "O acre teve origem na Inglaterra medieval como uma medida prática de campo: a área que uma junta de bois conseguia arar em um dia, com cerca de um furlong (660 pés) de comprimento por uma chain (66 pés) de largura, resultando nos 43.560 pés quadrados ainda usados hoje.",
+   "O estatuto de Eduardo I de 1305 formalizou esse valor. Em 1959, o mesmo Acordo Internacional de Jarda e Libra que fixou a libra também fixou o acre internacional em exatamente 4046,8564224 m², embora os EUA tenham mantido separadamente um 'acre de agrimensura dos EUA' ligeiramente diferente para alguns registros de terras antigos até ser eliminado em 2023."
+  ],
+  "kilogram": [
+   "O predecessor direto do quilograma foi a “grave”, definida pela Academia de Ciências da França em 1793 como a massa de um decímetro cúbico de água na sua temperatura de densidade máxima. Como “grave” lembrava o título aristocrático “graf”, o decreto revolucionário francês de 18 de germinal do ano III (7 de abril de 1795) renomeou o sistema: o grama passou a ser a unidade de referência, definido como a massa de um centímetro cúbico de água no ponto de fusão do gelo, e o quilograma - mil gramas - assumiu o papel prático da grave.",
+   "Transformar essa definição baseada em água em um objeto físico exigiu trabalho experimental real: em 1795, o químico Louis Lefèvre-Gineau foi encarregado de medir com precisão quanto pesava um decímetro cúbico de água, e o antigo joalheiro real Marc-Étienne Janety fabricou então um cilindro de platina para materializar essa massa medida. Depositado nos Arquivos Nacionais da França em 1799, passou a ser conhecido como o Kilogramme des Archives.",
+   "A difusão do sistema métrico foi desigual - Napoleão restringiu brevemente seu uso -, mas a França o tornou obrigatório em 1840, e a Convenção do Metro de 1875 (assinada por dezessete nações, incluindo os EUA) estabeleceu o BIPM e um protótipo internacional compartilhado. O Protótipo Internacional do Quilograma, de platina-irídio, adotado em 1889 e apelidado de “Le Grand K”, serviu como referência mundial de massa por mais de um século.",
+   "Em 20 de maio de 2019, o quilograma foi redefinido fixando a constante de Planck em exatamente 6,62607015 × 10⁻³⁴ joule-segundo, de modo que agora pode ser realizado em laboratório (por meio de uma balança de Kibble) sem referência a nenhum objeto físico."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Documenta a definição do acre internacional de 1959 e a eliminação do pé de agrimensura em 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — O quilograma (unidade de base do SI) — Definição oficial e histórico desde a redefinição de 2019.",
+   "NIST — Kilogram: The Past — História do padrão do quilograma, da grave ao Protótipo Internacional do Quilograma.",
+   "Brochura do SI, 9ª edição (2019), Apêndice 2 — BIPM — Texto oficial da definição do quilograma baseada na constante de Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Acre internacional em comparação com o acre de agrimensura dos EUA."
  }
 }

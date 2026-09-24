@@ -840,5 +840,43 @@
   "mass_application_rate": "Heerka isticmaalka cufka.",
   "liquid_application_rate": "Heerka isticmaalka dareeraha.",
   "yield_rate": "Heerka wax-soo-saarka beeraha."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Cabbiraadda dhulka beeraha, dhulka xoolaha, iyo hantida miyiga ee Mareykanka",
+   "Liisaska guryaha iyo qorshaynta dhulka ee qaybaha dhulka",
+   "Warbixinnada kaynta iyo maaraynta dhulka"
+  ],
+  "kilogram": [
+   "Qiimaynta iyo summadaynta alaabta lagu iibiyo miisaanka ganacsiga tafaariiqda iyo alaabta",
+   "Xisaabinta qiyaasta daawooyinka caafimaadka, gaar ahaan qoraallada caafimaadka carruurta iyo kuwa ku salaysan miisaanka",
+   "Qeexitaanka dhismaha iyo alaabta ee injineernimada ku salaysan nidaamka mitirka",
+   "Qiyaasta sayniska ee cufnaanta kimikada, fiisigiska, iyo cilmi-baarista alaabta"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "Eekerku wuxuu ka soo jeedaa dhulka Ingriiska dhexe sida cabbir dhul oo waxtar leh: dhul ay laba dibi ay geeddi karaan hal maalin, oo dhererkiisu yahay ku dhawaad hal furlong (660 fuudh) balaadhkiisuna yahay hal chain (66 fuudh), taasoo bixisa 43,560 fuudh oo laba jibaaran ah oo wali la isticmaalo maanta.",
+   "Sharciga Edward I ee 1305 ayaa rasmi ka dhigay tirakan. Sannadkii 1959, isla Heshiiskii Caalamiga ah ee Yaadka iyo Rodolka ee go'aamiyay rodolka ayaa sidoo kale go'aamiyay eekerka caalamiga ah oo ah 4046.8564224 mitir laba jibaaran, in kastoo Mareykanku uu si gooni ah u sii haystay 'eekerka sahanka Mareykanka' oo yar ku duwan diiwaannada dhulka qaarkood ilaa la joojiyay 2023."
+  ],
+  "kilogram": [
+   "Kii ugu horreeyay ee horseeday kiilogaraamka wuxuu ahaa “grave”, oo Akadeemiyada Sayniska ee Faransiiska ay 1793 ku qeexday cufnaanta hal desimitir jibbaaran oo biyo ah oo ku jira heerkuulka cufnaanta ugu badan. Sababtoo ah erayga “grave” wuxuu la mid ahaa magaca sharafta leh ee “graf”, amarkii kacaanka Faransiiska ee 18-kii Germinal, Sanadka III (7-kii Abriil 1795) ayaa nidaamka magac cusub u baxshay: garaamku wuxuu noqday cabbirka tixraaca, oo lagu qeexay cufnaanta hal sentimitir jibbaaran oo biyo ah oo ku jira heerka barafku ku dhalaalo, kiilogaraamkuna - oo ah kun garaam - wuxuu qaatay doorkii camalka ahaa ee “grave”.",
+   "Beddelidda qeexitaankaas ku saleysan biyaha si loo dhigo shay dhab ah waxay u baahnayd shaqo tijaabo ah oo dhab ah: kiimikaystihii Louis Lefèvre-Gineau ayaa 1795 loo xilsaaray inuu si sax ah u qiyaaso miisaanka hal desimitir jibbaaran oo biyo ah, dabadeedna dahabkaristihii boqortooyada hore ee Marc-Étienne Janety ayaa sameeyay silsilad bareeti ah oo matalaysa cufnaantaas la qiyaasay. Waxaa lagu kaydiyay Kaydka Qaranka Faransiiska 1799, waxaana loo yaqaanay Kilogramme des Archives.",
+   "Fideynta nidaamka mitirka si siman uma bixin - Napoleon wuxuu wakhti gaaban xaddiday isticmaalkiisa - laakiin Faransiisku wuxuu ka dhigay mid waajib ah 1840, Heshiiska Mitirka ee 1875 (oo ay saxeexeen toddoba iyo toban dal oo ay ku jiraan Mareykanka) ayaana aasaasay BIPM iyo qaab caalami ah oo la wadaago. Qaabka Caalamiga ah ee Kiilogaraamka, oo laga sameeyay biraha baladhiyeem-iridiyeem, oo la aqbalay 1889 loona bixiyay naanays “Le Grand K”, ayaa in ka badan boqol sano u ahaa tixraaca cufnaanta caalamka.",
+   "20-kii Maajo 2019, kiilogaraamka ayaa dib loo qeexay iyadoo la go'aamiyay joogtaynta Planck oo ah 6.62607015 × 10⁻³⁴ joule-ilbiriqsi, taasoo hadda suurtagelinaysa in laga sameeyo shaybaar (adoo isticmaalaya miisaanka Kibble) iyada oo aan loo baahnayn shay dhab ah oo la tixraaco."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Ku qeexaysa qeexitaanka eekerka caalamiga ah ee 1959 iyo joojinta fuudhka sahanka 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — Kiilogaraamka (cabbirka aasaasiga ah ee SI) — Qeexitaanka rasmiga ah iyo taariikhdiisa tan iyo dib-u-qeexitaankii 2019.",
+   "NIST — Kilogram: The Past — Taariikhda cabbirka kiilogaraamka laga bilaabo grave ilaa Qaabka Caalamiga ah ee Kiilogaraamka.",
+   "Buug-yaraha SI, daabacaadda 9-aad (2019), Lifaaqa 2 — BIPM — Qoraalka rasmiga ah ee qeexitaanka kiilogaraamka ee ku salaysan joogtaynta Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Eeker caalami ah iyo eekerka sahanka Mareykanka."
  }
 }

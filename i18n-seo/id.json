@@ -840,5 +840,43 @@
   "mass_application_rate": "Laju aplikasi massa.",
   "liquid_application_rate": "Laju aplikasi cairan.",
   "yield_rate": "Laju hasil pertanian."
+ },
+ "unitUsesToday": {
+  "acre": [
+   "Mengukur lahan pertanian, peternakan, dan properti pedesaan di AS",
+   "Listing real estat dan zonasi untuk bidang tanah",
+   "Pelaporan kehutanan dan pengelolaan lahan"
+  ],
+  "kilogram": [
+   "Penetapan harga dan pelabelan barang yang dijual berdasarkan berat dalam perdagangan ritel dan komoditas",
+   "Perhitungan dosis dalam kedokteran, khususnya untuk resep pediatrik dan berbasis berat badan",
+   "Spesifikasi struktural dan material dalam rekayasa berbasis sistem metrik",
+   "Pengukuran ilmiah massa dalam kimia, fisika, dan penelitian material"
+  ]
+ },
+ "unitHistory": {
+  "acre": [
+   "Acre berasal dari Inggris abad pertengahan sebagai satuan pengukuran ladang praktis: luas area yang dapat dibajak oleh sepasang lembu dalam satu hari, kira-kira sepanjang satu furlong (660 kaki) dan selebar satu chain (66 kaki), sehingga menghasilkan 43.560 kaki persegi yang masih digunakan hingga saat ini.",
+   "Statuta Edward I tahun 1305 meresmikan angka ini. Pada tahun 1959, Perjanjian Yard dan Pound Internasional yang sama yang menetapkan pound juga menetapkan acre internasional tepat pada 4046,8564224 m², meskipun AS secara terpisah mempertahankan 'acre survei AS' yang sedikit berbeda untuk beberapa catatan tanah lama hingga dihapuskan pada tahun 2023."
+  ],
+  "kilogram": [
+   "Pendahulu langsung kilogram adalah “grave”, yang didefinisikan oleh Akademi Ilmu Pengetahuan Prancis pada 1793 sebagai massa satu desimeter kubik air pada suhu kepadatan maksimumnya. Karena “grave” terdengar seperti gelar bangsawan “graf”, dekrit revolusioner Prancis tanggal 18 Germinal, Tahun III (7 April 1795) mengganti nama sistem tersebut: gram menjadi satuan acuan, didefinisikan sebagai massa satu sentimeter kubik air pada titik leleh es, dan kilogram - seribu gram - mengambil alih peran praktis grave.",
+   "Mengubah definisi berbasis air itu menjadi benda fisik memerlukan kerja eksperimental yang nyata: kimiawan Louis Lefèvre-Gineau ditugaskan pada 1795 untuk mengukur secara presisi berapa berat satu desimeter kubik air, dan mantan perhiasan kerajaan Marc-Étienne Janety kemudian membuat silinder platinum untuk mewujudkan massa yang terukur itu. Disimpan di Arsip Nasional Prancis pada 1799, benda ini dikenal sebagai Kilogramme des Archives.",
+   "Penyebaran sistem metrik berlangsung tidak merata - Napoleon sempat membatasi penggunaannya - tetapi Prancis mewajibkannya pada 1840, dan Konvensi Meter 1875 (ditandatangani oleh tujuh belas negara termasuk AS) membentuk BIPM dan prototipe internasional bersama. Prototipe Internasional Kilogram berbahan platina-iridium, diadopsi pada 1889 dan dijuluki “Le Grand K”, menjadi acuan massa dunia selama lebih dari satu abad.",
+   "Pada 20 Mei 2019, kilogram didefinisikan ulang dengan menetapkan konstanta Planck secara pasti pada 6,62607015 × 10⁻³⁴ joule-detik, sehingga kini dapat direalisasikan di laboratorium (melalui neraca Kibble) tanpa mengacu pada benda fisik apa pun."
+  ]
+ },
+ "unitSources": {
+  "acre": [
+   "NIST — US Survey Foot: Revised Unit Conversion Factors — Mendokumentasikan definisi acre internasional tahun 1959 dan penghapusan kaki survei pada 2022/2023."
+  ],
+  "kilogram": [
+   "BIPM — Kilogram (satuan dasar SI) — Definisi resmi dan sejarah sejak redefinisi 2019.",
+   "NIST — Kilogram: The Past — Sejarah standar kilogram dari grave hingga Prototipe Internasional Kilogram.",
+   "Brosur SI, edisi ke-9 (2019), Lampiran 2 — BIPM — Teks resmi definisi kilogram berbasis konstanta Planck."
+  ]
+ },
+ "unitDistinctionLabel": {
+  "international acre vs. us survey acre": "Acre internasional vs acre survei AS."
  }
 }
