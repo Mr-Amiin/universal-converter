@@ -577,7 +577,19 @@
   "square_kilometer": "وحدة مترية للمساحة.",
   "kilometer_per_liter": "كيلومتر لكل لتر.",
   "liter_per_100_kilometer": "لتر لكل 100 كيلومتر.",
-  "mile_per_gallon_us": "ميل لكل غالون."
+  "mile_per_gallon_us": "ميل لكل غالون.",
+  "square_inch": "المربع الإنشي هو مساحة مربع طول ضلعه إنش واحد.",
+  "cubic_inch": "المكعب الإنشي هو حجم مكعب طول ضلعه إنش واحد.",
+  "cubic_yard": "الياردة المكعبة تساوي بالضبط 0.764554857984 متر مكعب.",
+  "milliradian": "الملي راديان الواحد يساوي 0.001 راديان.",
+  "meter_per_second": "متر في الثانية.",
+  "foot_per_second": "قدم في الثانية.",
+  "mole_per_liter": "تركيز مولاري.",
+  "millimole_per_liter": "تركيز ميلي مولاري.",
+  "micromole_per_liter": "تركيز ميكرو مولاري.",
+  "parts_per_million_water": "تقريبًا مليغرام لكل لتر في الماء.",
+  "parts_per_billion_water": "تقريبًا ميكروغرام لكل لتر في الماء.",
+  "bushel_wheat": "تقريب لكتلة بوشل القمح."
  },
  "faq": {
   "q1_question": "كم عدد {TO} في 1 {FROM}؟",

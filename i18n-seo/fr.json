@@ -577,7 +577,19 @@
   "square_kilometer": "Unité métrique de superficie.",
   "kilometer_per_liter": "Kilomètres par litre.",
   "liter_per_100_kilometer": "Litres aux 100 kilomètres.",
-  "mile_per_gallon_us": "Miles par gallon."
+  "mile_per_gallon_us": "Miles par gallon.",
+  "square_inch": "Un pouce carré est l'aire d'un carré d'un pouce de côté.",
+  "cubic_inch": "Un pouce cube est le volume d'un cube d'un pouce d'arête.",
+  "cubic_yard": "Un yard cube équivaut exactement à 0,764554857984 mètre cube.",
+  "milliradian": "Un milliradian équivaut à 0,001 radian.",
+  "meter_per_second": "Mètres par seconde.",
+  "foot_per_second": "Pieds par seconde.",
+  "mole_per_liter": "Concentration molaire.",
+  "millimole_per_liter": "Concentration millimolaire.",
+  "micromole_per_liter": "Concentration micromolaire.",
+  "parts_per_million_water": "Environ mg/L dans l'eau.",
+  "parts_per_billion_water": "Environ µg/L dans l'eau.",
+  "bushel_wheat": "Masse approximative d'un boisseau de blé."
  },
  "faq": {
   "q1_question": "Combien de {TO} y a-t-il dans 1 {FROM} ?",

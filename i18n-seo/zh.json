@@ -577,7 +577,19 @@
   "square_kilometer": "公制面积单位。",
   "kilometer_per_liter": "每升公里数.",
   "liter_per_100_kilometer": "每百公里升数.",
-  "mile_per_gallon_us": "每加仑英里数."
+  "mile_per_gallon_us": "每加仑英里数.",
+  "square_inch": "平方英寸是边长为一英寸的正方形的面积。",
+  "cubic_inch": "立方英寸是边长为一英寸的立方体的体积。",
+  "cubic_yard": "1立方码恰好等于0.764554857984立方米。",
+  "milliradian": "1毫弧度等于0.001弧度。",
+  "meter_per_second": "米每秒。",
+  "foot_per_second": "英尺每秒。",
+  "mole_per_liter": "摩尔浓度。",
+  "millimole_per_liter": "毫摩尔浓度。",
+  "micromole_per_liter": "微摩尔浓度。",
+  "parts_per_million_water": "水中约为mg/L。",
+  "parts_per_billion_water": "水中约为µg/L。",
+  "bushel_wheat": "一蒲式耳小麦的近似质量。"
  },
  "faq": {
   "q1_question": "1 {FROM} 等于多少 {TO}？",

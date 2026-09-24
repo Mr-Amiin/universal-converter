@@ -577,7 +577,19 @@
   "square_kilometer": "Metrische Flächeneinheit.",
   "kilometer_per_liter": "Kilometer pro Liter.",
   "liter_per_100_kilometer": "Liter pro 100 Kilometer.",
-  "mile_per_gallon_us": "Meilen pro Gallone."
+  "mile_per_gallon_us": "Meilen pro Gallone.",
+  "square_inch": "Ein Quadratzoll ist die Fläche eines Quadrats mit einem Zoll Seitenlänge.",
+  "cubic_inch": "Ein Kubikzoll ist das Volumen eines Würfels mit einem Zoll Kantenlänge.",
+  "cubic_yard": "Ein Kubikyard entspricht exakt 0,764554857984 Kubikmetern.",
+  "milliradian": "Ein Milliradiant entspricht 0,001 Radiant.",
+  "meter_per_second": "Meter pro Sekunde.",
+  "foot_per_second": "Fuß pro Sekunde.",
+  "mole_per_liter": "Molare Konzentration.",
+  "millimole_per_liter": "Millimolare Konzentration.",
+  "micromole_per_liter": "Mikromolare Konzentration.",
+  "parts_per_million_water": "Ungefähr mg/L in Wasser.",
+  "parts_per_billion_water": "Ungefähr µg/L in Wasser.",
+  "bushel_wheat": "Näherungswert für die Masse eines Weizenbushels."
  },
  "faq": {
   "q1_question": "Wie viele {TO} sind in 1 {FROM}?",

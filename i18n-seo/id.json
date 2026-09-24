@@ -577,7 +577,19 @@
   "square_kilometer": "Satuan luas metrik.",
   "kilometer_per_liter": "Kilometer per liter.",
   "liter_per_100_kilometer": "Liter per 100 kilometer.",
-  "mile_per_gallon_us": "Mil per galon."
+  "mile_per_gallon_us": "Mil per galon.",
+  "square_inch": "Inci persegi adalah luas persegi dengan sisi satu inci.",
+  "cubic_inch": "Inci kubik adalah volume kubus dengan sisi satu inci.",
+  "cubic_yard": "Satu yard kubik setara dengan tepat 0,764554857984 meter kubik.",
+  "milliradian": "Satu miliradian setara dengan 0,001 radian.",
+  "meter_per_second": "Meter per detik.",
+  "foot_per_second": "Kaki per detik.",
+  "mole_per_liter": "Konsentrasi molar.",
+  "millimole_per_liter": "Konsentrasi milimolar.",
+  "micromole_per_liter": "Konsentrasi mikromolar.",
+  "parts_per_million_water": "Kira-kira mg/L dalam air.",
+  "parts_per_billion_water": "Kira-kira µg/L dalam air.",
+  "bushel_wheat": "Massa perkiraan satu bushel gandum."
  },
  "faq": {
   "q1_question": "Berapa {TO} dalam 1 {FROM}?",

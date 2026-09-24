@@ -156,12 +156,46 @@ SUMMARY OF CHANGES IN THIS PACKAGE
    just this new paragraph. Root cause is in the generic
    prefix+base name composition logic, not in this package's changes.
 
+6. FIXED: a second round of the unitDefinitions coverage gap (see
+   item 2 above), reported directly from a live screenshot of
+   area/square-inches-to-square-centimeters/ in Chinese — the
+   converter's "From definition" box AND the "Understanding Square
+   inch" paragraph were both showing raw English because
+   unitDefinitions.square_inch did not exist in any of the 13
+   languages, and its English text ("A square inch is the area of a
+   one-inch square.") does not match the generic square/cubic
+   metric-unit fallback pattern from item 2 (it is a unique,
+   hand-authored sentence, not SI-prefix boilerplate).
+
+   Rather than fix only the reported unit, ran a full audit of every
+   unit with a unique (non-boilerplate) English definition against
+   all 13 languages' unitDefinitions coverage, and found 11 more
+   units with the identical gap: cubic_inch, cubic_yard, milliradian,
+   meter_per_second, foot_per_second, mole_per_liter,
+   millimole_per_liter, micromole_per_liter,
+   parts_per_million_water, parts_per_billion_water, bushel_wheat.
+   All 12 (including square_inch) now have real translated
+   definitions added across all 13 languages, no app.js changes
+   required (the existing lookup logic already consumes
+   unitDefinitions[unit.id] directly).
+
+   Verified live: area/square-inches-to-square-centimeters/ in
+   Chinese now shows the translated definition in both places.
+
+   Unrelated pre-existing issue noticed while verifying this (NOT
+   fixed, out of scope): that same page's "About Converting" intro
+   paragraph uses a third template variant ("Comparing X and Y is
+   common in... Specifically: ...") not covered by item 5's
+   one-clause-template logic, so it still shows in English there —
+   same safe fallback, not a regression, just not yet modeled.
+
 =========================================
 VALIDATION EVIDENCE (this session)
 =========================================
 Pages tested: area/acres-to-ares/, area/acres-to-square-centimeters/,
 agriculture/acre-to-hectare/, weight/kilograms-to-grams/, kg-to-lbs/,
-hectares-to-acres/, length/angstroms-to-astronomical-units/,
+hectares-to-acres/, area/square-inches-to-square-centimeters/,
+length/angstroms-to-astronomical-units/,
 temperature/celsius-to-delisle/, currency/aed-to-afn/
 
 All pages: en -> zh -> [other language] -> [other language] -> zh -> en

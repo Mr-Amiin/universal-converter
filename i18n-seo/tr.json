@@ -577,7 +577,19 @@
   "square_kilometer": "Metrik alan birimi.",
   "kilometer_per_liter": "Litrede kilometre.",
   "liter_per_100_kilometer": "100 kilometrede litre.",
-  "mile_per_gallon_us": "Galonda mil."
+  "mile_per_gallon_us": "Galonda mil.",
+  "square_inch": "Bir kare inç, bir kenarı bir inç olan karenin alanıdır.",
+  "cubic_inch": "Bir küp inç, bir kenarı bir inç olan küpün hacmidir.",
+  "cubic_yard": "Bir kübik yarda tam olarak 0,764554857984 metreküptür.",
+  "milliradian": "Bir miliradyan 0,001 radyana eşittir.",
+  "meter_per_second": "Saniyede metre.",
+  "foot_per_second": "Saniyede fit.",
+  "mole_per_liter": "Molar derişim.",
+  "millimole_per_liter": "Milimolar derişim.",
+  "micromole_per_liter": "Mikromolar derişim.",
+  "parts_per_million_water": "Suda yaklaşık mg/L.",
+  "parts_per_billion_water": "Suda yaklaşık µg/L.",
+  "bushel_wheat": "Bir kile buğdayın yaklaşık kütlesi."
  },
  "faq": {
   "q1_question": "1 {FROM} kaç {TO} eder?",

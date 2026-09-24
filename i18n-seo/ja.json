@@ -577,7 +577,19 @@
   "square_kilometer": "メートル法の面積単位。",
   "kilometer_per_liter": "リットルあたりキロメートル.",
   "liter_per_100_kilometer": "100kmあたりリットル.",
-  "mile_per_gallon_us": "ガロンあたりマイル."
+  "mile_per_gallon_us": "ガロンあたりマイル.",
+  "square_inch": "平方インチは1辺が1インチの正方形の面積である。",
+  "cubic_inch": "立方インチは1辺が1インチの立方体の体積である。",
+  "cubic_yard": "1立方ヤードは正確に0.764554857984立方メートルである。",
+  "milliradian": "1ミリラジアンは0.001ラジアンに相当する。",
+  "meter_per_second": "メートル毎秒。",
+  "foot_per_second": "フィート毎秒。",
+  "mole_per_liter": "モル濃度。",
+  "millimole_per_liter": "ミリモル濃度。",
+  "micromole_per_liter": "マイクロモル濃度。",
+  "parts_per_million_water": "水中でおおよそmg/L。",
+  "parts_per_billion_water": "水中でおおよそµg/L。",
+  "bushel_wheat": "小麦1ブッシェルのおおよその質量。"
  },
  "faq": {
   "q1_question": "1 {FROM} は何 {TO} ですか？",

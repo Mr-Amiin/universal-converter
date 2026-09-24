@@ -577,7 +577,19 @@
   "square_kilometer": "Unità metrica di area.",
   "kilometer_per_liter": "Chilometri per litro.",
   "liter_per_100_kilometer": "Litri per 100 chilometri.",
-  "mile_per_gallon_us": "Miglia per gallone."
+  "mile_per_gallon_us": "Miglia per gallone.",
+  "square_inch": "Un pollice quadrato è l'area di un quadrato con lato di un pollice.",
+  "cubic_inch": "Un pollice cubico è il volume di un cubo con lato di un pollice.",
+  "cubic_yard": "Una iarda cubica equivale esattamente a 0,764554857984 metri cubi.",
+  "milliradian": "Un milliradiante equivale a 0,001 radianti.",
+  "meter_per_second": "Metri al secondo.",
+  "foot_per_second": "Piedi al secondo.",
+  "mole_per_liter": "Concentrazione molare.",
+  "millimole_per_liter": "Concentrazione millimolare.",
+  "micromole_per_liter": "Concentrazione micromolare.",
+  "parts_per_million_water": "Circa mg/L in acqua.",
+  "parts_per_billion_water": "Circa µg/L in acqua.",
+  "bushel_wheat": "Massa approssimativa di uno staio di grano."
  },
  "faq": {
   "q1_question": "Quanti {TO} ci sono in 1 {FROM}?",

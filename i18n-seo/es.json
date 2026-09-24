@@ -577,7 +577,19 @@
   "square_kilometer": "Unidad métrica de área.",
   "kilometer_per_liter": "Kilómetros por litro.",
   "liter_per_100_kilometer": "Litros por 100 kilómetros.",
-  "mile_per_gallon_us": "Millas por galón."
+  "mile_per_gallon_us": "Millas por galón.",
+  "square_inch": "Una pulgada cuadrada es el área de un cuadrado de una pulgada de lado.",
+  "cubic_inch": "Una pulgada cúbica es el volumen de un cubo de una pulgada de arista.",
+  "cubic_yard": "Una yarda cúbica equivale exactamente a 0,764554857984 metros cúbicos.",
+  "milliradian": "Un miliradián equivale a 0,001 radianes.",
+  "meter_per_second": "Metros por segundo.",
+  "foot_per_second": "Pies por segundo.",
+  "mole_per_liter": "Concentración molar.",
+  "millimole_per_liter": "Concentración milimolar.",
+  "micromole_per_liter": "Concentración micromolar.",
+  "parts_per_million_water": "Aproximadamente mg/L en agua.",
+  "parts_per_billion_water": "Aproximadamente µg/L en agua.",
+  "bushel_wheat": "Masa aproximada de un bushel de trigo."
  },
  "faq": {
   "q1_question": "¿Cuántos {TO} hay en 1 {FROM}?",

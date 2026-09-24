@@ -577,7 +577,19 @@
   "square_kilometer": "Cutub mitiri ah oo cabbirka dhulka.",
   "kilometer_per_liter": "Kiiloomitir Litirkiiba.",
   "liter_per_100_kilometer": "Litir 100 Kiiloomitirkiiba.",
-  "mile_per_gallon_us": "Mayl Galankiiba."
+  "mile_per_gallon_us": "Mayl Galankiiba.",
+  "square_inch": "Inji laba-jibaaran waa cabbirka labajibbaaran oo dhinac walba uu leeyahay hal inji.",
+  "cubic_inch": "Inji jibbaaran waa mugga qalab lix-geesle oo dhinac walba uu leeyahay hal inji.",
+  "cubic_yard": "Yaar jibbaaran waa si sax ah 0.764554857984 mitir jibbaaran.",
+  "milliradian": "Hal milliradian waxay la mid tahay 0.001 radian.",
+  "meter_per_second": "Mitir ilbiriqsi kasta.",
+  "foot_per_second": "Fiit ilbiriqsi kasta.",
+  "mole_per_liter": "Xoogga isku-darka (molar).",
+  "millimole_per_liter": "Xoogga isku-darka ee millimolar.",
+  "micromole_per_liter": "Xoogga isku-darka ee micromolar.",
+  "parts_per_million_water": "Qiyaas ahaan mg/L oo biyo ah.",
+  "parts_per_billion_water": "Qiyaas ahaan µg/L oo biyo ah.",
+  "bushel_wheat": "Cufnaanta qiyaastii ah ee hal bushel oo sarreen ah."
  },
  "faq": {
   "q1_question": "Immisa {TO} ayaa ku jira 1 {FROM}?",

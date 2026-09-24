@@ -1963,7 +1963,7 @@ index c900c1e6850..0c44a359fd8 100644
  populateSelect(byId("toUnit"), category.units, state.toUnitId);
  if (typeof updateConversion === "function") updateConversion();
 diff --git a/i18n-seo/ar.json b/i18n-seo/ar.json
-index aef43ca2187..55004847e6c 100644
+index aef43ca2187..f5a0a4fa2cc 100644
 --- a/i18n-seo/ar.json
 +++ b/i18n-seo/ar.json
 @@ -3,111 +3,138 @@
@@ -2132,7 +2132,7 @@ index aef43ca2187..55004847e6c 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "الأسبوع يساوي سبعة أيام.",
    "word_16": "حجم كلمة شائع يبلغ 16 بت.",
    "yard": "الياردة تساوي بالضبط 0.9144 متر.",
@@ -2172,11 +2172,23 @@ index aef43ca2187..55004847e6c 100644
 +  "square_kilometer": "وحدة مترية للمساحة.",
 +  "kilometer_per_liter": "كيلومتر لكل لتر.",
 +  "liter_per_100_kilometer": "لتر لكل 100 كيلومتر.",
-+  "mile_per_gallon_us": "ميل لكل غالون."
++  "mile_per_gallon_us": "ميل لكل غالون.",
++  "square_inch": "المربع الإنشي هو مساحة مربع طول ضلعه إنش واحد.",
++  "cubic_inch": "المكعب الإنشي هو حجم مكعب طول ضلعه إنش واحد.",
++  "cubic_yard": "الياردة المكعبة تساوي بالضبط 0.764554857984 متر مكعب.",
++  "milliradian": "الملي راديان الواحد يساوي 0.001 راديان.",
++  "meter_per_second": "متر في الثانية.",
++  "foot_per_second": "قدم في الثانية.",
++  "mole_per_liter": "تركيز مولاري.",
++  "millimole_per_liter": "تركيز ميلي مولاري.",
++  "micromole_per_liter": "تركيز ميكرو مولاري.",
++  "parts_per_million_water": "تقريبًا مليغرام لكل لتر في الماء.",
++  "parts_per_billion_water": "تقريبًا ميكروغرام لكل لتر في الماء.",
++  "bushel_wheat": "تقريب لكتلة بوشل القمح."
   },
   "faq": {
    "q1_question": "كم عدد {TO} في 1 {FROM}؟",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "جدول التحويل",
    "related_conversions": "تحويلات ذات صلة",
    "about_converting": "حول تحويل",
@@ -2224,7 +2236,7 @@ index aef43ca2187..55004847e6c 100644
   },
   "currencyNames": {
    "USD": "دولار أمريكي",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "معدل تطبيق الكتلة.",
    "liquid_application_rate": "معدل تطبيق السائل.",
    "yield_rate": "معدل الإنتاجية الزراعية."
@@ -2277,7 +2289,7 @@ index aef43ca2187..55004847e6c 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/de.json b/i18n-seo/de.json
-index c265901d60e..6b8514f84ee 100644
+index c265901d60e..b64cb6fe255 100644
 --- a/i18n-seo/de.json
 +++ b/i18n-seo/de.json
 @@ -3,111 +3,138 @@
@@ -2446,7 +2458,7 @@ index c265901d60e..6b8514f84ee 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Eine Woche sind sieben Tage.",
    "word_16": "Eine gebräuchliche Wortgröße von 16 Bit.",
    "yard": "Ein Yard entspricht genau 0,9144 Metern.",
@@ -2486,11 +2498,23 @@ index c265901d60e..6b8514f84ee 100644
 +  "square_kilometer": "Metrische Flächeneinheit.",
 +  "kilometer_per_liter": "Kilometer pro Liter.",
 +  "liter_per_100_kilometer": "Liter pro 100 Kilometer.",
-+  "mile_per_gallon_us": "Meilen pro Gallone."
++  "mile_per_gallon_us": "Meilen pro Gallone.",
++  "square_inch": "Ein Quadratzoll ist die Fläche eines Quadrats mit einem Zoll Seitenlänge.",
++  "cubic_inch": "Ein Kubikzoll ist das Volumen eines Würfels mit einem Zoll Kantenlänge.",
++  "cubic_yard": "Ein Kubikyard entspricht exakt 0,764554857984 Kubikmetern.",
++  "milliradian": "Ein Milliradiant entspricht 0,001 Radiant.",
++  "meter_per_second": "Meter pro Sekunde.",
++  "foot_per_second": "Fuß pro Sekunde.",
++  "mole_per_liter": "Molare Konzentration.",
++  "millimole_per_liter": "Millimolare Konzentration.",
++  "micromole_per_liter": "Mikromolare Konzentration.",
++  "parts_per_million_water": "Ungefähr mg/L in Wasser.",
++  "parts_per_billion_water": "Ungefähr µg/L in Wasser.",
++  "bushel_wheat": "Näherungswert für die Masse eines Weizenbushels."
   },
   "faq": {
    "q1_question": "Wie viele {TO} sind in 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Umrechnungstabelle",
    "related_conversions": "Verwandte Umrechnungen",
    "about_converting": "Über die Umrechnung von",
@@ -2538,7 +2562,7 @@ index c265901d60e..6b8514f84ee 100644
   },
   "currencyNames": {
    "USD": "US-Dollar",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Massenausbringungsrate.",
    "liquid_application_rate": "Flüssigkeitsausbringungsrate.",
    "yield_rate": "Landwirtschaftliche Ertragsrate."
@@ -2591,7 +2615,7 @@ index c265901d60e..6b8514f84ee 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/es.json b/i18n-seo/es.json
-index 7d73ac4fc40..b95babeac22 100644
+index 7d73ac4fc40..dc0c25adee4 100644
 --- a/i18n-seo/es.json
 +++ b/i18n-seo/es.json
 @@ -3,111 +3,138 @@
@@ -2760,7 +2784,7 @@ index 7d73ac4fc40..b95babeac22 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Una semana son siete días.",
    "word_16": "Un tamaño de palabra común de 16 bits.",
    "yard": "Una yarda equivale exactamente a 0,9144 metros.",
@@ -2800,11 +2824,23 @@ index 7d73ac4fc40..b95babeac22 100644
 +  "square_kilometer": "Unidad métrica de área.",
 +  "kilometer_per_liter": "Kilómetros por litro.",
 +  "liter_per_100_kilometer": "Litros por 100 kilómetros.",
-+  "mile_per_gallon_us": "Millas por galón."
++  "mile_per_gallon_us": "Millas por galón.",
++  "square_inch": "Una pulgada cuadrada es el área de un cuadrado de una pulgada de lado.",
++  "cubic_inch": "Una pulgada cúbica es el volumen de un cubo de una pulgada de arista.",
++  "cubic_yard": "Una yarda cúbica equivale exactamente a 0,764554857984 metros cúbicos.",
++  "milliradian": "Un miliradián equivale a 0,001 radianes.",
++  "meter_per_second": "Metros por segundo.",
++  "foot_per_second": "Pies por segundo.",
++  "mole_per_liter": "Concentración molar.",
++  "millimole_per_liter": "Concentración milimolar.",
++  "micromole_per_liter": "Concentración micromolar.",
++  "parts_per_million_water": "Aproximadamente mg/L en agua.",
++  "parts_per_billion_water": "Aproximadamente µg/L en agua.",
++  "bushel_wheat": "Masa aproximada de un bushel de trigo."
   },
   "faq": {
    "q1_question": "¿Cuántos {TO} hay en 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Tabla de conversión",
    "related_conversions": "Conversiones relacionadas",
    "about_converting": "Acerca de convertir",
@@ -2852,7 +2888,7 @@ index 7d73ac4fc40..b95babeac22 100644
   },
   "currencyNames": {
    "USD": "Dólar estadounidense",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Tasa de aplicación de masa.",
    "liquid_application_rate": "Tasa de aplicación líquida.",
    "yield_rate": "Tasa de rendimiento agrícola."
@@ -2905,7 +2941,7 @@ index 7d73ac4fc40..b95babeac22 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/fr.json b/i18n-seo/fr.json
-index 9c414d5287d..80241c9e300 100644
+index 9c414d5287d..bac46f8aaec 100644
 --- a/i18n-seo/fr.json
 +++ b/i18n-seo/fr.json
 @@ -3,111 +3,138 @@
@@ -3074,7 +3110,7 @@ index 9c414d5287d..80241c9e300 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Une semaine équivaut à sept jours.",
    "word_16": "Une taille de mot courante de 16 bits.",
    "yard": "Un yard équivaut exactement à 0,9144 mètre.",
@@ -3114,11 +3150,23 @@ index 9c414d5287d..80241c9e300 100644
 +  "square_kilometer": "Unité métrique de superficie.",
 +  "kilometer_per_liter": "Kilomètres par litre.",
 +  "liter_per_100_kilometer": "Litres aux 100 kilomètres.",
-+  "mile_per_gallon_us": "Miles par gallon."
++  "mile_per_gallon_us": "Miles par gallon.",
++  "square_inch": "Un pouce carré est l'aire d'un carré d'un pouce de côté.",
++  "cubic_inch": "Un pouce cube est le volume d'un cube d'un pouce d'arête.",
++  "cubic_yard": "Un yard cube équivaut exactement à 0,764554857984 mètre cube.",
++  "milliradian": "Un milliradian équivaut à 0,001 radian.",
++  "meter_per_second": "Mètres par seconde.",
++  "foot_per_second": "Pieds par seconde.",
++  "mole_per_liter": "Concentration molaire.",
++  "millimole_per_liter": "Concentration millimolaire.",
++  "micromole_per_liter": "Concentration micromolaire.",
++  "parts_per_million_water": "Environ mg/L dans l'eau.",
++  "parts_per_billion_water": "Environ µg/L dans l'eau.",
++  "bushel_wheat": "Masse approximative d'un boisseau de blé."
   },
   "faq": {
    "q1_question": "Combien de {TO} y a-t-il dans 1 {FROM} ?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Table de conversion",
    "related_conversions": "Conversions associées",
    "about_converting": "À propos de la conversion de",
@@ -3166,7 +3214,7 @@ index 9c414d5287d..80241c9e300 100644
   },
   "currencyNames": {
    "USD": "Dollar américain",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Taux d'application de masse.",
    "liquid_application_rate": "Taux d'application liquide.",
    "yield_rate": "Taux de rendement agricole."
@@ -3219,7 +3267,7 @@ index 9c414d5287d..80241c9e300 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/hi.json b/i18n-seo/hi.json
-index 0e768217d49..6e8f7af1348 100644
+index 0e768217d49..e08ba661590 100644
 --- a/i18n-seo/hi.json
 +++ b/i18n-seo/hi.json
 @@ -3,111 +3,138 @@
@@ -3388,7 +3436,7 @@ index 0e768217d49..6e8f7af1348 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "एक सप्ताह सात दिनों के बराबर होता है।",
    "word_16": "16 बिट्स का एक सामान्य वर्ड साइज़।",
    "yard": "एक गज ठीक 0.9144 मीटर के बराबर होता है।",
@@ -3428,11 +3476,23 @@ index 0e768217d49..6e8f7af1348 100644
 +  "square_kilometer": "मीट्रिक क्षेत्रफल इकाई।",
 +  "kilometer_per_liter": "किलोमीटर प्रति लीटर.",
 +  "liter_per_100_kilometer": "लीटर प्रति 100 किलोमीटर.",
-+  "mile_per_gallon_us": "मील प्रति गैलन."
++  "mile_per_gallon_us": "मील प्रति गैलन.",
++  "square_inch": "वर्ग इंच एक इंच भुजा वाले वर्ग का क्षेत्रफल है।",
++  "cubic_inch": "घन इंच एक इंच भुजा वाले घन का आयतन है।",
++  "cubic_yard": "एक घन गज ठीक 0.764554857984 घन मीटर के बराबर होता है।",
++  "milliradian": "एक मिलिरेडियन 0.001 रेडियन के बराबर होता है।",
++  "meter_per_second": "मीटर प्रति सेकंड।",
++  "foot_per_second": "फुट प्रति सेकंड।",
++  "mole_per_liter": "मोलर सांद्रता।",
++  "millimole_per_liter": "मिलीमोलर सांद्रता।",
++  "micromole_per_liter": "माइक्रोमोलर सांद्रता।",
++  "parts_per_million_water": "पानी में लगभग mg/L।",
++  "parts_per_billion_water": "पानी में लगभग µg/L।",
++  "bushel_wheat": "गेहूं के एक बुशल का अनुमानित द्रव्यमान।"
   },
   "faq": {
    "q1_question": "1 {FROM} में कितने {TO} होते हैं?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "रूपांतरण तालिका",
    "related_conversions": "संबंधित रूपांतरण",
    "about_converting": "रूपांतरण के बारे में",
@@ -3480,7 +3540,7 @@ index 0e768217d49..6e8f7af1348 100644
   },
   "currencyNames": {
    "USD": "अमेरिकी डॉलर",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "द्रव्यमान प्रयोग दर।",
    "liquid_application_rate": "तरल प्रयोग दर।",
    "yield_rate": "कृषि उपज दर।"
@@ -3533,7 +3593,7 @@ index 0e768217d49..6e8f7af1348 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/id.json b/i18n-seo/id.json
-index fb3a6648ddd..a5e6720593b 100644
+index fb3a6648ddd..f127555dbcf 100644
 --- a/i18n-seo/id.json
 +++ b/i18n-seo/id.json
 @@ -3,111 +3,138 @@
@@ -3702,7 +3762,7 @@ index fb3a6648ddd..a5e6720593b 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "1 minggu setara dengan tujuh hari.",
    "word_16": "Ukuran word umum sebesar 16 bit.",
    "yard": "1 yard setara tepat dengan 0,9144 meter.",
@@ -3742,11 +3802,23 @@ index fb3a6648ddd..a5e6720593b 100644
 +  "square_kilometer": "Satuan luas metrik.",
 +  "kilometer_per_liter": "Kilometer per liter.",
 +  "liter_per_100_kilometer": "Liter per 100 kilometer.",
-+  "mile_per_gallon_us": "Mil per galon."
++  "mile_per_gallon_us": "Mil per galon.",
++  "square_inch": "Inci persegi adalah luas persegi dengan sisi satu inci.",
++  "cubic_inch": "Inci kubik adalah volume kubus dengan sisi satu inci.",
++  "cubic_yard": "Satu yard kubik setara dengan tepat 0,764554857984 meter kubik.",
++  "milliradian": "Satu miliradian setara dengan 0,001 radian.",
++  "meter_per_second": "Meter per detik.",
++  "foot_per_second": "Kaki per detik.",
++  "mole_per_liter": "Konsentrasi molar.",
++  "millimole_per_liter": "Konsentrasi milimolar.",
++  "micromole_per_liter": "Konsentrasi mikromolar.",
++  "parts_per_million_water": "Kira-kira mg/L dalam air.",
++  "parts_per_billion_water": "Kira-kira µg/L dalam air.",
++  "bushel_wheat": "Massa perkiraan satu bushel gandum."
   },
   "faq": {
    "q1_question": "Berapa {TO} dalam 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Tabel konversi",
    "related_conversions": "Konversi terkait",
    "about_converting": "Tentang mengonversi",
@@ -3794,7 +3866,7 @@ index fb3a6648ddd..a5e6720593b 100644
   },
   "currencyNames": {
    "USD": "Dolar AS",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Laju aplikasi massa.",
    "liquid_application_rate": "Laju aplikasi cairan.",
    "yield_rate": "Laju hasil pertanian."
@@ -3847,7 +3919,7 @@ index fb3a6648ddd..a5e6720593b 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/it.json b/i18n-seo/it.json
-index 385ace59804..d21dcc3b424 100644
+index 385ace59804..25b11fc2bd9 100644
 --- a/i18n-seo/it.json
 +++ b/i18n-seo/it.json
 @@ -3,111 +3,138 @@
@@ -4016,7 +4088,7 @@ index 385ace59804..d21dcc3b424 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Una settimana equivale a sette giorni.",
    "word_16": "Una dimensione di parola comune di 16 bit.",
    "yard": "Una iarda equivale esattamente a 0,9144 metri.",
@@ -4056,11 +4128,23 @@ index 385ace59804..d21dcc3b424 100644
 +  "square_kilometer": "Unità metrica di area.",
 +  "kilometer_per_liter": "Chilometri per litro.",
 +  "liter_per_100_kilometer": "Litri per 100 chilometri.",
-+  "mile_per_gallon_us": "Miglia per gallone."
++  "mile_per_gallon_us": "Miglia per gallone.",
++  "square_inch": "Un pollice quadrato è l'area di un quadrato con lato di un pollice.",
++  "cubic_inch": "Un pollice cubico è il volume di un cubo con lato di un pollice.",
++  "cubic_yard": "Una iarda cubica equivale esattamente a 0,764554857984 metri cubi.",
++  "milliradian": "Un milliradiante equivale a 0,001 radianti.",
++  "meter_per_second": "Metri al secondo.",
++  "foot_per_second": "Piedi al secondo.",
++  "mole_per_liter": "Concentrazione molare.",
++  "millimole_per_liter": "Concentrazione millimolare.",
++  "micromole_per_liter": "Concentrazione micromolare.",
++  "parts_per_million_water": "Circa mg/L in acqua.",
++  "parts_per_billion_water": "Circa µg/L in acqua.",
++  "bushel_wheat": "Massa approssimativa di uno staio di grano."
   },
   "faq": {
    "q1_question": "Quanti {TO} ci sono in 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Tabella di conversione",
    "related_conversions": "Conversioni correlate",
    "about_converting": "Informazioni sulla conversione da",
@@ -4108,7 +4192,7 @@ index 385ace59804..d21dcc3b424 100644
   },
   "currencyNames": {
    "USD": "Dollaro statunitense",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Tasso di applicazione di massa.",
    "liquid_application_rate": "Tasso di applicazione liquida.",
    "yield_rate": "Tasso di resa agricola."
@@ -4161,7 +4245,7 @@ index 385ace59804..d21dcc3b424 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ja.json b/i18n-seo/ja.json
-index dd70c06e6f2..620f2433dc1 100644
+index dd70c06e6f2..50db28dd50a 100644
 --- a/i18n-seo/ja.json
 +++ b/i18n-seo/ja.json
 @@ -3,111 +3,138 @@
@@ -4330,7 +4414,7 @@ index dd70c06e6f2..620f2433dc1 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "1週間は7日です。",
    "word_16": "一般的な16ビットのワードサイズ。",
    "yard": "ヤードは正確に0.9144メートルです。",
@@ -4370,11 +4454,23 @@ index dd70c06e6f2..620f2433dc1 100644
 +  "square_kilometer": "メートル法の面積単位。",
 +  "kilometer_per_liter": "リットルあたりキロメートル.",
 +  "liter_per_100_kilometer": "100kmあたりリットル.",
-+  "mile_per_gallon_us": "ガロンあたりマイル."
++  "mile_per_gallon_us": "ガロンあたりマイル.",
++  "square_inch": "平方インチは1辺が1インチの正方形の面積である。",
++  "cubic_inch": "立方インチは1辺が1インチの立方体の体積である。",
++  "cubic_yard": "1立方ヤードは正確に0.764554857984立方メートルである。",
++  "milliradian": "1ミリラジアンは0.001ラジアンに相当する。",
++  "meter_per_second": "メートル毎秒。",
++  "foot_per_second": "フィート毎秒。",
++  "mole_per_liter": "モル濃度。",
++  "millimole_per_liter": "ミリモル濃度。",
++  "micromole_per_liter": "マイクロモル濃度。",
++  "parts_per_million_water": "水中でおおよそmg/L。",
++  "parts_per_billion_water": "水中でおおよそµg/L。",
++  "bushel_wheat": "小麦1ブッシェルのおおよその質量。"
   },
   "faq": {
    "q1_question": "1 {FROM} は何 {TO} ですか？",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "変換表",
    "related_conversions": "関連する変換",
    "about_converting": "変換について：",
@@ -4422,7 +4518,7 @@ index dd70c06e6f2..620f2433dc1 100644
   },
   "currencyNames": {
    "USD": "米ドル",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "質量散布率。",
    "liquid_application_rate": "液体散布率。",
    "yield_rate": "農業収量率。"
@@ -4475,7 +4571,7 @@ index dd70c06e6f2..620f2433dc1 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ko.json b/i18n-seo/ko.json
-index 3e5e3468ea5..467a9302fdc 100644
+index 3e5e3468ea5..606dd82ce56 100644
 --- a/i18n-seo/ko.json
 +++ b/i18n-seo/ko.json
 @@ -3,111 +3,138 @@
@@ -4644,7 +4740,7 @@ index 3e5e3468ea5..467a9302fdc 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "1주는 7일입니다.",
    "word_16": "일반적인 16비트 워드 크기.",
    "yard": "야드는 정확히 0.9144미터입니다.",
@@ -4684,11 +4780,23 @@ index 3e5e3468ea5..467a9302fdc 100644
 +  "square_kilometer": "미터법 면적 단위.",
 +  "kilometer_per_liter": "리터당 킬로미터.",
 +  "liter_per_100_kilometer": "100km당 리터.",
-+  "mile_per_gallon_us": "갤런당 마일."
++  "mile_per_gallon_us": "갤런당 마일.",
++  "square_inch": "평방 인치는 한 변이 1인치인 정사각형의 면적이다.",
++  "cubic_inch": "입방 인치는 한 변이 1인치인 정육면체의 부피이다.",
++  "cubic_yard": "1세제곱야드는 정확히 0.764554857984세제곱미터이다.",
++  "milliradian": "1밀리라디안은 0.001라디안에 해당한다.",
++  "meter_per_second": "초당 미터.",
++  "foot_per_second": "초당 피트.",
++  "mole_per_liter": "몰 농도.",
++  "millimole_per_liter": "밀리몰 농도.",
++  "micromole_per_liter": "마이크로몰 농도.",
++  "parts_per_million_water": "물에서 대략 mg/L.",
++  "parts_per_billion_water": "물에서 대략 µg/L.",
++  "bushel_wheat": "밀 1부셸의 대략적인 질량."
   },
   "faq": {
    "q1_question": "1 {FROM}는 몇 {TO}인가요?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "변환표",
    "related_conversions": "관련 변환",
    "about_converting": "변환 정보:",
@@ -4736,7 +4844,7 @@ index 3e5e3468ea5..467a9302fdc 100644
   },
   "currencyNames": {
    "USD": "미국 달러",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "질량 살포율.",
    "liquid_application_rate": "액체 살포율.",
    "yield_rate": "농업 수확률."
@@ -4789,7 +4897,7 @@ index 3e5e3468ea5..467a9302fdc 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/pt.json b/i18n-seo/pt.json
-index b2f234b6835..173bfbbd563 100644
+index b2f234b6835..feae75908ad 100644
 --- a/i18n-seo/pt.json
 +++ b/i18n-seo/pt.json
 @@ -3,111 +3,138 @@
@@ -4958,7 +5066,7 @@ index b2f234b6835..173bfbbd563 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Uma semana são sete dias.",
    "word_16": "Um tamanho de palavra comum de 16 bits.",
    "yard": "Uma jarda equivale exatamente a 0,9144 metros.",
@@ -4998,11 +5106,23 @@ index b2f234b6835..173bfbbd563 100644
 +  "square_kilometer": "Unidade métrica de área.",
 +  "kilometer_per_liter": "Quilômetros por litro.",
 +  "liter_per_100_kilometer": "Litros por 100 quilômetros.",
-+  "mile_per_gallon_us": "Milhas por galão."
++  "mile_per_gallon_us": "Milhas por galão.",
++  "square_inch": "Uma polegada quadrada é a área de um quadrado de um lado com uma polegada.",
++  "cubic_inch": "Uma polegada cúbica é o volume de um cubo de uma polegada de aresta.",
++  "cubic_yard": "Uma jarda cúbica equivale exatamente a 0,764554857984 metros cúbicos.",
++  "milliradian": "Um miliradiano equivale a 0,001 radianos.",
++  "meter_per_second": "Metros por segundo.",
++  "foot_per_second": "Pés por segundo.",
++  "mole_per_liter": "Concentração molar.",
++  "millimole_per_liter": "Concentração milimolar.",
++  "micromole_per_liter": "Concentração micromolar.",
++  "parts_per_million_water": "Aproximadamente mg/L em água.",
++  "parts_per_billion_water": "Aproximadamente µg/L em água.",
++  "bushel_wheat": "Massa aproximada de um bushel de trigo."
   },
   "faq": {
    "q1_question": "Quantos {TO} há em 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Tabela de conversão",
    "related_conversions": "Conversões relacionadas",
    "about_converting": "Sobre converter",
@@ -5050,7 +5170,7 @@ index b2f234b6835..173bfbbd563 100644
   },
   "currencyNames": {
    "USD": "Dólar americano",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Taxa de aplicação de massa.",
    "liquid_application_rate": "Taxa de aplicação líquida.",
    "yield_rate": "Taxa de rendimento agrícola."
@@ -5103,7 +5223,7 @@ index b2f234b6835..173bfbbd563 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/so.json b/i18n-seo/so.json
-index 5d1dd740fe4..6343b7f94fc 100644
+index 5d1dd740fe4..355eeb2332e 100644
 --- a/i18n-seo/so.json
 +++ b/i18n-seo/so.json
 @@ -3,111 +3,138 @@
@@ -5272,7 +5392,7 @@ index 5d1dd740fe4..6343b7f94fc 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "Toddobaad waa toddoba maalmood.",
    "word_16": "Cabbirka erayga caadiga ah ee 16 bit ah.",
    "yard": "Yaad wuxuu si sax ah ula mid yahay 0.9144 mitir.",
@@ -5312,11 +5432,23 @@ index 5d1dd740fe4..6343b7f94fc 100644
 +  "square_kilometer": "Cutub mitiri ah oo cabbirka dhulka.",
 +  "kilometer_per_liter": "Kiiloomitir Litirkiiba.",
 +  "liter_per_100_kilometer": "Litir 100 Kiiloomitirkiiba.",
-+  "mile_per_gallon_us": "Mayl Galankiiba."
++  "mile_per_gallon_us": "Mayl Galankiiba.",
++  "square_inch": "Inji laba-jibaaran waa cabbirka labajibbaaran oo dhinac walba uu leeyahay hal inji.",
++  "cubic_inch": "Inji jibbaaran waa mugga qalab lix-geesle oo dhinac walba uu leeyahay hal inji.",
++  "cubic_yard": "Yaar jibbaaran waa si sax ah 0.764554857984 mitir jibbaaran.",
++  "milliradian": "Hal milliradian waxay la mid tahay 0.001 radian.",
++  "meter_per_second": "Mitir ilbiriqsi kasta.",
++  "foot_per_second": "Fiit ilbiriqsi kasta.",
++  "mole_per_liter": "Xoogga isku-darka (molar).",
++  "millimole_per_liter": "Xoogga isku-darka ee millimolar.",
++  "micromole_per_liter": "Xoogga isku-darka ee micromolar.",
++  "parts_per_million_water": "Qiyaas ahaan mg/L oo biyo ah.",
++  "parts_per_billion_water": "Qiyaas ahaan µg/L oo biyo ah.",
++  "bushel_wheat": "Cufnaanta qiyaastii ah ee hal bushel oo sarreen ah."
   },
   "faq": {
    "q1_question": "Immisa {TO} ayaa ku jira 1 {FROM}?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Jadwalka Isbeddelka",
    "related_conversions": "Isbeddellada La Xiriira",
    "about_converting": "Ku Saabsan Isbeddelka",
@@ -5364,7 +5496,7 @@ index 5d1dd740fe4..6343b7f94fc 100644
   },
   "currencyNames": {
    "USD": "Doolar Mareykan",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Heerka isticmaalka cufka.",
    "liquid_application_rate": "Heerka isticmaalka dareeraha.",
    "yield_rate": "Heerka wax-soo-saarka beeraha."
@@ -5417,7 +5549,7 @@ index 5d1dd740fe4..6343b7f94fc 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/tr.json b/i18n-seo/tr.json
-index 64d9c84e7a0..68c6233f9d0 100644
+index 64d9c84e7a0..d5626f822cc 100644
 --- a/i18n-seo/tr.json
 +++ b/i18n-seo/tr.json
 @@ -3,111 +3,138 @@
@@ -5586,7 +5718,7 @@ index 64d9c84e7a0..68c6233f9d0 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "1 hafta yedi gündür.",
    "word_16": "Yaygın bir 16 bit kelime boyutu.",
    "yard": "1 yarda tam olarak 0,9144 metredir.",
@@ -5626,11 +5758,23 @@ index 64d9c84e7a0..68c6233f9d0 100644
 +  "square_kilometer": "Metrik alan birimi.",
 +  "kilometer_per_liter": "Litrede kilometre.",
 +  "liter_per_100_kilometer": "100 kilometrede litre.",
-+  "mile_per_gallon_us": "Galonda mil."
++  "mile_per_gallon_us": "Galonda mil.",
++  "square_inch": "Bir kare inç, bir kenarı bir inç olan karenin alanıdır.",
++  "cubic_inch": "Bir küp inç, bir kenarı bir inç olan küpün hacmidir.",
++  "cubic_yard": "Bir kübik yarda tam olarak 0,764554857984 metreküptür.",
++  "milliradian": "Bir miliradyan 0,001 radyana eşittir.",
++  "meter_per_second": "Saniyede metre.",
++  "foot_per_second": "Saniyede fit.",
++  "mole_per_liter": "Molar derişim.",
++  "millimole_per_liter": "Milimolar derişim.",
++  "micromole_per_liter": "Mikromolar derişim.",
++  "parts_per_million_water": "Suda yaklaşık mg/L.",
++  "parts_per_billion_water": "Suda yaklaşık µg/L.",
++  "bushel_wheat": "Bir kile buğdayın yaklaşık kütlesi."
   },
   "faq": {
    "q1_question": "1 {FROM} kaç {TO} eder?",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "Dönüşüm tablosu",
    "related_conversions": "İlgili dönüşümler",
    "about_converting": "Dönüştürme hakkında:",
@@ -5678,7 +5822,7 @@ index 64d9c84e7a0..68c6233f9d0 100644
   },
   "currencyNames": {
    "USD": "ABD Doları",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "Kütle uygulama oranı.",
    "liquid_application_rate": "Sıvı uygulama oranı.",
    "yield_rate": "Tarımsal verim oranı."
@@ -5731,7 +5875,7 @@ index 64d9c84e7a0..68c6233f9d0 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/zh.json b/i18n-seo/zh.json
-index 5fc03334d09..379e2cbd41f 100644
+index 5fc03334d09..7bef1d07770 100644
 --- a/i18n-seo/zh.json
 +++ b/i18n-seo/zh.json
 @@ -3,111 +3,138 @@
@@ -5900,7 +6044,7 @@ index 5fc03334d09..379e2cbd41f 100644
    }
   },
   "prefixes": {
-@@ -515,7 +542,42 @@
+@@ -515,7 +542,54 @@
    "week": "1周等于7天。",
    "word_16": "一种常见的16位字长。",
    "yard": "1码恰好等于0.9144米。",
@@ -5940,11 +6084,23 @@ index 5fc03334d09..379e2cbd41f 100644
 +  "square_kilometer": "公制面积单位。",
 +  "kilometer_per_liter": "每升公里数.",
 +  "liter_per_100_kilometer": "每百公里升数.",
-+  "mile_per_gallon_us": "每加仑英里数."
++  "mile_per_gallon_us": "每加仑英里数.",
++  "square_inch": "平方英寸是边长为一英寸的正方形的面积。",
++  "cubic_inch": "立方英寸是边长为一英寸的立方体的体积。",
++  "cubic_yard": "1立方码恰好等于0.764554857984立方米。",
++  "milliradian": "1毫弧度等于0.001弧度。",
++  "meter_per_second": "米每秒。",
++  "foot_per_second": "英尺每秒。",
++  "mole_per_liter": "摩尔浓度。",
++  "millimole_per_liter": "毫摩尔浓度。",
++  "micromole_per_liter": "微摩尔浓度。",
++  "parts_per_million_water": "水中约为mg/L。",
++  "parts_per_billion_water": "水中约为µg/L。",
++  "bushel_wheat": "一蒲式耳小麦的近似质量。"
   },
   "faq": {
    "q1_question": "1 {FROM} 等于多少 {TO}？",
-@@ -547,7 +609,46 @@
+@@ -547,7 +621,46 @@
    "conversion_table": "换算表",
    "related_conversions": "相关换算",
    "about_converting": "关于换算",
@@ -5992,7 +6148,7 @@ index 5fc03334d09..379e2cbd41f 100644
   },
   "currencyNames": {
    "USD": "美元",
-@@ -740,5 +841,49 @@
+@@ -740,5 +853,49 @@
    "mass_application_rate": "施用质量速率。",
    "liquid_application_rate": "施用液体速率。",
    "yield_rate": "农业产量速率。"

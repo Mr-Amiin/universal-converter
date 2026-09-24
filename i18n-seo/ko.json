@@ -577,7 +577,19 @@
   "square_kilometer": "미터법 면적 단위.",
   "kilometer_per_liter": "리터당 킬로미터.",
   "liter_per_100_kilometer": "100km당 리터.",
-  "mile_per_gallon_us": "갤런당 마일."
+  "mile_per_gallon_us": "갤런당 마일.",
+  "square_inch": "평방 인치는 한 변이 1인치인 정사각형의 면적이다.",
+  "cubic_inch": "입방 인치는 한 변이 1인치인 정육면체의 부피이다.",
+  "cubic_yard": "1세제곱야드는 정확히 0.764554857984세제곱미터이다.",
+  "milliradian": "1밀리라디안은 0.001라디안에 해당한다.",
+  "meter_per_second": "초당 미터.",
+  "foot_per_second": "초당 피트.",
+  "mole_per_liter": "몰 농도.",
+  "millimole_per_liter": "밀리몰 농도.",
+  "micromole_per_liter": "마이크로몰 농도.",
+  "parts_per_million_water": "물에서 대략 mg/L.",
+  "parts_per_billion_water": "물에서 대략 µg/L.",
+  "bushel_wheat": "밀 1부셸의 대략적인 질량."
  },
  "faq": {
   "q1_question": "1 {FROM}는 몇 {TO}인가요?",

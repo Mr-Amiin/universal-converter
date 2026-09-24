@@ -577,7 +577,19 @@
   "square_kilometer": "मीट्रिक क्षेत्रफल इकाई।",
   "kilometer_per_liter": "किलोमीटर प्रति लीटर.",
   "liter_per_100_kilometer": "लीटर प्रति 100 किलोमीटर.",
-  "mile_per_gallon_us": "मील प्रति गैलन."
+  "mile_per_gallon_us": "मील प्रति गैलन.",
+  "square_inch": "वर्ग इंच एक इंच भुजा वाले वर्ग का क्षेत्रफल है।",
+  "cubic_inch": "घन इंच एक इंच भुजा वाले घन का आयतन है।",
+  "cubic_yard": "एक घन गज ठीक 0.764554857984 घन मीटर के बराबर होता है।",
+  "milliradian": "एक मिलिरेडियन 0.001 रेडियन के बराबर होता है।",
+  "meter_per_second": "मीटर प्रति सेकंड।",
+  "foot_per_second": "फुट प्रति सेकंड।",
+  "mole_per_liter": "मोलर सांद्रता।",
+  "millimole_per_liter": "मिलीमोलर सांद्रता।",
+  "micromole_per_liter": "माइक्रोमोलर सांद्रता।",
+  "parts_per_million_water": "पानी में लगभग mg/L।",
+  "parts_per_billion_water": "पानी में लगभग µg/L।",
+  "bushel_wheat": "गेहूं के एक बुशल का अनुमानित द्रव्यमान।"
  },
  "faq": {
   "q1_question": "1 {FROM} में कितने {TO} होते हैं?",

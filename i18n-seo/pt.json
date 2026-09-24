@@ -577,7 +577,19 @@
   "square_kilometer": "Unidade métrica de área.",
   "kilometer_per_liter": "Quilômetros por litro.",
   "liter_per_100_kilometer": "Litros por 100 quilômetros.",
-  "mile_per_gallon_us": "Milhas por galão."
+  "mile_per_gallon_us": "Milhas por galão.",
+  "square_inch": "Uma polegada quadrada é a área de um quadrado de um lado com uma polegada.",
+  "cubic_inch": "Uma polegada cúbica é o volume de um cubo de uma polegada de aresta.",
+  "cubic_yard": "Uma jarda cúbica equivale exatamente a 0,764554857984 metros cúbicos.",
+  "milliradian": "Um miliradiano equivale a 0,001 radianos.",
+  "meter_per_second": "Metros por segundo.",
+  "foot_per_second": "Pés por segundo.",
+  "mole_per_liter": "Concentração molar.",
+  "millimole_per_liter": "Concentração milimolar.",
+  "micromole_per_liter": "Concentração micromolar.",
+  "parts_per_million_water": "Aproximadamente mg/L em água.",
+  "parts_per_billion_water": "Aproximadamente µg/L em água.",
+  "bushel_wheat": "Massa aproximada de um bushel de trigo."
  },
  "faq": {
   "q1_question": "Quantos {TO} há em 1 {FROM}?",
