@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "本页面使用的是非实时更新的参考汇率。货币价值会在外汇市场上持续波动——在进行任何交易或财务决策之前，请务必通过实时金融数据源确认当前汇率。",
   "factor_explanation_template": "此换算系数来自每个单位与该类别基准单位之间的既定关系：1 {FROM} 等于 {FROM_FACTOR} 个基准单位，1 {TO} 等于 {TO_FACTOR} 个基准单位，两者相除即可得到从 {FROM} 到 {TO} 的直接换算系数 {RATIO}。",
   "currency_factor_explanation_text": "与实体单位不同，货币汇率并非由定义固定不变——它们会在外汇市场上持续浮动。此处使用的汇率为一个时间快照，在做出任何财务决策之前，应通过实时数据源进行确认。",
-  "temperature_factor_explanation_text": "两种温标均通过开尔文这一共同的绝对参考点进行换算。"
+  "temperature_factor_explanation_text": "两种温标均通过开尔文这一共同的绝对参考点进行换算。",
+  "primary_use_intro_template": "{UNIT}最常用于{USE}。"
  },
  "currencyNames": {
   "USD": "美元",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "国际英亩 对比 美国测量英亩。"
+ },
+ "categoryIntroTemplate": {
+  "area": "在农业和房地产领域,比较{UNIT_A}与{UNIT_B}十分常见,因为美国的土地通常以英亩计量,而世界上大多数其他地区则使用公顷。"
+ },
+ "unitPrimaryUse": {
+  "acre": "测量美国的农田、牧场和农村地产面积"
  }
 }

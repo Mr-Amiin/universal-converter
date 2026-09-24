@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "このページでは、リアルタイムで更新されない参考為替レートを使用しています。通貨の価値は外国為替市場で常に変動しています。取引や財務上の意思決定を行う前に、必ずライブの金融情報源で現在のレートをご確認ください。",
   "factor_explanation_template": "この係数は、各単位とカテゴリーの基準単位との定義上の関係に由来します。1 {FROM} は {FROM_FACTOR} 基準単位に等しく、1 {TO} は {TO_FACTOR} 基準単位に等しいため、一方をもう一方で割ると、{FROM} から {TO} への直接換算係数 {RATIO} が得られます。",
   "currency_factor_explanation_text": "物理単位とは異なり、通貨の為替レートは定義上固定されたものではなく、外国為替市場で常に変動しています。ここで使用されているレートはある時点のスナップショットであり、財務上の意思決定を行う前にライブの情報源で確認する必要があります。",
-  "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。"
+  "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。",
+  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。"
  },
  "currencyNames": {
   "USD": "米ドル",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "国際エーカー 対 米国測量エーカー。"
+ },
+ "categoryIntroTemplate": {
+  "area": "{UNIT_A}と{UNIT_B}の比較は農業や不動産の分野で一般的であり、米国の土地は通常エーカーで測られる一方、世界の他の多くの地域ではヘクタールが使われている。"
+ },
+ "unitPrimaryUse": {
+  "acre": "米国における農地、牧場、農村部の不動産の面積の測定"
  }
 }

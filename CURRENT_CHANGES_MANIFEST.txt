@@ -121,13 +121,48 @@ SUMMARY OF CHANGES IN THIS PACKAGE
    more units is purely a matter of authoring and injecting more
    translated JSON records using this same schema and pipeline.
 
+5. NEW — Localization of the article's lede paragraph ("About
+   Converting X to Y" intro), a previously-unhandled THIRD content
+   block reported directly from a live production screenshot
+   (area/acres-to-ares/ in Chinese). Unlike items 4 above, this
+   paragraph is built at generation time from a per-CATEGORY
+   connector sentence ("Comparing {A} and {B} is common in <category
+   context>.") plus a unit-scoped "primary use" clause about
+   fromUnit only ("{A} is most often used for <fact>."). A second,
+   more complex template variant (both units get their own
+   "typically associated with <context>" clause) also exists on some
+   pages but has no recovered source data yet.
+
+   Two new top-level keys: chrome.primary_use_intro_template
+   (connector template, {UNIT}/{USE} placeholders), plus
+   categoryIntroTemplate (keyed by category.id, {UNIT_A}/{UNIT_B}
+   placeholders) and unitPrimaryUse (keyed by unit.id) — the latter
+   two currently populated for category "area" and unit "acre" only.
+
+   Safety: the translation only ever applies when the page's real
+   original English paragraph is regex-matched against the exact
+   one-clause template shape AND its two named units equal
+   fromUnit.name/toUnit.name — never a blind text replacement. A page
+   using the two-clause variant, or any category/unit without this
+   data yet, safely stays in English. Verified live: acres-to-ares/
+   and acres-to-square-centimeters/ (category "area", unit "acre")
+   now translate correctly; hectares-to-acres/ (two-clause variant)
+   correctly stays in English with no partial/wrong output.
+
+   Unrelated pre-existing issue noticed while verifying this (NOT
+   fixed, out of scope for what was reported): generated compound
+   unit names like "Square Centimeter" render with a stray space in
+   some languages (zh: "平方 厘米") — affects the H1 heading too, not
+   just this new paragraph. Root cause is in the generic
+   prefix+base name composition logic, not in this package's changes.
+
 =========================================
 VALIDATION EVIDENCE (this session)
 =========================================
 Pages tested: area/acres-to-ares/, area/acres-to-square-centimeters/,
 agriculture/acre-to-hectare/, weight/kilograms-to-grams/, kg-to-lbs/,
-length/angstroms-to-astronomical-units/, temperature/celsius-to-delisle/,
-currency/aed-to-afn/
+hectares-to-acres/, length/angstroms-to-astronomical-units/,
+temperature/celsius-to-delisle/, currency/aed-to-afn/
 
 All pages: en -> zh -> [other language] -> [other language] -> zh -> en
 sequences confirmed byte-identical restoration, byte-identical repeated

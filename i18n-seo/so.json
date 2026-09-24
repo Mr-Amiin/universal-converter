@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "Boggan wuxuu isticmaalaa qiimo sarifka tixraac ah oo aan si toos ah loo cusboonaysiin. Qiimaha lacagaha ayaa si joogto ah u kala duwanaadaa suuqyada sarifka shisheeye — had iyo jeer xaqiiji qiimaha hadda ee ka socda isha maaliyadeed ee toos ah ka hor inta aadan samayn wax dhaqdhaqaaq ama go'aan maaliyadeed ah.",
   "factor_explanation_template": "Qiyaasan waxay ka timaaddaa xiriirka la go'aamiyay ee cutub kasta la leeyahay cutubka aasaasiga ah ee qaybta: 1 {FROM} waxay la mid tahay {FROM_FACTOR} cutub oo aasaasi ah, 1 {TO} na waxay la mid tahay {TO_FACTOR} cutub oo aasaasi ah, sidaa darteed qaybinta mid kale ayaa keenta qiyaasta toosan ee {FROM} ilaa {TO} oo ah {RATIO}.",
   "currency_factor_explanation_text": "Si ka duwan cutubyada jireed, qiimaha sarifka lacagaha si joogto ah uma go'na sida qeexid ahaan — waxay si joogto ah ugu kala duwan yihiin suuqyada sarifka shisheeye. Qiimaha halkan lagu isticmaalay waa muuqaal ku xiran wakhti gaar ah, waana in la xaqiijiyaa isha toosan ka hor inta aan la gaarin go'aan maaliyadeed.",
-  "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah."
+  "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah.",
+  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}."
  },
  "currencyNames": {
   "USD": "Doolar Mareykan",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "Eeker caalami ah iyo eekerka sahanka Mareykanka."
+ },
+ "categoryIntroTemplate": {
+  "area": "Isbarbardhigga {UNIT_A} iyo {UNIT_B} waa mid caadi ah beeraha iyo dhulka guryaha, sababtoo ah dhulka Mareykanka sida caadiga ah waxaa lagu qiyaasaa eekar, halka intii badan dunida kale ay isticmaasho hektar."
+ },
+ "unitPrimaryUse": {
+  "acre": "cabbirka dhulalka beeraha, dhulalka xoolaha, iyo hantida dalka miyiga ee Mareykanka"
  }
 }

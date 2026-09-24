@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "Questa pagina utilizza un tasso di cambio di riferimento che non viene aggiornato in tempo reale. I valori delle valute fluttuano continuamente sui mercati dei cambi — verificare sempre il tasso attuale con una fonte finanziaria in tempo reale prima di effettuare una transazione o una decisione finanziaria.",
   "factor_explanation_template": "Questo fattore deriva dalla relazione definita di ciascuna unità con l'unità di base della categoria: 1 {FROM} equivale a {FROM_FACTOR} unità di base, e 1 {TO} equivale a {TO_FACTOR} unità di base, quindi dividendo l'una per l'altra si ottiene il fattore diretto da {FROM} a {TO} pari a {RATIO}.",
   "currency_factor_explanation_text": "A differenza delle unità fisiche, i tassi di cambio valutari non sono fissi per definizione: fluttuano continuamente sui mercati dei cambi. Il tasso utilizzato qui è un'istantanea e deve essere confermato con una fonte in tempo reale prima di qualsiasi decisione finanziaria.",
-  "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune."
+  "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune.",
+  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}."
  },
  "currencyNames": {
   "USD": "Dollaro statunitense",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "Acro internazionale rispetto all'acro di rilevamento statunitense."
+ },
+ "categoryIntroTemplate": {
+  "area": "Confrontare {UNIT_A} e {UNIT_B} è comune in agricoltura e nel settore immobiliare, poiché negli Stati Uniti i terreni sono generalmente misurati in acri, mentre la maggior parte del resto del mondo utilizza gli ettari."
+ },
+ "unitPrimaryUse": {
+  "acre": "misurare l'estensione di terreni agricoli, ranch e proprietà rurali negli Stati Uniti"
  }
 }

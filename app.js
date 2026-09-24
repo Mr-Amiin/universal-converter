@@ -5020,6 +5020,35 @@ const chrome = seoData.chrome || {};
 if (aboutHeading && chrome.about_converting && /^About Converting /.test(originalText(aboutHeading))) {
 setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${toName}`);
 }
+// The article's lede paragraph, immediately after the "About Converting"
+// h2, is built at generation time from a per-category connector sentence
+// ("Comparing {A} and {B} is common in <category context>.") plus, in the
+// simplest variant, a single unit-scoped "primary use" clause about
+// fromUnit only ("{A} is most often used for <fact>."). A second variant
+// (both units get their own "typically associated with <context>" clause)
+// also exists on some pages but has no recovered source data yet.
+// Rather than guess which variant a given page uses, this only recognizes
+// the one-clause shape via a structural regex match (not a hardcoded
+// English template, since that would duplicate the source text here) -
+// requiring the paragraph's two named units to equal fromUnit/toUnit's
+// real English names - and only then reconstructs the translation from
+// seoData.categoryIntroTemplate[category.id] + seoData.unitPrimaryUse[fromUnit.id].
+// Anything that doesn't match this exact shape (a two-clause-variant page,
+// or any category/unit without this data yet) safely stays in English.
+const introP = document.querySelector(".seo-article > h2:first-child + p");
+if (introP && category && seoData.categoryIntroTemplate && seoData.unitPrimaryUse) {
+const introMatch = originalText(introP).match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
+if (introMatch && introMatch[1] === fromUnit.name && introMatch[2] === toUnit.name && introMatch[3] === fromUnit.name) {
+const categoryTemplate = seoData.categoryIntroTemplate[category.id];
+const primaryUseTemplate = chrome.primary_use_intro_template;
+const primaryUse = seoData.unitPrimaryUse[fromUnit.id];
+if (categoryTemplate && primaryUseTemplate && primaryUse) {
+const sentence1 = fillTemplateSafe(categoryTemplate, { UNIT_A: fromName, UNIT_B: toName });
+const sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
+setTranslatedText(introP, `${sentence1} ${sentence2}`);
+}
+}
+}
 // The breadcrumb's own final (non-link) crumb and the visually-hidden
 // #converterTitle heading both duplicate the H1's page-specific name
 // ("Acres to Hectares") rather than any shared UI label, so they use

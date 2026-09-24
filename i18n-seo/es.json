@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "Esta página utiliza un tipo de cambio de referencia que no se actualiza en tiempo real. Los valores de las divisas fluctúan continuamente en los mercados de cambio — confirme siempre la tasa actual con una fuente financiera en vivo antes de realizar una transacción o decisión financiera.",
   "factor_explanation_template": "Este factor proviene de la relación definida de cada unidad con la unidad base de la categoría: 1 {FROM} equivale a {FROM_FACTOR} unidades base, y 1 {TO} equivale a {TO_FACTOR} unidades base, por lo que al dividir una entre la otra se obtiene el factor directo de {FROM} a {TO} de {RATIO}.",
   "currency_factor_explanation_text": "A diferencia de las unidades físicas, los tipos de cambio de divisas no están fijados por definición: fluctúan continuamente en los mercados de divisas. La tasa utilizada aquí es una instantánea y debe confirmarse con una fuente en tiempo real antes de tomar cualquier decisión financiera.",
-  "temperature_factor_explanation_text": "Ambas escalas se convierten a través del Kelvin como punto de referencia absoluto común."
+  "temperature_factor_explanation_text": "Ambas escalas se convierten a través del Kelvin como punto de referencia absoluto común.",
+  "primary_use_intro_template": "{UNIT} se utiliza con mayor frecuencia para {USE}."
  },
  "currencyNames": {
   "USD": "Dólar estadounidense",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "Acre internacional frente a acre de agrimensura de EE. UU."
+ },
+ "categoryIntroTemplate": {
+  "area": "Comparar {UNIT_A} y {UNIT_B} es habitual en la agricultura y el sector inmobiliario, ya que en EE. UU. la superficie de los terrenos suele medirse en acres, mientras que la mayor parte del resto del mundo utiliza hectáreas."
+ },
+ "unitPrimaryUse": {
+  "acre": "medir la superficie de terrenos agrícolas, ranchos y propiedades rurales en Estados Unidos"
  }
 }

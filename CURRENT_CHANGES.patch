@@ -28,7 +28,7 @@ index d4cffb23f8b..2764b8a6529 100644
  document.body.appendChild(banner);
  document.getElementById("ucCookieAccept").addEventListener("click", function () {
 diff --git a/app.js b/app.js
-index c900c1e6850..ada0ae113cb 100644
+index c900c1e6850..0c44a359fd8 100644
 --- a/app.js
 +++ b/app.js
 @@ -5,41 +5,60 @@
@@ -1336,10 +1336,39 @@ index c900c1e6850..ada0ae113cb 100644
  const fromName = getUnitDisplayName(fromUnit);
  const toName = getUnitDisplayName(toUnit);
  const h1 = document.querySelector(".hero-content h1");
-@@ -4516,6 +5020,34 @@ const chrome = seoData.chrome || {};
+@@ -4516,6 +5020,63 @@ const chrome = seoData.chrome || {};
  if (aboutHeading && chrome.about_converting && /^About Converting /.test(originalText(aboutHeading))) {
  setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${toName}`);
  }
++// The article's lede paragraph, immediately after the "About Converting"
++// h2, is built at generation time from a per-category connector sentence
++// ("Comparing {A} and {B} is common in <category context>.") plus, in the
++// simplest variant, a single unit-scoped "primary use" clause about
++// fromUnit only ("{A} is most often used for <fact>."). A second variant
++// (both units get their own "typically associated with <context>" clause)
++// also exists on some pages but has no recovered source data yet.
++// Rather than guess which variant a given page uses, this only recognizes
++// the one-clause shape via a structural regex match (not a hardcoded
++// English template, since that would duplicate the source text here) -
++// requiring the paragraph's two named units to equal fromUnit/toUnit's
++// real English names - and only then reconstructs the translation from
++// seoData.categoryIntroTemplate[category.id] + seoData.unitPrimaryUse[fromUnit.id].
++// Anything that doesn't match this exact shape (a two-clause-variant page,
++// or any category/unit without this data yet) safely stays in English.
++const introP = document.querySelector(".seo-article > h2:first-child + p");
++if (introP && category && seoData.categoryIntroTemplate && seoData.unitPrimaryUse) {
++const introMatch = originalText(introP).match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
++if (introMatch && introMatch[1] === fromUnit.name && introMatch[2] === toUnit.name && introMatch[3] === fromUnit.name) {
++const categoryTemplate = seoData.categoryIntroTemplate[category.id];
++const primaryUseTemplate = chrome.primary_use_intro_template;
++const primaryUse = seoData.unitPrimaryUse[fromUnit.id];
++if (categoryTemplate && primaryUseTemplate && primaryUse) {
++const sentence1 = fillTemplateSafe(categoryTemplate, { UNIT_A: fromName, UNIT_B: toName });
++const sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
++setTranslatedText(introP, `${sentence1} ${sentence2}`);
++}
++}
++}
 +// The breadcrumb's own final (non-link) crumb and the visually-hidden
 +// #converterTitle heading both duplicate the H1's page-specific name
 +// ("Acres to Hectares") rather than any shared UI label, so they use
@@ -1371,7 +1400,7 @@ index c900c1e6850..ada0ae113cb 100644
  }
  
  // Pulls the actual number the site's own generator already printed out of
-@@ -4652,6 +5184,479 @@ setTranslatedText(aEl, translatedAnswer);
+@@ -4652,6 +5213,479 @@ setTranslatedText(aEl, translatedAnswer);
  });
  }
  
@@ -1851,7 +1880,7 @@ index c900c1e6850..ada0ae113cb 100644
  // Related-conversion links are translated purely by re-deriving each
  // link's own from/to unit pair from its href with the SAME
  // deriveConversionFromPath() the converter widget already relies on -
-@@ -4700,8 +5705,9 @@ if (!category) return;
+@@ -4700,8 +5734,9 @@ if (!category) return;
  const fromUnit = getUnit(category, ctx.fromUnitId);
  const toUnit = getUnit(category, ctx.toUnitId);
  if (!fromUnit || !toUnit) return;
@@ -1862,7 +1891,7 @@ index c900c1e6850..ada0ae113cb 100644
  }
  
  // Re-renders the interactive converter widget's language-aware pieces
-@@ -4710,12 +5716,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
+@@ -4710,12 +5745,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
  // selection already in `state` - it does not change what is selected,
  // only how its labels are displayed.
  function refreshLanguageAwareConverter() {
@@ -1934,7 +1963,7 @@ index c900c1e6850..ada0ae113cb 100644
  populateSelect(byId("toUnit"), category.units, state.toUnitId);
  if (typeof updateConversion === "function") updateConversion();
 diff --git a/i18n-seo/ar.json b/i18n-seo/ar.json
-index aef43ca2187..603a2c1c76a 100644
+index aef43ca2187..55004847e6c 100644
 --- a/i18n-seo/ar.json
 +++ b/i18n-seo/ar.json
 @@ -3,111 +3,138 @@
@@ -2147,7 +2176,7 @@ index aef43ca2187..603a2c1c76a 100644
   },
   "faq": {
    "q1_question": "كم عدد {TO} في 1 {FROM}؟",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "جدول التحويل",
    "related_conversions": "تحويلات ذات صلة",
    "about_converting": "حول تحويل",
@@ -2190,11 +2219,12 @@ index aef43ca2187..603a2c1c76a 100644
 +  "exchange_rate_notice_text": "تستخدم هذه الصفحة سعر صرف مرجعي لا يتم تحديثه في الوقت الفعلي. تتقلب قيم العملات باستمرار في أسواق الصرف الأجنبي — تأكد دائمًا من السعر الحالي من مصدر مالي مباشر قبل إجراء أي معاملة أو قرار مالي.",
 +  "factor_explanation_template": "يأتي هذا العامل من العلاقة المحددة لكل وحدة بوحدة الأساس للفئة: 1 {FROM} يساوي {FROM_FACTOR} من الوحدات الأساسية، و1 {TO} يساوي {TO_FACTOR} من الوحدات الأساسية، وبقسمة إحداهما على الأخرى نحصل على عامل التحويل المباشر من {FROM} إلى {TO} وهو {RATIO}.",
 +  "currency_factor_explanation_text": "على عكس الوحدات الفيزيائية، أسعار صرف العملات ليست ثابتة بحكم التعريف — بل تتقلب باستمرار في أسواق الصرف الأجنبي. السعر المستخدم هنا هو لقطة لحظية ويجب تأكيده من مصدر مباشر قبل اتخاذ أي قرار مالي.",
-+  "temperature_factor_explanation_text": "يتم تحويل كلا المقياسين عبر الكلفن كنقطة مرجعية مطلقة مشتركة."
++  "temperature_factor_explanation_text": "يتم تحويل كلا المقياسين عبر الكلفن كنقطة مرجعية مطلقة مشتركة.",
++  "primary_use_intro_template": "{UNIT} يُستخدم غالبًا في {USE}."
   },
   "currencyNames": {
    "USD": "دولار أمريكي",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "معدل تطبيق الكتلة.",
    "liquid_application_rate": "معدل تطبيق السائل.",
    "yield_rate": "معدل الإنتاجية الزراعية."
@@ -2236,12 +2266,18 @@ index aef43ca2187..603a2c1c76a 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "الفدان الدولي مقابل فدان المساحة الأمريكي."
++ },
++ "categoryIntroTemplate": {
++  "area": "مقارنة {UNIT_A} بـ {UNIT_B} أمر شائع في الزراعة والعقارات، حيث تُقاس الأراضي الأمريكية عادةً بالفدان بينما يستخدم معظم بقية العالم الهكتار."
++ },
++ "unitPrimaryUse": {
++  "acre": "قياس مساحة الأراضي الزراعية والمزارع والعقارات الريفية في الولايات المتحدة"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/de.json b/i18n-seo/de.json
-index c265901d60e..a7fca0f7218 100644
+index c265901d60e..6b8514f84ee 100644
 --- a/i18n-seo/de.json
 +++ b/i18n-seo/de.json
 @@ -3,111 +3,138 @@
@@ -2454,7 +2490,7 @@ index c265901d60e..a7fca0f7218 100644
   },
   "faq": {
    "q1_question": "Wie viele {TO} sind in 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Umrechnungstabelle",
    "related_conversions": "Verwandte Umrechnungen",
    "about_converting": "Über die Umrechnung von",
@@ -2497,11 +2533,12 @@ index c265901d60e..a7fca0f7218 100644
 +  "exchange_rate_notice_text": "Diese Seite verwendet einen Referenzwechselkurs, der nicht in Echtzeit aktualisiert wird. Währungswerte schwanken kontinuierlich an den Devisenmärkten — bestätigen Sie den aktuellen Kurs stets bei einer Live-Finanzquelle, bevor Sie eine Transaktion oder finanzielle Entscheidung treffen.",
 +  "factor_explanation_template": "Dieser Faktor ergibt sich aus der festgelegten Beziehung jeder Einheit zur Basiseinheit der Kategorie: 1 {FROM} entspricht {FROM_FACTOR} Basiseinheiten, und 1 {TO} entspricht {TO_FACTOR} Basiseinheiten. Teilt man eines durch das andere, erhält man den direkten Umrechnungsfaktor von {FROM} zu {TO} von {RATIO}.",
 +  "currency_factor_explanation_text": "Anders als bei physikalischen Einheiten sind Wechselkurse nicht per Definition festgelegt – sie schwanken kontinuierlich an den Devisenmärkten. Der hier verwendete Kurs ist eine Momentaufnahme und sollte vor jeder finanziellen Entscheidung anhand einer Live-Quelle bestätigt werden.",
-+  "temperature_factor_explanation_text": "Beide Skalen werden über Kelvin als gemeinsamen absoluten Bezugspunkt umgerechnet."
++  "temperature_factor_explanation_text": "Beide Skalen werden über Kelvin als gemeinsamen absoluten Bezugspunkt umgerechnet.",
++  "primary_use_intro_template": "{UNIT} wird am häufigsten für {USE} verwendet."
   },
   "currencyNames": {
    "USD": "US-Dollar",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Massenausbringungsrate.",
    "liquid_application_rate": "Flüssigkeitsausbringungsrate.",
    "yield_rate": "Landwirtschaftliche Ertragsrate."
@@ -2543,12 +2580,18 @@ index c265901d60e..a7fca0f7218 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Internationaler Acre im Vergleich zu US-Vermessungs-Acre."
++ },
++ "categoryIntroTemplate": {
++  "area": "Der Vergleich von {UNIT_A} und {UNIT_B} ist in der Landwirtschaft und im Immobilienwesen üblich, da Land in den USA typischerweise in Acres gemessen wird, während im übrigen Teil der Welt meist Hektar verwendet werden."
++ },
++ "unitPrimaryUse": {
++  "acre": "die Messung der Größe von Ackerland, Ranches und ländlichem Grundbesitz in den USA"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/es.json b/i18n-seo/es.json
-index 7d73ac4fc40..f2e5fa82799 100644
+index 7d73ac4fc40..b95babeac22 100644
 --- a/i18n-seo/es.json
 +++ b/i18n-seo/es.json
 @@ -3,111 +3,138 @@
@@ -2761,7 +2804,7 @@ index 7d73ac4fc40..f2e5fa82799 100644
   },
   "faq": {
    "q1_question": "¿Cuántos {TO} hay en 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Tabla de conversión",
    "related_conversions": "Conversiones relacionadas",
    "about_converting": "Acerca de convertir",
@@ -2804,11 +2847,12 @@ index 7d73ac4fc40..f2e5fa82799 100644
 +  "exchange_rate_notice_text": "Esta página utiliza un tipo de cambio de referencia que no se actualiza en tiempo real. Los valores de las divisas fluctúan continuamente en los mercados de cambio — confirme siempre la tasa actual con una fuente financiera en vivo antes de realizar una transacción o decisión financiera.",
 +  "factor_explanation_template": "Este factor proviene de la relación definida de cada unidad con la unidad base de la categoría: 1 {FROM} equivale a {FROM_FACTOR} unidades base, y 1 {TO} equivale a {TO_FACTOR} unidades base, por lo que al dividir una entre la otra se obtiene el factor directo de {FROM} a {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "A diferencia de las unidades físicas, los tipos de cambio de divisas no están fijados por definición: fluctúan continuamente en los mercados de divisas. La tasa utilizada aquí es una instantánea y debe confirmarse con una fuente en tiempo real antes de tomar cualquier decisión financiera.",
-+  "temperature_factor_explanation_text": "Ambas escalas se convierten a través del Kelvin como punto de referencia absoluto común."
++  "temperature_factor_explanation_text": "Ambas escalas se convierten a través del Kelvin como punto de referencia absoluto común.",
++  "primary_use_intro_template": "{UNIT} se utiliza con mayor frecuencia para {USE}."
   },
   "currencyNames": {
    "USD": "Dólar estadounidense",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Tasa de aplicación de masa.",
    "liquid_application_rate": "Tasa de aplicación líquida.",
    "yield_rate": "Tasa de rendimiento agrícola."
@@ -2850,12 +2894,18 @@ index 7d73ac4fc40..f2e5fa82799 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Acre internacional frente a acre de agrimensura de EE. UU."
++ },
++ "categoryIntroTemplate": {
++  "area": "Comparar {UNIT_A} y {UNIT_B} es habitual en la agricultura y el sector inmobiliario, ya que en EE. UU. la superficie de los terrenos suele medirse en acres, mientras que la mayor parte del resto del mundo utiliza hectáreas."
++ },
++ "unitPrimaryUse": {
++  "acre": "medir la superficie de terrenos agrícolas, ranchos y propiedades rurales en Estados Unidos"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/fr.json b/i18n-seo/fr.json
-index 9c414d5287d..4288d8253da 100644
+index 9c414d5287d..80241c9e300 100644
 --- a/i18n-seo/fr.json
 +++ b/i18n-seo/fr.json
 @@ -3,111 +3,138 @@
@@ -3068,7 +3118,7 @@ index 9c414d5287d..4288d8253da 100644
   },
   "faq": {
    "q1_question": "Combien de {TO} y a-t-il dans 1 {FROM} ?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Table de conversion",
    "related_conversions": "Conversions associées",
    "about_converting": "À propos de la conversion de",
@@ -3111,11 +3161,12 @@ index 9c414d5287d..4288d8253da 100644
 +  "exchange_rate_notice_text": "Cette page utilise un taux de change de référence qui n'est pas mis à jour en temps réel. Les valeurs des devises fluctuent continuellement sur les marchés des changes — confirmez toujours le taux actuel auprès d'une source financière en direct avant toute transaction ou décision financière.",
 +  "factor_explanation_template": "Ce facteur provient de la relation définie de chaque unité avec l'unité de base de la catégorie : 1 {FROM} équivaut à {FROM_FACTOR} unités de base, et 1 {TO} équivaut à {TO_FACTOR} unités de base ; en divisant l'une par l'autre, on obtient le facteur direct de {FROM} à {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "Contrairement aux unités physiques, les taux de change des devises ne sont pas fixes par définition — ils fluctuent continuellement sur les marchés des changes. Le taux utilisé ici est un instantané et doit être confirmé auprès d'une source en direct avant toute décision financière.",
-+  "temperature_factor_explanation_text": "Les deux échelles sont converties via le kelvin, utilisé comme point de référence absolu commun."
++  "temperature_factor_explanation_text": "Les deux échelles sont converties via le kelvin, utilisé comme point de référence absolu commun.",
++  "primary_use_intro_template": "{UNIT} est le plus souvent utilisé pour {USE}."
   },
   "currencyNames": {
    "USD": "Dollar américain",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Taux d'application de masse.",
    "liquid_application_rate": "Taux d'application liquide.",
    "yield_rate": "Taux de rendement agricole."
@@ -3157,12 +3208,18 @@ index 9c414d5287d..4288d8253da 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Acre international par rapport à l'acre d'arpentage américain."
++ },
++ "categoryIntroTemplate": {
++  "area": "Comparer {UNIT_A} et {UNIT_B} est courant en agriculture et dans l'immobilier, car les terrains américains sont généralement mesurés en acres alors que la majeure partie du reste du monde utilise les hectares."
++ },
++ "unitPrimaryUse": {
++  "acre": "mesurer la superficie des terres agricoles, des ranchs et des propriétés rurales aux États-Unis"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/hi.json b/i18n-seo/hi.json
-index 0e768217d49..0916552e2fe 100644
+index 0e768217d49..6e8f7af1348 100644
 --- a/i18n-seo/hi.json
 +++ b/i18n-seo/hi.json
 @@ -3,111 +3,138 @@
@@ -3375,7 +3432,7 @@ index 0e768217d49..0916552e2fe 100644
   },
   "faq": {
    "q1_question": "1 {FROM} में कितने {TO} होते हैं?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "रूपांतरण तालिका",
    "related_conversions": "संबंधित रूपांतरण",
    "about_converting": "रूपांतरण के बारे में",
@@ -3418,11 +3475,12 @@ index 0e768217d49..0916552e2fe 100644
 +  "exchange_rate_notice_text": "यह पृष्ठ एक संदर्भ विनिमय दर का उपयोग करता है जो वास्तविक समय में अपडेट नहीं होती। मुद्रा मूल्य विदेशी मुद्रा बाजारों में लगातार बदलते रहते हैं — किसी भी लेन-देन या वित्तीय निर्णय से पहले हमेशा किसी लाइव वित्तीय स्रोत से वर्तमान दर की पुष्टि करें।",
 +  "factor_explanation_template": "यह गुणांक प्रत्येक इकाई के श्रेणी की आधार इकाई के साथ निर्धारित संबंध से आता है: 1 {FROM} बराबर है {FROM_FACTOR} आधार इकाइयों के, और 1 {TO} बराबर है {TO_FACTOR} आधार इकाइयों के, इसलिए एक को दूसरे से विभाजित करने पर {FROM} से {TO} तक का प्रत्यक्ष रूपांतरण गुणांक {RATIO} प्राप्त होता है।",
 +  "currency_factor_explanation_text": "भौतिक इकाइयों के विपरीत, मुद्रा विनिमय दरें परिभाषा के अनुसार स्थिर नहीं होतीं — वे विदेशी मुद्रा बाजारों में लगातार बदलती रहती हैं। यहाँ उपयोग की गई दर एक निश्चित समय की झलक है और किसी भी वित्तीय निर्णय से पहले इसे किसी लाइव स्रोत से सत्यापित किया जाना चाहिए।",
-+  "temperature_factor_explanation_text": "दोनों पैमाने एक सामान्य निरपेक्ष संदर्भ बिंदु के रूप में केल्विन के माध्यम से परिवर्तित किए जाते हैं।"
++  "temperature_factor_explanation_text": "दोनों पैमाने एक सामान्य निरपेक्ष संदर्भ बिंदु के रूप में केल्विन के माध्यम से परिवर्तित किए जाते हैं।",
++  "primary_use_intro_template": "{UNIT} का सबसे अधिक उपयोग {USE} के लिए किया जाता है।"
   },
   "currencyNames": {
    "USD": "अमेरिकी डॉलर",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "द्रव्यमान प्रयोग दर।",
    "liquid_application_rate": "तरल प्रयोग दर।",
    "yield_rate": "कृषि उपज दर।"
@@ -3464,12 +3522,18 @@ index 0e768217d49..0916552e2fe 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "अंतरराष्ट्रीय एकड़ बनाम अमेरिकी सर्वे एकड़।"
++ },
++ "categoryIntroTemplate": {
++  "area": "{UNIT_A} और {UNIT_B} की तुलना कृषि और रियल एस्टेट में आम है, क्योंकि अमेरिका में भूमि आमतौर पर एकड़ में मापी जाती है जबकि बाकी अधिकांश दुनिया हेक्टेयर का उपयोग करती है।"
++ },
++ "unitPrimaryUse": {
++  "acre": "अमेरिका में खेती की भूमि, रैंच और ग्रामीण संपत्ति के आकार को मापना"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/id.json b/i18n-seo/id.json
-index fb3a6648ddd..0d0ca385d30 100644
+index fb3a6648ddd..a5e6720593b 100644
 --- a/i18n-seo/id.json
 +++ b/i18n-seo/id.json
 @@ -3,111 +3,138 @@
@@ -3682,7 +3746,7 @@ index fb3a6648ddd..0d0ca385d30 100644
   },
   "faq": {
    "q1_question": "Berapa {TO} dalam 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Tabel konversi",
    "related_conversions": "Konversi terkait",
    "about_converting": "Tentang mengonversi",
@@ -3725,11 +3789,12 @@ index fb3a6648ddd..0d0ca385d30 100644
 +  "exchange_rate_notice_text": "Halaman ini menggunakan nilai tukar referensi yang tidak diperbarui secara real-time. Nilai mata uang terus berfluktuasi di pasar valuta asing — selalu konfirmasikan kurs saat ini dengan sumber keuangan langsung sebelum melakukan transaksi atau keputusan keuangan.",
 +  "factor_explanation_template": "Faktor ini berasal dari hubungan yang ditetapkan antara setiap satuan dengan satuan dasar kategori tersebut: 1 {FROM} sama dengan {FROM_FACTOR} satuan dasar, dan 1 {TO} sama dengan {TO_FACTOR} satuan dasar, sehingga membagi salah satu dengan yang lain menghasilkan faktor langsung {FROM}-ke-{TO} sebesar {RATIO}.",
 +  "currency_factor_explanation_text": "Berbeda dengan satuan fisik, nilai tukar mata uang tidak tetap berdasarkan definisi — nilainya terus berfluktuasi di pasar valuta asing. Nilai tukar yang digunakan di sini adalah cuplikan pada suatu waktu dan harus dikonfirmasi dengan sumber langsung sebelum membuat keputusan keuangan apa pun.",
-+  "temperature_factor_explanation_text": "Kedua skala dikonversi melalui Kelvin sebagai titik referensi absolut yang sama."
++  "temperature_factor_explanation_text": "Kedua skala dikonversi melalui Kelvin sebagai titik referensi absolut yang sama.",
++  "primary_use_intro_template": "{UNIT} paling sering digunakan untuk {USE}."
   },
   "currencyNames": {
    "USD": "Dolar AS",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Laju aplikasi massa.",
    "liquid_application_rate": "Laju aplikasi cairan.",
    "yield_rate": "Laju hasil pertanian."
@@ -3771,12 +3836,18 @@ index fb3a6648ddd..0d0ca385d30 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Acre internasional vs acre survei AS."
++ },
++ "categoryIntroTemplate": {
++  "area": "Membandingkan {UNIT_A} dan {UNIT_B} adalah hal yang umum dalam pertanian dan real estat, karena lahan di AS biasanya diukur dalam acre sementara sebagian besar dunia lainnya menggunakan hektar."
++ },
++ "unitPrimaryUse": {
++  "acre": "mengukur luas lahan pertanian, peternakan, dan properti pedesaan di AS"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/it.json b/i18n-seo/it.json
-index 385ace59804..18d2585b6c0 100644
+index 385ace59804..d21dcc3b424 100644
 --- a/i18n-seo/it.json
 +++ b/i18n-seo/it.json
 @@ -3,111 +3,138 @@
@@ -3989,7 +4060,7 @@ index 385ace59804..18d2585b6c0 100644
   },
   "faq": {
    "q1_question": "Quanti {TO} ci sono in 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Tabella di conversione",
    "related_conversions": "Conversioni correlate",
    "about_converting": "Informazioni sulla conversione da",
@@ -4032,11 +4103,12 @@ index 385ace59804..18d2585b6c0 100644
 +  "exchange_rate_notice_text": "Questa pagina utilizza un tasso di cambio di riferimento che non viene aggiornato in tempo reale. I valori delle valute fluttuano continuamente sui mercati dei cambi — verificare sempre il tasso attuale con una fonte finanziaria in tempo reale prima di effettuare una transazione o una decisione finanziaria.",
 +  "factor_explanation_template": "Questo fattore deriva dalla relazione definita di ciascuna unità con l'unità di base della categoria: 1 {FROM} equivale a {FROM_FACTOR} unità di base, e 1 {TO} equivale a {TO_FACTOR} unità di base, quindi dividendo l'una per l'altra si ottiene il fattore diretto da {FROM} a {TO} pari a {RATIO}.",
 +  "currency_factor_explanation_text": "A differenza delle unità fisiche, i tassi di cambio valutari non sono fissi per definizione: fluttuano continuamente sui mercati dei cambi. Il tasso utilizzato qui è un'istantanea e deve essere confermato con una fonte in tempo reale prima di qualsiasi decisione finanziaria.",
-+  "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune."
++  "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune.",
++  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}."
   },
   "currencyNames": {
    "USD": "Dollaro statunitense",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Tasso di applicazione di massa.",
    "liquid_application_rate": "Tasso di applicazione liquida.",
    "yield_rate": "Tasso di resa agricola."
@@ -4078,12 +4150,18 @@ index 385ace59804..18d2585b6c0 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Acro internazionale rispetto all'acro di rilevamento statunitense."
++ },
++ "categoryIntroTemplate": {
++  "area": "Confrontare {UNIT_A} e {UNIT_B} è comune in agricoltura e nel settore immobiliare, poiché negli Stati Uniti i terreni sono generalmente misurati in acri, mentre la maggior parte del resto del mondo utilizza gli ettari."
++ },
++ "unitPrimaryUse": {
++  "acre": "misurare l'estensione di terreni agricoli, ranch e proprietà rurali negli Stati Uniti"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ja.json b/i18n-seo/ja.json
-index dd70c06e6f2..8a616cc4a4f 100644
+index dd70c06e6f2..620f2433dc1 100644
 --- a/i18n-seo/ja.json
 +++ b/i18n-seo/ja.json
 @@ -3,111 +3,138 @@
@@ -4296,7 +4374,7 @@ index dd70c06e6f2..8a616cc4a4f 100644
   },
   "faq": {
    "q1_question": "1 {FROM} は何 {TO} ですか？",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "変換表",
    "related_conversions": "関連する変換",
    "about_converting": "変換について：",
@@ -4339,11 +4417,12 @@ index dd70c06e6f2..8a616cc4a4f 100644
 +  "exchange_rate_notice_text": "このページでは、リアルタイムで更新されない参考為替レートを使用しています。通貨の価値は外国為替市場で常に変動しています。取引や財務上の意思決定を行う前に、必ずライブの金融情報源で現在のレートをご確認ください。",
 +  "factor_explanation_template": "この係数は、各単位とカテゴリーの基準単位との定義上の関係に由来します。1 {FROM} は {FROM_FACTOR} 基準単位に等しく、1 {TO} は {TO_FACTOR} 基準単位に等しいため、一方をもう一方で割ると、{FROM} から {TO} への直接換算係数 {RATIO} が得られます。",
 +  "currency_factor_explanation_text": "物理単位とは異なり、通貨の為替レートは定義上固定されたものではなく、外国為替市場で常に変動しています。ここで使用されているレートはある時点のスナップショットであり、財務上の意思決定を行う前にライブの情報源で確認する必要があります。",
-+  "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。"
++  "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。",
++  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。"
   },
   "currencyNames": {
    "USD": "米ドル",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "質量散布率。",
    "liquid_application_rate": "液体散布率。",
    "yield_rate": "農業収量率。"
@@ -4385,12 +4464,18 @@ index dd70c06e6f2..8a616cc4a4f 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "国際エーカー 対 米国測量エーカー。"
++ },
++ "categoryIntroTemplate": {
++  "area": "{UNIT_A}と{UNIT_B}の比較は農業や不動産の分野で一般的であり、米国の土地は通常エーカーで測られる一方、世界の他の多くの地域ではヘクタールが使われている。"
++ },
++ "unitPrimaryUse": {
++  "acre": "米国における農地、牧場、農村部の不動産の面積の測定"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ko.json b/i18n-seo/ko.json
-index 3e5e3468ea5..500d0823a23 100644
+index 3e5e3468ea5..467a9302fdc 100644
 --- a/i18n-seo/ko.json
 +++ b/i18n-seo/ko.json
 @@ -3,111 +3,138 @@
@@ -4603,7 +4688,7 @@ index 3e5e3468ea5..500d0823a23 100644
   },
   "faq": {
    "q1_question": "1 {FROM}는 몇 {TO}인가요?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "변환표",
    "related_conversions": "관련 변환",
    "about_converting": "변환 정보:",
@@ -4646,11 +4731,12 @@ index 3e5e3468ea5..500d0823a23 100644
 +  "exchange_rate_notice_text": "이 페이지는 실시간으로 업데이트되지 않는 참고 환율을 사용합니다. 통화 가치는 외환 시장에서 지속적으로 변동합니다 — 거래나 재무적 결정을 내리기 전에 반드시 실시간 금융 정보원을 통해 현재 환율을 확인하십시오.",
 +  "factor_explanation_template": "이 계수는 각 단위와 해당 범주의 기준 단위 사이의 정의된 관계에서 비롯됩니다. 1 {FROM}은(는) {FROM_FACTOR} 기준 단위와 같고, 1 {TO}은(는) {TO_FACTOR} 기준 단위와 같으므로, 하나를 다른 하나로 나누면 {FROM}에서 {TO}로의 직접 환산 계수 {RATIO}를 얻습니다.",
 +  "currency_factor_explanation_text": "물리적 단위와 달리 통화 환율은 정의상 고정되어 있지 않으며 외환 시장에서 지속적으로 변동합니다. 여기에 사용된 환율은 특정 시점의 스냅샷이므로 재무적 결정을 내리기 전에 실시간 정보원을 통해 확인해야 합니다.",
-+  "temperature_factor_explanation_text": "두 척도 모두 공통의 절대 기준점인 켈빈을 통해 변환됩니다."
++  "temperature_factor_explanation_text": "두 척도 모두 공통의 절대 기준점인 켈빈을 통해 변환됩니다.",
++  "primary_use_intro_template": "{UNIT}은(는) 주로 {USE}을(를) 위해 사용된다."
   },
   "currencyNames": {
    "USD": "미국 달러",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "질량 살포율.",
    "liquid_application_rate": "액체 살포율.",
    "yield_rate": "농업 수확률."
@@ -4692,12 +4778,18 @@ index 3e5e3468ea5..500d0823a23 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "국제 에이커 대 미국 측량 에이커."
++ },
++ "categoryIntroTemplate": {
++  "area": "{UNIT_A}와(과) {UNIT_B}의 비교는 농업과 부동산 분야에서 흔히 볼 수 있는데, 미국에서는 토지를 일반적으로 에이커로 측정하는 반면 세계 대부분의 다른 지역에서는 헥타르를 사용하기 때문이다."
++ },
++ "unitPrimaryUse": {
++  "acre": "미국에서 농지, 목장, 농촌 부동산의 면적을 측정하는 것"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/pt.json b/i18n-seo/pt.json
-index b2f234b6835..4b90ab311e6 100644
+index b2f234b6835..173bfbbd563 100644
 --- a/i18n-seo/pt.json
 +++ b/i18n-seo/pt.json
 @@ -3,111 +3,138 @@
@@ -4910,7 +5002,7 @@ index b2f234b6835..4b90ab311e6 100644
   },
   "faq": {
    "q1_question": "Quantos {TO} há em 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Tabela de conversão",
    "related_conversions": "Conversões relacionadas",
    "about_converting": "Sobre converter",
@@ -4953,11 +5045,12 @@ index b2f234b6835..4b90ab311e6 100644
 +  "exchange_rate_notice_text": "Esta página utiliza uma taxa de câmbio de referência que não é atualizada em tempo real. Os valores das moedas flutuam continuamente nos mercados de câmbio — confirme sempre a taxa atual com uma fonte financeira em tempo real antes de fazer qualquer transação ou decisão financeira.",
 +  "factor_explanation_template": "Esse fator vem da relação definida de cada unidade com a unidade base da categoria: 1 {FROM} equivale a {FROM_FACTOR} unidades base, e 1 {TO} equivale a {TO_FACTOR} unidades base; dividindo uma pela outra, obtém-se o fator direto de {FROM} para {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "Diferentemente das unidades físicas, as taxas de câmbio não são fixas por definição — elas flutuam continuamente nos mercados de câmbio. A taxa usada aqui é um instantâneo e deve ser confirmada em uma fonte em tempo real antes de qualquer decisão financeira.",
-+  "temperature_factor_explanation_text": "Ambas as escalas são convertidas por meio do Kelvin como ponto de referência absoluto comum."
++  "temperature_factor_explanation_text": "Ambas as escalas são convertidas por meio do Kelvin como ponto de referência absoluto comum.",
++  "primary_use_intro_template": "{UNIT} é mais frequentemente usado para {USE}."
   },
   "currencyNames": {
    "USD": "Dólar americano",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Taxa de aplicação de massa.",
    "liquid_application_rate": "Taxa de aplicação líquida.",
    "yield_rate": "Taxa de rendimento agrícola."
@@ -4999,12 +5092,18 @@ index b2f234b6835..4b90ab311e6 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Acre internacional em comparação com o acre de agrimensura dos EUA."
++ },
++ "categoryIntroTemplate": {
++  "area": "Comparar {UNIT_A} e {UNIT_B} é comum na agricultura e no setor imobiliário, já que, nos EUA, os terrenos costumam ser medidos em acres, enquanto a maior parte do resto do mundo utiliza hectares."
++ },
++ "unitPrimaryUse": {
++  "acre": "medir a área de terras agrícolas, ranchos e propriedades rurais nos EUA"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/so.json b/i18n-seo/so.json
-index 5d1dd740fe4..7d43fe9cf33 100644
+index 5d1dd740fe4..6343b7f94fc 100644
 --- a/i18n-seo/so.json
 +++ b/i18n-seo/so.json
 @@ -3,111 +3,138 @@
@@ -5217,7 +5316,7 @@ index 5d1dd740fe4..7d43fe9cf33 100644
   },
   "faq": {
    "q1_question": "Immisa {TO} ayaa ku jira 1 {FROM}?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Jadwalka Isbeddelka",
    "related_conversions": "Isbeddellada La Xiriira",
    "about_converting": "Ku Saabsan Isbeddelka",
@@ -5260,11 +5359,12 @@ index 5d1dd740fe4..7d43fe9cf33 100644
 +  "exchange_rate_notice_text": "Boggan wuxuu isticmaalaa qiimo sarifka tixraac ah oo aan si toos ah loo cusboonaysiin. Qiimaha lacagaha ayaa si joogto ah u kala duwanaadaa suuqyada sarifka shisheeye — had iyo jeer xaqiiji qiimaha hadda ee ka socda isha maaliyadeed ee toos ah ka hor inta aadan samayn wax dhaqdhaqaaq ama go'aan maaliyadeed ah.",
 +  "factor_explanation_template": "Qiyaasan waxay ka timaaddaa xiriirka la go'aamiyay ee cutub kasta la leeyahay cutubka aasaasiga ah ee qaybta: 1 {FROM} waxay la mid tahay {FROM_FACTOR} cutub oo aasaasi ah, 1 {TO} na waxay la mid tahay {TO_FACTOR} cutub oo aasaasi ah, sidaa darteed qaybinta mid kale ayaa keenta qiyaasta toosan ee {FROM} ilaa {TO} oo ah {RATIO}.",
 +  "currency_factor_explanation_text": "Si ka duwan cutubyada jireed, qiimaha sarifka lacagaha si joogto ah uma go'na sida qeexid ahaan — waxay si joogto ah ugu kala duwan yihiin suuqyada sarifka shisheeye. Qiimaha halkan lagu isticmaalay waa muuqaal ku xiran wakhti gaar ah, waana in la xaqiijiyaa isha toosan ka hor inta aan la gaarin go'aan maaliyadeed.",
-+  "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah."
++  "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah.",
++  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}."
   },
   "currencyNames": {
    "USD": "Doolar Mareykan",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Heerka isticmaalka cufka.",
    "liquid_application_rate": "Heerka isticmaalka dareeraha.",
    "yield_rate": "Heerka wax-soo-saarka beeraha."
@@ -5306,12 +5406,18 @@ index 5d1dd740fe4..7d43fe9cf33 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Eeker caalami ah iyo eekerka sahanka Mareykanka."
++ },
++ "categoryIntroTemplate": {
++  "area": "Isbarbardhigga {UNIT_A} iyo {UNIT_B} waa mid caadi ah beeraha iyo dhulka guryaha, sababtoo ah dhulka Mareykanka sida caadiga ah waxaa lagu qiyaasaa eekar, halka intii badan dunida kale ay isticmaasho hektar."
++ },
++ "unitPrimaryUse": {
++  "acre": "cabbirka dhulalka beeraha, dhulalka xoolaha, iyo hantida dalka miyiga ee Mareykanka"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/tr.json b/i18n-seo/tr.json
-index 64d9c84e7a0..e94e854a881 100644
+index 64d9c84e7a0..68c6233f9d0 100644
 --- a/i18n-seo/tr.json
 +++ b/i18n-seo/tr.json
 @@ -3,111 +3,138 @@
@@ -5524,7 +5630,7 @@ index 64d9c84e7a0..e94e854a881 100644
   },
   "faq": {
    "q1_question": "1 {FROM} kaç {TO} eder?",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "Dönüşüm tablosu",
    "related_conversions": "İlgili dönüşümler",
    "about_converting": "Dönüştürme hakkında:",
@@ -5567,11 +5673,12 @@ index 64d9c84e7a0..e94e854a881 100644
 +  "exchange_rate_notice_text": "Bu sayfa gerçek zamanlı olarak güncellenmeyen bir referans döviz kuru kullanır. Para birimi değerleri döviz piyasalarında sürekli dalgalanır — herhangi bir işlem veya finansal karar vermeden önce mutlaka canlı bir finansal kaynaktan güncel kuru teyit edin.",
 +  "factor_explanation_template": "Bu katsayı, her birimin kategorinin taban birimiyle olan tanımlı ilişkisinden gelir: 1 {FROM}, {FROM_FACTOR} taban birime eşittir ve 1 {TO}, {TO_FACTOR} taban birime eşittir; bu nedenle birini diğerine bölmek, {FROM} biriminden {TO} birimine doğrudan {RATIO} dönüşüm katsayısını verir.",
 +  "currency_factor_explanation_text": "Fiziksel birimlerin aksine, döviz kurları tanım gereği sabit değildir — döviz piyasalarında sürekli dalgalanır. Burada kullanılan kur bir anlık görüntüdür ve herhangi bir finansal karar vermeden önce canlı bir kaynaktan teyit edilmelidir.",
-+  "temperature_factor_explanation_text": "Her iki ölçek de ortak mutlak referans noktası olan Kelvin üzerinden dönüştürülür."
++  "temperature_factor_explanation_text": "Her iki ölçek de ortak mutlak referans noktası olan Kelvin üzerinden dönüştürülür.",
++  "primary_use_intro_template": "{UNIT} en sık {USE} için kullanılır."
   },
   "currencyNames": {
    "USD": "ABD Doları",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "Kütle uygulama oranı.",
    "liquid_application_rate": "Sıvı uygulama oranı.",
    "yield_rate": "Tarımsal verim oranı."
@@ -5613,12 +5720,18 @@ index 64d9c84e7a0..e94e854a881 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "Uluslararası dönüm (acre) karşı ABD survey dönümü."
++ },
++ "categoryIntroTemplate": {
++  "area": "{UNIT_A} ile {UNIT_B} karşılaştırması tarım ve gayrimenkul alanında yaygındır; çünkü ABD'de arazi genellikle dönüm (acre) ile ölçülürken dünyanın geri kalanının çoğu hektar kullanır."
++ },
++ "unitPrimaryUse": {
++  "acre": "ABD'de tarım arazilerinin, çiftliklerin ve kırsal mülklerin büyüklüğünün ölçülmesi"
   }
 -}
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/zh.json b/i18n-seo/zh.json
-index 5fc03334d09..6bf1c8f4704 100644
+index 5fc03334d09..379e2cbd41f 100644
 --- a/i18n-seo/zh.json
 +++ b/i18n-seo/zh.json
 @@ -3,111 +3,138 @@
@@ -5831,7 +5944,7 @@ index 5fc03334d09..6bf1c8f4704 100644
   },
   "faq": {
    "q1_question": "1 {FROM} 等于多少 {TO}？",
-@@ -547,7 +609,45 @@
+@@ -547,7 +609,46 @@
    "conversion_table": "换算表",
    "related_conversions": "相关换算",
    "about_converting": "关于换算",
@@ -5874,11 +5987,12 @@ index 5fc03334d09..6bf1c8f4704 100644
 +  "exchange_rate_notice_text": "本页面使用的是非实时更新的参考汇率。货币价值会在外汇市场上持续波动——在进行任何交易或财务决策之前，请务必通过实时金融数据源确认当前汇率。",
 +  "factor_explanation_template": "此换算系数来自每个单位与该类别基准单位之间的既定关系：1 {FROM} 等于 {FROM_FACTOR} 个基准单位，1 {TO} 等于 {TO_FACTOR} 个基准单位，两者相除即可得到从 {FROM} 到 {TO} 的直接换算系数 {RATIO}。",
 +  "currency_factor_explanation_text": "与实体单位不同，货币汇率并非由定义固定不变——它们会在外汇市场上持续浮动。此处使用的汇率为一个时间快照，在做出任何财务决策之前，应通过实时数据源进行确认。",
-+  "temperature_factor_explanation_text": "两种温标均通过开尔文这一共同的绝对参考点进行换算。"
++  "temperature_factor_explanation_text": "两种温标均通过开尔文这一共同的绝对参考点进行换算。",
++  "primary_use_intro_template": "{UNIT}最常用于{USE}。"
   },
   "currencyNames": {
    "USD": "美元",
-@@ -740,5 +840,43 @@
+@@ -740,5 +841,49 @@
    "mass_application_rate": "施用质量速率。",
    "liquid_application_rate": "施用液体速率。",
    "yield_rate": "农业产量速率。"
@@ -5920,6 +6034,12 @@ index 5fc03334d09..6bf1c8f4704 100644
 + },
 + "unitDistinctionLabel": {
 +  "international acre vs. us survey acre": "国际英亩 对比 美国测量英亩。"
++ },
++ "categoryIntroTemplate": {
++  "area": "在农业和房地产领域,比较{UNIT_A}与{UNIT_B}十分常见,因为美国的土地通常以英亩计量,而世界上大多数其他地区则使用公顷。"
++ },
++ "unitPrimaryUse": {
++  "acre": "测量美国的农田、牧场和农村地产面积"
   }
 -}
 \ No newline at end of file

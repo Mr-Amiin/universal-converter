@@ -647,7 +647,8 @@
   "exchange_rate_notice_text": "Diese Seite verwendet einen Referenzwechselkurs, der nicht in Echtzeit aktualisiert wird. Währungswerte schwanken kontinuierlich an den Devisenmärkten — bestätigen Sie den aktuellen Kurs stets bei einer Live-Finanzquelle, bevor Sie eine Transaktion oder finanzielle Entscheidung treffen.",
   "factor_explanation_template": "Dieser Faktor ergibt sich aus der festgelegten Beziehung jeder Einheit zur Basiseinheit der Kategorie: 1 {FROM} entspricht {FROM_FACTOR} Basiseinheiten, und 1 {TO} entspricht {TO_FACTOR} Basiseinheiten. Teilt man eines durch das andere, erhält man den direkten Umrechnungsfaktor von {FROM} zu {TO} von {RATIO}.",
   "currency_factor_explanation_text": "Anders als bei physikalischen Einheiten sind Wechselkurse nicht per Definition festgelegt – sie schwanken kontinuierlich an den Devisenmärkten. Der hier verwendete Kurs ist eine Momentaufnahme und sollte vor jeder finanziellen Entscheidung anhand einer Live-Quelle bestätigt werden.",
-  "temperature_factor_explanation_text": "Beide Skalen werden über Kelvin als gemeinsamen absoluten Bezugspunkt umgerechnet."
+  "temperature_factor_explanation_text": "Beide Skalen werden über Kelvin als gemeinsamen absoluten Bezugspunkt umgerechnet.",
+  "primary_use_intro_template": "{UNIT} wird am häufigsten für {USE} verwendet."
  },
  "currencyNames": {
   "USD": "US-Dollar",
@@ -878,5 +879,11 @@
  },
  "unitDistinctionLabel": {
   "international acre vs. us survey acre": "Internationaler Acre im Vergleich zu US-Vermessungs-Acre."
+ },
+ "categoryIntroTemplate": {
+  "area": "Der Vergleich von {UNIT_A} und {UNIT_B} ist in der Landwirtschaft und im Immobilienwesen üblich, da Land in den USA typischerweise in Acres gemessen wird, während im übrigen Teil der Welt meist Hektar verwendet werden."
+ },
+ "unitPrimaryUse": {
+  "acre": "die Messung der Größe von Ackerland, Ranches und ländlichem Grundbesitz in den USA"
  }
 }
