@@ -28,7 +28,7 @@ index d4cffb23f8b..2764b8a6529 100644
  document.body.appendChild(banner);
  document.getElementById("ucCookieAccept").addEventListener("click", function () {
 diff --git a/app.js b/app.js
-index c900c1e6850..0c44a359fd8 100644
+index c900c1e6850..94de382c5f9 100644
 --- a/app.js
 +++ b/app.js
 @@ -5,41 +5,60 @@
@@ -1336,35 +1336,73 @@ index c900c1e6850..0c44a359fd8 100644
  const fromName = getUnitDisplayName(fromUnit);
  const toName = getUnitDisplayName(toUnit);
  const h1 = document.querySelector(".hero-content h1");
-@@ -4516,6 +5020,63 @@ const chrome = seoData.chrome || {};
+@@ -4516,6 +5020,101 @@ const chrome = seoData.chrome || {};
  if (aboutHeading && chrome.about_converting && /^About Converting /.test(originalText(aboutHeading))) {
  setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${toName}`);
  }
 +// The article's lede paragraph, immediately after the "About Converting"
 +// h2, is built at generation time from a per-category connector sentence
-+// ("Comparing {A} and {B} is common in <category context>.") plus, in the
-+// simplest variant, a single unit-scoped "primary use" clause about
-+// fromUnit only ("{A} is most often used for <fact>."). A second variant
-+// (both units get their own "typically associated with <context>" clause)
-+// also exists on some pages but has no recovered source data yet.
-+// Rather than guess which variant a given page uses, this only recognizes
-+// the one-clause shape via a structural regex match (not a hardcoded
-+// English template, since that would duplicate the source text here) -
-+// requiring the paragraph's two named units to equal fromUnit/toUnit's
-+// real English names - and only then reconstructs the translation from
-+// seoData.categoryIntroTemplate[category.id] + seoData.unitPrimaryUse[fromUnit.id].
-+// Anything that doesn't match this exact shape (a two-clause-variant page,
-+// or any category/unit without this data yet) safely stays in English.
++// ("Comparing {A} and {B} is common in <category context>.") plus one of
++// (at least) four second-clause variants:
++//   1. "{A} is most often used for <fact>." - a unit-scoped "primary use"
++//      fact about fromUnit only (seoData.unitPrimaryUse[fromUnit.id]).
++//   2. "{A} is typically associated with <ctx>, while {B} is typically
++//      associated with <ctx>." - both units get their own context clause.
++//      No recovered source data for this variant yet.
++//   3. "Both are <definition> units." - used when fromUnit and toUnit
++//      share the exact same English definition (e.g. every generated
++//      square_*/cubic_* metric-prefix pair). Reuses the SAME translated
++//      definitions already surfaced via getUnitDisplayDefinition() for
++//      the "Understanding X" paragraphs - no new per-unit data needed.
++//   4. "Specifically: <A's definition>, and <b's definition>." - the
++//      generic fallback when neither unit has special context/primary-use
++//      data and their definitions differ. Also reuses
++//      getUnitDisplayDefinition() for both units.
++// Rather than guess which variant a given page uses, each is only
++// recognized via a structural regex match against the page's REAL
++// original English text (never a hardcoded English template, since that
++// would duplicate the source content here) - requiring the paragraph's
++// named unit(s) to equal fromUnit/toUnit's real English names, and (for
++// variants 3-4) requiring the captured definition text to equal the
++// unit's actual English `definition` field exactly. Only then is the
++// translation reconstructed, and only if genuinely-translated data exists
++// (getUnitDisplayDefinition() returning the untranslated English string
++// back is treated as "no translation available", never embedded).
++// Anything that doesn't match one of these exact shapes (the still-
++// unmodeled variant 2, or any category/unit without translated data yet)
++// safely stays in English instead of risking a wrong or mixed-language
++// paragraph.
 +const introP = document.querySelector(".seo-article > h2:first-child + p");
-+if (introP && category && seoData.categoryIntroTemplate && seoData.unitPrimaryUse) {
-+const introMatch = originalText(introP).match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
-+if (introMatch && introMatch[1] === fromUnit.name && introMatch[2] === toUnit.name && introMatch[3] === fromUnit.name) {
++if (introP && category && seoData.categoryIntroTemplate) {
 +const categoryTemplate = seoData.categoryIntroTemplate[category.id];
++const original = originalText(introP);
++const lowerFirst = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : s);
++const stripPeriod = (s) => (s ? s.replace(/[.。]+$/, "") : s);
++const translatedDef = (unit) => {
++const def = getUnitDisplayDefinition(unit);
++return def && def !== unit.definition ? def : null;
++};
++if (categoryTemplate) {
++const oneClauseMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
++const bothAreMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Both are (.+) units\.$/);
++const specificallyMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Specifically: (.+), and (.+)\.$/);
++let sentence2 = null;
++if (oneClauseMatch && oneClauseMatch[1] === fromUnit.name && oneClauseMatch[2] === toUnit.name && oneClauseMatch[3] === fromUnit.name && seoData.unitPrimaryUse) {
 +const primaryUseTemplate = chrome.primary_use_intro_template;
 +const primaryUse = seoData.unitPrimaryUse[fromUnit.id];
-+if (categoryTemplate && primaryUseTemplate && primaryUse) {
++if (primaryUseTemplate && primaryUse) sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
++} else if (bothAreMatch && bothAreMatch[1] === fromUnit.name && bothAreMatch[2] === toUnit.name && bothAreMatch[3] === lowerFirst(stripPeriod(fromUnit.definition)) && bothAreMatch[3] === lowerFirst(stripPeriod(toUnit.definition))) {
++const template = chrome.both_are_units_template;
++const def = translatedDef(fromUnit);
++if (template && def) sentence2 = fillTemplateSafe(template, { DEF: stripPeriod(def) });
++} else if (specificallyMatch && specificallyMatch[1] === fromUnit.name && specificallyMatch[2] === toUnit.name && specificallyMatch[3] === stripPeriod(fromUnit.definition) && specificallyMatch[4] === lowerFirst(stripPeriod(toUnit.definition))) {
++const template = chrome.specifically_intro_template;
++const defA = translatedDef(fromUnit);
++const defB = translatedDef(toUnit);
++if (template && defA && defB) sentence2 = fillTemplateSafe(template, { DEF_A: stripPeriod(defA), DEF_B: stripPeriod(defB) });
++}
++if (sentence2) {
 +const sentence1 = fillTemplateSafe(categoryTemplate, { UNIT_A: fromName, UNIT_B: toName });
-+const sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
 +setTranslatedText(introP, `${sentence1} ${sentence2}`);
 +}
 +}
@@ -1400,7 +1438,7 @@ index c900c1e6850..0c44a359fd8 100644
  }
  
  // Pulls the actual number the site's own generator already printed out of
-@@ -4652,6 +5213,479 @@ setTranslatedText(aEl, translatedAnswer);
+@@ -4652,6 +5251,479 @@ setTranslatedText(aEl, translatedAnswer);
  });
  }
  
@@ -1880,7 +1918,7 @@ index c900c1e6850..0c44a359fd8 100644
  // Related-conversion links are translated purely by re-deriving each
  // link's own from/to unit pair from its href with the SAME
  // deriveConversionFromPath() the converter widget already relies on -
-@@ -4700,8 +5734,9 @@ if (!category) return;
+@@ -4700,8 +5772,9 @@ if (!category) return;
  const fromUnit = getUnit(category, ctx.fromUnitId);
  const toUnit = getUnit(category, ctx.toUnitId);
  if (!fromUnit || !toUnit) return;
@@ -1891,7 +1929,7 @@ index c900c1e6850..0c44a359fd8 100644
  }
  
  // Re-renders the interactive converter widget's language-aware pieces
-@@ -4710,12 +5745,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
+@@ -4710,12 +5783,70 @@ translateFaqItems(seoData, fromUnit, toUnit, category);
  // selection already in `state` - it does not change what is selected,
  // only how its labels are displayed.
  function refreshLanguageAwareConverter() {
@@ -1963,7 +2001,7 @@ index c900c1e6850..0c44a359fd8 100644
  populateSelect(byId("toUnit"), category.units, state.toUnitId);
  if (typeof updateConversion === "function") updateConversion();
 diff --git a/i18n-seo/ar.json b/i18n-seo/ar.json
-index aef43ca2187..f5a0a4fa2cc 100644
+index aef43ca2187..28c4532c7fa 100644
 --- a/i18n-seo/ar.json
 +++ b/i18n-seo/ar.json
 @@ -3,111 +3,138 @@
@@ -2188,7 +2226,7 @@ index aef43ca2187..f5a0a4fa2cc 100644
   },
   "faq": {
    "q1_question": "كم عدد {TO} في 1 {FROM}؟",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "جدول التحويل",
    "related_conversions": "تحويلات ذات صلة",
    "about_converting": "حول تحويل",
@@ -2232,11 +2270,13 @@ index aef43ca2187..f5a0a4fa2cc 100644
 +  "factor_explanation_template": "يأتي هذا العامل من العلاقة المحددة لكل وحدة بوحدة الأساس للفئة: 1 {FROM} يساوي {FROM_FACTOR} من الوحدات الأساسية، و1 {TO} يساوي {TO_FACTOR} من الوحدات الأساسية، وبقسمة إحداهما على الأخرى نحصل على عامل التحويل المباشر من {FROM} إلى {TO} وهو {RATIO}.",
 +  "currency_factor_explanation_text": "على عكس الوحدات الفيزيائية، أسعار صرف العملات ليست ثابتة بحكم التعريف — بل تتقلب باستمرار في أسواق الصرف الأجنبي. السعر المستخدم هنا هو لقطة لحظية ويجب تأكيده من مصدر مباشر قبل اتخاذ أي قرار مالي.",
 +  "temperature_factor_explanation_text": "يتم تحويل كلا المقياسين عبر الكلفن كنقطة مرجعية مطلقة مشتركة.",
-+  "primary_use_intro_template": "{UNIT} يُستخدم غالبًا في {USE}."
++  "primary_use_intro_template": "{UNIT} يُستخدم غالبًا في {USE}.",
++  "both_are_units_template": "كلاهما من وحدات {DEF}.",
++  "specifically_intro_template": "على وجه التحديد: {DEF_A}، بينما {DEF_B}."
   },
   "currencyNames": {
    "USD": "دولار أمريكي",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "معدل تطبيق الكتلة.",
    "liquid_application_rate": "معدل تطبيق السائل.",
    "yield_rate": "معدل الإنتاجية الزراعية."
@@ -2289,7 +2329,7 @@ index aef43ca2187..f5a0a4fa2cc 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/de.json b/i18n-seo/de.json
-index c265901d60e..b64cb6fe255 100644
+index c265901d60e..fa8954fcbd7 100644
 --- a/i18n-seo/de.json
 +++ b/i18n-seo/de.json
 @@ -3,111 +3,138 @@
@@ -2514,7 +2554,7 @@ index c265901d60e..b64cb6fe255 100644
   },
   "faq": {
    "q1_question": "Wie viele {TO} sind in 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Umrechnungstabelle",
    "related_conversions": "Verwandte Umrechnungen",
    "about_converting": "Über die Umrechnung von",
@@ -2558,11 +2598,13 @@ index c265901d60e..b64cb6fe255 100644
 +  "factor_explanation_template": "Dieser Faktor ergibt sich aus der festgelegten Beziehung jeder Einheit zur Basiseinheit der Kategorie: 1 {FROM} entspricht {FROM_FACTOR} Basiseinheiten, und 1 {TO} entspricht {TO_FACTOR} Basiseinheiten. Teilt man eines durch das andere, erhält man den direkten Umrechnungsfaktor von {FROM} zu {TO} von {RATIO}.",
 +  "currency_factor_explanation_text": "Anders als bei physikalischen Einheiten sind Wechselkurse nicht per Definition festgelegt – sie schwanken kontinuierlich an den Devisenmärkten. Der hier verwendete Kurs ist eine Momentaufnahme und sollte vor jeder finanziellen Entscheidung anhand einer Live-Quelle bestätigt werden.",
 +  "temperature_factor_explanation_text": "Beide Skalen werden über Kelvin als gemeinsamen absoluten Bezugspunkt umgerechnet.",
-+  "primary_use_intro_template": "{UNIT} wird am häufigsten für {USE} verwendet."
++  "primary_use_intro_template": "{UNIT} wird am häufigsten für {USE} verwendet.",
++  "both_are_units_template": "Beide sind {DEF}-Einheiten.",
++  "specifically_intro_template": "Genauer gesagt: {DEF_A}, und {DEF_B}."
   },
   "currencyNames": {
    "USD": "US-Dollar",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Massenausbringungsrate.",
    "liquid_application_rate": "Flüssigkeitsausbringungsrate.",
    "yield_rate": "Landwirtschaftliche Ertragsrate."
@@ -2615,7 +2657,7 @@ index c265901d60e..b64cb6fe255 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/es.json b/i18n-seo/es.json
-index 7d73ac4fc40..dc0c25adee4 100644
+index 7d73ac4fc40..dedbaa75c84 100644
 --- a/i18n-seo/es.json
 +++ b/i18n-seo/es.json
 @@ -3,111 +3,138 @@
@@ -2840,7 +2882,7 @@ index 7d73ac4fc40..dc0c25adee4 100644
   },
   "faq": {
    "q1_question": "¿Cuántos {TO} hay en 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Tabla de conversión",
    "related_conversions": "Conversiones relacionadas",
    "about_converting": "Acerca de convertir",
@@ -2884,11 +2926,13 @@ index 7d73ac4fc40..dc0c25adee4 100644
 +  "factor_explanation_template": "Este factor proviene de la relación definida de cada unidad con la unidad base de la categoría: 1 {FROM} equivale a {FROM_FACTOR} unidades base, y 1 {TO} equivale a {TO_FACTOR} unidades base, por lo que al dividir una entre la otra se obtiene el factor directo de {FROM} a {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "A diferencia de las unidades físicas, los tipos de cambio de divisas no están fijados por definición: fluctúan continuamente en los mercados de divisas. La tasa utilizada aquí es una instantánea y debe confirmarse con una fuente en tiempo real antes de tomar cualquier decisión financiera.",
 +  "temperature_factor_explanation_text": "Ambas escalas se convierten a través del Kelvin como punto de referencia absoluto común.",
-+  "primary_use_intro_template": "{UNIT} se utiliza con mayor frecuencia para {USE}."
++  "primary_use_intro_template": "{UNIT} se utiliza con mayor frecuencia para {USE}.",
++  "both_are_units_template": "Ambas son unidades de {DEF}.",
++  "specifically_intro_template": "En concreto: {DEF_A}, y {DEF_B}."
   },
   "currencyNames": {
    "USD": "Dólar estadounidense",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Tasa de aplicación de masa.",
    "liquid_application_rate": "Tasa de aplicación líquida.",
    "yield_rate": "Tasa de rendimiento agrícola."
@@ -2941,7 +2985,7 @@ index 7d73ac4fc40..dc0c25adee4 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/fr.json b/i18n-seo/fr.json
-index 9c414d5287d..bac46f8aaec 100644
+index 9c414d5287d..9a48781fcd4 100644
 --- a/i18n-seo/fr.json
 +++ b/i18n-seo/fr.json
 @@ -3,111 +3,138 @@
@@ -3166,7 +3210,7 @@ index 9c414d5287d..bac46f8aaec 100644
   },
   "faq": {
    "q1_question": "Combien de {TO} y a-t-il dans 1 {FROM} ?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Table de conversion",
    "related_conversions": "Conversions associées",
    "about_converting": "À propos de la conversion de",
@@ -3210,11 +3254,13 @@ index 9c414d5287d..bac46f8aaec 100644
 +  "factor_explanation_template": "Ce facteur provient de la relation définie de chaque unité avec l'unité de base de la catégorie : 1 {FROM} équivaut à {FROM_FACTOR} unités de base, et 1 {TO} équivaut à {TO_FACTOR} unités de base ; en divisant l'une par l'autre, on obtient le facteur direct de {FROM} à {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "Contrairement aux unités physiques, les taux de change des devises ne sont pas fixes par définition — ils fluctuent continuellement sur les marchés des changes. Le taux utilisé ici est un instantané et doit être confirmé auprès d'une source en direct avant toute décision financière.",
 +  "temperature_factor_explanation_text": "Les deux échelles sont converties via le kelvin, utilisé comme point de référence absolu commun.",
-+  "primary_use_intro_template": "{UNIT} est le plus souvent utilisé pour {USE}."
++  "primary_use_intro_template": "{UNIT} est le plus souvent utilisé pour {USE}.",
++  "both_are_units_template": "Les deux sont des unités de {DEF}.",
++  "specifically_intro_template": "Plus précisément : {DEF_A}, et {DEF_B}."
   },
   "currencyNames": {
    "USD": "Dollar américain",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Taux d'application de masse.",
    "liquid_application_rate": "Taux d'application liquide.",
    "yield_rate": "Taux de rendement agricole."
@@ -3267,7 +3313,7 @@ index 9c414d5287d..bac46f8aaec 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/hi.json b/i18n-seo/hi.json
-index 0e768217d49..e08ba661590 100644
+index 0e768217d49..547c3810401 100644
 --- a/i18n-seo/hi.json
 +++ b/i18n-seo/hi.json
 @@ -3,111 +3,138 @@
@@ -3492,7 +3538,7 @@ index 0e768217d49..e08ba661590 100644
   },
   "faq": {
    "q1_question": "1 {FROM} में कितने {TO} होते हैं?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "रूपांतरण तालिका",
    "related_conversions": "संबंधित रूपांतरण",
    "about_converting": "रूपांतरण के बारे में",
@@ -3536,11 +3582,13 @@ index 0e768217d49..e08ba661590 100644
 +  "factor_explanation_template": "यह गुणांक प्रत्येक इकाई के श्रेणी की आधार इकाई के साथ निर्धारित संबंध से आता है: 1 {FROM} बराबर है {FROM_FACTOR} आधार इकाइयों के, और 1 {TO} बराबर है {TO_FACTOR} आधार इकाइयों के, इसलिए एक को दूसरे से विभाजित करने पर {FROM} से {TO} तक का प्रत्यक्ष रूपांतरण गुणांक {RATIO} प्राप्त होता है।",
 +  "currency_factor_explanation_text": "भौतिक इकाइयों के विपरीत, मुद्रा विनिमय दरें परिभाषा के अनुसार स्थिर नहीं होतीं — वे विदेशी मुद्रा बाजारों में लगातार बदलती रहती हैं। यहाँ उपयोग की गई दर एक निश्चित समय की झलक है और किसी भी वित्तीय निर्णय से पहले इसे किसी लाइव स्रोत से सत्यापित किया जाना चाहिए।",
 +  "temperature_factor_explanation_text": "दोनों पैमाने एक सामान्य निरपेक्ष संदर्भ बिंदु के रूप में केल्विन के माध्यम से परिवर्तित किए जाते हैं।",
-+  "primary_use_intro_template": "{UNIT} का सबसे अधिक उपयोग {USE} के लिए किया जाता है।"
++  "primary_use_intro_template": "{UNIT} का सबसे अधिक उपयोग {USE} के लिए किया जाता है।",
++  "both_are_units_template": "दोनों {DEF} इकाइयाँ हैं।",
++  "specifically_intro_template": "विशेष रूप से: {DEF_A}, जबकि {DEF_B}।"
   },
   "currencyNames": {
    "USD": "अमेरिकी डॉलर",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "द्रव्यमान प्रयोग दर।",
    "liquid_application_rate": "तरल प्रयोग दर।",
    "yield_rate": "कृषि उपज दर।"
@@ -3593,7 +3641,7 @@ index 0e768217d49..e08ba661590 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/id.json b/i18n-seo/id.json
-index fb3a6648ddd..f127555dbcf 100644
+index fb3a6648ddd..1819205a8ec 100644
 --- a/i18n-seo/id.json
 +++ b/i18n-seo/id.json
 @@ -3,111 +3,138 @@
@@ -3818,7 +3866,7 @@ index fb3a6648ddd..f127555dbcf 100644
   },
   "faq": {
    "q1_question": "Berapa {TO} dalam 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Tabel konversi",
    "related_conversions": "Konversi terkait",
    "about_converting": "Tentang mengonversi",
@@ -3862,11 +3910,13 @@ index fb3a6648ddd..f127555dbcf 100644
 +  "factor_explanation_template": "Faktor ini berasal dari hubungan yang ditetapkan antara setiap satuan dengan satuan dasar kategori tersebut: 1 {FROM} sama dengan {FROM_FACTOR} satuan dasar, dan 1 {TO} sama dengan {TO_FACTOR} satuan dasar, sehingga membagi salah satu dengan yang lain menghasilkan faktor langsung {FROM}-ke-{TO} sebesar {RATIO}.",
 +  "currency_factor_explanation_text": "Berbeda dengan satuan fisik, nilai tukar mata uang tidak tetap berdasarkan definisi — nilainya terus berfluktuasi di pasar valuta asing. Nilai tukar yang digunakan di sini adalah cuplikan pada suatu waktu dan harus dikonfirmasi dengan sumber langsung sebelum membuat keputusan keuangan apa pun.",
 +  "temperature_factor_explanation_text": "Kedua skala dikonversi melalui Kelvin sebagai titik referensi absolut yang sama.",
-+  "primary_use_intro_template": "{UNIT} paling sering digunakan untuk {USE}."
++  "primary_use_intro_template": "{UNIT} paling sering digunakan untuk {USE}.",
++  "both_are_units_template": "Keduanya adalah satuan {DEF}.",
++  "specifically_intro_template": "Secara khusus: {DEF_A}, dan {DEF_B}."
   },
   "currencyNames": {
    "USD": "Dolar AS",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Laju aplikasi massa.",
    "liquid_application_rate": "Laju aplikasi cairan.",
    "yield_rate": "Laju hasil pertanian."
@@ -3919,7 +3969,7 @@ index fb3a6648ddd..f127555dbcf 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/it.json b/i18n-seo/it.json
-index 385ace59804..25b11fc2bd9 100644
+index 385ace59804..94c677a0e06 100644
 --- a/i18n-seo/it.json
 +++ b/i18n-seo/it.json
 @@ -3,111 +3,138 @@
@@ -4144,7 +4194,7 @@ index 385ace59804..25b11fc2bd9 100644
   },
   "faq": {
    "q1_question": "Quanti {TO} ci sono in 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Tabella di conversione",
    "related_conversions": "Conversioni correlate",
    "about_converting": "Informazioni sulla conversione da",
@@ -4188,11 +4238,13 @@ index 385ace59804..25b11fc2bd9 100644
 +  "factor_explanation_template": "Questo fattore deriva dalla relazione definita di ciascuna unità con l'unità di base della categoria: 1 {FROM} equivale a {FROM_FACTOR} unità di base, e 1 {TO} equivale a {TO_FACTOR} unità di base, quindi dividendo l'una per l'altra si ottiene il fattore diretto da {FROM} a {TO} pari a {RATIO}.",
 +  "currency_factor_explanation_text": "A differenza delle unità fisiche, i tassi di cambio valutari non sono fissi per definizione: fluttuano continuamente sui mercati dei cambi. Il tasso utilizzato qui è un'istantanea e deve essere confermato con una fonte in tempo reale prima di qualsiasi decisione finanziaria.",
 +  "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune.",
-+  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}."
++  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}.",
++  "both_are_units_template": "Entrambe sono unità di {DEF}.",
++  "specifically_intro_template": "Nello specifico: {DEF_A}, e {DEF_B}."
   },
   "currencyNames": {
    "USD": "Dollaro statunitense",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Tasso di applicazione di massa.",
    "liquid_application_rate": "Tasso di applicazione liquida.",
    "yield_rate": "Tasso di resa agricola."
@@ -4245,7 +4297,7 @@ index 385ace59804..25b11fc2bd9 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ja.json b/i18n-seo/ja.json
-index dd70c06e6f2..50db28dd50a 100644
+index dd70c06e6f2..a8309efc4a4 100644
 --- a/i18n-seo/ja.json
 +++ b/i18n-seo/ja.json
 @@ -3,111 +3,138 @@
@@ -4470,7 +4522,7 @@ index dd70c06e6f2..50db28dd50a 100644
   },
   "faq": {
    "q1_question": "1 {FROM} は何 {TO} ですか？",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "変換表",
    "related_conversions": "関連する変換",
    "about_converting": "変換について：",
@@ -4514,11 +4566,13 @@ index dd70c06e6f2..50db28dd50a 100644
 +  "factor_explanation_template": "この係数は、各単位とカテゴリーの基準単位との定義上の関係に由来します。1 {FROM} は {FROM_FACTOR} 基準単位に等しく、1 {TO} は {TO_FACTOR} 基準単位に等しいため、一方をもう一方で割ると、{FROM} から {TO} への直接換算係数 {RATIO} が得られます。",
 +  "currency_factor_explanation_text": "物理単位とは異なり、通貨の為替レートは定義上固定されたものではなく、外国為替市場で常に変動しています。ここで使用されているレートはある時点のスナップショットであり、財務上の意思決定を行う前にライブの情報源で確認する必要があります。",
 +  "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。",
-+  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。"
++  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。",
++  "both_are_units_template": "どちらも{DEF}単位である。",
++  "specifically_intro_template": "具体的には、{DEF_A}であり、{DEF_B}である。"
   },
   "currencyNames": {
    "USD": "米ドル",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "質量散布率。",
    "liquid_application_rate": "液体散布率。",
    "yield_rate": "農業収量率。"
@@ -4571,7 +4625,7 @@ index dd70c06e6f2..50db28dd50a 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/ko.json b/i18n-seo/ko.json
-index 3e5e3468ea5..606dd82ce56 100644
+index 3e5e3468ea5..e263abbd4e9 100644
 --- a/i18n-seo/ko.json
 +++ b/i18n-seo/ko.json
 @@ -3,111 +3,138 @@
@@ -4796,7 +4850,7 @@ index 3e5e3468ea5..606dd82ce56 100644
   },
   "faq": {
    "q1_question": "1 {FROM}는 몇 {TO}인가요?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "변환표",
    "related_conversions": "관련 변환",
    "about_converting": "변환 정보:",
@@ -4840,11 +4894,13 @@ index 3e5e3468ea5..606dd82ce56 100644
 +  "factor_explanation_template": "이 계수는 각 단위와 해당 범주의 기준 단위 사이의 정의된 관계에서 비롯됩니다. 1 {FROM}은(는) {FROM_FACTOR} 기준 단위와 같고, 1 {TO}은(는) {TO_FACTOR} 기준 단위와 같으므로, 하나를 다른 하나로 나누면 {FROM}에서 {TO}로의 직접 환산 계수 {RATIO}를 얻습니다.",
 +  "currency_factor_explanation_text": "물리적 단위와 달리 통화 환율은 정의상 고정되어 있지 않으며 외환 시장에서 지속적으로 변동합니다. 여기에 사용된 환율은 특정 시점의 스냅샷이므로 재무적 결정을 내리기 전에 실시간 정보원을 통해 확인해야 합니다.",
 +  "temperature_factor_explanation_text": "두 척도 모두 공통의 절대 기준점인 켈빈을 통해 변환됩니다.",
-+  "primary_use_intro_template": "{UNIT}은(는) 주로 {USE}을(를) 위해 사용된다."
++  "primary_use_intro_template": "{UNIT}은(는) 주로 {USE}을(를) 위해 사용된다.",
++  "both_are_units_template": "둘 다 {DEF} 단위이다.",
++  "specifically_intro_template": "구체적으로, {DEF_A}이며, {DEF_B}이다."
   },
   "currencyNames": {
    "USD": "미국 달러",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "질량 살포율.",
    "liquid_application_rate": "액체 살포율.",
    "yield_rate": "농업 수확률."
@@ -4897,7 +4953,7 @@ index 3e5e3468ea5..606dd82ce56 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/pt.json b/i18n-seo/pt.json
-index b2f234b6835..feae75908ad 100644
+index b2f234b6835..fa24a852c37 100644
 --- a/i18n-seo/pt.json
 +++ b/i18n-seo/pt.json
 @@ -3,111 +3,138 @@
@@ -5122,7 +5178,7 @@ index b2f234b6835..feae75908ad 100644
   },
   "faq": {
    "q1_question": "Quantos {TO} há em 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Tabela de conversão",
    "related_conversions": "Conversões relacionadas",
    "about_converting": "Sobre converter",
@@ -5166,11 +5222,13 @@ index b2f234b6835..feae75908ad 100644
 +  "factor_explanation_template": "Esse fator vem da relação definida de cada unidade com a unidade base da categoria: 1 {FROM} equivale a {FROM_FACTOR} unidades base, e 1 {TO} equivale a {TO_FACTOR} unidades base; dividindo uma pela outra, obtém-se o fator direto de {FROM} para {TO} de {RATIO}.",
 +  "currency_factor_explanation_text": "Diferentemente das unidades físicas, as taxas de câmbio não são fixas por definição — elas flutuam continuamente nos mercados de câmbio. A taxa usada aqui é um instantâneo e deve ser confirmada em uma fonte em tempo real antes de qualquer decisão financeira.",
 +  "temperature_factor_explanation_text": "Ambas as escalas são convertidas por meio do Kelvin como ponto de referência absoluto comum.",
-+  "primary_use_intro_template": "{UNIT} é mais frequentemente usado para {USE}."
++  "primary_use_intro_template": "{UNIT} é mais frequentemente usado para {USE}.",
++  "both_are_units_template": "Ambas são unidades de {DEF}.",
++  "specifically_intro_template": "Mais especificamente: {DEF_A}, e {DEF_B}."
   },
   "currencyNames": {
    "USD": "Dólar americano",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Taxa de aplicação de massa.",
    "liquid_application_rate": "Taxa de aplicação líquida.",
    "yield_rate": "Taxa de rendimento agrícola."
@@ -5223,7 +5281,7 @@ index b2f234b6835..feae75908ad 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/so.json b/i18n-seo/so.json
-index 5d1dd740fe4..355eeb2332e 100644
+index 5d1dd740fe4..5c81c9ba889 100644
 --- a/i18n-seo/so.json
 +++ b/i18n-seo/so.json
 @@ -3,111 +3,138 @@
@@ -5448,7 +5506,7 @@ index 5d1dd740fe4..355eeb2332e 100644
   },
   "faq": {
    "q1_question": "Immisa {TO} ayaa ku jira 1 {FROM}?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Jadwalka Isbeddelka",
    "related_conversions": "Isbeddellada La Xiriira",
    "about_converting": "Ku Saabsan Isbeddelka",
@@ -5492,11 +5550,13 @@ index 5d1dd740fe4..355eeb2332e 100644
 +  "factor_explanation_template": "Qiyaasan waxay ka timaaddaa xiriirka la go'aamiyay ee cutub kasta la leeyahay cutubka aasaasiga ah ee qaybta: 1 {FROM} waxay la mid tahay {FROM_FACTOR} cutub oo aasaasi ah, 1 {TO} na waxay la mid tahay {TO_FACTOR} cutub oo aasaasi ah, sidaa darteed qaybinta mid kale ayaa keenta qiyaasta toosan ee {FROM} ilaa {TO} oo ah {RATIO}.",
 +  "currency_factor_explanation_text": "Si ka duwan cutubyada jireed, qiimaha sarifka lacagaha si joogto ah uma go'na sida qeexid ahaan — waxay si joogto ah ugu kala duwan yihiin suuqyada sarifka shisheeye. Qiimaha halkan lagu isticmaalay waa muuqaal ku xiran wakhti gaar ah, waana in la xaqiijiyaa isha toosan ka hor inta aan la gaarin go'aan maaliyadeed.",
 +  "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah.",
-+  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}."
++  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}.",
++  "both_are_units_template": "Labaduba waa cabbirro {DEF} ah.",
++  "specifically_intro_template": "Gaar ahaan: {DEF_A}, iyo {DEF_B}."
   },
   "currencyNames": {
    "USD": "Doolar Mareykan",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Heerka isticmaalka cufka.",
    "liquid_application_rate": "Heerka isticmaalka dareeraha.",
    "yield_rate": "Heerka wax-soo-saarka beeraha."
@@ -5549,7 +5609,7 @@ index 5d1dd740fe4..355eeb2332e 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/tr.json b/i18n-seo/tr.json
-index 64d9c84e7a0..d5626f822cc 100644
+index 64d9c84e7a0..2effd746737 100644
 --- a/i18n-seo/tr.json
 +++ b/i18n-seo/tr.json
 @@ -3,111 +3,138 @@
@@ -5774,7 +5834,7 @@ index 64d9c84e7a0..d5626f822cc 100644
   },
   "faq": {
    "q1_question": "1 {FROM} kaç {TO} eder?",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "Dönüşüm tablosu",
    "related_conversions": "İlgili dönüşümler",
    "about_converting": "Dönüştürme hakkında:",
@@ -5818,11 +5878,13 @@ index 64d9c84e7a0..d5626f822cc 100644
 +  "factor_explanation_template": "Bu katsayı, her birimin kategorinin taban birimiyle olan tanımlı ilişkisinden gelir: 1 {FROM}, {FROM_FACTOR} taban birime eşittir ve 1 {TO}, {TO_FACTOR} taban birime eşittir; bu nedenle birini diğerine bölmek, {FROM} biriminden {TO} birimine doğrudan {RATIO} dönüşüm katsayısını verir.",
 +  "currency_factor_explanation_text": "Fiziksel birimlerin aksine, döviz kurları tanım gereği sabit değildir — döviz piyasalarında sürekli dalgalanır. Burada kullanılan kur bir anlık görüntüdür ve herhangi bir finansal karar vermeden önce canlı bir kaynaktan teyit edilmelidir.",
 +  "temperature_factor_explanation_text": "Her iki ölçek de ortak mutlak referans noktası olan Kelvin üzerinden dönüştürülür.",
-+  "primary_use_intro_template": "{UNIT} en sık {USE} için kullanılır."
++  "primary_use_intro_template": "{UNIT} en sık {USE} için kullanılır.",
++  "both_are_units_template": "İkisi de {DEF} birimidir.",
++  "specifically_intro_template": "Daha açık söylemek gerekirse: {DEF_A} ve {DEF_B}."
   },
   "currencyNames": {
    "USD": "ABD Doları",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "Kütle uygulama oranı.",
    "liquid_application_rate": "Sıvı uygulama oranı.",
    "yield_rate": "Tarımsal verim oranı."
@@ -5875,7 +5937,7 @@ index 64d9c84e7a0..d5626f822cc 100644
 \ No newline at end of file
 +}
 diff --git a/i18n-seo/zh.json b/i18n-seo/zh.json
-index 5fc03334d09..7bef1d07770 100644
+index 5fc03334d09..56e8996a751 100644
 --- a/i18n-seo/zh.json
 +++ b/i18n-seo/zh.json
 @@ -3,111 +3,138 @@
@@ -6100,7 +6162,7 @@ index 5fc03334d09..7bef1d07770 100644
   },
   "faq": {
    "q1_question": "1 {FROM} 等于多少 {TO}？",
-@@ -547,7 +621,46 @@
+@@ -547,7 +621,48 @@
    "conversion_table": "换算表",
    "related_conversions": "相关换算",
    "about_converting": "关于换算",
@@ -6144,11 +6206,13 @@ index 5fc03334d09..7bef1d07770 100644
 +  "factor_explanation_template": "此换算系数来自每个单位与该类别基准单位之间的既定关系：1 {FROM} 等于 {FROM_FACTOR} 个基准单位，1 {TO} 等于 {TO_FACTOR} 个基准单位，两者相除即可得到从 {FROM} 到 {TO} 的直接换算系数 {RATIO}。",
 +  "currency_factor_explanation_text": "与实体单位不同，货币汇率并非由定义固定不变——它们会在外汇市场上持续浮动。此处使用的汇率为一个时间快照，在做出任何财务决策之前，应通过实时数据源进行确认。",
 +  "temperature_factor_explanation_text": "两种温标均通过开尔文这一共同的绝对参考点进行换算。",
-+  "primary_use_intro_template": "{UNIT}最常用于{USE}。"
++  "primary_use_intro_template": "{UNIT}最常用于{USE}。",
++  "both_are_units_template": "两者均为{DEF}单位。",
++  "specifically_intro_template": "具体而言：{DEF_A}，而{DEF_B}。"
   },
   "currencyNames": {
    "USD": "美元",
-@@ -740,5 +853,49 @@
+@@ -740,5 +855,49 @@
    "mass_application_rate": "施用质量速率。",
    "liquid_application_rate": "施用液体速率。",
    "yield_rate": "农业产量速率。"

@@ -189,12 +189,49 @@ SUMMARY OF CHANGES IN THIS PACKAGE
    one-clause-template logic, so it still shows in English there —
    same safe fallback, not a regression, just not yet modeled.
 
+7. FIXED: two more "About Converting" intro-paragraph template
+   variants (see item 5), reported directly from a live screenshot of
+   area/square-inches-to-square-centimeters/ in Chinese, which was
+   still showing "Comparing Square inch and Square Centimeter is
+   common in... Specifically: A square inch is the area of a
+   one-inch square, and square metric area unit." in English.
+
+   Variant 3 - "Both are <definition> units." - used whenever
+   fromUnit and toUnit share the exact same English definition
+   (this covers every generated square_*/cubic_* SI-prefix pair,
+   e.g. square-millimeters-to-square-micrometers).
+   Variant 4 - "Specifically: <A's definition>, and <B's
+   definition>." - the generic fallback used when neither unit has
+   a primary-use/context fact and the two definitions differ (the
+   exact case reported).
+
+   Both variants reuse the SAME translated unit definitions already
+   powering the "Understanding X" paragraphs via the existing
+   getUnitDisplayDefinition() helper - no new per-unit facts needed,
+   only two new connector templates
+   (chrome.both_are_units_template, chrome.specifically_intro_template)
+   translated across all 13 languages. Same safety discipline as
+   everywhere else: each variant is only recognized via a regex match
+   against the page's real original English text (unit names AND
+   definitions must match fromUnit/toUnit exactly), and only applies
+   the translation if getUnitDisplayDefinition() actually returns
+   translated text (not the raw English definition echoed back).
+   Anything that doesn't match falls back to English exactly as
+   before - no regression risk.
+
+   Verified live: area/square-inches-to-square-centimeters/ (variant
+   4) and area/square-millimeters-to-square-micrometers/ +
+   area/square-nanometers-to-square-picometers/ (variant 3) all now
+   translate correctly in Chinese.
+
 =========================================
 VALIDATION EVIDENCE (this session)
 =========================================
 Pages tested: area/acres-to-ares/, area/acres-to-square-centimeters/,
 agriculture/acre-to-hectare/, weight/kilograms-to-grams/, kg-to-lbs/,
 hectares-to-acres/, area/square-inches-to-square-centimeters/,
+area/square-millimeters-to-square-micrometers/,
+area/square-nanometers-to-square-picometers/,
 length/angstroms-to-astronomical-units/,
 temperature/celsius-to-delisle/, currency/aed-to-afn/
 

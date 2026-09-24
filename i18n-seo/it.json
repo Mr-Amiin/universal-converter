@@ -660,7 +660,9 @@
   "factor_explanation_template": "Questo fattore deriva dalla relazione definita di ciascuna unità con l'unità di base della categoria: 1 {FROM} equivale a {FROM_FACTOR} unità di base, e 1 {TO} equivale a {TO_FACTOR} unità di base, quindi dividendo l'una per l'altra si ottiene il fattore diretto da {FROM} a {TO} pari a {RATIO}.",
   "currency_factor_explanation_text": "A differenza delle unità fisiche, i tassi di cambio valutari non sono fissi per definizione: fluttuano continuamente sui mercati dei cambi. Il tasso utilizzato qui è un'istantanea e deve essere confermato con una fonte in tempo reale prima di qualsiasi decisione finanziaria.",
   "temperature_factor_explanation_text": "Entrambe le scale vengono convertite tramite il Kelvin come punto di riferimento assoluto comune.",
-  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}."
+  "primary_use_intro_template": "{UNIT} è più spesso utilizzato per {USE}.",
+  "both_are_units_template": "Entrambe sono unità di {DEF}.",
+  "specifically_intro_template": "Nello specifico: {DEF_A}, e {DEF_B}."
  },
  "currencyNames": {
   "USD": "Dollaro statunitense",

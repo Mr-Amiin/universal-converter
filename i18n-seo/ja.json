@@ -660,7 +660,9 @@
   "factor_explanation_template": "この係数は、各単位とカテゴリーの基準単位との定義上の関係に由来します。1 {FROM} は {FROM_FACTOR} 基準単位に等しく、1 {TO} は {TO_FACTOR} 基準単位に等しいため、一方をもう一方で割ると、{FROM} から {TO} への直接換算係数 {RATIO} が得られます。",
   "currency_factor_explanation_text": "物理単位とは異なり、通貨の為替レートは定義上固定されたものではなく、外国為替市場で常に変動しています。ここで使用されているレートはある時点のスナップショットであり、財務上の意思決定を行う前にライブの情報源で確認する必要があります。",
   "temperature_factor_explanation_text": "両方の温度目盛りは、共通の絶対基準点であるケルビンを介して変換されます。",
-  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。"
+  "primary_use_intro_template": "{UNIT}は主に{USE}のために使用される。",
+  "both_are_units_template": "どちらも{DEF}単位である。",
+  "specifically_intro_template": "具体的には、{DEF_A}であり、{DEF_B}である。"
  },
  "currencyNames": {
   "USD": "米ドル",

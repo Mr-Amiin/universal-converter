@@ -660,7 +660,9 @@
   "factor_explanation_template": "Faktor ini berasal dari hubungan yang ditetapkan antara setiap satuan dengan satuan dasar kategori tersebut: 1 {FROM} sama dengan {FROM_FACTOR} satuan dasar, dan 1 {TO} sama dengan {TO_FACTOR} satuan dasar, sehingga membagi salah satu dengan yang lain menghasilkan faktor langsung {FROM}-ke-{TO} sebesar {RATIO}.",
   "currency_factor_explanation_text": "Berbeda dengan satuan fisik, nilai tukar mata uang tidak tetap berdasarkan definisi — nilainya terus berfluktuasi di pasar valuta asing. Nilai tukar yang digunakan di sini adalah cuplikan pada suatu waktu dan harus dikonfirmasi dengan sumber langsung sebelum membuat keputusan keuangan apa pun.",
   "temperature_factor_explanation_text": "Kedua skala dikonversi melalui Kelvin sebagai titik referensi absolut yang sama.",
-  "primary_use_intro_template": "{UNIT} paling sering digunakan untuk {USE}."
+  "primary_use_intro_template": "{UNIT} paling sering digunakan untuk {USE}.",
+  "both_are_units_template": "Keduanya adalah satuan {DEF}.",
+  "specifically_intro_template": "Secara khusus: {DEF_A}, dan {DEF_B}."
  },
  "currencyNames": {
   "USD": "Dolar AS",

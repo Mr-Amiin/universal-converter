@@ -660,7 +660,9 @@
   "factor_explanation_template": "Bu katsayı, her birimin kategorinin taban birimiyle olan tanımlı ilişkisinden gelir: 1 {FROM}, {FROM_FACTOR} taban birime eşittir ve 1 {TO}, {TO_FACTOR} taban birime eşittir; bu nedenle birini diğerine bölmek, {FROM} biriminden {TO} birimine doğrudan {RATIO} dönüşüm katsayısını verir.",
   "currency_factor_explanation_text": "Fiziksel birimlerin aksine, döviz kurları tanım gereği sabit değildir — döviz piyasalarında sürekli dalgalanır. Burada kullanılan kur bir anlık görüntüdür ve herhangi bir finansal karar vermeden önce canlı bir kaynaktan teyit edilmelidir.",
   "temperature_factor_explanation_text": "Her iki ölçek de ortak mutlak referans noktası olan Kelvin üzerinden dönüştürülür.",
-  "primary_use_intro_template": "{UNIT} en sık {USE} için kullanılır."
+  "primary_use_intro_template": "{UNIT} en sık {USE} için kullanılır.",
+  "both_are_units_template": "İkisi de {DEF} birimidir.",
+  "specifically_intro_template": "Daha açık söylemek gerekirse: {DEF_A} ve {DEF_B}."
  },
  "currencyNames": {
   "USD": "ABD Doları",

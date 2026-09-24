@@ -5022,29 +5022,67 @@ setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${to
 }
 // The article's lede paragraph, immediately after the "About Converting"
 // h2, is built at generation time from a per-category connector sentence
-// ("Comparing {A} and {B} is common in <category context>.") plus, in the
-// simplest variant, a single unit-scoped "primary use" clause about
-// fromUnit only ("{A} is most often used for <fact>."). A second variant
-// (both units get their own "typically associated with <context>" clause)
-// also exists on some pages but has no recovered source data yet.
-// Rather than guess which variant a given page uses, this only recognizes
-// the one-clause shape via a structural regex match (not a hardcoded
-// English template, since that would duplicate the source text here) -
-// requiring the paragraph's two named units to equal fromUnit/toUnit's
-// real English names - and only then reconstructs the translation from
-// seoData.categoryIntroTemplate[category.id] + seoData.unitPrimaryUse[fromUnit.id].
-// Anything that doesn't match this exact shape (a two-clause-variant page,
-// or any category/unit without this data yet) safely stays in English.
+// ("Comparing {A} and {B} is common in <category context>.") plus one of
+// (at least) four second-clause variants:
+//   1. "{A} is most often used for <fact>." - a unit-scoped "primary use"
+//      fact about fromUnit only (seoData.unitPrimaryUse[fromUnit.id]).
+//   2. "{A} is typically associated with <ctx>, while {B} is typically
+//      associated with <ctx>." - both units get their own context clause.
+//      No recovered source data for this variant yet.
+//   3. "Both are <definition> units." - used when fromUnit and toUnit
+//      share the exact same English definition (e.g. every generated
+//      square_*/cubic_* metric-prefix pair). Reuses the SAME translated
+//      definitions already surfaced via getUnitDisplayDefinition() for
+//      the "Understanding X" paragraphs - no new per-unit data needed.
+//   4. "Specifically: <A's definition>, and <b's definition>." - the
+//      generic fallback when neither unit has special context/primary-use
+//      data and their definitions differ. Also reuses
+//      getUnitDisplayDefinition() for both units.
+// Rather than guess which variant a given page uses, each is only
+// recognized via a structural regex match against the page's REAL
+// original English text (never a hardcoded English template, since that
+// would duplicate the source content here) - requiring the paragraph's
+// named unit(s) to equal fromUnit/toUnit's real English names, and (for
+// variants 3-4) requiring the captured definition text to equal the
+// unit's actual English `definition` field exactly. Only then is the
+// translation reconstructed, and only if genuinely-translated data exists
+// (getUnitDisplayDefinition() returning the untranslated English string
+// back is treated as "no translation available", never embedded).
+// Anything that doesn't match one of these exact shapes (the still-
+// unmodeled variant 2, or any category/unit without translated data yet)
+// safely stays in English instead of risking a wrong or mixed-language
+// paragraph.
 const introP = document.querySelector(".seo-article > h2:first-child + p");
-if (introP && category && seoData.categoryIntroTemplate && seoData.unitPrimaryUse) {
-const introMatch = originalText(introP).match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
-if (introMatch && introMatch[1] === fromUnit.name && introMatch[2] === toUnit.name && introMatch[3] === fromUnit.name) {
+if (introP && category && seoData.categoryIntroTemplate) {
 const categoryTemplate = seoData.categoryIntroTemplate[category.id];
+const original = originalText(introP);
+const lowerFirst = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+const stripPeriod = (s) => (s ? s.replace(/[.。]+$/, "") : s);
+const translatedDef = (unit) => {
+const def = getUnitDisplayDefinition(unit);
+return def && def !== unit.definition ? def : null;
+};
+if (categoryTemplate) {
+const oneClauseMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
+const bothAreMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Both are (.+) units\.$/);
+const specificallyMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Specifically: (.+), and (.+)\.$/);
+let sentence2 = null;
+if (oneClauseMatch && oneClauseMatch[1] === fromUnit.name && oneClauseMatch[2] === toUnit.name && oneClauseMatch[3] === fromUnit.name && seoData.unitPrimaryUse) {
 const primaryUseTemplate = chrome.primary_use_intro_template;
 const primaryUse = seoData.unitPrimaryUse[fromUnit.id];
-if (categoryTemplate && primaryUseTemplate && primaryUse) {
+if (primaryUseTemplate && primaryUse) sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
+} else if (bothAreMatch && bothAreMatch[1] === fromUnit.name && bothAreMatch[2] === toUnit.name && bothAreMatch[3] === lowerFirst(stripPeriod(fromUnit.definition)) && bothAreMatch[3] === lowerFirst(stripPeriod(toUnit.definition))) {
+const template = chrome.both_are_units_template;
+const def = translatedDef(fromUnit);
+if (template && def) sentence2 = fillTemplateSafe(template, { DEF: stripPeriod(def) });
+} else if (specificallyMatch && specificallyMatch[1] === fromUnit.name && specificallyMatch[2] === toUnit.name && specificallyMatch[3] === stripPeriod(fromUnit.definition) && specificallyMatch[4] === lowerFirst(stripPeriod(toUnit.definition))) {
+const template = chrome.specifically_intro_template;
+const defA = translatedDef(fromUnit);
+const defB = translatedDef(toUnit);
+if (template && defA && defB) sentence2 = fillTemplateSafe(template, { DEF_A: stripPeriod(defA), DEF_B: stripPeriod(defB) });
+}
+if (sentence2) {
 const sentence1 = fillTemplateSafe(categoryTemplate, { UNIT_A: fromName, UNIT_B: toName });
-const sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
 setTranslatedText(introP, `${sentence1} ${sentence2}`);
 }
 }

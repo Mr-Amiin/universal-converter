@@ -660,7 +660,9 @@
   "factor_explanation_template": "يأتي هذا العامل من العلاقة المحددة لكل وحدة بوحدة الأساس للفئة: 1 {FROM} يساوي {FROM_FACTOR} من الوحدات الأساسية، و1 {TO} يساوي {TO_FACTOR} من الوحدات الأساسية، وبقسمة إحداهما على الأخرى نحصل على عامل التحويل المباشر من {FROM} إلى {TO} وهو {RATIO}.",
   "currency_factor_explanation_text": "على عكس الوحدات الفيزيائية، أسعار صرف العملات ليست ثابتة بحكم التعريف — بل تتقلب باستمرار في أسواق الصرف الأجنبي. السعر المستخدم هنا هو لقطة لحظية ويجب تأكيده من مصدر مباشر قبل اتخاذ أي قرار مالي.",
   "temperature_factor_explanation_text": "يتم تحويل كلا المقياسين عبر الكلفن كنقطة مرجعية مطلقة مشتركة.",
-  "primary_use_intro_template": "{UNIT} يُستخدم غالبًا في {USE}."
+  "primary_use_intro_template": "{UNIT} يُستخدم غالبًا في {USE}.",
+  "both_are_units_template": "كلاهما من وحدات {DEF}.",
+  "specifically_intro_template": "على وجه التحديد: {DEF_A}، بينما {DEF_B}."
  },
  "currencyNames": {
   "USD": "دولار أمريكي",

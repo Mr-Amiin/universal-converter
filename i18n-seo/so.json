@@ -660,7 +660,9 @@
   "factor_explanation_template": "Qiyaasan waxay ka timaaddaa xiriirka la go'aamiyay ee cutub kasta la leeyahay cutubka aasaasiga ah ee qaybta: 1 {FROM} waxay la mid tahay {FROM_FACTOR} cutub oo aasaasi ah, 1 {TO} na waxay la mid tahay {TO_FACTOR} cutub oo aasaasi ah, sidaa darteed qaybinta mid kale ayaa keenta qiyaasta toosan ee {FROM} ilaa {TO} oo ah {RATIO}.",
   "currency_factor_explanation_text": "Si ka duwan cutubyada jireed, qiimaha sarifka lacagaha si joogto ah uma go'na sida qeexid ahaan — waxay si joogto ah ugu kala duwan yihiin suuqyada sarifka shisheeye. Qiimaha halkan lagu isticmaalay waa muuqaal ku xiran wakhti gaar ah, waana in la xaqiijiyaa isha toosan ka hor inta aan la gaarin go'aan maaliyadeed.",
   "temperature_factor_explanation_text": "Labada heer ee kulaylka waxaa loo beddelaa iyagoo adeegsanaya Kelvin sida barta tixraaca guud ee gaarka ah.",
-  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}."
+  "primary_use_intro_template": "{UNIT} inta badan waxaa loo isticmaalaa {USE}.",
+  "both_are_units_template": "Labaduba waa cabbirro {DEF} ah.",
+  "specifically_intro_template": "Gaar ahaan: {DEF_A}, iyo {DEF_B}."
  },
  "currencyNames": {
   "USD": "Doolar Mareykan",
