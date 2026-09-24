@@ -1408,20 +1408,40 @@ const timeSubset = timeUnits.filter((item) => ["second", "minute", "hour", "day"
 return uniqueUnits([...common, ...ratioUnits(lengthSubset, timeSubset, "per", "speed", "Distance divided by time.")]);
 }
 function digitalStorageUnits() {
+// The decimal-bit multiples (kilobit..exabit) have symbols that are just an
+// SI-prefix letter + "b" (kb, Mb, Gb, Tb, Pb, Eb). URL routing normalizes
+// everything to lowercase, so those symbols collide with the decimal-BYTE
+// multiples' symbols (KB, MB, GB, TB, PB -> kb, mb, gb, tb, pb once
+// lowercased) - a genuine ambiguity between e.g. kilobit's "kb" and
+// kilobyte's "KB". The generated SEO page slugs sidestep that collision by
+// spelling these units out as "kbit"/"mbit"/"gbit"/"tbit"/"pbit"/"ebit" in
+// the URL instead of the bare symbol, but resolveUnitAlias() (used by both
+// deriveConversionFromPath() for SEO-page hydration and
+// findConversionFromParams() for the interactive converter) only matched
+// against id/name/symbol/aliases - and "kbit" etc. were never listed as an
+// alias anywhere - so those specific URLs silently failed to resolve to a
+// unit at all. hydrateSeoArticleContent() depends on that resolution
+// succeeding (it bails out entirely, before translating anything, when it
+// doesn't), so every one of these pages stayed English-only on every
+// language switch even though their unitDefinitions/units translations
+// already existed. Adding the unambiguous "<letter>bit" spelling as a real
+// alias (data-only, no id/factor/category change) fixes resolution - and
+// therefore hydration - generically for every page built on these units,
+// not just the four originally reported.
 const decimal = [
 ["bit", "Bit", "bit", 1],
 ["byte", "Byte", "B", 8],
-["kilobit", "Kilobit", "kb", 1e3],
+["kilobit", "Kilobit", "kb", 1e3, ["kbit"]],
 ["kilobyte", "KB", "KB", 8e3],
-["megabit", "Megabit", "Mb", 1e6],
+["megabit", "Megabit", "Mb", 1e6, ["mbit"]],
 ["megabyte", "MB", "MB", 8e6],
-["gigabit", "Gigabit", "Gb", 1e9],
+["gigabit", "Gigabit", "Gb", 1e9, ["gbit"]],
 ["gigabyte", "GB", "GB", 8e9],
-["terabit", "Terabit", "Tb", 1e12],
+["terabit", "Terabit", "Tb", 1e12, ["tbit"]],
 ["terabyte", "TB", "TB", 8e12],
-["petabit", "Petabit", "Pb", 1e15],
+["petabit", "Petabit", "Pb", 1e15, ["pbit"]],
 ["petabyte", "PB", "PB", 8e15],
-["exabit", "Exabit", "Eb", 1e18],
+["exabit", "Exabit", "Eb", 1e18, ["ebit"]],
 ["exabyte", "EB", "EB", 8e18],
 ["zettabyte", "ZB", "ZB", 8e21],
 ["yottabyte", "YB", "YB", 8e24]
@@ -1434,7 +1454,7 @@ const binary = [
 ["pebibyte", "PiB", "PiB", 8 * Math.pow(1024, 5)],
 ["exbibyte", "EiB", "EiB", 8 * Math.pow(1024, 6)]
 ];
-return [...decimal, ...binary].map(([id, name, symbol, factor]) => u(id, name, symbol, factor, `${name} digital storage unit.`, [], "storage"));
+return [...decimal, ...binary].map(([id, name, symbol, factor, aliases]) => u(id, name, symbol, factor, `${name} digital storage unit.`, aliases || [], "storage"));
 }
 function electricityUnits() {
 const voltage = metricUnits("volt", "Volt", "V", 1, "Volt is the SI unit of electric potential.", { dimension: "voltage" });
@@ -4862,6 +4882,20 @@ if (seoData.unitDefinitions && seoData.unitDefinitions[unit.id]) return seoData.
 if (unit.dimension && seoData.dimensionDefinitions && seoData.dimensionDefinitions[unit.dimension]) {
 return seoData.dimensionDefinitions[unit.dimension];
 }
+// Every generated "square_*"/"cubic_*" metric-prefix variant (square_centimeter,
+// square_millimeter, cubic_decimeter, ... - squareMetricUnits()/cubicMetricUnits()
+// stamp each one with the SAME fixed English sentence, not a per-prefix one) shares
+// its English `definition` text byte-for-byte with square_meter/cubic_meter. Reusing
+// that sibling's curated translation is not a guess - it is the identical source
+// content already translated, just keyed under a different id - and it covers every
+// such variant (only a handful of which are individually curated below) without
+// requiring one new JSON record per prefix.
+if (unit.id !== "square_meter" && unit.definition === "Square metric area unit." && seoData.unitDefinitions.square_meter) {
+return seoData.unitDefinitions.square_meter;
+}
+if (unit.id !== "cubic_meter" && unit.definition === "Cubic metric volume unit." && seoData.unitDefinitions.cubic_meter) {
+return seoData.unitDefinitions.cubic_meter;
+}
 return unit.definition;
 }
 
@@ -5260,6 +5294,56 @@ const translated = translateNameFormulaLine(original, fromUnit, toUnit);
 if (translated) setTranslatedText(el, translated);
 });
 
+// Formula-explanation paragraph under the main "Formula" info-card.
+// Three verbatim-boilerplate variants exist, confirmed by direct
+// inspection of many generated pages (not assumed):
+//  1. The general "This factor comes from each unit's defined
+//     relationship..." sentence - a single, byte-for-byte-fixed
+//     template with 5 numeric/unit slots (unit name x2, each unit's
+//     own factor-to-base-unit x2, and the resulting ratio) confirmed
+//     across every non-temperature, non-currency category sampled
+//     (area, length, weight, density, etc.). The unit names are
+//     translated via getUnitDisplayName(); every number is carried
+//     over VERBATIM from the original English text via regex capture
+//     (never recomputed/reformatted), so no rounding or notation
+//     mismatch can be introduced.
+//  2. Currency's own fixed replacement sentence ("Unlike physical
+//     units, currency exchange rates are not fixed by definition..."),
+//     confirmed byte-identical across every currency pair in the
+//     category - a flat boilerplate string, same pattern as the
+//     already-translated "Exchange rate notice." block.
+//  3. Temperature's own fixed replacement sentence ("Both scales are
+//     converted through Kelvin..."), confirmed byte-identical across
+//     every temperature pair - same flat-boilerplate treatment.
+article.querySelectorAll(".info-card p").forEach((p) => {
+if (p.classList.contains("info-card-formula") || p.querySelector("strong")) return;
+const original = originalText(p);
+if (chrome.currency_factor_explanation_text && original === "Unlike physical units, currency exchange rates are not fixed by definition — they float continuously on foreign exchange markets. The rate used here is a snapshot and should be confirmed against a live source before any financial decision.") {
+setTranslatedText(p, chrome.currency_factor_explanation_text);
+return;
+}
+if (chrome.temperature_factor_explanation_text && original === "Both scales are converted through Kelvin as a common absolute reference point.") {
+setTranslatedText(p, chrome.temperature_factor_explanation_text);
+return;
+}
+if (!chrome.factor_explanation_template) return;
+const m = original.match(/^This factor comes from each unit's defined relationship to the category's base unit: 1 (.+?) equals (.+?) base units, and 1 (.+?) equals (.+?) base units, so dividing one by the other gives the direct (.+?)-to-(.+?) factor of (.+?)\.$/);
+if (!m) return;
+const fromSide = matchUnitByName(m[1], fromUnit, toUnit);
+const toSide = matchUnitByName(m[3], fromUnit, toUnit);
+if (!fromSide || !toSide || fromSide === toSide) return;
+setTranslatedText(
+p,
+fillTemplateSafe(chrome.factor_explanation_template, {
+FROM: getUnitDisplayName(fromSide),
+FROM_FACTOR: m[2],
+TO: getUnitDisplayName(toSide),
+TO_FACTOR: m[4],
+RATIO: m[7],
+})
+);
+});
+
 // Conversion-table column headers ("Acre (ac)" / "Are (a)").
 article.querySelectorAll(".info-card-table th").forEach((el) => {
 const translated = translateNameSymbolFragment(originalText(el), fromUnit, toUnit);
@@ -5363,7 +5447,19 @@ setTranslatedHtml(p, `${escapeHtml(chrome.see_dedicated_page_prefix)}<a href="${
 // uses (faq.q4_answer) rather than attempting to reproduce the longer
 // English sentence's additional "measures {dimension}"/"classified as
 // {type}" clauses, for which no translated data exists anywhere in
-// i18n-seo/*.json.
+// i18n-seo/*.json (see the quantity/family audit in
+// SEO_PAGE_LONGFORM_LOCALIZATION_ARCHITECTURE_AUDIT.md).
+//
+// The original English paragraph wraps its dimension word in <strong>
+// (e.g. "measures <strong>area</strong>"). Using setTranslatedHtml()
+// here - not setTranslatedText() - is required even though the
+// replacement text itself has no markup: it's what makes
+// restoreOriginalSeoText() put the TRUE original HTML (bold tag
+// included) back when the user switches to English, instead of a
+// plain-text reconstruction that would permanently lose the <strong>
+// the very first time this paragraph is translated. escapeHtml() below
+// keeps this safe against a DEFINITION value that happens to contain
+// HTML-significant characters.
 article.querySelectorAll("h3").forEach((el) => {
 const m = originalText(el).match(/^Understanding the (.+?)(?:\s*\(([^)]+)\))?$/);
 if (!m) return;
@@ -5378,7 +5474,7 @@ if (!faq.q4_answer) return;
 const bodyP = el.nextElementSibling;
 if (!bodyP || bodyP.tagName !== "P" || bodyP.classList.contains("unit-distinction-note") || bodyP.classList.contains("unit-origin-note")) return;
 const def = getUnitDisplayDefinition(unit);
-if (def) setTranslatedText(bodyP, fillTemplateSafe(faq.q4_answer, { UNIT: getUnitDisplayName(unit), SYMBOL: unit.symbol, DEFINITION: def }));
+if (def) setTranslatedHtml(bodyP, escapeHtml(fillTemplateSafe(faq.q4_answer, { UNIT: getUnitDisplayName(unit), SYMBOL: unit.symbol, DEFINITION: def })));
 });
 
 // "Where it's used:" paragraphs - reuses seoData.whereUsed[unit.id],

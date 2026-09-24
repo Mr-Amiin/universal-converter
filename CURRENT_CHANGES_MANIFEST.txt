@@ -1,0 +1,86 @@
+CURRENT CHANGES PUSH PACKAGE
+=============================
+Base commit: e8e27efc4b2242709b282e5ad229e7ec1a368b1d
+Base commit date: 2026-09-22 21:57:39 +0300
+Generated: 2026-09-24 14:20:10 UTC
+
+Files changed (all included as full current copies below, plus as a unified
+git patch against the base commit above):
+  - app.js
+  - index.html
+  - adsense.js
+  - i18n-seo/ar.json
+  - i18n-seo/de.json
+  - i18n-seo/es.json
+  - i18n-seo/fr.json
+  - i18n-seo/hi.json
+  - i18n-seo/id.json
+  - i18n-seo/it.json
+  - i18n-seo/ja.json
+  - i18n-seo/ko.json
+  - i18n-seo/pt.json
+  - i18n-seo/so.json
+  - i18n-seo/tr.json
+  - i18n-seo/zh.json
+
+CURRENT_CHANGES.patch has been verified to apply cleanly with
+"git apply --check" against the base commit above, in an isolated worktree
+(not the real working tree). app.js passed "node --check" and all 13
+i18n-seo/*.json files parsed as valid JSON after the patch was applied.
+
+To apply:
+  git checkout e8e27efc4b2242709b282e5ad229e7ec1a368b1d   # or your current branch, if it is at/after this commit
+  git apply CURRENT_CHANGES.patch
+  git add app.js index.html adsense.js i18n-seo/
+  git commit -m "..."
+  git push
+
+Summary of what's in this patch (cumulative, this session):
+  1. Fixed translateSeoArticleLongform() restoration/repeated-switch bugs
+     (HTML-tag-leaking regex; parent-cached-HTML matching).
+  2. Added "{FromUnit} vs. {ToUnit}" comparison table localization and a
+     currency "Exchange rate notice." block localization.
+  3. Wired getUnitDisplayDefinition() into the "Understanding the X"
+     definition paragraph, with a dimensionDefinitions fallback for
+     compound/rate units, using setTranslatedHtml()/escapeHtml() to fix a
+     <strong> tag being destroyed by the English-restore round trip.
+  4. Added formula-explanation paragraph localization (generic template,
+     verified across categories) plus currency/temperature-specific fixed
+     boilerplate variants.
+  5. Closed the unitDefinitions coverage gap: added 35 new translated
+     definitions per language (455 records total across 13 languages) for
+     previously-English-fallback units (centimeter, millimeter, nanometer,
+     milligram, milliliter, kilojoule, kilowatt, megawatt, kilopascal,
+     millibar, kilonewton, kiloohm, milliampere, millivolt, kilovolt,
+     microfarad, kilohertz, megahertz, gigahertz, kilocalorie, kilobit,
+     megabit, gigabit, terabit, petabyte, terabyte, cubic_meter, cubic_foot,
+     square_mile, square_yard, kilowatt_hour, square_kilometer,
+     kilometer_per_liter, liter_per_100_kilometer, mile_per_gallon_us), plus
+     a small generic fallback in getUnitDisplayDefinition() that reuses
+     square_meter's/cubic_meter's translation for any other generated
+     square_*/cubic_* metric-prefix unit sharing the identical English
+     source string (fixes square_centimeter, square_millimeter, and ~48
+     other generated units without duplicating records).
+  6. Fixed abbreviated digital-storage unit routing: added "kbit"/"mbit"/
+     "gbit"/"tbit"/"pbit"/"ebit" as aliases on the corresponding decimal-bit
+     units in digitalStorageUnits(), fixing SEO-page translation hydration
+     (and general unit-alias resolution) for the 162 digital/ pages that
+     use these abbreviated URL slugs, which previously stayed English-only
+     on every language switch because resolveUnitAlias() could not match
+     those tokens to any unit.
+
+Known pre-existing, NOT fixed (out of scope, documented only):
+  - digital/eb-to-ebit does not localize: exabit's bare symbol "Eb" and
+    exabyte's bare symbol "EB" already collided (both normalize to "eb")
+    before this session's changes, so the URL's first token "eb" resolves
+    to the same unit ("exabit") that "ebit" also resolves to, and the
+    from/to-must-differ check in deriveConversionFromPath() rejects the
+    match. This page was already broken before this session (for a
+    different reason - "ebit" was simply unresolvable) and remains broken
+    after it for this separate, deeper symbol-collision reason. Fixing it
+    would require deciding whether bare "eb" should mean exabit or exabyte,
+    which was not part of this task.
+  - digital/bit-to-kb and other abbreviated *bit pages whose slug used the
+    unabbreviated "kbit"/"mbit"/etc. work correctly now; pages using the
+    abbreviated slugs still routed through no analog for petabit/exabit's
+    bare symbol collisions.
