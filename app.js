@@ -1413,36 +1413,50 @@ function digitalStorageUnits() {
 // everything to lowercase, so those symbols collide with the decimal-BYTE
 // multiples' symbols (KB, MB, GB, TB, PB -> kb, mb, gb, tb, pb once
 // lowercased) - a genuine ambiguity between e.g. kilobit's "kb" and
-// kilobyte's "KB". The generated SEO page slugs sidestep that collision by
-// spelling these units out as "kbit"/"mbit"/"gbit"/"tbit"/"pbit"/"ebit" in
-// the URL instead of the bare symbol, but resolveUnitAlias() (used by both
-// deriveConversionFromPath() for SEO-page hydration and
-// findConversionFromParams() for the interactive converter) only matched
-// against id/name/symbol/aliases - and "kbit" etc. were never listed as an
-// alias anywhere - so those specific URLs silently failed to resolve to a
-// unit at all. hydrateSeoArticleContent() depends on that resolution
-// succeeding (it bails out entirely, before translating anything, when it
-// doesn't), so every one of these pages stayed English-only on every
-// language switch even though their unitDefinitions/units translations
-// already existed. Adding the unambiguous "<letter>bit" spelling as a real
-// alias (data-only, no id/factor/category change) fixes resolution - and
-// therefore hydration - generically for every page built on these units,
-// not just the four originally reported.
+// kilobyte's "KB". The generated SEO page slugs only sidestep that
+// collision on ONE side: the bit unit is spelled out unambiguously as
+// "kbit"/"mbit"/"gbit"/"tbit"/"pbit"/"ebit" (a real alias, added below),
+// but the BYTE unit's half of the slug still uses the bare, ambiguous
+// symbol - every real generated pair page is "<byte-symbol>-to-<bit-name>"
+// or the reverse (e.g. /digital/gb-to-mb/, /digital/kb-to-kbit/,
+// /digital/gbit-to-gb/), never a form that avoids the bare token
+// entirely. resolveUnitAlias() resolves a bare ambiguous token via
+// Array.find() over `category.units` in array order, so whichever of the
+// two same-prefix units is listed FIRST silently wins every bare-token
+// lookup. With bit-multiples listed before their byte counterparts (the
+// original order below), "gb" always resolved to gigabit, "mb" to
+// megabit, etc. - two distinct symptoms follow from that, both breaking
+// hydrateSeoArticleContent() (used by deriveConversionFromPath() for
+// SEO-page hydration and findConversionFromParams() for the interactive
+// converter): (1) on a mixed pair like /digital/gb-to-mb/, both tokens
+// resolve to *some* unit but the WRONG one (gigabit/megabit instead of
+// gigabyte/megabyte), so the page silently translates every heading/FAQ/
+// uses-today/history/sources block using the wrong unit's name; (2) on a
+// same-prefix pair like /digital/gb-to-gbit/ or /digital/kb-to-kbit/, the
+// bare token ("gb"/"kb") and the spelled-out token ("gbit"/"kbit") both
+// resolve to the SAME bit unit, fail the from-id !== to-id check, and the
+// whole page is left English-only on every language switch. Listing each
+// byte multiple before its same-prefix bit multiple (byte is the more
+// canonical/bare-symbol form site-wide - every generated slug's bare
+// token is always the byte side) makes the bare-token match resolve to
+// the byte unit first, fixing both symptoms generically for every page
+// built on these units, without touching unit ids/factors/aliases or any
+// translation data.
 const decimal = [
 ["bit", "Bit", "bit", 1],
 ["byte", "Byte", "B", 8],
-["kilobit", "Kilobit", "kb", 1e3, ["kbit"]],
 ["kilobyte", "KB", "KB", 8e3],
-["megabit", "Megabit", "Mb", 1e6, ["mbit"]],
+["kilobit", "Kilobit", "kb", 1e3, ["kbit"]],
 ["megabyte", "MB", "MB", 8e6],
-["gigabit", "Gigabit", "Gb", 1e9, ["gbit"]],
+["megabit", "Megabit", "Mb", 1e6, ["mbit"]],
 ["gigabyte", "GB", "GB", 8e9],
-["terabit", "Terabit", "Tb", 1e12, ["tbit"]],
+["gigabit", "Gigabit", "Gb", 1e9, ["gbit"]],
 ["terabyte", "TB", "TB", 8e12],
-["petabit", "Petabit", "Pb", 1e15, ["pbit"]],
+["terabit", "Terabit", "Tb", 1e12, ["tbit"]],
 ["petabyte", "PB", "PB", 8e15],
-["exabit", "Exabit", "Eb", 1e18, ["ebit"]],
+["petabit", "Petabit", "Pb", 1e15, ["pbit"]],
 ["exabyte", "EB", "EB", 8e18],
+["exabit", "Exabit", "Eb", 1e18, ["ebit"]],
 ["zettabyte", "ZB", "ZB", 8e21],
 ["yottabyte", "YB", "YB", 8e24]
 ];
@@ -4994,6 +5008,68 @@ const SEO_CHROME_LABEL_MAP = {
 "Conversion table": "conversion_table"
 };
 
+// The generator's own English wording for each category's pair-intro
+// sentence-1 ("{UNIT_A} and {UNIT_B} both measure length.", "Comparing
+// {UNIT_A} and {UNIT_B} is common in ...", etc.) - one fixed template per
+// category, confirmed by sampling multiple different unit pairs within
+// the same category and diffing them (the only part that ever varies is
+// the two unit names; every surrounding word, including seemingly pair-
+// specific context like "since the US measures liquids in gallons...",
+// is identical across every pair in that category). This is the English
+// reference translateHeroAndAboutHeading() matches the page's cached
+// original text against to recognize which category template (and which
+// of the four sentence-2 variants) a given page's intro paragraph uses,
+// mirroring seoData.categoryIntroTemplate[category.id] (the translated
+// version of this same string, keyed the same way) rather than
+// hardcoding one single English shape for all 27 categories.
+const CATEGORY_INTRO_ENGLISH = {
+"length": "{UNIT_A} and {UNIT_B} both measure length.",
+"area": "Comparing {UNIT_A} and {UNIT_B} is common in agriculture and real estate, where US land is typically measured in acres and most of the rest of the world uses hectares.",
+"volume": "{UNIT_A} and {UNIT_B} appear side by side at fuel pumps and on beverage labels, since the US measures liquids in gallons while most of the world uses liters.",
+"weight": "Weight conversions between {UNIT_A} and {UNIT_B} come up constantly in everyday commerce, shipping, and cooking, since US packaging is usually labeled in pounds while most of the rest of the world uses kilograms.",
+"time": "{UNIT_A} and {UNIT_B} are both everyday units of duration, and converting between them is one of the most routine calculations there is — scheduling, project planning, and billing all depend on it.",
+"speed": "{UNIT_A} and {UNIT_B} both describe speed, and the conversion matters whenever a maritime or aviation speed (knots) needs to be compared against a road speed (mph).",
+"pressure": "{UNIT_A} and {UNIT_B} both show up on pressure gauges — psi is standard on US tire and tool specifications, while bar is the everyday pressure unit across most of the rest of the world.",
+"energy": "{UNIT_A} and {UNIT_B} both measure energy, and the conversion is especially useful for comparing nutrition labels (kilocalories) against scientific energy figures (joules).",
+"power": "{UNIT_A} and {UNIT_B} both describe power output, and the conversion is a routine part of comparing an engine or motor's spec sheet across countries that use different power units.",
+"force": "{UNIT_A} and {UNIT_B} both measure force, and the conversion matters whenever an SI-trained engineer needs to compare notes with a US-trained one, or vice versa.",
+"torque": "{UNIT_A} and {UNIT_B} both measure torque, and the conversion is essential for anyone using a torque wrench specified in one unit against a bolt or engine spec given in the other.",
+"electricity": "{UNIT_A} and {UNIT_B} both belong to the electricity family — voltage, current, resistance, power, or energy — units that show up constantly when working across the different standards used by household wiring (120V/240V depending on region), automotive electrical systems (12V/24V), and electronics design.",
+"frequency": "{UNIT_A} and {UNIT_B} both describe how fast something cycles or rotates, and the conversion is a routine part of reading a car tachometer or motor spec sheet against a scientific frequency figure.",
+"digital": "{UNIT_A} and {UNIT_B} are everyday digital-storage units, used for everything from file sizes and app downloads to storage device capacity and mobile data allowances.",
+"angle": "{UNIT_A} and {UNIT_B} are the two standard ways to measure angles — degrees for everyday and navigational use, radians for calculus and physics — so converting between them comes up constantly in math, engineering, and programming.",
+"density": "{UNIT_A} and {UNIT_B} both measure density — mass per unit volume — a property used to identify materials, check manufacturing quality, and predict whether something floats or sinks.",
+"flow-rate": "{UNIT_A} and {UNIT_B} both measure volumetric flow rate — how much volume passes a point over time — used to size pipes and pumps, monitor river or stream discharge, control industrial processes, and set medical infusion rates.",
+"fuel-economy": "{UNIT_A} and {UNIT_B} are two of the ways the world measures fuel efficiency, and converting between them is essential for comparing a US car's window-sticker rating to a European or Asian one.",
+"radiation": "{UNIT_A} and {UNIT_B} both belong to the radiation-measurement family, though radiation quantities fall into genuinely distinct categories: absorbed dose (gray, rad) measures energy deposited in matter, equivalent dose (sievert, rem) weights that for biological harm, and activity (becquerel, curie) measures how often a radioactive source decays — this page only converts between units of the same kind.",
+"chemistry": "{UNIT_A} and {UNIT_B} both measure mass concentration — how much of a substance is dissolved or dispersed in a given volume — a core calculation for preparing lab solutions, checking water quality against a regulatory limit, or formulating a pharmaceutical dose.",
+"cooking": "{UNIT_A} and {UNIT_B} both show up in recipes, and converting between them matters whenever a recipe from one country's cookbook needs to be followed with another country's measuring tools.",
+"astronomy": "{UNIT_A} and {UNIT_B} both describe astronomical distances at very different scales — one for measuring within our solar system, the other for the distances between stars — and converting between them helps put the scale of space into perspective.",
+"engineering": "{UNIT_A} and {UNIT_B} both measure a quantity used in structural or mechanical engineering — commonly stress, pressure, force, torque, power, or energy — where converting between the unit conventions used in different regions, industries, or equipment specifications is a routine part of design work.",
+"scientific": "{UNIT_A} and {UNIT_B} are both scientific-measurement units, spanning everything from atomic and laboratory scales to astronomical distances — the kind of conversion that comes up constantly in physics, chemistry, and astronomy when a result needs to move between conventions used in different subfields.",
+"currency": "{UNIT_A} and {UNIT_B} are two of the world's most-traded currencies, and their exchange rate moves continuously on foreign exchange markets rather than staying fixed.",
+"temperature": "{UNIT_A} and {UNIT_B} are the two everyday temperature scales, and converting between them matters for reading weather forecasts, following recipes, and understanding scientific data across regions.",
+"agriculture": "{UNIT_A} and {UNIT_B} both measure a farming-related quantity — a land area or an application/yield rate per unit area — used to report crop yields, calculate how much fertilizer or seed a field needs, and plan irrigation."
+};
+function escapeRegexLiteral(s) {
+return String(s).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+// Turns a CATEGORY_INTRO_ENGLISH template (containing exactly one
+// "{UNIT_A}" and one "{UNIT_B}", in that order) into the source of a
+// regex that matches the real rendered sentence and captures the two
+// unit names, so the sentence-2 variant regexes below can be built as
+// `^${introPrefixSource} <sentence-2 shape>$` for whichever category the
+// current page belongs to, instead of one hardcoded sentence-1 shape.
+function buildIntroPrefixSource(template) {
+if (!template) return null;
+const marker1 = "\u0000A\u0000";
+const marker2 = "\u0000B\u0000";
+const withMarkers = template.split("{UNIT_A}").join(marker1).split("{UNIT_B}").join(marker2);
+if (!withMarkers.includes(marker1) || !withMarkers.includes(marker2)) return null;
+const [pre, mid, post] = withMarkers.split(/\u0000A\u0000|\u0000B\u0000/);
+return `${escapeRegexLiteral(pre)}(.+)${escapeRegexLiteral(mid)}(.+)${escapeRegexLiteral(post)}`;
+}
+
 function translateChromeLabels(seoData) {
 const chrome = seoData.chrome || {};
 document.querySelectorAll(".info-card h3").forEach((el) => {
@@ -5022,13 +5098,14 @@ setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${to
 }
 // The article's lede paragraph, immediately after the "About Converting"
 // h2, is built at generation time from a per-category connector sentence
-// ("Comparing {A} and {B} is common in <category context>.") plus one of
-// (at least) four second-clause variants:
+// (CATEGORY_INTRO_ENGLISH[category.id], e.g. "{A} and {B} both measure
+// length." or "Comparing {A} and {B} is common in <fixed category
+// context>.") plus one of four second-clause variants:
 //   1. "{A} is most often used for <fact>." - a unit-scoped "primary use"
 //      fact about fromUnit only (seoData.unitPrimaryUse[fromUnit.id]).
 //   2. "{A} is typically associated with <ctx>, while {B} is typically
-//      associated with <ctx>." - both units get their own context clause.
-//      No recovered source data for this variant yet.
+//      associated with <ctx>." - a unit-scoped "associated context" fact
+//      about BOTH units (seoData.unitAssociatedContext[unit.id]).
 //   3. "Both are <definition> units." - used when fromUnit and toUnit
 //      share the exact same English definition (e.g. every generated
 //      square_*/cubic_* metric-prefix pair). Reuses the SAME translated
@@ -5038,23 +5115,29 @@ setTranslatedText(aboutHeading, `${chrome.about_converting} ${fromName} → ${to
 //      generic fallback when neither unit has special context/primary-use
 //      data and their definitions differ. Also reuses
 //      getUnitDisplayDefinition() for both units.
-// Rather than guess which variant a given page uses, each is only
-// recognized via a structural regex match against the page's REAL
-// original English text (never a hardcoded English template, since that
-// would duplicate the source content here) - requiring the paragraph's
-// named unit(s) to equal fromUnit/toUnit's real English names, and (for
-// variants 3-4) requiring the captured definition text to equal the
-// unit's actual English `definition` field exactly. Only then is the
-// translation reconstructed, and only if genuinely-translated data exists
-// (getUnitDisplayDefinition() returning the untranslated English string
-// back is treated as "no translation available", never embedded).
-// Anything that doesn't match one of these exact shapes (the still-
-// unmodeled variant 2, or any category/unit without translated data yet)
-// safely stays in English instead of risking a wrong or mixed-language
-// paragraph.
+// Sentence-1 was originally assumed to be the SAME "Comparing {A} and {B}
+// is common in ..." wording for every category (only "area" was ever
+// confirmed), but sampling multiple pairs across all 27 categories showed
+// each category has its OWN fixed sentence-1 template - the English
+// reference for the category currently being hydrated therefore comes
+// from CATEGORY_INTRO_ENGLISH[category.id], not a single hardcoded
+// pattern. Each sentence-2 variant is only recognized via a structural
+// regex match against the page's REAL original English text (never a
+// hardcoded English template body, since that would duplicate the source
+// content here) - requiring the paragraph's named unit(s) to equal
+// fromUnit/toUnit's real English names, and (for variants 3-4) requiring
+// the captured definition text to equal the unit's actual English
+// `definition` field exactly. Only then is the translation reconstructed,
+// and only if genuinely-translated data exists (getUnitDisplayDefinition()
+// returning the untranslated English string back is treated as "no
+// translation available", never embedded). Anything that doesn't match
+// one of these exact shapes (an uncatalogued category template, or any
+// category/unit without translated data yet) safely stays in English
+// instead of risking a wrong or mixed-language paragraph.
 const introP = document.querySelector(".seo-article > h2:first-child + p");
 if (introP && category && seoData.categoryIntroTemplate) {
 const categoryTemplate = seoData.categoryIntroTemplate[category.id];
+const introPrefixSource = buildIntroPrefixSource(CATEGORY_INTRO_ENGLISH[category.id]);
 const original = originalText(introP);
 const lowerFirst = (s) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : s);
 const stripPeriod = (s) => (s ? s.replace(/[.。]+$/, "") : s);
@@ -5062,15 +5145,21 @@ const translatedDef = (unit) => {
 const def = getUnitDisplayDefinition(unit);
 return def && def !== unit.definition ? def : null;
 };
-if (categoryTemplate) {
-const oneClauseMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. (.+) is most often used for (.+)\.$/);
-const bothAreMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Both are (.+) units\.$/);
-const specificallyMatch = original.match(/^Comparing (.+) and (.+) is common in .+\. Specifically: (.+), and (.+)\.$/);
+if (categoryTemplate && introPrefixSource) {
+const oneClauseMatch = original.match(new RegExp(`^${introPrefixSource} (.+) is most often used for (.+)\\.$`));
+const bothAreMatch = original.match(new RegExp(`^${introPrefixSource} Both are (.+) units\\.$`));
+const specificallyMatch = original.match(new RegExp(`^${introPrefixSource} Specifically: (.+), and (.+)\\.$`));
+const typicallyAssocMatch = original.match(new RegExp(`^${introPrefixSource} (.+) is typically associated with (.+), while (.+) is typically associated with (.+)\\.$`));
 let sentence2 = null;
 if (oneClauseMatch && oneClauseMatch[1] === fromUnit.name && oneClauseMatch[2] === toUnit.name && oneClauseMatch[3] === fromUnit.name && seoData.unitPrimaryUse) {
 const primaryUseTemplate = chrome.primary_use_intro_template;
 const primaryUse = seoData.unitPrimaryUse[fromUnit.id];
 if (primaryUseTemplate && primaryUse) sentence2 = fillTemplateSafe(primaryUseTemplate, { UNIT: fromName, USE: primaryUse });
+} else if (typicallyAssocMatch && typicallyAssocMatch[1] === fromUnit.name && typicallyAssocMatch[2] === toUnit.name && typicallyAssocMatch[3] === fromUnit.name && typicallyAssocMatch[5] === toUnit.name && seoData.unitAssociatedContext) {
+const template = chrome.typically_associated_template;
+const ctxA = seoData.unitAssociatedContext[fromUnit.id];
+const ctxB = seoData.unitAssociatedContext[toUnit.id];
+if (template && ctxA && ctxB) sentence2 = fillTemplateSafe(template, { UNIT_A: fromName, CTX_A: stripPeriod(ctxA), UNIT_B: toName, CTX_B: stripPeriod(ctxB) });
 } else if (bothAreMatch && bothAreMatch[1] === fromUnit.name && bothAreMatch[2] === toUnit.name && bothAreMatch[3] === lowerFirst(stripPeriod(fromUnit.definition)) && bothAreMatch[3] === lowerFirst(stripPeriod(toUnit.definition))) {
 const template = chrome.both_are_units_template;
 const def = translatedDef(fromUnit);
@@ -5759,14 +5848,338 @@ setTranslatedText(a, `${chrome.all_conversions_prefix} ${getCategoryDisplayName(
 });
 }
 
+// Translates a category LANDING page (/area/, /length/, ... - no from/to
+// unit pair, see hydrateSeoArticleContent()'s ctx-null branch below). This
+// is a category-scoped page, not a conversion page, so it reuses
+// category-keyed data instead of unit- or pair-keyed data:
+//   - seoData.categories[category.id].name - the category's own translated
+//     display name, ALREADY curated (used elsewhere in the app, e.g. the
+//     category dropdown) - reused here for the H1, <title>, and the
+//     breadcrumb's current crumb rather than authoring a duplicate string.
+//   - seoData.categoryLanding[category.id] - new, small per-category
+//     content (hero/meta description, a short "such as X, Y, Z" example
+//     fragment, the real-world-use sentence, and - only where curated so
+//     far - the deeper article sections below).
+//   - seoData.chrome.category_* - every HEADING on this page turned out to
+//     be either identical across all 27 categories ("Choosing a unit",
+//     "Common Mistakes", "History", "Industry Applications") or a fixed
+//     template with just the category name substituted ("What {CATEGORY}
+//     conversions measure", "When Should I Use Each {CATEGORY} Unit?",
+//     "Why Convert {CATEGORY} Units?") - confirmed by diffing all 27
+//     category index.html files against each other. Treating those as
+//     chrome-level templates instead of 27 near-duplicate per-category
+//     strings is what keeps this from becoming a second giant per-page
+//     translation registry (see the performance/architecture requirements
+//     this was built against).
+// Every block below is independently guarded on its own data being
+// present, so a category with only the intro section curated still gets
+// that much translated correctly while its deeper article sections (not
+// yet authored for every category) safely stay in English.
+function translateCategoryLandingPage(seoData, category) {
+const chrome = seoData.chrome || {};
+const catInfo = seoData.categories && seoData.categories[category.id];
+const catName = catInfo && catInfo.name;
+const landing = (seoData.categoryLanding && seoData.categoryLanding[category.id]) || null;
+if (catName) {
+// Unlike a conversion page (which can have several candidate headings
+// that need disambiguating by regex/unit-name match), a category landing
+// page has exactly one H1, one <title>, and one current breadcrumb crumb,
+// and hydrateSeoArticleContent() has already resolved unambiguously which
+// category this page is for - so these apply directly, with no
+// exact-original-text guard needed (category.name, e.g. "Area Converter",
+// is a different, longer internal string than the short page-title form
+// these elements actually display, e.g. "Area").
+const h1 = document.querySelector(".hero-content h1");
+if (h1) setTranslatedText(h1, catName);
+const titleEl = document.querySelector("title");
+if (titleEl) setTranslatedText(titleEl, catName);
+const breadcrumbCurrent = document.querySelector(".breadcrumb span:last-child");
+if (breadcrumbCurrent) setTranslatedText(breadcrumbCurrent, catName);
+}
+if (landing && landing.description) {
+const heroP = document.querySelector(".hero-content p");
+if (heroP) setTranslatedText(heroP, landing.description);
+}
+const introSection = document.querySelector(".seo-intro");
+if (introSection && catName) {
+const introH2 = introSection.querySelector("h2");
+if (introH2 && chrome.category_intro_heading_template) {
+setTranslatedText(introH2, fillTemplateSafe(chrome.category_intro_heading_template, { CATEGORY: catName }));
+}
+const introP = introSection.querySelector("p");
+if (introP && chrome.category_intro_prefix_template && landing && landing.introExamples) {
+const tail = (landing.introTail || chrome.category_intro_tail || "").trim();
+const prefix = fillTemplateSafe(chrome.category_intro_prefix_template, { CATEGORY: catName, EXAMPLES: landing.introExamples });
+if (prefix && tail) setTranslatedText(introP, `${prefix} ${tail}`);
+}
+const h3s = introSection.querySelectorAll("h3");
+if (h3s[0]) {
+const label = (landing && landing.realWorldH3Override) || chrome.category_real_world_label;
+if (label) setTranslatedText(h3s[0], label);
+}
+if (h3s[0] && h3s[0].nextElementSibling && h3s[0].nextElementSibling.tagName === "P" && landing && landing.realWorldP) {
+setTranslatedText(h3s[0].nextElementSibling, landing.realWorldP);
+}
+if (h3s[1] && chrome.category_choosing_label) setTranslatedText(h3s[1], chrome.category_choosing_label);
+if (h3s[1] && h3s[1].nextElementSibling && h3s[1].nextElementSibling.tagName === "P") {
+const choosingText = (landing && landing.choosingPOverride) || chrome.category_choosing_text;
+if (choosingText) setTranslatedText(h3s[1].nextElementSibling, choosingText);
+}
+}
+// FAQ items reuse the SAME chrome.faq_heading already wired for every
+// page type (translateChromeLabels()); only the per-question content is
+// category-scoped and new here.
+if (landing && Array.isArray(landing.faq)) {
+const faqItems = document.querySelectorAll(".seo-faq .faq-item");
+if (faqItems.length === landing.faq.length) {
+faqItems.forEach((item, i) => {
+const q = item.querySelector("h3");
+const a = item.querySelector("p");
+if (q && landing.faq[i][0]) setTranslatedText(q, landing.faq[i][0]);
+if (a && landing.faq[i][1]) setTranslatedText(a, landing.faq[i][1]);
+});
+}
+}
+if (catName) {
+const usage = document.querySelector(".seo-article.seo-unit-usage");
+if (usage) {
+const h2 = usage.querySelector("h2");
+if (h2 && chrome.category_usage_heading_template) setTranslatedText(h2, fillTemplateSafe(chrome.category_usage_heading_template, { CATEGORY: catName }));
+const items = usage.querySelectorAll("li");
+if (landing && Array.isArray(landing.usageItems) && items.length === landing.usageItems.length) {
+items.forEach((li, i) => setTranslatedHtml(li, landing.usageItems[i]));
+}
+}
+const mistakes = document.querySelector(".seo-article.seo-mistakes");
+if (mistakes) {
+const h2 = mistakes.querySelector("h2");
+if (h2 && chrome.category_mistakes_heading) setTranslatedText(h2, chrome.category_mistakes_heading);
+const items = mistakes.querySelectorAll("li");
+if (landing && Array.isArray(landing.mistakesItems) && items.length === landing.mistakesItems.length) {
+items.forEach((li, i) => setTranslatedHtml(li, landing.mistakesItems[i]));
+}
+}
+const historyEl = document.querySelector(".seo-article.seo-history");
+if (historyEl) {
+const h2 = historyEl.querySelector("h2");
+if (h2 && chrome.category_history_heading) setTranslatedText(h2, chrome.category_history_heading);
+const p = historyEl.querySelector("p");
+if (p && landing && landing.historyP) setTranslatedText(p, landing.historyP);
+}
+const industries = document.querySelector(".seo-article.seo-industries");
+if (industries) {
+const h2 = industries.querySelector("h2");
+if (h2 && chrome.category_industries_heading) setTranslatedText(h2, chrome.category_industries_heading);
+const items = industries.querySelectorAll("li");
+if (landing && Array.isArray(landing.industriesItems) && items.length === landing.industriesItems.length) {
+items.forEach((li, i) => setTranslatedText(li, landing.industriesItems[i]));
+}
+}
+const why = document.querySelector(".seo-article.seo-why-convert");
+if (why) {
+const h2 = why.querySelector("h2");
+if (h2 && chrome.category_why_heading_template) setTranslatedText(h2, fillTemplateSafe(chrome.category_why_heading_template, { CATEGORY: catName }));
+// The paragraph's own trailing sentences link to OTHER category pages
+// by name ("see our Agriculture converters") - translating that html
+// safely needs those sibling categories' names, which are already
+// available via seoData.categories, but no page has this data curated
+// yet, so it is intentionally left alone rather than guessed at.
+}
+}
+translateAboutConversionBlock(seoData, category, catName);
+}
+
+// Translates the second, larger reference article every category landing
+// page carries below the curated categoryLanding.<id> content above: the
+// "About {CATEGORY} Conversion" article, its "Quick Facts" sidebar list,
+// and the "Common {CATEGORY} Measurements" / "Conversion Formulas" /
+// "Practical Examples" reference cards. This block predates the
+// categoryLanding architecture, was never wired to any i18n system (every
+// element here has plain <h2>/<p>/<li>/<td> markup, no
+// data-i18n-seo-original attributes yet), and was found to be English-only
+// on all 27 category pages during a full-site residual-English audit.
+//
+// Reuses the exact same shared-template + curated-data split as the rest of
+// this file: fixed headings ("Quick Facts", "Conversion Formulas",
+// "Practical Examples") and the two per-category heading TEMPLATES ("About
+// {CATEGORY} Conversion", "Common {CATEGORY} Measurements") come from
+// chrome.* (translated once, reused by all 27 categories); the actual
+// prose, quick-facts items, table rows, formulas, and examples come from
+// the new seoData.categoryLanding[id].aboutConversion record (curated once
+// per category, reused across all 13 languages the same way
+// landing.faq/usageItems/etc. already are).
+//
+// Table symbols and "equal to" values (e.g. "kg/m³", "0.3048 m") are never
+// touched - only the unit NAME column and the surrounding prose translate,
+// per the same "preserve numbers/symbols/equations" rule the rest of the
+// categoryLanding data already follows. Conversion-formula lines are split
+// into two shapes at authoring time: the common "{FROM} to {TO}: multiply/
+// divide by {FACTOR}" shape (rendered through the shared
+// formula_multiply_by_template/formula_divide_by_template, with only FROM/
+// TO translated and FACTOR preserved verbatim) and free-form lines (bare
+// equations like "Density = Mass ÷ Volume", or fuel economy's reciprocal-
+// relationship sentences) that don't fit that shape and are translated as
+// whole sentences with every number/symbol/operator preserved.
+function translateAboutConversionBlock(seoData, category, catName) {
+const chrome = seoData.chrome || {};
+const landing = (seoData.categoryLanding && seoData.categoryLanding[category.id]) || null;
+const about = landing && landing.aboutConversion;
+
+// The wired .seo-intro SECTION (translated above by translateCategoryLandingPage
+// itself) and this unwired "About X Conversion" ARTICLE both carry the class
+// "seo-article seo-intro" - only the tag name tells them apart.
+const article = document.querySelector("article.seo-article.seo-intro");
+if (article && catName) {
+const h2 = article.querySelector("h2");
+if (h2 && chrome.about_conversion_heading_template) {
+setTranslatedText(h2, fillTemplateSafe(chrome.about_conversion_heading_template, { CATEGORY: catName }));
+}
+const paragraphs = article.querySelectorAll("p");
+if (about && Array.isArray(about.paragraphs) && paragraphs.length === about.paragraphs.length) {
+paragraphs.forEach((p, i) => setTranslatedText(p, about.paragraphs[i]));
+}
+}
+
+const quickFacts = document.querySelector("article.seo-article.seo-quick-facts");
+if (quickFacts) {
+const h2 = quickFacts.querySelector("h2");
+if (h2 && chrome.quick_facts_heading) setTranslatedText(h2, chrome.quick_facts_heading);
+const list = quickFacts.querySelector("ul.seo-feature-list");
+if (list && about) {
+// originalHtml() caches the list's TRUE original innerHTML on first
+// touch, so counting <li> occurrences (and the number of nested
+// sub-lists - length/area/agriculture each carry TWO: "Most used
+// units" and "Common industries") against that cached string - not
+// the possibly-already-translated live DOM - is what makes this
+// reliable on a second or third language switch, not just the first.
+const cached = originalHtml(list);
+const subCount = (cached.match(/<ul class="seo-feature-list">/g) || []).length;
+const topLevelCount = (cached.match(/<li>/g) || []).length - subCount;
+const expectedTop = Array.isArray(about.quickFactsItems) ? about.quickFactsItems.length : 0;
+const expectedSubLists = Array.isArray(about.quickFactsSubLists) ? about.quickFactsSubLists : [];
+if (topLevelCount === expectedTop && subCount === expectedSubLists.length) {
+const topHtml = (about.quickFactsItems || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+const subHtml = expectedSubLists.map((sub) => {
+const subLabel = chrome[`qf_sub_label_${sub.labelKey}`];
+if (!subLabel || !Array.isArray(sub.items)) return "";
+const subItemsHtml = sub.items.map((item) => `<li>${escapeHtml(item)}</li>`).join("");
+return `<li>${escapeHtml(subLabel)}<ul class="seo-feature-list">${subItemsHtml}</ul></li>`;
+}).join("");
+setTranslatedHtml(list, topHtml + subHtml);
+}
+}
+}
+
+const cards = document.querySelectorAll("section.seo-reference-grid article.page-card");
+cards.forEach((card) => {
+const h2 = card.querySelector("h2");
+if (!h2) return;
+const original = originalText(h2);
+
+if (/^Common .* Measurements$/.test(original)) {
+if (chrome.common_measurements_heading_template && catName) {
+setTranslatedText(h2, fillTemplateSafe(chrome.common_measurements_heading_template, { CATEGORY: catName }));
+}
+const introP = card.querySelector("p");
+if (introP && about && about.measurementsIntro) setTranslatedText(introP, about.measurementsIntro);
+const headRow = card.querySelector("thead tr");
+if (headRow) {
+const ths = headRow.querySelectorAll("th");
+if (ths[0] && chrome.measurements_table_unit_header) setTranslatedText(ths[0], chrome.measurements_table_unit_header);
+if (ths[1] && chrome.measurements_table_symbol_header) setTranslatedText(ths[1], chrome.measurements_table_symbol_header);
+if (ths[2] && chrome.measurements_table_equal_to_header) setTranslatedText(ths[2], chrome.measurements_table_equal_to_header);
+}
+const rows = card.querySelectorAll("tbody tr");
+if (about && Array.isArray(about.measurementsRows) && rows.length === about.measurementsRows.length) {
+rows.forEach((tr, i) => {
+const tds = tr.querySelectorAll("td");
+const row = about.measurementsRows[i];
+const translatedName = row[0];
+const translatedEqualTo = row[2];
+// Column 1 (symbol, e.g. "mm", "kg/m3") is a pure unit symbol and is
+// never touched. Column 0 (unit name) always translates. Column 2
+// ("equal to") is mixed: most rows are purely numeric/symbolic (e.g.
+// "0.001 m") and their translated string is byte-identical to the
+// English source; some rows carry a short explanatory phrase (e.g.
+// "1 Pa (SI derived unit)", "Official currency of Japan") whose words
+// were translated at data-authoring time while every embedded number/
+// symbol/equation was preserved exactly - so this column is always
+// safe to render from the data, whether or not any word in it changed.
+if (tds[0] && translatedName) setTranslatedText(tds[0], translatedName);
+if (tds[2] && translatedEqualTo) setTranslatedText(tds[2], translatedEqualTo);
+});
+}
+} else if (original === "Conversion Formulas") {
+if (chrome.conversion_formulas_heading) setTranslatedText(h2, chrome.conversion_formulas_heading);
+const items = card.querySelectorAll("li");
+if (about && Array.isArray(about.formulas) && items.length === about.formulas.length) {
+items.forEach((li, i) => {
+const f = about.formulas[i];
+if (!f) return;
+if (f.type === "template" && f.op) {
+const tplKey = f.op === "multiply" ? "formula_multiply_by_template" : "formula_divide_by_template";
+const tpl = chrome[tplKey];
+if (tpl) {
+const filled = fillTemplateSafe(tpl, { FROM: f.from, TO: f.to, FACTOR: f.factor });
+if (filled) setTranslatedText(li, filled);
+}
+} else if (f.type === "free" && f.text) {
+setTranslatedText(li, f.text);
+}
+});
+}
+} else if (original === "Practical Examples") {
+if (chrome.practical_examples_heading) setTranslatedText(h2, chrome.practical_examples_heading);
+const items = card.querySelectorAll("li");
+if (about && Array.isArray(about.examples) && items.length === about.examples.length) {
+items.forEach((li, i) => setTranslatedText(li, about.examples[i]));
+}
+}
+});
+}
+
 function hydrateSeoArticleContent(seoData) {
 if (!document.body || !document.body.classList.contains("seo-page")) return;
 translateChromeLabels(seoData);
 translateRelatedConversions(seoData);
-if (typeof deriveConversionFromPath !== "function") return;
-const ctx = deriveConversionFromPath(typeof preferredPagePath === "function" ? preferredPagePath() : location.pathname)
-|| deriveConversionFromPath(location.pathname);
-if (!ctx) return;
+// Prefer the authoritative slug -> {categoryId, fromUnitId, toUnitId}
+// resolution that the converter widget itself uses (readSeoConversionData(),
+// backed by seoMap/window.__seoPageData - the exact from/to unit ids
+// curated per page) over blindly re-deriving units from the raw URL
+// tokens. Bare short digital-storage symbols are ambiguous between a
+// bit unit and its same-prefix byte unit once lowercased for routing
+// (e.g. "gb" normalizes identically for both "GB" (gigabyte) and "Gb"
+// (gigabit)), so guessing straight from the URL via deriveConversionFromPath()
+// silently resolved pages like /digital/gb-to-mb/ to the wrong pair
+// (gigabit -> megabit) for every translated heading/FAQ/uses-today/
+// history/sources block, and made same-prefix pairs like
+// /digital/kb-to-kbit/ resolve both tokens to the identical unit id,
+// which failed the from!==to check and skipped translation entirely.
+// readSeoConversionData() already disambiguates these correctly because
+// it starts from the page's own curated from/to ids rather than
+// re-guessing from the slug text. deriveConversionFromPath() remains as
+// the fallback for any page shape not covered by seoMap/pageData/the
+// #seoConverter dataset.
+const ctx = (typeof readSeoConversionData === "function" ? readSeoConversionData() : null)
+|| (typeof deriveConversionFromPath === "function"
+? deriveConversionFromPath(typeof preferredPagePath === "function" ? preferredPagePath() : location.pathname)
+|| deriveConversionFromPath(location.pathname)
+: null);
+if (!ctx) {
+// A category LANDING page (e.g. /area/, /length/) has no from/to unit
+// pair, so deriveConversionFromPath() returns null - that used to mean
+// "nothing more to translate on this page" and every visible SEO block
+// was silently left in English. window.__seoPageData.category still
+// identifies which category this landing page belongs to even without
+// a conversion pair, so that case is now routed to its own translator
+// instead of just bailing out.
+const pageData = typeof window !== "undefined" ? window.__seoPageData : null;
+if (pageData && pageData.category && !pageData.fromUnitId && !pageData.toUnitId) {
+const landingCategory = categoryMap.get(pageData.category);
+if (landingCategory) translateCategoryLandingPage(seoData, landingCategory);
+}
+return;
+}
 const category = categoryMap.get(ctx.categoryId);
 if (!category) return;
 const fromUnit = getUnit(category, ctx.fromUnitId);
