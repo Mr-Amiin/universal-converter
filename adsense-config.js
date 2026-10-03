@@ -1,4 +1,4 @@
-﻿const ADSENSE_ID = "ca-pub-4632693492035799";
+﻿const ADSENSE_ID = "ca-pub-2057098005458261";
 const ADSENSE_ENABLED = true;
 const ADSENSE_SLOTS = {
 header: "REPLACE_WITH_SLOT_ID",
