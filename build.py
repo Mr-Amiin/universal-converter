@@ -76,6 +76,14 @@ EXCLUDE_NAMES = {"dist", ".git", "build.py"}
 
 HASH_LEN = 10  # 10 hex chars of sha256 is ample to avoid collisions here
 
+# Deliberate service-worker cache salt. CACHE_NAME is otherwise derived only from the
+# hashed asset names above, so a deploy that changes pages but none of those six assets
+# (e.g. the AdSense single-account migration) would keep the same CACHE_NAME and the
+# cache-first service worker would keep serving the old cached pages. Changing this
+# value changes CACHE_NAME on the next build: browsers then install the new worker and
+# its activate step deletes the previous cache.
+SERVICE_WORKER_CACHE_SALT = "adsense-single-account-1"
+
 
 def content_hash(path: Path) -> str:
     h = hashlib.sha256()
@@ -194,7 +202,9 @@ def update_service_worker_cache_name(mapping: dict) -> bool:
     if not sw_path.exists() or not mapping:
         return False
     text = sw_path.read_text(encoding="utf-8")
-    build_fingerprint = hashlib.sha256("".join(sorted(mapping.values())).encode("utf-8")).hexdigest()[:HASH_LEN]
+    build_fingerprint = hashlib.sha256(
+        (SERVICE_WORKER_CACHE_SALT + "".join(sorted(mapping.values()))).encode("utf-8")
+    ).hexdigest()[:HASH_LEN]
     text, count = re.subn(
         r'const CACHE_NAME = "[^"]*";',
         f'const CACHE_NAME = "universal-converter-{build_fingerprint}";',
@@ -222,6 +232,140 @@ VALIDATE_SUFFIXES = {".html", ".js", ".css", ".json", ".xml", ".webmanifest"}
 VALIDATE_IGNORE_NAMES = {"asset-manifest.json"}
 
 
+# --- comment-aware, reference-shaped matching used by validate_dist() ----------------
+# validate_dist() used to flag any line containing a plain asset filename as a substring,
+# so prose in comments ("see app.js") and diagnostics ("app.js did not populate ...")
+# failed the build. It now (1) blanks out comments, keeping line numbers intact, and
+# (2) only counts a filename that is shaped like a reference: delimited on the left by
+# a quote, "/", "(", "=" or "," and on the right by a quote, "?", "#", ")", ">", "," or
+# ";" (or whitespace after an unquoted "=" attribute). Real references in HTML attributes,
+# CSS url()/@import and JS strings are still caught. If a file's comments cannot be
+# tokenized cleanly it is scanned raw (still reference-shaped), never silently skipped.
+_HTML_COMMENT = re.compile(r"<!--.*?-->", re.S)
+_STYLE_BLOCK = re.compile(r"(<style\b[^>]*>)(.*?)(</style\s*>)", re.S | re.I)
+_SCRIPT_BLOCK = re.compile(r"(<script\b([^>]*)>)(.*?)(</script\s*>)", re.S | re.I)
+_JS_TYPE_OK = re.compile(r"type\s*=\s*[\"']?(?:text/javascript|application/javascript|module)", re.I)
+_REGEX_KEYWORDS = {"return", "typeof", "case", "in", "of", "delete", "void", "throw", "new", "else", "do"}
+
+
+def _blank(text: str) -> str:
+    """Stand-in for a removed comment: a space plus its newlines, so line numbers stay correct."""
+    return " " + "\n" * text.count("\n")
+
+
+def _regex_can_start(tail: str) -> bool:
+    t = tail.rstrip()
+    if not t:
+        return True
+    last = t[-1]
+    if last in ")]\"'`":
+        return False  # after a value, "/" is division
+    if last.isalnum() or last in "_$":
+        word = re.search(r"[A-Za-z_$][\w$]*$", t)
+        return bool(word) and word.group(0) in _REGEX_KEYWORDS
+    return True  # after an operator or other punctuation
+
+
+def _strip_c_comments(text: str, js: bool):
+    """Remove /* */ comments (and // comments when js) that are outside string and regex
+    literals. Returns None if the text cannot be tokenized cleanly (caller scans raw)."""
+    out, i, n, tail = [], 0, len(text), ""
+    while i < n:
+        c = text[i]
+        nxt = text[i + 1] if i + 1 < n else ""
+        if c == "/" and nxt == "*":
+            j = text.find("*/", i + 2)
+            if j < 0:
+                return None
+            out.append(_blank(text[i:j + 2]))
+            i = j + 2
+            continue
+        if js and c == "/" and nxt == "/":
+            j = text.find("\n", i)
+            j = n if j < 0 else j
+            out.append(" ")
+            i = j
+            continue
+        if c in "\"'`":
+            j = i + 1
+            while j < n and text[j] != c:
+                if text[j] == "\\":
+                    j += 1
+                elif text[j] == "\n" and c != "`":
+                    return None
+                j += 1
+            if j >= n:
+                return None
+            out.append(text[i:j + 1])
+            i = j + 1
+            tail = (tail + c)[-32:]
+            continue
+        if js and c == "/" and _regex_can_start(tail):
+            j, in_class = i + 1, False
+            while j < n:
+                ch = text[j]
+                if ch == "\\":
+                    j += 2
+                    continue
+                if ch == "\n":
+                    return None
+                if ch == "[":
+                    in_class = True
+                elif ch == "]":
+                    in_class = False
+                elif ch == "/" and not in_class:
+                    break
+                j += 1
+            if j >= n:
+                return None
+            j += 1
+            while j < n and text[j].isalpha():
+                j += 1
+            out.append(text[i:j])
+            i = j
+            tail = (tail + '"')[-32:]
+            continue
+        out.append(c)
+        tail = (tail + c)[-32:]
+        i += 1
+    return "".join(out)
+
+
+def _strip_comments_for_validation(suffix: str, text: str) -> str:
+    if suffix == ".html":
+        text = _HTML_COMMENT.sub(lambda m: _blank(m.group(0)), text)
+
+        def style_sub(m):
+            s = _strip_c_comments(m.group(2), js=False)
+            return m.group(1) + (m.group(2) if s is None else s) + m.group(3)
+
+        def script_sub(m):
+            attrs = m.group(2)
+            if re.search(r"\btype\s*=", attrs, re.I) and not _JS_TYPE_OK.search(attrs):
+                return m.group(0)  # JSON-LD, text/plain stubs, templates: not JavaScript
+            s = _strip_c_comments(m.group(3), js=True)
+            return m.group(1) + (m.group(3) if s is None else s) + m.group(4)
+
+        text = _STYLE_BLOCK.sub(style_sub, text)
+        return _SCRIPT_BLOCK.sub(script_sub, text)
+    if suffix == ".xml":
+        return _HTML_COMMENT.sub(lambda m: _blank(m.group(0)), text)
+    if suffix in (".css", ".js"):
+        stripped = _strip_c_comments(text, js=(suffix == ".js"))
+        return text if stripped is None else stripped
+    return text
+
+
+def _reference_patterns(mapping: dict) -> dict:
+    pats = {}
+    for old_name in mapping:
+        n = re.escape(old_name)
+        pats[old_name] = re.compile(
+            r"""(?:(?<=["'`/(=,])""" + n + r"""(?=["'`?#)>,;])|(?<==)""" + n + r"""(?=\s))"""
+        )
+    return pats
+
+
 def validate_dist(mapping: dict) -> list:
     """Recursively scan the built dist/ output for any remaining reference
     to an unversioned (plain) asset filename. Only files that are actually
@@ -234,6 +378,7 @@ def validate_dist(mapping: dict) -> list:
     if not mapping:
         return []
     problems = []
+    patterns = _reference_patterns(mapping)
     for path in DIST_DIR.rglob("*"):
         if not path.is_file():
             continue
@@ -242,17 +387,19 @@ def validate_dist(mapping: dict) -> list:
         if path.name in VALIDATE_IGNORE_NAMES:
             continue
         try:
-            lines = path.read_text(encoding="utf-8").splitlines()
+            text = path.read_text(encoding="utf-8")
         except (UnicodeDecodeError, ValueError):
             continue
+        lines = text.splitlines()
+        scan = _strip_comments_for_validation(path.suffix, text).splitlines()
+        if len(scan) != len(lines):
+            scan = lines  # line numbers would not align: scan the raw text instead
         rel_path = path.relative_to(DIST_DIR)
-        for lineno, line in enumerate(lines, start=1):
-            for old_name in mapping:
-                # Plain substring check is safe here: a hashed filename
-                # like "app.9022f63c3c.js" never contains "app.js" as a
-                # contiguous substring, so this can't false-positive on
-                # the very names we just generated.
-                if old_name in line:
+        for lineno, (line, scan_line) in enumerate(zip(lines, scan), start=1):
+            for old_name, pattern in patterns.items():
+                # A reference-shaped match (see _reference_patterns): a hashed
+                # filename like "app.9022f63c3c.js" can never match "app.js".
+                if pattern.search(scan_line):
                     problems.append((rel_path, lineno, old_name, line.strip()))
     return problems
 

@@ -48,7 +48,13 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-REGISTRY_PATH = ROOT / "seo-conversion-registry.json"
+# The registry lives in TOOLING/ in this repo; a root-level copy (older layout) is still
+# honoured and takes precedence. If neither exists the generator stops (see main()).
+REGISTRY_CANDIDATES = [
+    ROOT / "seo-conversion-registry.json",
+    ROOT / "TOOLING" / "seo-conversion-registry.json",
+]
+REGISTRY_PATH = next((p for p in REGISTRY_CANDIDATES if p.exists()), None)
 OUTPUT_PATH = ROOT / "search-index.json"
 
 # ---------------------------------------------------------------------------
@@ -334,9 +340,16 @@ def build_static_records() -> dict[str, dict]:
 
 
 def main() -> None:
-    registry = {}
-    if REGISTRY_PATH.exists():
-        registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    if REGISTRY_PATH is None:
+        raise SystemExit(
+            "ERROR: seo-conversion-registry.json not found (looked in: "
+            + ", ".join(str(p) for p in REGISTRY_CANDIDATES)
+            + "). Refusing to write a reduced search-index.json."
+        )
+    registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    if not registry:
+        raise SystemExit(f"ERROR: {REGISTRY_PATH} is empty. Refusing to write a reduced search-index.json.")
+    print(f"Using registry: {REGISTRY_PATH.relative_to(ROOT)}")
 
     merged: dict[str, dict] = {}
     # Order matters only for which record "wins" a URL collision; static

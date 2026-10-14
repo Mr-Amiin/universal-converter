@@ -21,7 +21,7 @@ Last updated: July 1, 2026
 
 - Production domain is configured as `https://theuniversalconverter.com` across HTML metadata, `sitemap.xml`, `robots.txt`, and `generate-sitemap.ps1`.
 - Replace `GA_MEASUREMENT_ID` in `analytics-config.js` with the real GA4 Measurement ID.
-- AdSense Publisher ID is configured in `adsense-config.js` and the global page heads as `ca-pub-4632693492035799`.
+- AdSense Publisher ID is configured in `adsense-config.js` and the global page heads as `ca-pub-2057098005458261`.
 - Add real AdSense ad unit slot IDs in `adsense-config.js`, then set `ADSENSE_ENABLED` to `true` after AdSense approval if you want the reusable ad components to render display ad units.
 - Replace `GOOGLE_SEARCH_CONSOLE_VERIFICATION` in `index.html` with the Search Console verification token if using the meta-tag method.
 - Regenerate the XML sitemap after adding pages: `powershell -NoProfile -ExecutionPolicy Bypass -File .\outputs\generate-sitemap.ps1`.
