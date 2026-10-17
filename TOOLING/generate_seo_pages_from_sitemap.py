@@ -731,10 +731,25 @@ def render_page(page_data: Dict[str, object], canonical: str, depth: int) -> str
 
 
 def get_sitemap_paths(sitemap_path: Path) -> List[str]:
-    tree = ET.parse(sitemap_path)
-    root = tree.getroot()
+    """Return every <loc> URL. Accepts either a plain <urlset> sitemap or a
+    <sitemapindex> (the current layout: sitemap.xml lists sitemap-0001.xml,
+    sitemap-0002.xml, ...), in which case each referenced sitemap file located
+    next to the index is read in order."""
     namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    sitemap_path = Path(sitemap_path)
+    root = ET.parse(sitemap_path).getroot()
     urls = []
+    if root.tag.endswith("sitemapindex"):
+        for sitemap_elem in root.findall("sm:sitemap", namespace):
+            loc_elem = sitemap_elem.find("sm:loc", namespace)
+            if loc_elem is None or not loc_elem.text:
+                continue
+            part_name = Path(urlparse(loc_elem.text.strip()).path).name
+            part_path = sitemap_path.parent / part_name
+            if not part_path.is_file():
+                raise FileNotFoundError(f"Sitemap {part_name} listed in {sitemap_path.name} was not found at {part_path}")
+            urls.extend(get_sitemap_paths(part_path))
+        return urls
     for url_elem in root.findall("sm:url", namespace):
         loc_elem = url_elem.find("sm:loc", namespace)
         if loc_elem is not None and loc_elem.text:

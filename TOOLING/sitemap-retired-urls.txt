@@ -1,0 +1,142 @@
+# sitemap-retired-urls.txt
+#
+# URLs that were listed in the OLD single sitemap.xml but have deliberately been
+# removed from the sitemap. generate_sitemaps.py / validate_sitemaps.py read this
+# file so their "nothing valid was lost" guard can tell a documented removal from
+# an accidental one.
+#
+# Why these 121: each is a root-level URL (e.g. /acres-to-square-feet/) that never
+# had a page - no file exists at that path. The real page lives at the nested URL
+# (e.g. /area/acres-to-square-feet/), which is now its canonical URL and is listed
+# in the sitemap instead. These root URLs are NOT redirected: the site is served
+# from GitHub Pages, for which no support for _redirects or server-side redirect
+# rules is documented, so no redirect is configured. According to the repository
+# files these URLs answered 404 before this change and still do (this has not been
+# checked against the live site). See FINAL_PRE_DEPLOYMENT_REPORT.md.
+#
+# A URL must not appear here once it is listed in the sitemap or has a page of its
+# own; validate_sitemaps.py (check 14) fails if that happens.
+#
+# Format: one absolute https URL per line; '#' starts a comment.
+
+https://theuniversalconverter.com/acres-to-square-feet/
+https://theuniversalconverter.com/acres-to-square-inches/
+https://theuniversalconverter.com/acres-to-square-meters/
+https://theuniversalconverter.com/acres-to-square-miles/
+https://theuniversalconverter.com/celsius-to-delisle/
+https://theuniversalconverter.com/celsius-to-kelvin/
+https://theuniversalconverter.com/celsius-to-newton/
+https://theuniversalconverter.com/celsius-to-rankine/
+https://theuniversalconverter.com/celsius-to-reaumur/
+https://theuniversalconverter.com/celsius-to-romer/
+https://theuniversalconverter.com/centimeters-to-feet/
+https://theuniversalconverter.com/centimeters-to-inches/
+https://theuniversalconverter.com/centimeters-to-kilometers/
+https://theuniversalconverter.com/centimeters-to-meters/
+https://theuniversalconverter.com/centimeters-to-miles/
+https://theuniversalconverter.com/centimeters-to-yards/
+https://theuniversalconverter.com/delisle-to-celsius/
+https://theuniversalconverter.com/delisle-to-fahrenheit/
+https://theuniversalconverter.com/delisle-to-kelvin/
+https://theuniversalconverter.com/delisle-to-newton/
+https://theuniversalconverter.com/delisle-to-rankine/
+https://theuniversalconverter.com/delisle-to-reaumur/
+https://theuniversalconverter.com/delisle-to-romer/
+https://theuniversalconverter.com/fahrenheit-to-delisle/
+https://theuniversalconverter.com/fahrenheit-to-kelvin/
+https://theuniversalconverter.com/fahrenheit-to-newton/
+https://theuniversalconverter.com/fahrenheit-to-rankine/
+https://theuniversalconverter.com/fahrenheit-to-reaumur/
+https://theuniversalconverter.com/fahrenheit-to-romer/
+https://theuniversalconverter.com/feet-to-centimeters/
+https://theuniversalconverter.com/feet-to-inches/
+https://theuniversalconverter.com/feet-to-kilometers/
+https://theuniversalconverter.com/feet-to-miles/
+https://theuniversalconverter.com/feet-to-yards/
+https://theuniversalconverter.com/hectares-to-square-feet/
+https://theuniversalconverter.com/hectares-to-square-inches/
+https://theuniversalconverter.com/hectares-to-square-meters/
+https://theuniversalconverter.com/hectares-to-square-miles/
+https://theuniversalconverter.com/inches-to-centimeters/
+https://theuniversalconverter.com/inches-to-feet/
+https://theuniversalconverter.com/inches-to-kilometers/
+https://theuniversalconverter.com/inches-to-meters/
+https://theuniversalconverter.com/inches-to-miles/
+https://theuniversalconverter.com/inches-to-yards/
+https://theuniversalconverter.com/kelvin-to-celsius/
+https://theuniversalconverter.com/kelvin-to-delisle/
+https://theuniversalconverter.com/kelvin-to-fahrenheit/
+https://theuniversalconverter.com/kelvin-to-newton/
+https://theuniversalconverter.com/kelvin-to-rankine/
+https://theuniversalconverter.com/kelvin-to-reaumur/
+https://theuniversalconverter.com/kelvin-to-romer/
+https://theuniversalconverter.com/kilometers-to-centimeters/
+https://theuniversalconverter.com/kilometers-to-feet/
+https://theuniversalconverter.com/kilometers-to-inches/
+https://theuniversalconverter.com/kilometers-to-meters/
+https://theuniversalconverter.com/kilometers-to-miles/
+https://theuniversalconverter.com/kilometers-to-yards/
+https://theuniversalconverter.com/meters-to-centimeters/
+https://theuniversalconverter.com/meters-to-inches/
+https://theuniversalconverter.com/meters-to-kilometers/
+https://theuniversalconverter.com/meters-to-miles/
+https://theuniversalconverter.com/meters-to-yards/
+https://theuniversalconverter.com/miles-to-centimeters/
+https://theuniversalconverter.com/miles-to-feet/
+https://theuniversalconverter.com/miles-to-inches/
+https://theuniversalconverter.com/miles-to-kilometers/
+https://theuniversalconverter.com/miles-to-meters/
+https://theuniversalconverter.com/miles-to-yards/
+https://theuniversalconverter.com/newton-to-celsius/
+https://theuniversalconverter.com/newton-to-delisle/
+https://theuniversalconverter.com/newton-to-fahrenheit/
+https://theuniversalconverter.com/newton-to-kelvin/
+https://theuniversalconverter.com/newton-to-rankine/
+https://theuniversalconverter.com/newton-to-reaumur/
+https://theuniversalconverter.com/newton-to-romer/
+https://theuniversalconverter.com/rankine-to-celsius/
+https://theuniversalconverter.com/rankine-to-delisle/
+https://theuniversalconverter.com/rankine-to-fahrenheit/
+https://theuniversalconverter.com/rankine-to-kelvin/
+https://theuniversalconverter.com/rankine-to-newton/
+https://theuniversalconverter.com/rankine-to-reaumur/
+https://theuniversalconverter.com/rankine-to-romer/
+https://theuniversalconverter.com/reaumur-to-celsius/
+https://theuniversalconverter.com/reaumur-to-delisle/
+https://theuniversalconverter.com/reaumur-to-fahrenheit/
+https://theuniversalconverter.com/reaumur-to-kelvin/
+https://theuniversalconverter.com/reaumur-to-newton/
+https://theuniversalconverter.com/reaumur-to-rankine/
+https://theuniversalconverter.com/reaumur-to-romer/
+https://theuniversalconverter.com/romer-to-celsius/
+https://theuniversalconverter.com/romer-to-delisle/
+https://theuniversalconverter.com/romer-to-fahrenheit/
+https://theuniversalconverter.com/romer-to-kelvin/
+https://theuniversalconverter.com/romer-to-newton/
+https://theuniversalconverter.com/romer-to-rankine/
+https://theuniversalconverter.com/romer-to-reaumur/
+https://theuniversalconverter.com/square-feet-to-acres/
+https://theuniversalconverter.com/square-feet-to-hectares/
+https://theuniversalconverter.com/square-feet-to-square-inches/
+https://theuniversalconverter.com/square-feet-to-square-miles/
+https://theuniversalconverter.com/square-inches-to-acres/
+https://theuniversalconverter.com/square-inches-to-hectares/
+https://theuniversalconverter.com/square-inches-to-square-feet/
+https://theuniversalconverter.com/square-inches-to-square-meters/
+https://theuniversalconverter.com/square-inches-to-square-miles/
+https://theuniversalconverter.com/square-meters-to-acres/
+https://theuniversalconverter.com/square-meters-to-hectares/
+https://theuniversalconverter.com/square-meters-to-square-feet/
+https://theuniversalconverter.com/square-meters-to-square-inches/
+https://theuniversalconverter.com/square-meters-to-square-miles/
+https://theuniversalconverter.com/square-miles-to-acres/
+https://theuniversalconverter.com/square-miles-to-hectares/
+https://theuniversalconverter.com/square-miles-to-square-feet/
+https://theuniversalconverter.com/square-miles-to-square-inches/
+https://theuniversalconverter.com/square-miles-to-square-meters/
+https://theuniversalconverter.com/yards-to-centimeters/
+https://theuniversalconverter.com/yards-to-feet/
+https://theuniversalconverter.com/yards-to-inches/
+https://theuniversalconverter.com/yards-to-kilometers/
+https://theuniversalconverter.com/yards-to-meters/
+https://theuniversalconverter.com/yards-to-miles/

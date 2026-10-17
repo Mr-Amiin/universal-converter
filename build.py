@@ -21,6 +21,8 @@ appear:
       service-worker cache is also invalidated on every deploy)
     - _headers (the six exact-path Cache-Control rules are regenerated to
       point at the new hashed filenames)
+    - sitemap.xml + sitemap-NNNN.xml are (re)generated into dist/ from the
+      pages being deployed and validated (see generate_sitemaps.py)
 
 Because the filename itself changes whenever the file's contents change,
 it is safe to cache these files "forever":
@@ -56,6 +58,8 @@ from pathlib import Path
 SOURCE_DIR = Path(__file__).resolve().parent
 DIST_DIR = SOURCE_DIR / "dist"
 SEARCH_INDEX_GENERATOR = SOURCE_DIR / "generate_search_index.py"
+SITEMAP_GENERATOR = SOURCE_DIR / "generate_sitemaps.py"
+SITEMAP_VALIDATOR = SOURCE_DIR / "validate_sitemaps.py"
 
 # The six files that get a content hash baked into their filename.
 VERSIONED_ASSETS = [
@@ -72,7 +76,9 @@ VERSIONED_ASSETS = [
 # dist untouched (including the dev/report scripts already in this repo),
 # so this build step changes nothing about the deployed site other than
 # the six versioned assets and the references to them.
-EXCLUDE_NAMES = {"dist", ".git", "build.py"}
+# The sitemap generator/validator and their tests are build tooling only: they run
+# against dist/ below and have no reason to be published as public files.
+EXCLUDE_NAMES = {"dist", ".git", ".github", "build.py", "generate_sitemaps.py", "validate_sitemaps.py", "update_sitemaps.py", "tests"}
 
 HASH_LEN = 10  # 10 hex chars of sha256 is ample to avoid collisions here
 
@@ -422,6 +428,43 @@ def print_build_summary(duration, html_page_count, mapping, total_substitutions,
             print(new_name)
 
 
+def build_sitemaps() -> bool:
+    """Generate the sitemap INDEX (dist/sitemap.xml) and the numbered sitemap files
+    (dist/sitemap-0001.xml, ...) straight into the publish directory, then validate
+    them. Runs on every build, so the published sitemaps always match the pages that
+    are actually being deployed and can never be a stale hand-made file. Each file
+    holds at most 10,000 URLs (Google's hard limits: 50,000 URLs / 50 MB).
+
+    Scope: this only covers a flow that publishes dist/. A host that serves the
+    repository root as-is (e.g. GitHub Pages publishing from the root) never runs
+    build.py; there the committed sitemap.xml + sitemap-NNNN.xml in the repo root
+    are what is served, and they are refreshed with `python3 update_sitemaps.py`.
+
+    Returns True only if generation and validation both succeed."""
+    for script in (SITEMAP_GENERATOR, SITEMAP_VALIDATOR):
+        if not script.exists():
+            print(f"  ! {script.name} not found - cannot build sitemaps", file=sys.stderr)
+            return False
+    # --previous-dir: the committed sitemap files act as the baseline, so a build that
+    # would silently drop pages from the sitemap fails instead of deploying.
+    generated = subprocess.run(
+        [sys.executable, str(SITEMAP_GENERATOR),
+         "--site-dir", str(DIST_DIR), "--out-dir", str(DIST_DIR), "--previous-dir", str(SOURCE_DIR)],
+        cwd=SOURCE_DIR,
+    )
+    if generated.returncode != 0:
+        print("  ! sitemap generation FAILED", file=sys.stderr)
+        return False
+    validated = subprocess.run(
+        [sys.executable, str(SITEMAP_VALIDATOR), "--site-dir", str(DIST_DIR), "--source-dir", str(SOURCE_DIR), "--require-canonical"],
+        cwd=SOURCE_DIR,
+    )
+    if validated.returncode != 0:
+        print("  ! sitemap validation FAILED", file=sys.stderr)
+        return False
+    return True
+
+
 def regenerate_search_index():
     """Rebuild search-index.json from the current SEO conversion registry
     + static page list *before* anything is copied into dist/, so every
@@ -496,6 +539,13 @@ def main():
         sys.exit(1)
 
     print("✓ Asset version validation passed")
+
+    print("\n9. Generating + validating the sitemap index and split sitemaps in dist/ ...")
+    sitemaps_ok = build_sitemaps()
+    if not sitemaps_ok:
+        print("\n✗ Sitemap generation/validation FAILED - not shipping an invalid sitemap.", file=sys.stderr)
+        sys.exit(1)
+    print("✓ Sitemaps generated and validated")
     print("Deploy the dist/ directory.")
 
     print_build_summary(duration, html_page_count, mapping, total_substitutions, sw_updated, headers_updated, validation_passed=True)

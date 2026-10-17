@@ -13,7 +13,14 @@
  *   4. Write that number into           (updateHtmlCount)
  *      sitemap.html's #sitemapRouteCount
  *
- * SINGLE SOURCE OF TRUTH: sitemap.xml.
+ * LAYOUT: sitemap.xml is a sitemap INDEX that lists sitemap-0001.xml,
+ * sitemap-0002.xml, ... (10,000 URLs max per file; Google's hard limits
+ * are 50,000 URLs / 50 MB). The "count every <url>" steps below follow the
+ * index and sum the URLs of every referenced file. For the full, validated
+ * generator that scans the real pages use generate_sitemaps.py (build.py runs
+ * it automatically).
+ *
+ * SINGLE SOURCE OF TRUTH: the sitemap files (sitemap.xml index + parts).
  * The count is derived by reading the <url> tags actually present in
  * the sitemap.xml file on disk after step 2 — not from routes.length,
  * not from a database row count, not from anything else. Whatever
@@ -49,12 +56,13 @@ const path = require('path');
 // CLI args
 // -------------------------------------------------------------------
 function parseArgs(argv) {
-  const args = { routes: null, xml: './sitemap.xml', html: './sitemap.html' };
+  const args = { routes: null, xml: './sitemap.xml', html: './sitemap.html', baseUrl: 'https://theuniversalconverter.com' };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === '--routes') args.routes = argv[++i];
     else if (a === '--xml') args.xml = argv[++i];
     else if (a === '--html') args.html = argv[++i];
+    else if (a === '--base-url') args.baseUrl = argv[++i];
   }
   return args;
 }
@@ -108,6 +116,27 @@ function generateSitemapXml(routes) {
   return lines.join('\n');
 }
 
+const MAX_URLS_PER_SITEMAP = 10000; // project target; Google's hard limit is 50,000 URLs / 50 MB
+
+// Split a route list into sitemap files + an index. Returns { filename: content }.
+function generateSplitSitemaps(routes, baseUrl, maxUrls = MAX_URLS_PER_SITEMAP) {
+  if (!routes.length) throw new Error('refusing to write sitemaps for an empty route list');
+  if (maxUrls < 1 || maxUrls > 50000) throw new Error('maxUrls must be between 1 and 50000');
+  const files = {};
+  const names = [];
+  for (let start = 0, n = 1; start < routes.length; start += maxUrls, n++) {
+    const name = `sitemap-${String(n).padStart(4, '0')}.xml`;
+    files[name] = generateSitemapXml(routes.slice(start, start + maxUrls));
+    names.push(name);
+  }
+  const lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'];
+  for (const name of names) lines.push(`  <sitemap><loc>${escapeXml(baseUrl + '/' + name)}</loc></sitemap>`);
+  lines.push('</sitemapindex>', '');
+  files['sitemap.xml'] = lines.join('\n');
+  return files;
+}
+
 function escapeXml(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -127,6 +156,23 @@ function escapeXml(str) {
 function countUrlEntries(xmlContent) {
   const matches = xmlContent.match(/<url>/g);
   return matches ? matches.length : 0;
+}
+
+// Count <url> nodes for a sitemap file. If it is a sitemap index, follow it:
+// sum the <url> nodes of every referenced sitemap file in the same folder.
+function countSitemapUrls(xmlPath) {
+  const content = fs.readFileSync(xmlPath, 'utf8');
+  if (!/<sitemapindex[\s>]/.test(content)) return countUrlEntries(content);
+  let total = 0;
+  for (const m of content.matchAll(/<sitemap>\s*<loc>\s*([^<]+?)\s*<\/loc>/g)) {
+    const name = path.basename(new URL(m[1].replace(/&amp;/g, '&')).pathname);
+    const partPath = path.join(path.dirname(xmlPath), name);
+    if (!fs.existsSync(partPath)) {
+      throw new Error(`sitemap ${name} is listed in ${path.basename(xmlPath)} but was not found at ${partPath}`);
+    }
+    total += countSitemapUrls(partPath);
+  }
+  return total;
 }
 
 // -------------------------------------------------------------------
@@ -204,9 +250,15 @@ function main() {
 
   // Step 2
   if (routes) {
-    const xml = generateSitemapXml(routes);
-    fs.writeFileSync(xmlPath, xml, 'utf8');
-    console.log(`Step 2: Generate/update sitemap.xml — wrote ${xmlPath}`);
+    const files = generateSplitSitemaps(routes, args.baseUrl.replace(/\/$/, ''));
+    const outDir = path.dirname(xmlPath);
+    for (const f of fs.readdirSync(outDir)) {
+      if (/^sitemap-\d{4}\.xml$/.test(f)) fs.unlinkSync(path.join(outDir, f)); // drop stale parts
+    }
+    for (const [name, content] of Object.entries(files)) {
+      fs.writeFileSync(name === 'sitemap.xml' ? xmlPath : path.join(outDir, name), content, 'utf8');
+    }
+    console.log(`Step 2: Generate/update sitemap.xml — wrote index ${xmlPath} + ${Object.keys(files).length - 1} sitemap file(s)`);
   } else {
     console.log(`Step 2: Generate/update sitemap.xml — skipped, using existing ${xmlPath}`);
   }
@@ -217,8 +269,7 @@ function main() {
   }
 
   // Step 3
-  const xmlContent = fs.readFileSync(xmlPath, 'utf8');
-  const totalRoutes = countUrlEntries(xmlContent);
+  const totalRoutes = countSitemapUrls(xmlPath);
   console.log(`Step 3: Count <url> nodes in sitemap.xml — ${totalRoutes.toLocaleString('en-US')}`);
 
   // Step 4
@@ -231,7 +282,7 @@ function main() {
   guardNoBrowserSideCounting(htmlAfter);
 
   // Validation: re-read both files off disk (not from memory) and compare.
-  const verifyXmlCount = countUrlEntries(fs.readFileSync(xmlPath, 'utf8'));
+  const verifyXmlCount = countSitemapUrls(xmlPath);
   const verifyHtmlCount = extractHtmlCount(fs.readFileSync(htmlPath, 'utf8'));
   const match = verifyXmlCount === verifyHtmlCount;
 
@@ -254,7 +305,9 @@ if (require.main === module) {
 module.exports = {
   generateSeoPages,
   generateSitemapXml,
+  generateSplitSitemaps,
   countUrlEntries,
+  countSitemapUrls,
   updateHtmlCount,
   extractHtmlCount,
   guardNoBrowserSideCounting,
