@@ -1,9 +1,10 @@
-const CACHE_NAME = "universal-converter-v13";
+const CACHE_NAME = "universal-converter-v14";
 const APP_SHELL = [
 "/",
 "/index.html",
 "/styles.css",
 "/app.js",
+"/search-engine.js",
 "/adsense-config.js",
 "/adsense.js",
 "/analytics-config.js",
@@ -72,6 +73,20 @@ return Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.
 self.addEventListener("fetch", (event) => {
 if (event.request.method !== "GET") return;
 if (new URL(event.request.url).origin !== self.location.origin) return;
+// Search index data: network first, so a cached manifest can never point at
+// shard files that a newer deploy has replaced; the cache is only the offline fallback.
+if (new URL(event.request.url).pathname.indexOf("/search-index/") === 0) {
+event.respondWith(
+fetch(event.request).then((response) => {
+if (response.ok) {
+const copy = response.clone();
+caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+}
+return response;
+}).catch(() => caches.match(event.request).then((cached) => cached || Response.error()))
+);
+return;
+}
 event.respondWith(
 caches.match(event.request).then((cached) => {
 if (cached) return cached;

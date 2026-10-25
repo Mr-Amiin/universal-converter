@@ -2677,21 +2677,31 @@ to: link.dataset.to
 /* -------------------------------------------------------------------- *
  * Global site-wide search
  *
- * Loads /search-index.json (built by generate_search_index.py from the
- * SEO conversion registry + static page list, so it covers every
- * searchable page on the site) exactly once, then searches entirely
- * client-side against that in-memory array. Debounced, keyboard
- * navigable, ranked (never alphabetical).
+ * Matching and ranking live in search-engine.js (loaded on first use; the same
+ * file is unit-tested in Node). Its data is static JSON under search-index/,
+ * written at build time by generate_search_index.py from the pages that
+ * really exist: a manifest, one unit dictionary, a few hand-built pages and one
+ * small bitmap shard per category. Only the shards of categories that contain a
+ * matching unit are downloaded, nothing is fetched on page load, and typing is
+ * debounced. Results are paged ("Show more") instead of rendering every match.
+ *
+ * "No matching conversion found" is shown only after the index loaded and the
+ * search finished without error and without a match. A failed download is
+ * reported as an error with a Retry button instead.
  * -------------------------------------------------------------------- */
 const searchState = {
-loadPromise: null,
-records: [],
+engine: null,
+scriptPromise: null,
+session: null,
+requestId: 0,
 activeIndex: -1,
-currentResults: [],
+optionCount: 0,
 debounceTimer: null
 };
-const SEARCH_DEBOUNCE_MS = 150;
-const SEARCH_MAX_RESULTS = 15;
+const SEARCH_DEBOUNCE_MS = 200;
+const SEARCH_FIRST_PAGE = 10;
+const SEARCH_PAGE_SIZE = 20;
+const SEARCH_INDEX_DIR = "search-index/";
 const SEARCH_DROPDOWN_GAP = 6; // px gap between the search field and the dropdown
 
 /**
@@ -2738,157 +2748,249 @@ window.removeEventListener("scroll", positionSearchDropdown, true);
 window.removeEventListener("resize", positionSearchDropdown);
 }
 
-function loadSearchIndex() {
-if (searchState.loadPromise) return searchState.loadPromise;
-searchState.loadPromise = fetch(`${rootRelativePrefix()}search-index.json`)
-.then((response) => {
-if (!response.ok) throw new Error(`search-index.json ${response.status}`);
-return response.json();
-})
-.then((data) => {
-searchState.records = Array.isArray(data) ? data : [];
-return searchState.records;
-})
-.catch((error) => {
-console.error("Failed to load search index:", error);
-searchState.records = [];
-return searchState.records;
+/** Translated text when a translation exists, otherwise the English default. */
+function searchText(key, fallback) {
+const path = `homepage.${key}`;
+const value = getTranslation(path, getStoredLanguageCode());
+return value && value !== path ? value : fallback;
+}
+
+function loadSearchEngineScript() {
+if (typeof window.UCSearch !== "undefined") return Promise.resolve(window.UCSearch);
+if (searchState.scriptPromise) return searchState.scriptPromise;
+searchState.scriptPromise = new Promise((resolve, reject) => {
+const script = document.createElement("script");
+script.src = `${rootRelativePrefix()}search-engine.js`;
+script.async = true;
+script.onload = () => (window.UCSearch ? resolve(window.UCSearch) : reject(new Error("search-engine.js did not define UCSearch")));
+script.onerror = () => reject(new Error("search-engine.js could not be loaded"));
+document.head.appendChild(script);
+}).catch((error) => {
+searchState.scriptPromise = null; // let a retry load it again
+throw error;
 });
-return searchState.loadPromise;
+return searchState.scriptPromise;
 }
 
-function normalizeSearchText(text) {
-return String(text || "").toLowerCase().trim();
+function getSearchEngine() {
+if (searchState.engine) return Promise.resolve(searchState.engine);
+return loadSearchEngineScript().then((UCSearch) => {
+if (!searchState.engine) {
+const prefix = rootRelativePrefix();
+searchState.engine = UCSearch.createEngine({ baseUrl: `${prefix}${SEARCH_INDEX_DIR}`, rootPrefix: prefix });
 }
-
-/* Ranking, lowest number wins (never alphabetical):
-   1 exact title, 2 exact slug, 3 exact unit (from/to), 4 alias match,
-   5 partial match, 6 keyword match. */
-function scoreSearchRecord(record, termLower) {
-if (!termLower) return null;
-const title = normalizeSearchText(record.title);
-const slug = normalizeSearchText(record.slug);
-const from = normalizeSearchText(record.from);
-const to = normalizeSearchText(record.to);
-const category = normalizeSearchText(record.category);
-const aliases = (record.aliases || []).map(normalizeSearchText);
-const keywords = (record.keywords || []).map(normalizeSearchText);
-
-if (title === termLower) return { rank: 1, field: "title" };
-if (slug === termLower || slug.replace(/-/g, " ") === termLower) return { rank: 2, field: "slug" };
-if (from === termLower || to === termLower) return { rank: 3, field: "unit" };
-if (aliases.some((alias) => alias === termLower)) return { rank: 4, field: "alias" };
-
-const titleWords = title.split(/\s+/);
-if (titleWords.some((word) => word === termLower)) return { rank: 3, field: "title" };
-if (title.includes(termLower)) return { rank: 5, field: "title" };
-if (slug.includes(termLower.replace(/\s+/g, "-"))) return { rank: 5, field: "slug" };
-if (from.includes(termLower) || to.includes(termLower)) return { rank: 5, field: "unit" };
-if (category === termLower) return { rank: 3, field: "category" };
-if (aliases.some((alias) => alias.includes(termLower))) return { rank: 5, field: "alias" };
-if (category.includes(termLower)) return { rank: 5, field: "category" };
-if (keywords.some((keyword) => keyword === termLower)) return { rank: 6, field: "keyword" };
-if (keywords.some((keyword) => keyword.includes(termLower))) return { rank: 6, field: "keyword" };
-
-return null;
-}
-
-function searchIndexRecords(term) {
-const termLower = normalizeSearchText(term);
-if (!termLower) return [];
-const scored = [];
-for (const record of searchState.records) {
-const match = scoreSearchRecord(record, termLower);
-if (match) scored.push({ record, rank: match.rank, field: match.field });
-}
-scored.sort((a, b) => {
-if (a.rank !== b.rank) return a.rank - b.rank;
-const lenDiff = a.record.title.length - b.record.title.length;
-if (lenDiff !== 0) return lenDiff;
-return a.record.title.localeCompare(b.record.title);
+return searchState.engine;
 });
-return scored.slice(0, SEARCH_MAX_RESULTS);
 }
 
+/** Highlights query words inside text; text is escaped piece by piece, never as markup. */
 function highlightMatch(text, term) {
-const safeText = escapeHtml(text || "");
-const termTrimmed = (term || "").trim();
-if (!termTrimmed) return safeText;
-const safeTerm = escapeHtml(termTrimmed).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-const pattern = new RegExp(`(${safeTerm})`, "ig");
-return safeText.replace(pattern, "<mark>$1</mark>");
+const raw = String(text || "");
+const words = String(term || "")
+.toLowerCase()
+.split(/\s+/)
+.filter((word) => word && word !== "to" && word !== "in" && word !== "into")
+.map((word) => word.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+if (!words.length) return escapeHtml(raw);
+const pattern = new RegExp(`(${words.join("|")})`, "ig");
+return raw
+.split(pattern)
+.map((part, index) => (index % 2 ? `<mark>${escapeHtml(part)}</mark>` : escapeHtml(part)))
+.join("");
 }
 
-function categorySubtitleFor(record) {
-if (record.category === "Home" || record.category === "Tools" || record.category === "About") {
-return record.category;
-}
-if (!record.from && !record.to) return `${record.category} \u2022 Category`;
-return `${record.category} \u2022 SEO converter`;
+function searchResultSubtitle(item) {
+if (item.kind === "hub") return `${item.category} • ${searchText("searchCategoryLabel", "Category")}`;
+if (item.kind === "page") return item.category;
+const symbols = item.fromSymbol && item.toSymbol ? ` • ${item.fromSymbol} → ${item.toSymbol}` : "";
+return `${item.category}${symbols}`;
 }
 
-function renderSearchResults(query) {
+function closeSearchResults() {
+const results = byId("searchResults");
+const input = byId("globalSearch");
+searchState.requestId += 1; // abandon anything still in flight
+searchState.session = null;
+searchState.activeIndex = -1;
+searchState.optionCount = 0;
+if (results) {
+results.innerHTML = "";
+results.classList.remove("active");
+}
+untrackSearchDropdownPosition();
+if (input) {
+input.removeAttribute("aria-activedescendant");
+input.setAttribute("aria-expanded", "false");
+}
+}
+
+function showSearchPanel() {
+const results = byId("searchResults");
+const input = byId("globalSearch");
+if (!results || !input) return;
+results.classList.add("active");
+input.setAttribute("aria-expanded", "true");
+trackSearchDropdownPosition();
+}
+
+function appendSearchStatus(results, text) {
+const row = document.createElement("button");
+row.type = "button";
+row.disabled = true;
+row.className = "search-status";
+row.textContent = text;
+results.appendChild(row);
+return row;
+}
+
+function appendSearchAction(results, text, onClick) {
+const button = document.createElement("button");
+button.type = "button";
+button.id = `searchResultOption-${searchState.optionCount}`;
+searchState.optionCount += 1;
+button.setAttribute("role", "option");
+button.className = "search-action";
+button.textContent = text;
+button.addEventListener("click", (event) => {
+event.preventDefault();
+onClick();
+});
+results.appendChild(button);
+return button;
+}
+
+function renderSearchFailure(requestId, term, message) {
+const results = byId("searchResults");
+if (!results || requestId !== searchState.requestId) return;
+results.innerHTML = "";
+searchState.optionCount = 0;
+appendSearchStatus(results, message);
+appendSearchAction(results, searchText("searchRetry", "Retry"), () => renderSearchResults(byId("globalSearch").value));
+showSearchPanel();
+}
+
+function buildSearchResultElement(item, term, index) {
+const input = byId("globalSearch");
+const results = byId("searchResults");
+const el = document.createElement("a");
+el.id = `searchResultOption-${index}`;
+el.setAttribute("role", "option");
+el.href = item.href;
+el.innerHTML = `
+<span class="search-result-row">
+<span class="search-result-title">${highlightMatch(item.title, term)}</span>
+<span class="search-result-badge">${escapeHtml(item.category)}</span>
+</span>
+<span class="search-result-meta">${escapeHtml(searchResultSubtitle(item))}</span>
+`;
+const isCategoryHub = item.kind === "hub";
+const categoryId = isCategoryHub ? item.path.replace(/\/$/, "") : "";
+el.addEventListener("click", (event) => {
+rememberSearch(item.title, item.href, isCategoryHub ? categoryId : "");
+if (isCategoryHub && categoryMap.has(categoryId)) {
+event.preventDefault();
+selectCategory(categoryId);
+scrollToConverter();
+}
+input.value = "";
+closeSearchResults();
+});
+results.appendChild(el);
+return el;
+}
+
+/**
+ * Pulls the next `count` results from the current session and appends them.
+ * The first call for a query also decides between results, "no match" and an error.
+ */
+async function appendSearchResults(requestId, term, count, isFirstPage) {
+const results = byId("searchResults");
+const session = searchState.session;
+if (!results || !session) return;
+let batch;
+try {
+batch = await session.next(count);
+} catch (error) {
+console.error("Search failed:", error);
+renderSearchFailure(requestId, term, searchText("searchFailed", "Search could not be completed."));
+return;
+}
+if (requestId !== searchState.requestId) return; // a newer query replaced this one
+
+// drop the previous "Show more" / notice rows before appending
+results.querySelectorAll(".search-status, .search-action").forEach((node) => node.remove());
+searchState.optionCount = results.querySelectorAll('[role="option"]').length;
+
+if (isFirstPage && !batch.items.length) {
+results.innerHTML = "";
+searchState.optionCount = 0;
+if (batch.errors.length) {
+const names = batch.errors.map((e) => e.label).join(", ");
+appendSearchStatus(results, `${searchText("searchPartialError", "Some search data could not be loaded")} (${names}).`);
+appendSearchAction(results, searchText("searchRetry", "Retry"), () => renderSearchResults(byId("globalSearch").value));
+} else {
+// The index loaded, every needed shard loaded, and nothing matched.
+appendSearchStatus(results, getTranslation("homepage.noMatchingConversionFound", getStoredLanguageCode()));
+}
+showSearchPanel();
+return;
+}
+
+const firstNewIndex = searchState.optionCount;
+batch.items.forEach((item) => {
+buildSearchResultElement(item, session.parsed.term, searchState.optionCount);
+searchState.optionCount += 1;
+});
+
+if (batch.errors.length) {
+const names = batch.errors.map((e) => e.label).join(", ");
+appendSearchStatus(results, `${searchText("searchPartialError", "Some search data could not be loaded")} (${names}).`);
+appendSearchAction(results, searchText("searchRetry", "Retry"), () => renderSearchResults(byId("globalSearch").value));
+}
+if (!batch.done) {
+appendSearchAction(results, searchText("searchShowMore", "Show more results"), () => {
+appendSearchResults(requestId, term, SEARCH_PAGE_SIZE, false);
+});
+}
+showSearchPanel();
+if (!isFirstPage) setActiveSearchResult(firstNewIndex);
+}
+
+async function renderSearchResults(query) {
 const results = byId("searchResults");
 const input = byId("globalSearch");
 if (!results || !input) return;
 const term = query.trim();
 searchState.activeIndex = -1;
 if (!term) {
-results.innerHTML = "";
-results.classList.remove("active");
-untrackSearchDropdownPosition();
-searchState.currentResults = [];
-input.removeAttribute("aria-activedescendant");
-input.setAttribute("aria-expanded", "false");
+closeSearchResults();
 return;
 }
-loadSearchIndex().then(() => {
-const matches = searchIndexRecords(term);
-searchState.currentResults = matches;
+const requestId = ++searchState.requestId;
+searchState.session = null;
+
+const needsLoad = !searchState.engine || !searchState.engine.core;
+if (needsLoad) {
 results.innerHTML = "";
-if (!matches.length) {
-results.innerHTML = `<button type="button" disabled>${escapeHtml(getTranslation("homepage.noMatchingConversionFound", getStoredLanguageCode()))}</button>`;
-results.classList.add("active");
-input.setAttribute("aria-expanded", "true");
-trackSearchDropdownPosition();
+searchState.optionCount = 0;
+appendSearchStatus(results, searchText("searchLoading", "Loading search..."));
+showSearchPanel();
+}
+
+let session;
+try {
+const engine = await getSearchEngine();
+session = await engine.query(term);
+} catch (error) {
+console.error("Failed to load the search index:", error);
+renderSearchFailure(requestId, term, searchText("searchIndexError", "Search is unavailable right now: the search index could not be loaded."));
 return;
 }
-matches.forEach((match, index) => {
-const record = match.record;
-const isCategoryPage = !record.from && !record.to && record.category !== "Home" && record.category !== "Tools" && record.category !== "About" && record.category !== "Guides";
-const el = document.createElement(record.url.startsWith("#") ? "button" : "a");
-el.id = `searchResultOption-${index}`;
-el.setAttribute("role", "option");
-if (el.tagName === "A") {
-el.href = record.url;
-} else {
-el.type = "button";
-}
-el.innerHTML = `
-<span class="search-result-row">
-<span class="search-result-title">${highlightMatch(record.title, term)}</span>
-<span class="search-result-badge">${escapeHtml(record.category)}</span>
-</span>
-<span class="search-result-meta">${escapeHtml(categorySubtitleFor(record))}</span>
-`;
-el.addEventListener("click", (event) => {
-rememberSearch(record.title, record.url, isCategoryPage ? record.slug : "");
-if (isCategoryPage && categoryMap.has(record.slug)) {
-event.preventDefault();
-selectCategory(record.slug);
-scrollToConverter();
-}
-input.value = "";
-results.classList.remove("active");
-untrackSearchDropdownPosition();
-input.setAttribute("aria-expanded", "false");
-});
-results.appendChild(el);
-});
-results.classList.add("active");
-input.setAttribute("aria-expanded", "true");
-trackSearchDropdownPosition();
-});
+if (requestId !== searchState.requestId) return;
+searchState.session = session;
+results.innerHTML = "";
+searchState.optionCount = 0;
+await appendSearchResults(requestId, term, SEARCH_FIRST_PAGE, true);
 }
 
 function setActiveSearchResult(index) {
@@ -2917,7 +3019,6 @@ globalSearch.setAttribute("aria-autocomplete", "list");
 globalSearch.setAttribute("aria-expanded", "false");
 globalSearch.setAttribute("aria-controls", "searchResults");
 searchResults.setAttribute("role", "listbox");
-loadSearchIndex();
 
 const debouncedRender = (value) => {
 clearTimeout(searchState.debounceTimer);
@@ -2926,6 +3027,10 @@ searchState.debounceTimer = setTimeout(() => renderSearchResults(value), SEARCH_
 
 globalSearch.addEventListener("input", () => debouncedRender(globalSearch.value));
 globalSearch.addEventListener("focus", () => {
+// Nothing is downloaded until the visitor actually uses the search box.
+getSearchEngine().then((engine) => engine.ready()).catch(() => {
+/* reported when a search is attempted */
+});
 if (globalSearch.value.trim()) renderSearchResults(globalSearch.value);
 });
 globalSearch.addEventListener("keydown", (event) => {
@@ -2947,11 +3052,7 @@ items[searchState.activeIndex].click();
 } else if (event.key === "Escape") {
 clearTimeout(searchState.debounceTimer);
 globalSearch.value = "";
-searchResults.innerHTML = "";
-searchResults.classList.remove("active");
-untrackSearchDropdownPosition();
-globalSearch.setAttribute("aria-expanded", "false");
-searchState.activeIndex = -1;
+closeSearchResults();
 } else if (event.key === "Tab") {
 searchResults.classList.remove("active");
 untrackSearchDropdownPosition();

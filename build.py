@@ -466,10 +466,10 @@ def build_sitemaps() -> bool:
 
 
 def regenerate_search_index():
-    """Rebuild search-index.json from the current SEO conversion registry
-    + static page list *before* anything is copied into dist/, so every
-    build always ships a search index that matches every other generated
-    page. Never hand-edited - always derived at build time."""
+    """Rebuild the sharded search-index/ folder from the pages that actually
+    exist (same inventory rules as the sitemap) *before* anything is copied
+    into dist/, so every build ships a search index that matches every other
+    generated page. Never hand-edited - always derived at build time."""
     if not SEARCH_INDEX_GENERATOR.exists():
         print("  ! WARNING: generate_search_index.py not found, skipping", file=sys.stderr)
         return False
@@ -491,7 +491,7 @@ def regenerate_search_index():
 def main():
     start_time = time.perf_counter()
 
-    print("1. Regenerating search-index.json from the SEO conversion registry ...")
+    print("1. Regenerating search-index/ from the published pages ...")
     search_index_ok = regenerate_search_index()
     if not search_index_ok:
         print("\n✗ Aborting build - search index must be up to date before every deploy.", file=sys.stderr)
