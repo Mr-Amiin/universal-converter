@@ -138,6 +138,39 @@ function categorySlugFromHref(href) {
 const parts = String(href || "").split("/").filter(Boolean);
 return parts.length ? parts[parts.length - 1] : "";
 }
+// Brand assets live at fixed filenames that the host caches as immutable for
+// a year (see _headers), so every reference carries a version query. Bump
+// BRAND_ASSET_VERSION whenever any logo/favicon file is replaced again.
+const BRAND_ASSET_VERSION = "2";
+// Light + dark horizontal logos (one is shown by CSS depending on
+// [data-theme]); each swaps to the compact symbol-only logo on phones
+// narrower than 380px. `prefix` is the path to the site root.
+function brandLogoHtml(prefix) {
+const v = "?v=" + BRAND_ASSET_VERSION;
+const p = prefix || "/";
+return `<picture class="brand-logo brand-logo-light"><source media="(max-width: 380px)" srcset="${p}logo-icon.svg${v}"><img src="${p}logo.svg${v}" alt="Universal Converter" width="136" height="40" decoding="async"></picture><picture class="brand-logo brand-logo-dark" aria-hidden="true"><source media="(max-width: 380px)" srcset="${p}logo-icon-dark.svg${v}"><img src="${p}logo-dark.svg${v}" alt="" width="136" height="40" decoding="async"></picture>`;
+}
+// Most generated conversion pages ship without <link rel="icon"> tags and
+// rely on the browser's implicit /favicon.ico request, which returning
+// visitors may still have cached from the old brand. Add versioned icon
+// links when a page doesn't declare its own.
+function ensureBrandIcons() {
+if (document.head.querySelector('link[rel~="icon"]')) return;
+const v = "?v=" + BRAND_ASSET_VERSION;
+[
+["icon", "/favicon.svg" + v, { type: "image/svg+xml" }],
+["icon", "/favicon.ico" + v, { sizes: "any" }],
+["icon", "/favicon-32x32.png" + v, { type: "image/png", sizes: "32x32" }],
+["icon", "/favicon-16x16.png" + v, { type: "image/png", sizes: "16x16" }],
+["apple-touch-icon", "/apple-touch-icon.png" + v, { sizes: "180x180" }]
+].forEach(([rel, href, attrs]) => {
+const link = document.createElement("link");
+link.rel = rel;
+link.href = href;
+Object.keys(attrs).forEach((name) => link.setAttribute(name, attrs[name]));
+document.head.appendChild(link);
+});
+}
 // Renders the shared site header (hamburger button, brand/logo, desktop
 // top-nav with the Categories dropdown, and theme toggle) into the empty
 // #siteHeader placeholder that every page now ships. This is the missing
@@ -156,7 +189,7 @@ return `<a href="${item.href}" data-i18n="${item.i18nKey}">${item.label}</a>`;
 }).join("");
 header.innerHTML = `
 <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-<a class="brand" href="/index.html" aria-label="Universal Converter home"><img src="/logo.svg" alt="Universal Converter logo" width="38" height="38"><span>Universal Converter</span></a>
+<a class="brand" href="/index.html" aria-label="Universal Converter home">${brandLogoHtml("/")}</a>
 <nav class="top-nav" aria-label="Primary navigation">${topNavItemsHtml}</nav>
 <div class="nav-dropdown lang-dropdown" id="langDropdown"><button type="button" class="nav-dropdown-toggle lang-dropdown-toggle" id="langDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="langDropdownMenu" aria-label="Change language"><span class="lang-toggle-flag" id="langToggleFlag" aria-hidden="true"></span><span id="langToggleName"></span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu lang-dropdown-menu" id="langDropdownMenu" role="listbox" aria-label="Select language"></ul></div>
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
@@ -1008,6 +1041,7 @@ let seoConversionDataCache = null;
 let seoConversionDataResolved = false;
 document.addEventListener("DOMContentLoaded", () => {
 renderSiteHeader();
+ensureBrandIcons();
 initTheme();
 initHeroCanvas();
 renderCategoryDropdownMenus();
