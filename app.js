@@ -2887,11 +2887,6 @@ const isCategoryHub = item.kind === "hub";
 const categoryId = isCategoryHub ? item.path.replace(/\/$/, "") : "";
 el.addEventListener("click", (event) => {
 rememberSearch(item.title, item.href, isCategoryHub ? categoryId : "");
-if (isCategoryHub && categoryMap.has(categoryId)) {
-event.preventDefault();
-selectCategory(categoryId);
-scrollToConverter();
-}
 input.value = "";
 closeSearchResults();
 });
