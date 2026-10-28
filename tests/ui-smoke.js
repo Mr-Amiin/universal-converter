@@ -11,6 +11,16 @@ const mode=process.argv[2]||'ok';
   vc.on('error',(...a)=>errs.push('console.error: '+a.join(' ').slice(0,120)));
   const dom=new JSDOM(html,{url:'https://theuniversalconverter.com/',runScripts:'outside-only',pretendToBeVisual:true,virtualConsole:vc});
   const w=dom.window;
+  // jsdom has no real 2D canvas; stub the methods used by the hero animation.
+  w.HTMLCanvasElement.prototype.getContext = function(type) {
+    if (type !== '2d') return null;
+    return {
+      setTransform() {}, clearRect() {},
+      strokeStyle: '', lineWidth: 1, lineCap: '',
+      beginPath() {}, moveTo() {}, lineTo() {}, stroke() {},
+      fillStyle: '', arc() {}, fill() {}
+    };
+  };
   const fetched=[];
   w.fetch=async(u)=>{
     const url=String(u); fetched.push(url);
