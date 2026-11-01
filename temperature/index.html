@@ -70,6 +70,148 @@
         </div>
       </section>
 
+      <section class="converter-section category-landing-converter" data-category-converter="temperature">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">Temperature converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Temperature Converter</h2>
+                  <p id="activeCategoryDescription" hidden>Convert Celsius, Fahrenheit, Kelvin, Rankine, Delisle, Newton, Reaumur, and Romer.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">1 celsius = 33.8 fahrenheit</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">Celsius is a temperature scale with water freezing at 0 C and boiling at 100 C.</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">Fahrenheit is a temperature scale with water freezing at 32 F and boiling at 212 F.</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">Convert the source temperature to Kelvin, then convert Kelvin to the target scale.</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Temperature conversion uses Kelvin as the intermediate absolute scale.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
             <section class="seo-article seo-intro" aria-labelledby="temperatureMeasuresTitle">
         <h2 id="temperatureMeasuresTitle">What Temperature conversions measure</h2>
         <p>Temperature conversions cover units such as Celsius, Fahrenheit, and Kelvin. Converting between them lets you move between the different measurement systems and conventions used across regions and industries.</p>
@@ -108,7 +250,7 @@
       </section>
 
       <script>
-        window.__categoryConversions = [{"slug":"celsius-to-delisle","title":"Celsius to Delisles","href":"celsius-to-delisle/"},{"slug":"celsius-to-fahrenheit","title":"Celsius to Fahrenheit","href":"celsius-to-fahrenheit/"},{"slug":"celsius-to-kelvin","title":"Celsius to Kelvins","href":"celsius-to-kelvin/"},{"slug":"celsius-to-newton","title":"Celsius to Newtons","href":"celsius-to-newton/"},{"slug":"celsius-to-rankine","title":"Celsius to Rankines","href":"celsius-to-rankine/"},{"slug":"celsius-to-reaumur","title":"Celsius to Reaumurs","href":"celsius-to-reaumur/"},{"slug":"celsius-to-romer","title":"Celsius to Romers","href":"celsius-to-romer/"},{"slug":"delisle-to-celsius","title":"Delisles to Celsius","href":"delisle-to-celsius/"},{"slug":"delisle-to-fahrenheit","title":"Delisles to Fahrenheit","href":"delisle-to-fahrenheit/"},{"slug":"delisle-to-kelvin","title":"Delisles to Kelvins","href":"delisle-to-kelvin/"},{"slug":"delisle-to-newton","title":"Delisles to Newtons","href":"delisle-to-newton/"},{"slug":"delisle-to-rankine","title":"Delisles to Rankines","href":"delisle-to-rankine/"},{"slug":"delisle-to-reaumur","title":"Delisles to Reaumurs","href":"delisle-to-reaumur/"},{"slug":"delisle-to-romer","title":"Delisles to Romers","href":"delisle-to-romer/"},{"slug":"fahrenheit-to-celsius","title":"Fahrenheit to Celsius","href":"fahrenheit-to-celsius/"},{"slug":"fahrenheit-to-delisle","title":"Fahrenheit to Delisles","href":"fahrenheit-to-delisle/"},{"slug":"fahrenheit-to-kelvin","title":"Fahrenheit to Kelvins","href":"fahrenheit-to-kelvin/"},{"slug":"fahrenheit-to-newton","title":"Fahrenheit to Newtons","href":"fahrenheit-to-newton/"},{"slug":"fahrenheit-to-rankine","title":"Fahrenheit to Rankines","href":"fahrenheit-to-rankine/"},{"slug":"fahrenheit-to-reaumur","title":"Fahrenheit to Reaumurs","href":"fahrenheit-to-reaumur/"},{"slug":"fahrenheit-to-romer","title":"Fahrenheit to Romers","href":"fahrenheit-to-romer/"},{"slug":"kelvin-to-celsius","title":"Kelvins to Celsius","href":"kelvin-to-celsius/"},{"slug":"kelvin-to-delisle","title":"Kelvins to Delisles","href":"kelvin-to-delisle/"},{"slug":"kelvin-to-fahrenheit","title":"Kelvins to Fahrenheit","href":"kelvin-to-fahrenheit/"},{"slug":"kelvin-to-newton","title":"Kelvins to Newtons","href":"kelvin-to-newton/"},{"slug":"kelvin-to-rankine","title":"Kelvins to Rankines","href":"kelvin-to-rankine/"},{"slug":"kelvin-to-reaumur","title":"Kelvins to Reaumurs","href":"kelvin-to-reaumur/"},{"slug":"kelvin-to-romer","title":"Kelvins to Romers","href":"kelvin-to-romer/"},{"slug":"newton-to-celsius","title":"Newtons to Celsius","href":"newton-to-celsius/"},{"slug":"newton-to-delisle","title":"Newtons to Delisles","href":"newton-to-delisle/"},{"slug":"newton-to-fahrenheit","title":"Newtons to Fahrenheit","href":"newton-to-fahrenheit/"},{"slug":"newton-to-kelvin","title":"Newtons to Kelvins","href":"newton-to-kelvin/"},{"slug":"newton-to-rankine","title":"Newtons to Rankines","href":"newton-to-rankine/"},{"slug":"newton-to-reaumur","title":"Newtons to Reaumurs","href":"newton-to-reaumur/"},{"slug":"newton-to-romer","title":"Newtons to Romers","href":"newton-to-romer/"},{"slug":"rankine-to-celsius","title":"Rankines to Celsius","href":"rankine-to-celsius/"},{"slug":"rankine-to-delisle","title":"Rankines to Delisles","href":"rankine-to-delisle/"},{"slug":"rankine-to-fahrenheit","title":"Rankines to Fahrenheit","href":"rankine-to-fahrenheit/"},{"slug":"rankine-to-kelvin","title":"Rankines to Kelvins","href":"rankine-to-kelvin/"},{"slug":"rankine-to-newton","title":"Rankines to Newtons","href":"rankine-to-newton/"},{"slug":"rankine-to-reaumur","title":"Rankines to Reaumurs","href":"rankine-to-reaumur/"},{"slug":"rankine-to-romer","title":"Rankines to Romers","href":"rankine-to-romer/"},{"slug":"reaumur-to-celsius","title":"Reaumurs to Celsius","href":"reaumur-to-celsius/"},{"slug":"reaumur-to-delisle","title":"Reaumurs to Delisles","href":"reaumur-to-delisle/"},{"slug":"reaumur-to-fahrenheit","title":"Reaumurs to Fahrenheit","href":"reaumur-to-fahrenheit/"},{"slug":"reaumur-to-kelvin","title":"Reaumurs to Kelvins","href":"reaumur-to-kelvin/"},{"slug":"reaumur-to-newton","title":"Reaumurs to Newtons","href":"reaumur-to-newton/"},{"slug":"reaumur-to-rankine","title":"Reaumurs to Rankines","href":"reaumur-to-rankine/"},{"slug":"reaumur-to-romer","title":"Reaumurs to Romers","href":"reaumur-to-romer/"},{"slug":"romer-to-celsius","title":"Romers to Celsius","href":"romer-to-celsius/"},{"slug":"romer-to-delisle","title":"Romers to Delisles","href":"romer-to-delisle/"},{"slug":"romer-to-fahrenheit","title":"Romers to Fahrenheit","href":"romer-to-fahrenheit/"},{"slug":"romer-to-kelvin","title":"Romers to Kelvins","href":"romer-to-kelvin/"},{"slug":"romer-to-newton","title":"Romers to Newtons","href":"romer-to-newton/"},{"slug":"romer-to-rankine","title":"Romers to Rankines","href":"romer-to-rankine/"},{"slug":"romer-to-reaumur","title":"Romers to Reaumurs","href":"romer-to-reaumur/"}]);
+        window.__categoryConversions = [{"slug":"celsius-to-delisle","title":"Celsius to Delisles","href":"celsius-to-delisle/"},{"slug":"celsius-to-fahrenheit","title":"Celsius to Fahrenheit","href":"celsius-to-fahrenheit/"},{"slug":"celsius-to-kelvin","title":"Celsius to Kelvins","href":"celsius-to-kelvin/"},{"slug":"celsius-to-newton","title":"Celsius to Newtons","href":"celsius-to-newton/"},{"slug":"celsius-to-rankine","title":"Celsius to Rankines","href":"celsius-to-rankine/"},{"slug":"celsius-to-reaumur","title":"Celsius to Reaumurs","href":"celsius-to-reaumur/"},{"slug":"celsius-to-romer","title":"Celsius to Romers","href":"celsius-to-romer/"},{"slug":"delisle-to-celsius","title":"Delisles to Celsius","href":"delisle-to-celsius/"},{"slug":"delisle-to-fahrenheit","title":"Delisles to Fahrenheit","href":"delisle-to-fahrenheit/"},{"slug":"delisle-to-kelvin","title":"Delisles to Kelvins","href":"delisle-to-kelvin/"},{"slug":"delisle-to-newton","title":"Delisles to Newtons","href":"delisle-to-newton/"},{"slug":"delisle-to-rankine","title":"Delisles to Rankines","href":"delisle-to-rankine/"},{"slug":"delisle-to-reaumur","title":"Delisles to Reaumurs","href":"delisle-to-reaumur/"},{"slug":"delisle-to-romer","title":"Delisles to Romers","href":"delisle-to-romer/"},{"slug":"fahrenheit-to-celsius","title":"Fahrenheit to Celsius","href":"fahrenheit-to-celsius/"},{"slug":"fahrenheit-to-delisle","title":"Fahrenheit to Delisles","href":"fahrenheit-to-delisle/"},{"slug":"fahrenheit-to-kelvin","title":"Fahrenheit to Kelvins","href":"fahrenheit-to-kelvin/"},{"slug":"fahrenheit-to-newton","title":"Fahrenheit to Newtons","href":"fahrenheit-to-newton/"},{"slug":"fahrenheit-to-rankine","title":"Fahrenheit to Rankines","href":"fahrenheit-to-rankine/"},{"slug":"fahrenheit-to-reaumur","title":"Fahrenheit to Reaumurs","href":"fahrenheit-to-reaumur/"},{"slug":"fahrenheit-to-romer","title":"Fahrenheit to Romers","href":"fahrenheit-to-romer/"},{"slug":"kelvin-to-celsius","title":"Kelvins to Celsius","href":"kelvin-to-celsius/"},{"slug":"kelvin-to-delisle","title":"Kelvins to Delisles","href":"kelvin-to-delisle/"},{"slug":"kelvin-to-fahrenheit","title":"Kelvins to Fahrenheit","href":"kelvin-to-fahrenheit/"},{"slug":"kelvin-to-newton","title":"Kelvins to Newtons","href":"kelvin-to-newton/"},{"slug":"kelvin-to-rankine","title":"Kelvins to Rankines","href":"kelvin-to-rankine/"},{"slug":"kelvin-to-reaumur","title":"Kelvins to Reaumurs","href":"kelvin-to-reaumur/"},{"slug":"kelvin-to-romer","title":"Kelvins to Romers","href":"kelvin-to-romer/"},{"slug":"newton-to-celsius","title":"Newtons to Celsius","href":"newton-to-celsius/"},{"slug":"newton-to-delisle","title":"Newtons to Delisles","href":"newton-to-delisle/"},{"slug":"newton-to-fahrenheit","title":"Newtons to Fahrenheit","href":"newton-to-fahrenheit/"},{"slug":"newton-to-kelvin","title":"Newtons to Kelvins","href":"newton-to-kelvin/"},{"slug":"newton-to-rankine","title":"Newtons to Rankines","href":"newton-to-rankine/"},{"slug":"newton-to-reaumur","title":"Newtons to Reaumurs","href":"newton-to-reaumur/"},{"slug":"newton-to-romer","title":"Newtons to Romers","href":"newton-to-romer/"},{"slug":"rankine-to-celsius","title":"Rankines to Celsius","href":"rankine-to-celsius/"},{"slug":"rankine-to-delisle","title":"Rankines to Delisles","href":"rankine-to-delisle/"},{"slug":"rankine-to-fahrenheit","title":"Rankines to Fahrenheit","href":"rankine-to-fahrenheit/"},{"slug":"rankine-to-kelvin","title":"Rankines to Kelvins","href":"rankine-to-kelvin/"},{"slug":"rankine-to-newton","title":"Rankines to Newtons","href":"rankine-to-newton/"},{"slug":"rankine-to-reaumur","title":"Rankines to Reaumurs","href":"rankine-to-reaumur/"},{"slug":"rankine-to-romer","title":"Rankines to Romers","href":"rankine-to-romer/"},{"slug":"reaumur-to-celsius","title":"Reaumurs to Celsius","href":"reaumur-to-celsius/"},{"slug":"reaumur-to-delisle","title":"Reaumurs to Delisles","href":"reaumur-to-delisle/"},{"slug":"reaumur-to-fahrenheit","title":"Reaumurs to Fahrenheit","href":"reaumur-to-fahrenheit/"},{"slug":"reaumur-to-kelvin","title":"Reaumurs to Kelvins","href":"reaumur-to-kelvin/"},{"slug":"reaumur-to-newton","title":"Reaumurs to Newtons","href":"reaumur-to-newton/"},{"slug":"reaumur-to-rankine","title":"Reaumurs to Rankines","href":"reaumur-to-rankine/"},{"slug":"reaumur-to-romer","title":"Reaumurs to Romers","href":"reaumur-to-romer/"},{"slug":"romer-to-celsius","title":"Romers to Celsius","href":"romer-to-celsius/"},{"slug":"romer-to-delisle","title":"Romers to Delisles","href":"romer-to-delisle/"},{"slug":"romer-to-fahrenheit","title":"Romers to Fahrenheit","href":"romer-to-fahrenheit/"},{"slug":"romer-to-kelvin","title":"Romers to Kelvins","href":"romer-to-kelvin/"},{"slug":"romer-to-newton","title":"Romers to Newtons","href":"romer-to-newton/"},{"slug":"romer-to-rankine","title":"Romers to Rankines","href":"romer-to-rankine/"},{"slug":"romer-to-reaumur","title":"Romers to Reaumurs","href":"romer-to-reaumur/"}];
         (function () {
           const data = window.__categoryConversions || [];
           const grid = document.getElementById('allConversionsGrid');

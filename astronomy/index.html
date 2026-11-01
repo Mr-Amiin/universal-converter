@@ -52,6 +52,148 @@
         </div>
       </section>
 
+      <section class="converter-section category-landing-converter" data-category-converter="astronomy">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">Astronomy converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Astronomy Converter</h2>
+                  <p id="activeCategoryDescription" hidden>Convert astronomical length, mass, time, and distance units by compatible family.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">1 astronomical unit = 0.0000158125 light-year</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">An astronomical unit is the mean Earth-Sun distance.</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">A light-year is the distance light travels in a Julian year.</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">Result = input x 1.49597871e+11 / 9.46073047e+15.</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Distance units are compatible.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
             <section class="seo-article seo-intro" aria-labelledby="astronomyMeasuresTitle">
         <h2 id="astronomyMeasuresTitle">What Astronomy conversions measure</h2>
         <p>Astronomy conversions cover units such as kilometers, astronomical units, and light-years. Converting between them lets you move between the different measurement systems and conventions used across regions and industries.</p>
@@ -93,7 +235,7 @@
       </section>
 
       <script>
-        window.__categoryConversions = [{"slug":"astronomical-unit-to-kilometer","title":"Astronomical units to Kilometers","href":"astronomical-unit-to-kilometer/"},{"slug":"astronomical-unit-to-light-year","title":"Astronomical units to Light-years","href":"astronomical-unit-to-light-year/"},{"slug":"astronomical-unit-to-meter","title":"Astronomical units to Meters","href":"astronomical-unit-to-meter/"},{"slug":"astronomical-unit-to-mile","title":"Astronomical units to Miles","href":"astronomical-unit-to-mile/"},{"slug":"astronomical-unit-to-parsec","title":"Astronomical units to Parsecs","href":"astronomical-unit-to-parsec/"},{"slug":"century-to-day","title":"Centuries to Days","href":"century-to-day/"},{"slug":"century-to-second","title":"Centuries to Seconds","href":"century-to-second/"},{"slug":"century-to-year","title":"Centuries to Years","href":"century-to-year/"},{"slug":"day-to-century","title":"Days to Centuries","href":"day-to-century/"},{"slug":"day-to-second","title":"Days to Seconds","href":"day-to-second/"},{"slug":"day-to-year","title":"Days to Years","href":"day-to-year/"},{"slug":"earth-mass-to-jupiter-mass","title":"Earth mass to Jupiter mass","href":"earth-mass-to-jupiter-mass/"},{"slug":"earth-mass-to-kilogram","title":"Earth mass to Kilograms","href":"earth-mass-to-kilogram/"},{"slug":"earth-mass-to-tonne","title":"Earth mass to Metric tons","href":"earth-mass-to-tonne/"},{"slug":"earth-mass-to-solar-mass","title":"Earth mass to Solar mass","href":"earth-mass-to-solar-mass/"},{"slug":"jupiter-mass-to-earth-mass","title":"Jupiter mass to Earth mass","href":"jupiter-mass-to-earth-mass/"},{"slug":"jupiter-mass-to-kilogram","title":"Jupiter mass to Kilograms","href":"jupiter-mass-to-kilogram/"},{"slug":"jupiter-mass-to-tonne","title":"Jupiter mass to Metric tons","href":"jupiter-mass-to-tonne/"},{"slug":"jupiter-mass-to-solar-mass","title":"Jupiter mass to Solar mass","href":"jupiter-mass-to-solar-mass/"},{"slug":"kilogram-to-earth-mass","title":"Kilograms to Earth mass","href":"kilogram-to-earth-mass/"},{"slug":"kilogram-to-jupiter-mass","title":"Kilograms to Jupiter mass","href":"kilogram-to-jupiter-mass/"},{"slug":"kilogram-to-tonne","title":"Kilograms to Metric tons","href":"kilogram-to-tonne/"},{"slug":"kilogram-to-solar-mass","title":"Kilograms to Solar mass","href":"kilogram-to-solar-mass/"},{"slug":"kilometer-to-astronomical-unit","title":"Kilometers to Astronomical units","href":"kilometer-to-astronomical-unit/"},{"slug":"kilometer-to-light-year","title":"Kilometers to Light-years","href":"kilometer-to-light-year/"},{"slug":"kilometer-to-meter","title":"Kilometers to Meters","href":"kilometer-to-meter/"},{"slug":"kilometer-to-mile","title":"Kilometers to Miles","href":"kilometer-to-mile/"},{"slug":"kilometer-to-parsec","title":"Kilometers to Parsecs","href":"kilometer-to-parsec/"},{"slug":"light-year-to-astronomical-unit","title":"Light-years to Astronomical units","href":"light-year-to-astronomical-unit/"},{"slug":"light-year-to-kilometer","title":"Light-years to Kilometers","href":"light-year-to-kilometer/"},{"slug":"light-year-to-meter","title":"Light-years to Meters","href":"light-year-to-meter/"},{"slug":"light-year-to-mile","title":"Light-years to Miles","href":"light-year-to-mile/"},{"slug":"light-year-to-parsec","title":"Light-years to Parsecs","href":"light-year-to-parsec/"},{"slug":"meter-to-astronomical-unit","title":"Meters to Astronomical units","href":"meter-to-astronomical-unit/"},{"slug":"meter-to-kilometer","title":"Meters to Kilometers","href":"meter-to-kilometer/"},{"slug":"meter-to-light-year","title":"Meters to Light-years","href":"meter-to-light-year/"},{"slug":"meter-to-mile","title":"Meters to Miles","href":"meter-to-mile/"},{"slug":"meter-to-parsec","title":"Meters to Parsecs","href":"meter-to-parsec/"},{"slug":"tonne-to-earth-mass","title":"Metric tons to Earth mass","href":"tonne-to-earth-mass/"},{"slug":"tonne-to-jupiter-mass","title":"Metric tons to Jupiter mass","href":"tonne-to-jupiter-mass/"},{"slug":"tonne-to-kilogram","title":"Metric tons to Kilograms","href":"tonne-to-kilogram/"},{"slug":"tonne-to-solar-mass","title":"Metric tons to Solar mass","href":"tonne-to-solar-mass/"},{"slug":"mile-to-astronomical-unit","title":"Miles to Astronomical units","href":"mile-to-astronomical-unit/"},{"slug":"mile-to-kilometer","title":"Miles to Kilometers","href":"mile-to-kilometer/"},{"slug":"mile-to-light-year","title":"Miles to Light-years","href":"mile-to-light-year/"},{"slug":"mile-to-meter","title":"Miles to Meters","href":"mile-to-meter/"},{"slug":"mile-to-parsec","title":"Miles to Parsecs","href":"mile-to-parsec/"},{"slug":"parsec-to-astronomical-unit","title":"Parsecs to Astronomical units","href":"parsec-to-astronomical-unit/"},{"slug":"parsec-to-kilometer","title":"Parsecs to Kilometers","href":"parsec-to-kilometer/"},{"slug":"parsec-to-light-year","title":"Parsecs to Light-years","href":"parsec-to-light-year/"},{"slug":"parsec-to-meter","title":"Parsecs to Meters","href":"parsec-to-meter/"},{"slug":"parsec-to-mile","title":"Parsecs to Miles","href":"parsec-to-mile/"},{"slug":"second-to-century","title":"Seconds to Centuries","href":"second-to-century/"},{"slug":"second-to-day","title":"Seconds to Days","href":"second-to-day/"},{"slug":"second-to-year","title":"Seconds to Years","href":"second-to-year/"},{"slug":"solar-mass-to-earth-mass","title":"Solar mass to Earth mass","href":"solar-mass-to-earth-mass/"},{"slug":"solar-mass-to-jupiter-mass","title":"Solar mass to Jupiter mass","href":"solar-mass-to-jupiter-mass/"},{"slug":"solar-mass-to-kilogram","title":"Solar mass to Kilograms","href":"solar-mass-to-kilogram/"},{"slug":"solar-mass-to-tonne","title":"Solar mass to Metric tons","href":"solar-mass-to-tonne/"},{"slug":"year-to-century","title":"Years to Centuries","href":"year-to-century/"},{"slug":"year-to-day","title":"Years to Days","href":"year-to-day/"},{"slug":"year-to-second","title":"Years to Seconds","href":"year-to-second/"}]);
+        window.__categoryConversions = [{"slug":"astronomical-unit-to-kilometer","title":"Astronomical units to Kilometers","href":"astronomical-unit-to-kilometer/"},{"slug":"astronomical-unit-to-light-year","title":"Astronomical units to Light-years","href":"astronomical-unit-to-light-year/"},{"slug":"astronomical-unit-to-meter","title":"Astronomical units to Meters","href":"astronomical-unit-to-meter/"},{"slug":"astronomical-unit-to-mile","title":"Astronomical units to Miles","href":"astronomical-unit-to-mile/"},{"slug":"astronomical-unit-to-parsec","title":"Astronomical units to Parsecs","href":"astronomical-unit-to-parsec/"},{"slug":"century-to-day","title":"Centuries to Days","href":"century-to-day/"},{"slug":"century-to-second","title":"Centuries to Seconds","href":"century-to-second/"},{"slug":"century-to-year","title":"Centuries to Years","href":"century-to-year/"},{"slug":"day-to-century","title":"Days to Centuries","href":"day-to-century/"},{"slug":"day-to-second","title":"Days to Seconds","href":"day-to-second/"},{"slug":"day-to-year","title":"Days to Years","href":"day-to-year/"},{"slug":"earth-mass-to-jupiter-mass","title":"Earth mass to Jupiter mass","href":"earth-mass-to-jupiter-mass/"},{"slug":"earth-mass-to-kilogram","title":"Earth mass to Kilograms","href":"earth-mass-to-kilogram/"},{"slug":"earth-mass-to-tonne","title":"Earth mass to Metric tons","href":"earth-mass-to-tonne/"},{"slug":"earth-mass-to-solar-mass","title":"Earth mass to Solar mass","href":"earth-mass-to-solar-mass/"},{"slug":"jupiter-mass-to-earth-mass","title":"Jupiter mass to Earth mass","href":"jupiter-mass-to-earth-mass/"},{"slug":"jupiter-mass-to-kilogram","title":"Jupiter mass to Kilograms","href":"jupiter-mass-to-kilogram/"},{"slug":"jupiter-mass-to-tonne","title":"Jupiter mass to Metric tons","href":"jupiter-mass-to-tonne/"},{"slug":"jupiter-mass-to-solar-mass","title":"Jupiter mass to Solar mass","href":"jupiter-mass-to-solar-mass/"},{"slug":"kilogram-to-earth-mass","title":"Kilograms to Earth mass","href":"kilogram-to-earth-mass/"},{"slug":"kilogram-to-jupiter-mass","title":"Kilograms to Jupiter mass","href":"kilogram-to-jupiter-mass/"},{"slug":"kilogram-to-tonne","title":"Kilograms to Metric tons","href":"kilogram-to-tonne/"},{"slug":"kilogram-to-solar-mass","title":"Kilograms to Solar mass","href":"kilogram-to-solar-mass/"},{"slug":"kilometer-to-astronomical-unit","title":"Kilometers to Astronomical units","href":"kilometer-to-astronomical-unit/"},{"slug":"kilometer-to-light-year","title":"Kilometers to Light-years","href":"kilometer-to-light-year/"},{"slug":"kilometer-to-meter","title":"Kilometers to Meters","href":"kilometer-to-meter/"},{"slug":"kilometer-to-mile","title":"Kilometers to Miles","href":"kilometer-to-mile/"},{"slug":"kilometer-to-parsec","title":"Kilometers to Parsecs","href":"kilometer-to-parsec/"},{"slug":"light-year-to-astronomical-unit","title":"Light-years to Astronomical units","href":"light-year-to-astronomical-unit/"},{"slug":"light-year-to-kilometer","title":"Light-years to Kilometers","href":"light-year-to-kilometer/"},{"slug":"light-year-to-meter","title":"Light-years to Meters","href":"light-year-to-meter/"},{"slug":"light-year-to-mile","title":"Light-years to Miles","href":"light-year-to-mile/"},{"slug":"light-year-to-parsec","title":"Light-years to Parsecs","href":"light-year-to-parsec/"},{"slug":"meter-to-astronomical-unit","title":"Meters to Astronomical units","href":"meter-to-astronomical-unit/"},{"slug":"meter-to-kilometer","title":"Meters to Kilometers","href":"meter-to-kilometer/"},{"slug":"meter-to-light-year","title":"Meters to Light-years","href":"meter-to-light-year/"},{"slug":"meter-to-mile","title":"Meters to Miles","href":"meter-to-mile/"},{"slug":"meter-to-parsec","title":"Meters to Parsecs","href":"meter-to-parsec/"},{"slug":"tonne-to-earth-mass","title":"Metric tons to Earth mass","href":"tonne-to-earth-mass/"},{"slug":"tonne-to-jupiter-mass","title":"Metric tons to Jupiter mass","href":"tonne-to-jupiter-mass/"},{"slug":"tonne-to-kilogram","title":"Metric tons to Kilograms","href":"tonne-to-kilogram/"},{"slug":"tonne-to-solar-mass","title":"Metric tons to Solar mass","href":"tonne-to-solar-mass/"},{"slug":"mile-to-astronomical-unit","title":"Miles to Astronomical units","href":"mile-to-astronomical-unit/"},{"slug":"mile-to-kilometer","title":"Miles to Kilometers","href":"mile-to-kilometer/"},{"slug":"mile-to-light-year","title":"Miles to Light-years","href":"mile-to-light-year/"},{"slug":"mile-to-meter","title":"Miles to Meters","href":"mile-to-meter/"},{"slug":"mile-to-parsec","title":"Miles to Parsecs","href":"mile-to-parsec/"},{"slug":"parsec-to-astronomical-unit","title":"Parsecs to Astronomical units","href":"parsec-to-astronomical-unit/"},{"slug":"parsec-to-kilometer","title":"Parsecs to Kilometers","href":"parsec-to-kilometer/"},{"slug":"parsec-to-light-year","title":"Parsecs to Light-years","href":"parsec-to-light-year/"},{"slug":"parsec-to-meter","title":"Parsecs to Meters","href":"parsec-to-meter/"},{"slug":"parsec-to-mile","title":"Parsecs to Miles","href":"parsec-to-mile/"},{"slug":"second-to-century","title":"Seconds to Centuries","href":"second-to-century/"},{"slug":"second-to-day","title":"Seconds to Days","href":"second-to-day/"},{"slug":"second-to-year","title":"Seconds to Years","href":"second-to-year/"},{"slug":"solar-mass-to-earth-mass","title":"Solar mass to Earth mass","href":"solar-mass-to-earth-mass/"},{"slug":"solar-mass-to-jupiter-mass","title":"Solar mass to Jupiter mass","href":"solar-mass-to-jupiter-mass/"},{"slug":"solar-mass-to-kilogram","title":"Solar mass to Kilograms","href":"solar-mass-to-kilogram/"},{"slug":"solar-mass-to-tonne","title":"Solar mass to Metric tons","href":"solar-mass-to-tonne/"},{"slug":"year-to-century","title":"Years to Centuries","href":"year-to-century/"},{"slug":"year-to-day","title":"Years to Days","href":"year-to-day/"},{"slug":"year-to-second","title":"Years to Seconds","href":"year-to-second/"}];
         (function () {
           const data = window.__categoryConversions || [];
           const grid = document.getElementById('allConversionsGrid');

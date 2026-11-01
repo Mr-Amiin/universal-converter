@@ -2300,7 +2300,12 @@ renderCategoryList();
 renderOverview();
 renderPopularConversions();
 renderStoredLists();
-const sharedConversion = readSharedConversion();
+const landingCategoryId = categoryLandingPageId();
+let sharedConversion = readSharedConversion();
+// On a category landing page the converter is locked to that category: a
+// ?category=/?from=/?to= link for any other category is ignored.
+if (landingCategoryId && sharedConversion && sharedConversion.categoryId !== landingCategoryId) sharedConversion = null;
+if (landingCategoryId) state.categoryId = landingCategoryId;
 const pageConversion = initializeConverterFromPageRegistry();
 if (pageConversion) {
 if (sharedConversion && sharedConversion.categoryId !== pageConversion.categoryId) {
@@ -3109,8 +3114,24 @@ currency: "USD"
 };
 return icons[id] || "U";
 }
+// A category LANDING page (e.g. /torque/) is an seo-page whose
+// window.__seoPageData names a category but no from/to unit pair. Returns
+// that category's id (resolved through the same registry the SEO conversion
+// pages use) or null on every other page. Only landing pages that contain
+// the embedded category converter (#fromUnit) are treated this way, so
+// landing pages that have not been updated behave exactly as before.
+function categoryLandingPageId() {
+if (!document.body || !document.body.classList.contains("seo-page")) return null;
+if (!document.getElementById("fromUnit")) return null;
+const pageData = typeof window !== "undefined" ? window.__seoPageData : null;
+if (!pageData || !pageData.category || pageData.fromUnitId || pageData.toUnitId) return null;
+const resolved = resolveCategoryByIdentifier(pageData.category);
+return resolved ? resolved.id : null;
+}
 function seoPageRestrictedCategoryId() {
 if (!document.body || !document.body.classList.contains("seo-page")) return null;
+const landingId = categoryLandingPageId();
+if (landingId) return landingId;
 const idForSlug = { "flow-rate": "flow", "fuel-economy": "fuel_economy" };
 const crumbLinks = document.querySelectorAll(".breadcrumb a[href]");
 for (const a of crumbLinks) {
@@ -3167,6 +3188,11 @@ breadcrumbCategoryLink.textContent = getCategoryDisplayName(category);
 }
 }
 function selectCategory(categoryId, options = {}) {
+// A category landing page is locked to its own category: any attempt to
+// select another one (recent/favorite buttons, shared links, ...) is
+// redirected to the page's own category at the data-selection level.
+const lockedCategoryId = categoryLandingPageId();
+if (lockedCategoryId) categoryId = lockedCategoryId;
 const category = categoryMap.get(categoryId) || categories[0];
 const remember = options.remember !== false;
 state.categoryId = category.id;
@@ -3831,7 +3857,8 @@ function renderCategoryMiniList(elementId, ids, emptyText) {
 const element = byId(elementId);
 if (!element) return;
 element.innerHTML = "";
-const validIds = ids.filter((id) => categoryMap.has(id));
+const lockedCategoryId = categoryLandingPageId();
+const validIds = ids.filter((id) => categoryMap.has(id) && (!lockedCategoryId || id === lockedCategoryId));
 if (!validIds.length) {
 element.innerHTML = `<p class="empty-state">${emptyText}</p>`;
 return;
@@ -3848,7 +3875,8 @@ element.appendChild(button);
 function renderHistory() {
 const element = byId("historyList");
 if (!element) return;
-const history = readArray(storageKeys.history);
+const lockedCategoryId = categoryLandingPageId();
+const history = readArray(storageKeys.history).filter((item) => !lockedCategoryId || (item && item.categoryId === lockedCategoryId));
 if (!history.length) {
 element.innerHTML = `<p class="empty-state">${escapeHtml(getTranslation("sidebar.noHistory", getStoredLanguageCode()))}</p>`;
 return;

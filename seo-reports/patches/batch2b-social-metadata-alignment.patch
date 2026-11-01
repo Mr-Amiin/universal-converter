@@ -1,0 +1,16 @@
+--- a/index.html
++++ b/index.html
+@@ -11,4 +11,4 @@
+   <link rel="canonical" href="https://theuniversalconverter.com/">
+-  <meta property="og:title" content="Universal Converter - Global Unit Converter, Calculators, and Measurement Platform">
+-  <meta property="og:description" content="Universal Converter is a professional global conversion platform with thousands of unit definitions, calculators, SEO conversion pages, offline support, and business-ready publishing features.">
++  <meta property="og:title" content="Unit Converter — Free Online Measurement & Currency Converter">
++  <meta property="og:description" content="Free online unit converter for length, weight, temperature, pressure, area, volume, speed and currency. Instant results with formulas and tables.">
+   <meta property="og:type" content="website">
+@@ -17,4 +17,4 @@
+   <meta name="twitter:card" content="summary_large_image">
+-  <meta name="twitter:title" content="Universal Converter - Global Unit Converter, Calculators, and Measurement Platform">
+-  <meta name="twitter:description" content="Universal Converter is a professional global conversion platform with thousands of unit definitions, calculators, SEO conversion pages, offline support, and business-ready publishing features.">
++  <meta name="twitter:title" content="Unit Converter — Free Online Measurement & Currency Converter">
++  <meta name="twitter:description" content="Free online unit converter for length, weight, temperature, pressure, area, volume, speed and currency. Instant results with formulas and tables.">
+   <meta name="twitter:image" content="https://theuniversalconverter.com/og-image.png?v=2">
