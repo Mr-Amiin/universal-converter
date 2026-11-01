@@ -1,8 +1,128 @@
 {
-  "provider": "frankfurter",
-  "update_frequency": "30m",
+  "provider": "frankfurter_v2",
+  "provider_name": "Frankfurter",
+  "provider_url": "https://frankfurter.dev",
+  "api_url": "https://api.frankfurter.dev/v2/rates?base=USD&expand=providers",
   "base": "USD",
-  "api_key_env": "EXCHANGE_RATE_API_KEY",
-  "timeout_seconds": 10,
-  "_comment": "Change 'provider' to one of: frankfurter, exchangerate_host, currencyapi, open_exchange_rates, fixer. Key-based providers read their key from the environment variable named in 'api_key_env'. 'update_frequency' is documentation for your scheduler (cron/CI) -- see the crontab examples in fetch_rates.py's docstring."
+  "update_frequency": "6h",
+  "timeout_seconds": 20,
+  "retries": 3,
+  "max_observation_age_days": 7,
+  "max_move_ratio": 1.4,
+  "source_note": "Composite central-bank reference rates published about once per day. Not tick-by-tick live trading quotes.",
+  "legacy_fixed_conversion": {
+    "BGN": {
+      "per": "EUR",
+      "units_per_eur": "1.95583"
+    },
+    "HRK": {
+      "per": "EUR",
+      "units_per_eur": "7.53450"
+    }
+  },
+  "managed_or_pegged": [
+    "AED",
+    "SAR",
+    "QAR",
+    "BHD",
+    "OMR",
+    "JOD",
+    "BMD",
+    "BSD",
+    "BBD",
+    "BZD",
+    "PAB",
+    "XCD",
+    "ERN",
+    "DJF",
+    "TMT",
+    "HKD",
+    "AWG",
+    "ANG",
+    "XCG",
+    "KYD",
+    "XOF",
+    "XAF",
+    "KMF",
+    "CVE",
+    "BAM",
+    "XPF",
+    "FKP",
+    "GIP",
+    "SHP",
+    "LSL",
+    "NAD",
+    "SZL",
+    "BTN",
+    "BND"
+  ],
+  "official_rate_may_differ_from_market": [
+    "SYP",
+    "IRR",
+    "LBP",
+    "VES",
+    "SSP",
+    "SOS",
+    "CUP",
+    "KPW",
+    "YER",
+    "SDG",
+    "LYD",
+    "ZWG",
+    "MMK"
+  ],
+  "direction_sentinels": {
+    "EUR": [
+      0.8,
+      1.6
+    ],
+    "GBP": [
+      1.0,
+      2.0
+    ],
+    "CHF": [
+      0.8,
+      1.6
+    ],
+    "KWD": [
+      2.0,
+      5.0
+    ],
+    "JPY": [
+      0.002,
+      0.02
+    ],
+    "INR": [
+      0.005,
+      0.03
+    ],
+    "KES": [
+      0.003,
+      0.02
+    ],
+    "SOS": [
+      0.0005,
+      0.005
+    ],
+    "IDR": [
+      3e-05,
+      0.00015
+    ],
+    "VND": [
+      2e-05,
+      6e-05
+    ],
+    "KRW": [
+      0.0004,
+      0.002
+    ]
+  },
+  "report_pairs": [
+    "USD",
+    "EUR",
+    "INR",
+    "KES",
+    "SOS"
+  ],
+  "attribution_url": "https://frankfurter.dev"
 }

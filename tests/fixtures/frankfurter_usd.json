@@ -1,0 +1,1279 @@
+[
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "EUR",
+"rate": 0.8739,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GBP",
+"rate": 0.7612,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "JPY",
+"rate": 154.3,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CHF",
+"rate": 0.8021,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CAD",
+"rate": 1.369863,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AUD",
+"rate": 1.515152,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NZD",
+"rate": 1.666667,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CNY",
+"rate": 7.246377,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "HKD",
+"rate": 7.8125
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SGD",
+"rate": 1.342282,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KRW",
+"rate": 1385.0,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "INR",
+"rate": 88.25,
+"providers": [
+"ECB",
+"RBI"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "IDR",
+"rate": 16350.0,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MYR",
+"rate": 4.694836,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "THB",
+"rate": 36.363636,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PHP",
+"rate": 58.139535,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "VND",
+"rate": 25350.0,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PKR",
+"rate": 277.777778,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BDT",
+"rate": 119.047619,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LKR",
+"rate": 303.030303,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NPR",
+"rate": 133.333333,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MMK",
+"rate": 2083.333333,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KHR",
+"rate": 4166.666667,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LAK",
+"rate": 21739.130435,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BND",
+"rate": 1.342282
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MOP",
+"rate": 8.064516,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TWD",
+"rate": 31.948882,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MNT",
+"rate": 3448.275862,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KZT",
+"rate": 540.540541,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "UZS",
+"rate": 12820.512821,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KGS",
+"rate": 88.495575,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TJS",
+"rate": 10.917031,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TMT",
+"rate": 3.496503
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AFN",
+"rate": 70.422535,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AMD",
+"rate": 384.615385,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AZN",
+"rate": 1.70068,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GEL",
+"rate": 2.739726,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "RUB",
+"rate": 88.495575,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BYN",
+"rate": 3.278689,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "UAH",
+"rate": 41.666667,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MDL",
+"rate": 17.921147,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PLN",
+"rate": 3.952569,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CZK",
+"rate": 22.883295,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "HUF",
+"rate": 361.01083,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "RON",
+"rate": 4.56621,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "RSD",
+"rate": 107.874865,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ALL",
+"rate": 92.592593,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MKD",
+"rate": 56.497175,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BAM",
+"rate": 1.798561
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ISK",
+"rate": 137.551582,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NOK",
+"rate": 10.638298,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SEK",
+"rate": 10.438413,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "DKK",
+"rate": 6.858711,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TRY",
+"rate": 34.602076,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ILS",
+"rate": 3.717472,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "JOD",
+"rate": 0.70922
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LBP",
+"rate": 89285.714286,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SYP",
+"rate": 13003.90117,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "IQD",
+"rate": 1310.61599,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "IRR",
+"rate": 42016.806723,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SAR",
+"rate": 3.750938
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AED",
+"rate": 3.67242
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "QAR",
+"rate": 3.640335
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KWD",
+"rate": 0.3071,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BHD",
+"rate": 0.376932
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "OMR",
+"rate": 0.384615
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "YER",
+"rate": 250.0,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "EGP",
+"rate": 49.019608,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LYD",
+"rate": 4.854369,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TND",
+"rate": 3.10559,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "DZD",
+"rate": 134.228188,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MAD",
+"rate": 10.070493,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MRU",
+"rate": 39.68254,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "XOF",
+"rate": 602.409639
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "XAF",
+"rate": 602.409639
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GHS",
+"rate": 14.705882,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NGN",
+"rate": 1492.537313,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "XPF",
+"rate": 109.769484
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KES",
+"rate": 129.2,
+"providers": [
+"CBK",
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TZS",
+"rate": 2577.319588,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "UGX",
+"rate": 3731.343284,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "RWF",
+"rate": 1398.601399,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BIF",
+"rate": 2915.451895,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ETB",
+"rate": 126.582278,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SOS",
+"rate": 571.0,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "DJF",
+"rate": 177.935943
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SDG",
+"rate": 598.802395,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SSP",
+"rate": 2590.673575,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ERN",
+"rate": 14.992504
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ZAR",
+"rate": 18.181818,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NAD",
+"rate": 18.181818
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BWP",
+"rate": 13.605442,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SZL",
+"rate": 18.181818
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LSL",
+"rate": 18.181818
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ZMW",
+"rate": 25.974026,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MWK",
+"rate": 1736.111111,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MZN",
+"rate": 63.694268,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AOA",
+"rate": 917.431193,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CDF",
+"rate": 2816.901408,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MGA",
+"rate": 4524.886878,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MUR",
+"rate": 46.082949,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SCR",
+"rate": 14.005602,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KMF",
+"rate": 452.488688
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CVE",
+"rate": 98.039216
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "STN",
+"rate": 22.883295,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GMD",
+"rate": 71.942446,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GNF",
+"rate": 8620.689655,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SLE",
+"rate": 22.988506,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "LRD",
+"rate": 191.93858,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MXN",
+"rate": 18.181818,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BRL",
+"rate": 5.434783,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ARS",
+"rate": 961.538462,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CLP",
+"rate": 961.538462,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "COP",
+"rate": 4347.826087,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PEN",
+"rate": 3.745318,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BOB",
+"rate": 6.944444,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PYG",
+"rate": 7462.686567,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "UYU",
+"rate": 40.48583,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "VES",
+"rate": 38.022814,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GYD",
+"rate": 209.205021,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SRD",
+"rate": 35.460993,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TTD",
+"rate": 6.802721,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "JMD",
+"rate": 156.985871,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BSD",
+"rate": 1.0
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BBD",
+"rate": 2.0
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BZD",
+"rate": 2.016129
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "XCD",
+"rate": 2.702703
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "HTG",
+"rate": 131.926121,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "DOP",
+"rate": 60.240964,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CUP",
+"rate": 23.980815,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "HNL",
+"rate": 24.691358,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GTQ",
+"rate": 7.751938,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "NIO",
+"rate": 36.764706,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "CRC",
+"rate": 510.204082,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PAB",
+"rate": 1.0
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "PGK",
+"rate": 3.802281,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "FJD",
+"rate": 2.232143,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SBD",
+"rate": 8.403361,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "TOP",
+"rate": 2.392344,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "VUV",
+"rate": 119.617225,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "WST",
+"rate": 2.739726,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BTN",
+"rate": 83.333333
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "MVR",
+"rate": 15.432099,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "BMD",
+"rate": 1.0
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KYD",
+"rate": 0.833333
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ANG",
+"rate": 1.788909
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "AWG",
+"rate": 1.788909
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "SHP",
+"rate": 0.787402
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "FKP",
+"rate": 0.787402
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "GIP",
+"rate": 0.787402
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "ZWG",
+"rate": 27.027027,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "KPW",
+"rate": 900.900901,
+"providers": [
+"ECB"
+]
+},
+{
+"date": "2026-10-29",
+"base": "USD",
+"quote": "XCG",
+"rate": 1.788909
+}
+]

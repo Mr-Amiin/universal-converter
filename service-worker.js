@@ -1,4 +1,4 @@
-const CACHE_NAME = "universal-converter-v14";
+const CACHE_NAME = "universal-converter-v15";
 const APP_SHELL = [
 "/",
 "/index.html",
@@ -75,7 +75,11 @@ if (event.request.method !== "GET") return;
 if (new URL(event.request.url).origin !== self.location.origin) return;
 // Search index data: network first, so a cached manifest can never point at
 // shard files that a newer deploy has replaced; the cache is only the offline fallback.
-if (new URL(event.request.url).pathname.indexOf("/search-index/") === 0) {
+// Offline fallback exchange-rate snapshot: network first, so a cached copy can never be served
+// indefinitely while the network is available. (Fresh rates themselves are cross-origin and
+// never pass through this worker.)
+const requestPath = new URL(event.request.url).pathname;
+if (requestPath === "/rates.json" || requestPath.indexOf("/search-index/") === 0) {
 event.respondWith(
 fetch(event.request).then((response) => {
 if (response.ok) {
