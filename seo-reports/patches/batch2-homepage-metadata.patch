@@ -1,0 +1,11 @@
+--- a/index.html
++++ b/index.html
+@@ -4,6 +4,6 @@
+   <meta charset="utf-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+-  <title>Universal Converter - Global Unit Converter, Calculators, and Measurement Platform</title>
+-  <meta name="description" content="Universal Converter is a professional global conversion platform with thousands of unit definitions, calculators, SEO conversion pages, offline support, and business-ready publishing features.">
++  <title>Unit Converter — Free Online Measurement & Currency Converter</title>
++  <meta name="description" content="Free online unit converter for length, weight, temperature, pressure, area, volume, speed and currency. Instant results with formulas and tables.">
+   <meta name="keywords" content="unit converter, online calculator, length converter, weight converter, temperature converter, currency and measurement converter">
+   <meta name="robots" content="index, follow">
