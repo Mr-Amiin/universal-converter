@@ -1,0 +1,138 @@
+name: Update exchange rates
+
+# Publishes validated exchange rates to the dedicated `data` branch ONLY.
+# It never pushes to `main`, so it cannot trigger the GitHub Pages deployment of the website.
+# The website reads https://raw.githubusercontent.com/Mr-Amiin/universal-converter/data/rates.json
+#
+# FIRST RUN (the data branch does not exist yet):
+#   1. Actions -> "Update exchange rates" -> Run workflow with dry_run = true.
+#      Read the job summary: it lists the live provider coverage of all 156 currencies.
+#   2. Only if coverage is complete, run it again with dry_run = false AND confirm_first_publication = true.
+#   Scheduled runs never create the data branch; until step 2 is done they exit without publishing.
+on:
+  schedule:
+    - cron: "17 */6 * * *"   # 00:17, 06:17, 12:17, 18:17 UTC
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Fetch, validate and print live coverage only; do not publish"
+        type: boolean
+        default: true
+      confirm_first_publication:
+        description: "Required to create the data branch: I reviewed the dry-run coverage report"
+        type: boolean
+        default: false
+      allow_large_moves:
+        description: "Accept rate moves above the plausibility limit (operator-reviewed)"
+        type: boolean
+        default: false
+
+# contents: write is needed only to push the `data` branch; pages: read only to CHECK that Pages is not
+# built from `data`. No pages:write / id-token, so this workflow cannot deploy a site. No secrets are used.
+permissions:
+  contents: write
+  pages: read
+
+# One run at a time; a queued run never cancels one that is publishing.
+concurrency:
+  group: update-exchange-rates
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      # The repository is ~8 GB; fetch only the few files needed (no blobs, sparse paths).
+      - name: Check out script and config (sparse)
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout: |
+            fetch_rates.py
+            rates-config.json
+            currency-data.json
+            rates.json
+            scripts/publish_rates.sh
+            scripts/rates_publish_guard.py
+            tests/__init__.py
+            tests/test_rates.py
+            tests/test_publish_isolation.py
+            tests/fixtures/frankfurter_usd.json
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+
+      - name: Run offline unit tests
+        run: python3 -m unittest tests.test_rates tests.test_publish_isolation
+
+      # Independent of "[skip ci]": refuse to run if Pages could be built from the data branch.
+      - name: Verify GitHub Pages cannot build from the data branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -uo pipefail
+          if RESP=$(curl -fsS -H "Authorization: Bearer ${GH_TOKEN}" -H "Accept: application/vnd.github+json" \
+                         "https://api.github.com/repos/${REPO}/pages"); then
+            echo "$RESP" | python3 scripts/rates_publish_guard.py pages
+          else
+            python3 scripts/rates_publish_guard.py pages --unreadable </dev/null
+          fi
+
+      - name: Fetch the published dataset (data branch)
+        id: fetch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          EVENT: ${{ github.event_name }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          CONFIRM: ${{ inputs.confirm_first_publication }}
+        run: |
+          set -euo pipefail
+          AUTH_B64=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::${AUTH_B64}"
+          AUTH="AUTHORIZATION: basic ${AUTH_B64}"
+          rm -rf _data
+          if git -c http.extraheader="$AUTH" ls-remote --exit-code --heads "https://github.com/${REPO}.git" data >/dev/null 2>&1; then
+            git -c http.extraheader="$AUTH" clone --depth 1 --single-branch --branch data "https://github.com/${REPO}.git" _data
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          else
+            git init -q -b data _data
+            git -C _data remote add origin "https://github.com/${REPO}.git"
+            if [ "$EVENT" = "schedule" ]; then
+              echo "::notice::The data branch does not exist yet. Scheduled runs never create it; run this workflow manually (dry run first)."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            elif [ "$DRY_RUN" != "true" ] && [ "$CONFIRM" != "true" ]; then
+              echo "::error::First publication needs confirm_first_publication=true after reviewing a dry run's coverage report."
+              exit 1
+            else
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Build and validate rates (previous dataset is kept on any failure)
+        id: build
+        if: steps.fetch.outputs.skip != 'true'
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          ALLOW_LARGE: ${{ inputs.allow_large_moves }}
+        run: |
+          set -euo pipefail
+          ARGS=""
+          if [ "$ALLOW_LARGE" = "true" ]; then ARGS="$ARGS --allow-large-moves"; fi
+          if [ "$DRY_RUN" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python3 fetch_rates.py --previous _data/rates.json --output _data/rates.json $ARGS
+
+      - name: Publish to the data branch only
+        if: steps.fetch.outputs.skip != 'true' && inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OBSERVED: ${{ steps.build.outputs.observation_date }}
+        run: |
+          set -euo pipefail
+          AUTH_B64=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)
+          echo "::add-mask::${AUTH_B64}"
+          export GIT_AUTH_HEADER="AUTHORIZATION: basic ${AUTH_B64}"
+          bash scripts/publish_rates.sh _data "${OBSERVED}"
