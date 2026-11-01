@@ -1,0 +1,94 @@
+diff --git a/scripts/publish_rates.sh b/scripts/publish_rates.sh
+--- a/scripts/publish_rates.sh
++++ b/scripts/publish_rates.sh
+@@ -10,11 +10,12 @@
+ DATA_DIR=${1:?usage: publish_rates.sh <data-dir> [observation-date]}
+ OBSERVED=${2:-unknown}
+ GUARD="$(cd "$(dirname "$0")" && pwd)/rates_publish_guard.py"
++PYTHON_BIN=${PYTHON_BIN:-python3}
+ cd "$DATA_DIR"
+ 
+ [ "$(git symbolic-ref --short HEAD)" = "data" ] || { echo "UNSAFE: not on the data branch" >&2; exit 1; }
+ git add rates.json
+-git diff --cached --name-only | python3 "$GUARD" staged
++git diff --cached --name-only | "$PYTHON_BIN" "$GUARD" staged
+ if git diff --cached --quiet; then echo "nothing to publish"; exit 0; fi
+ 
+ GIT=(git)
+@@ -25,7 +26,7 @@
+     commit -q -m "rates: provider observation ${OBSERVED} [skip ci]"
+ OUT=$("${GIT[@]}" push --porcelain origin HEAD:refs/heads/data 2>&1) || { echo "$OUT" >&2; exit 1; }
+ echo "$OUT"
+-echo "$OUT" | python3 "$GUARD" push
++echo "$OUT" | "$PYTHON_BIN" "$GUARD" push
+ MAIN_AFTER=$("${GIT[@]}" ls-remote origin refs/heads/main | cut -f1)
+ if [ "$MAIN_BEFORE" != "$MAIN_AFTER" ]; then echo "UNSAFE: remote main changed (${MAIN_BEFORE} -> ${MAIN_AFTER})" >&2; exit 1; fi
+ echo "OK: published to data only; main unchanged at ${MAIN_AFTER:-<none>}"
+diff --git a/tests/test_publish_isolation.py b/tests/test_publish_isolation.py
+--- a/tests/test_publish_isolation.py
++++ b/tests/test_publish_isolation.py
+@@ -3,7 +3,9 @@
+ Run:  python3 -m unittest tests.test_publish_isolation -v
+ """
+ import json
++import os
+ import subprocess
++import sys
+ import tempfile
+ import unittest
+ from pathlib import Path
+@@ -14,12 +16,35 @@
+ GIT_ID = ["-c", "user.name=t", "-c", "user.email=t@example.com"]
+ 
+ 
+-def sh(*cmd, cwd=None, inp=None, check=True):
+-    return subprocess.run(list(cmd), cwd=cwd, input=inp, capture_output=True, text=True, check=check)
++def sh(*cmd, cwd=None, inp=None, check=True, env=None):
++    return subprocess.run(list(cmd), cwd=cwd, input=inp, capture_output=True, text=True, check=check, env=env)
+ 
+ 
+ def guard(mode, text="", *extra):
+-    return subprocess.run(["python3", str(GUARD), mode, *extra], input=text, capture_output=True, text=True)
++    return subprocess.run([sys.executable, str(GUARD), mode, *extra], input=text, capture_output=True, text=True)
++
++
++def bash_executable():
++    if os.name == "nt":
++        candidates = [
++            os.environ.get("GIT_BASH"),
++            r"C:\Program Files\Git\bin\bash.exe",
++            r"C:\Program Files (x86)\Git\bin\bash.exe",
++        ]
++        for candidate in candidates:
++            if candidate and Path(candidate).is_file():
++                return candidate
++        raise FileNotFoundError("Git Bash was not found; install Git for Windows or set GIT_BASH")
++    return "bash"
++
++
++def bash_path(path):
++    value = str(path)
++    if os.name == "nt":
++        drive, tail = os.path.splitdrive(value)
++        if drive:
++            return "/" + drive[0].lower() + tail.replace(chr(92), "/")
++    return value
+ 
+ 
+ class GuardTests(unittest.TestCase):
+@@ -70,7 +95,14 @@
+ 
+     def publish(self, payload="{}"):
+         (self.data / "rates.json").write_text(payload)
+-        return sh("bash", str(PUBLISH), str(self.data), "2026-10-29", check=False)
++        env = os.environ.copy()
++        if os.name == "nt":
++            # Git Bash uses POSIX paths and can execute the installed Windows Python via /c/... .
++            drive, tail = os.path.splitdrive(sys.executable)
++            env["PYTHON_BIN"] = "/" + drive[0].lower() + tail.replace(chr(92), "/")
++        else:
++            env["PYTHON_BIN"] = sys.executable
++        return sh(bash_executable(), bash_path(PUBLISH), bash_path(self.data), "2026-10-29", check=False, env=env)
+ 
+     def remote_ref(self, name):
+         r = sh("git", "-C", str(self.origin), "rev-parse", "--verify", "-q", name, check=False)
