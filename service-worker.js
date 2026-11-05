@@ -1,4 +1,4 @@
-const CACHE_NAME = "universal-converter-v15";
+const CACHE_NAME = "universal-converter-v16";
 const APP_SHELL = [
 "/",
 "/index.html",
@@ -55,10 +55,12 @@ const APP_SHELL = [
 "/gb-to-mb/",
 "/watts-to-horsepower/"
 ];
+// Precache with cache: "reload" so a stale HTTP-cache copy (e.g. an old app.js) can never be
+// stored in the new cache; the shell is always fetched fresh from the network at install.
 self.addEventListener("install", (event) => {
 event.waitUntil(
 caches.open(CACHE_NAME)
-.then((cache) => cache.addAll(APP_SHELL))
+.then((cache) => cache.addAll(APP_SHELL.map((url) => new Request(url, { cache: "reload" }))))
 .then(() => self.skipWaiting())
 .catch(() => self.skipWaiting())
 );

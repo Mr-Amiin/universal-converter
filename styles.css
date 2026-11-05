@@ -1750,6 +1750,21 @@ min-height: 280px;
 .ad-slot .adsbygoogle {
 min-height: 120px;
 }
+/* Ad containers stay collapsed (no dashed box, no reserved space, no placeholder text)
+   unless an ad is actually being rendered into them: adsense.js sets
+   data-ad-status="live" just before inserting the ad. This covers unset slot IDs,
+   ads not yet consented to, and ads disabled. Kept as two rules so a browser without
+   :has() support still applies the first one. */
+[data-ad-placement]:not([data-ad-status="live"]) {
+display: none !important;
+}
+/* A slot AdSense reports as unfilled collapses too, instead of leaving an empty box. */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+display: none !important;
+}
+[data-ad-placement]:has(> ins.adsbygoogle[data-ad-status="unfilled"]) {
+display: none !important;
+}
 .calculator-grid {
 grid-template-columns: repeat(3, minmax(0, 1fr));
 }
