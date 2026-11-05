@@ -27,7 +27,6 @@ existingMeta[0].content = publisherId;
 }
 document.querySelectorAll("[data-ad-placement]").forEach(function (slot) {
 slot.classList.add("adsense-placeholder");
-if (!slot.textContent.trim()) slot.textContent = "Advertisement";
 });
 function getConsent() {
 try {
@@ -81,6 +80,8 @@ if (!enabled || placeholder || !publisherId || !adSlot || adSlot === "REPLACE_WI
 slot.setAttribute("data-ad-status", "placeholder");
 return;
 }
+// Reveal the container first (see styles.css): AdSense needs a laid-out, non-zero-width slot.
+slot.setAttribute("data-ad-status", "live");
 slot.innerHTML = "";
 slot.appendChild(createResponsiveAd(adSlot));
 var initScript = document.createElement("script");

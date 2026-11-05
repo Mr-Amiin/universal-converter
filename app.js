@@ -130,7 +130,6 @@ const MOBILE_MAIN_NAV = [
 { id: "calculators", label: "Calculators", href: "index.html#calculators", i18nKey: "nav.calculators" },
 { id: "popular", label: "Popular", href: "index.html#popular", i18nKey: "nav.popular" },
 { id: "guides", label: "Guides", href: "guides.html", i18nKey: "nav.guides" },
-{ id: "sitemap", label: "Sitemap", href: "sitemap.html", i18nKey: "nav.sitemap" },
 { id: "about", label: "About", href: "about.html", i18nKey: "nav.about" },
 { id: "contact", label: "Contact", href: "contact.html", i18nKey: "nav.contact" }
 ];
