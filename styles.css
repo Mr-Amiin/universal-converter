@@ -3451,3 +3451,27 @@ body.seo-page .sidebar-ad[data-ad-placement="category-sidebar"] {
 min-height: 280px !important;
 }
 }
+
+/* BEGIN seo-links-disclosure */
+/* Category landing pages: the "All conversions" link list is collapsed by default; the links stay in the HTML.
+   The toggle sits at the bottom-right of the grid, one card wide (grid: 4 columns, 2 under 900px, 1 under 560px,
+   gap 0.6rem, right padding 0.15rem). --seo-sb is the grid's scrollbar width, set by the click handler. */
+.seo-links-panel[hidden] { display: none; }
+.seo-links-actions { display: flex; justify-content: flex-end; margin: 0.75rem var(--seo-sb, 0px) 0 0; padding-right: 0.15rem; }
+.seo-links-toggle {
+  display: flex; align-items: center; justify-content: center; gap: 0.6rem; box-sizing: border-box;
+  width: calc((100% - 1.8rem) / 4); min-width: 12rem; min-height: 44px; padding: 0.65rem 1rem;
+  border: 1px solid var(--color-primary, #0f9f9a); border-radius: 8px;
+  background: var(--surface-muted, #f3f8f8); color: var(--color-primary, #0f9f9a);
+  font: inherit; font-size: 0.95rem; font-weight: 700; line-height: 1.3; text-align: center; cursor: pointer;
+}
+.seo-links-toggle::before { content: "+"; font-size: 1.25rem; line-height: 1; }
+.seo-links-toggle[aria-expanded="true"]::before { content: "\2212"; }
+.seo-links-toggle:hover { border-color: var(--text-color, #1f2937); }
+.seo-links-toggle:focus-visible { outline: 3px solid var(--color-primary, #0f9f9a); outline-offset: 3px; }
+.seo-links-when-open { display: none; }
+.seo-links-toggle[aria-expanded="true"] .seo-links-when-open { display: inline; }
+.seo-links-toggle[aria-expanded="true"] .seo-links-when-closed { display: none; }
+@media (max-width: 900px) { .seo-links-toggle { width: calc((100% - 0.6rem) / 2); } }
+@media (max-width: 560px) { .seo-links-toggle { width: 100%; } }
+/* END seo-links-disclosure */
