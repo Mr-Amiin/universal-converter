@@ -214,26 +214,37 @@ class TestLandingStructure(unittest.TestCase):
                 self.assertEqual(d2, d1.replace('<p id="activeCategoryDescription">', '<p id="activeCategoryDescription" hidden>', 1))
 
     def test_existing_content_metadata_and_seo_unchanged(self):
-        """Removing the inserted block (exactly as inserted: a blank line, a 6-space indent
-        and the block) must give back HEAD's file byte-for-byte: title, meta, canonical,
-        JSON-LD, links, intro, popular, all-conversions, FAQ/related sections, scripts and
-        footer are all untouched."""
+        """Apart from the KNOWN insertions (the category converter block, and the collapsed "All conversions" wrapper
+        added by collapse_seo_links.py), every landing page equals HEAD byte-for-byte: title, meta, canonical, JSON-LD,
+        links, intro, popular, all-conversions, FAQ/related sections, scripts and footer. Works both before the
+        converters are committed (HEAD has none) and after (HEAD has them: then the blocks must be identical too)."""
+
+        def strip_known(html):
+            html = html.replace('<div class="seo-links-panel" id="allConversionsPanel" hidden>\n        ', "", 1)
+            html = re.sub(r'\n        </div>\n        <div class="seo-links-actions">.*?</script>', "", html, count=1, flags=re.S)
+            start = html.find('<section class="converter-section category-landing-converter"')
+            if start < 0:
+                return html, None
+            depth, end = 0, None
+            for m in re.finditer(r"<section\b|</section>", html[start:]):
+                depth += -1 if m.group(0) == "</section>" else 1
+                if depth == 0:
+                    end = start + m.end()
+                    break
+            block = html[start:end]
+            return html.replace("\n\n      " + block, "", 1), block
+
         for cat in CONVERTER_CATEGORIES:
             with self.subTest(category=cat):
                 # normalise CRLF (a Windows checkout with core.autocrlf) so only content is compared
                 cur = (ROOT / cat / "index.html").read_bytes().decode("utf8").replace("\r\n", "\n")
-                start = cur.index('<section class="converter-section category-landing-converter"')
-                depth, end = 0, None
-                for m in re.finditer(r"<section\b|</section>", cur[start:]):
-                    depth += -1 if m.group(0) == "</section>" else 1
-                    if depth == 0:
-                        end = start + m.end()
-                        break
-                block = cur[start:end]
-                self.assertEqual(cur.count(block), 1)
-                stripped = cur.replace("\n\n      " + block, "", 1)
-                self.assertNotEqual(stripped, cur)
-                self.assertEqual(stripped, git_head(f"{cat}/index.html"))
+                cur_rest, cur_block = strip_known(cur)
+                head_rest, head_block = strip_known(git_head(f"{cat}/index.html"))
+                self.assertIsNotNone(cur_block, "the converter block must be present")
+                self.assertEqual(cur.count(cur_block), 1)
+                if head_block is not None:
+                    self.assertEqual(cur_block, head_block, "converter block must equal the committed one")
+                self.assertEqual(cur_rest, head_rest)
 
     def test_audit_all_landing_pages(self):
         """Audit every category landing page. Converted ones must contain the
@@ -664,13 +675,19 @@ class TestExistingPagesUnaffected(BrowserCase):
         allowed = {"app.js", "tests/test_category_landing_converter.py"} | {
             f"{c}/index.html" for c in CONVERTER_CATEGORIES
         }
+        # collapsed "All conversions" list: one scoped CSS block + its own test file (collapse_seo_links.py)
+        allowed |= {"styles.css", "tests/test_seo_links_disclosure.py"}
         preexisting = set()
         baseline = os.environ.get("UC_BASELINE_STATUS")
         if baseline:
             for line in Path(baseline).read_text(encoding="utf-8-sig").splitlines():
                 if line.strip():
                     preexisting.add(line[3:].strip().strip('"').replace("\\", "/"))
-        self.assertEqual(set(changed + untracked) - allowed - preexisting, set())
+        # `git status` shows an untracked FOLDER as one entry ("?? seo-reports/") while ls-files lists its files:
+        # a baseline entry ending in "/" therefore exempts everything beneath it.
+        exempt_dirs = tuple(p for p in preexisting if p.endswith("/"))
+        stray = {p for p in set(changed + untracked) - allowed - preexisting if not p.startswith(exempt_dirs)}
+        self.assertEqual(stray, set())
 
     def test_sample_seo_pages_every_category_identical_to_head(self):
         """One SEO conversion page from every category folder behaves exactly as
