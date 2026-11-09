@@ -60,12 +60,13 @@ jobs:
             tests/__init__.py
             tests/test_rates.py
             tests/test_publish_isolation.py
+            tests/test_rates_dates.py
             tests/fixtures/frankfurter_usd.json
           sparse-checkout-cone-mode: false
           persist-credentials: false
 
       - name: Run offline unit tests
-        run: python3 -m unittest tests.test_rates tests.test_publish_isolation
+        run: python3 -m unittest tests.test_rates tests.test_publish_isolation tests.test_rates_dates
 
       # Independent of "[skip ci]": refuse to run if Pages could be built from the data branch.
       - name: Verify GitHub Pages cannot build from the data branch
