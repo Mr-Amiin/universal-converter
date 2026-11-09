@@ -22,6 +22,11 @@ Guarantees:
   * Nothing is written unless the whole dataset validates (all supported currencies,
     finite positive numbers, direction sentinels, freshness, no implausible jumps).
   * The previous dataset is never replaced by an empty/partial/older one.
+  * No observation date later than the run date (UTC) is ever published. A row dated up to
+    `max_forward_dated_days` (default 1) ahead of the run date is capped at the run date; the
+    provider's original date is kept in meta[code].provider_date, flagged "forward_dated_clamped" and
+    listed under the top-level "normalization" key. A row further ahead is rejected. A published
+    dataset written before this rule is capped at its own retrieval date, for comparison only.
   * The output file is replaced atomically (temp file + os.replace).
   * No API key is needed or read.
 
@@ -33,6 +38,7 @@ Usage:
     python3 fetch_rates.py --input-fixture tests/fixtures/frankfurter_usd.json --dry-run
 """
 import argparse
+import copy
 import json
 import math
 import os
@@ -128,6 +134,65 @@ def parse_rows(rows, base):
     return parsed
 
 
+FORWARD_FLAG = "forward_dated_clamped"
+
+
+def normalise_forward_dates(parsed, currencies, now, config):
+    """Cap provider observation dates at the run date (UTC) BEFORE anything is compared or published.
+
+    A provider may label a rate with the next calendar day (time zones, rates set in advance). Such a date
+    is not an observation that has happened yet, and publishing it made every later run look "older than
+    the published dataset" (the 2026-11-07 incident). Within `max_forward_dated_days` the rate itself is
+    kept and only its date label is capped; the original date is returned in `forward` so it can be
+    published next to the capped one. Further ahead is treated as corrupt and rejected (fail closed).
+    Only currencies the website uses are checked; other quotes in the response are ignored downstream.
+    Returns ({QUOTE: (units_per_base, effective_date, providers)}, {QUOTE: original_provider_date}).
+    """
+    run_day = now.astimezone(timezone.utc).date()
+    limit = run_day + timedelta(days=int(config.get("max_forward_dated_days", 1)))
+    used = set(currencies)
+    out, forward = {}, {}
+    for code, (rate, day, providers) in parsed.items():
+        if code in used:
+            observed = date.fromisoformat(day)
+            if observed > limit:
+                raise ValidationError(
+                    f"{code}: observation date {day} is {(observed - run_day).days} days after the run date {run_day}; "
+                    f"refusing to publish (max {int(config.get('max_forward_dated_days', 1))})"
+                )
+            if observed > run_day:
+                forward[code] = day
+                day = run_day.isoformat()
+        out[code] = (rate, day, providers)
+    return out, forward
+
+
+def normalise_previous(previous, now):
+    """Published datasets written before the rule above may carry dates later than the day they were retrieved
+    (2026-11-06 19:28Z holds 2026-11-07). For COMPARISON ONLY, cap those at the dataset's own retrieval date
+    so the next run is not judged against a date that never happened. The file on disk is not touched here;
+    the next successful run republishes corrected dates. Returns (copy, number_of_dates_capped)."""
+    prev = copy.deepcopy(previous)
+    cap = now.astimezone(timezone.utc).date()
+    try:
+        retrieved = datetime.fromisoformat(str(prev.get("retrieved_at")).replace("Z", "+00:00")).astimezone(timezone.utc).date()
+        cap = min(cap, retrieved)
+    except (TypeError, ValueError):
+        pass
+    limit, capped = cap.isoformat(), 0
+    for m in (prev.get("meta") or {}).values():
+        if isinstance(m, dict) and isinstance(m.get("date"), str) and m["date"] > limit:
+            m.setdefault("provider_date", m["date"])
+            m["date"] = limit
+            if FORWARD_FLAG not in m.setdefault("flags", []):
+                m["flags"].append(FORWARD_FLAG)
+            capped += 1
+    for key in ("observation_date", "observation_date_oldest"):
+        if isinstance(prev.get(key), str) and prev[key] > limit:
+            prev[key] = limit
+    return prev, capped
+
+
 # --------------------------------------------------------------------------- build
 
 def sig(value):
@@ -135,7 +200,7 @@ def sig(value):
     return float(f"{value:.12g}")
 
 
-def build_dataset(parsed, currencies, config, now):
+def build_dataset(parsed, currencies, config, now, forward=None):
     """Turn provider rows (units per USD) into the site's USD-per-unit dataset."""
     base = config["base"]
     legacy = config.get("legacy_fixed_conversion", {})
@@ -148,6 +213,7 @@ def build_dataset(parsed, currencies, config, now):
     if legacy and "EUR" not in parsed:
         raise ValidationError("EUR is required to derive legacy fixed-conversion currencies")
 
+    forward = forward or {}
     rates, meta = {}, {}
     for code in currencies:
         if code == base:
@@ -175,9 +241,14 @@ def build_dataset(parsed, currencies, config, now):
             else:
                 # Frankfurter omits "providers" for pegged currencies (derived from the peg, not provider data).
                 meta[code]["basis"] = "no_provider_attribution"
+        original = forward.get(code) or (forward.get("EUR") if code in legacy else None)
+        if original:
+            meta[code]["provider_date"] = original  # the provider's own (future) date, before capping
         flags = []
         if code in pegged:
             flags.append("managed_or_pegged")
+        if original:
+            flags.append(FORWARD_FLAG)
         if code in unofficial:
             flags.append("official_rate_may_differ_from_market")
         if flags:
@@ -185,7 +256,7 @@ def build_dataset(parsed, currencies, config, now):
 
     dates = sorted(m["date"] for m in meta.values() if "date" in m)
     stamp = now.strftime("%Y-%m-%dT%H:%M:%SZ")
-    return {
+    ds = {
         "schema_version": SCHEMA_VERSION,
         "base": base,
         "rate_unit": "USD per 1 unit of the currency",
@@ -203,6 +274,14 @@ def build_dataset(parsed, currencies, config, now):
         "rates": rates,
         "meta": meta,
     }
+    if forward:
+        ds["normalization"] = {
+            "rule": "observation dates later than the run date (UTC) are capped at the run date; "
+                    "the provider's original date is kept in meta[code].provider_date",
+            "run_date": now.astimezone(timezone.utc).date().isoformat(),
+            "forward_dated_currencies": sorted(forward),
+        }
+    return ds
 
 
 # ------------------------------------------------------------------------ validate
@@ -235,8 +314,16 @@ def validate_dataset(ds, currencies, config, now):
     age = (now.date() - newest).days
     if age > int(config.get("max_observation_age_days", 7)):
         raise ValidationError(f"provider data is stale: newest observation {ds['observation_date']} is {age} days old")
-    if newest > now.date() + timedelta(days=1):
-        raise ValidationError(f"observation date {ds['observation_date']} is in the future")
+    run_day = now.astimezone(timezone.utc).date()
+    if newest > run_day:
+        raise ValidationError(f"observation date {ds['observation_date']} is later than the run date {run_day}")
+    for code, m in meta.items():
+        try:
+            later = isinstance(m, dict) and m.get("date") is not None and date.fromisoformat(m["date"]) > run_day
+        except (TypeError, ValueError):
+            raise ValidationError(f"{code}: bad observation date {m.get('date')!r}")
+        if later:
+            raise ValidationError(f"{code}: observation date {m['date']} is later than the run date {run_day}")
 
 
 def merge_with_previous(candidate, previous, config, allow_large_moves):
@@ -354,6 +441,12 @@ def verification_report(dataset, parsed, currencies, config):
     if provider_codes and not attributed:
         note += "  WARNING: no currency carried provider attribution - expand=providers may not have been honoured"
 
+    if dataset.get("normalization"):
+        n = dataset["normalization"]
+        note += (f"  | forward-dated observations capped at run date {n['run_date']}: {len(n['forward_dated_currencies'])} "
+                 f"(provider dates kept in meta.provider_date)")
+        if n.get("previous_dataset_dates_capped"):
+            note += f"; published dates capped for comparison: {n['previous_dataset_dates_capped']}"
     dates = sorted({meta[c]["date"] for c in provider_codes})
     text = ["== VERIFICATION =="] + checks + [note, f"observation dates in response: {dates[0]} .. {dates[-1]} ({len(dates)} distinct)"]
     md = ["### Live provider coverage and verification", "", "```", *text, "```", "",
@@ -431,6 +524,9 @@ def run(args):
     previous = load_json(args.previous) if args.previous else None
     if previous is not None and previous.get("schema_version") != SCHEMA_VERSION:
         previous = None  # e.g. the old offline seed: nothing comparable
+    previous_raw, previous_capped = previous, 0
+    if previous is not None:
+        previous, previous_capped = normalise_previous(previous, now)  # comparison copy; the file on disk is untouched
 
     rows = json.loads(Path(args.input_fixture).read_text(encoding="utf-8")) if args.input_fixture else fetch_provider_rows(config)
     parsed = parse_rows(rows, config["base"])
@@ -439,9 +535,23 @@ def run(args):
     if cov["missing"]:
         emit_summary(["### Live provider coverage", "", "```", *cov["lines"], "```", "", f"**STOP: missing currencies {cov['missing']}**"])
         raise ValidationError(f"STOP: the provider response lacks {len(cov['missing'])} expected currencies: {cov['missing']}")
-    candidate = build_dataset(parsed, currencies, config, now)
+    parsed, forward = normalise_forward_dates(parsed, currencies, now, config)
+    candidate = build_dataset(parsed, currencies, config, now, forward)
     validate_dataset(candidate, currencies, config, now)
     candidate, notes = merge_with_previous(candidate, previous, config, args.allow_large_moves)
+    if previous_capped:
+        candidate.setdefault("normalization", {
+            "rule": "observation dates later than the run date (UTC) are capped at the run date; "
+                    "the provider's original date is kept in meta[code].provider_date",
+            "run_date": now.astimezone(timezone.utc).date().isoformat(),
+            "forward_dated_currencies": [],
+        })["previous_dataset_dates_capped"] = previous_capped
+        notes.append(f"{previous_capped} observation date(s) in the published dataset were later than its retrieval date; "
+                     "capped for comparison and corrected in this release")
+    if forward:
+        notes.append(f"capped {len(forward)} forward-dated observation(s) at run date "
+                     f"{now.astimezone(timezone.utc).date().isoformat()}: {sorted(forward)[:12]}"
+                     f"{' ...' if len(forward) > 12 else ''} (provider dates kept in meta.provider_date)")
     validate_dataset(candidate, currencies, config, now)  # re-check after merging
 
     text, md = verification_report(candidate, parsed, currencies, config)
@@ -449,9 +559,9 @@ def run(args):
     print("\n".join(per_currency_lines(candidate, parsed, currencies, config)))
     emit_summary(md)
 
-    content_changed = not (previous and same_content(candidate, previous))
+    content_changed = not (previous_raw and same_content(candidate, previous_raw))  # compare with what is on disk
     if not content_changed:
-        candidate["data_changed_at"] = previous.get("data_changed_at", candidate["data_changed_at"])
+        candidate["data_changed_at"] = previous_raw.get("data_changed_at", candidate["data_changed_at"])
 
     for note in notes:
         print(f"note: {note}")
