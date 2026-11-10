@@ -22,6 +22,9 @@ Guarantees:
   * Nothing is written unless the whole dataset validates (all supported currencies,
     finite positive numbers, direction sentinels, freshness, no implausible jumps).
   * The previous dataset is never replaced by an empty/partial/older one.
+  * Only the website's own currencies are ever published. Provider quotes outside that inventory (crypto
+    assets such as AAVE, metals, ...) are excluded and listed in the log; they never invalidate the supported
+    currencies, and a malformed row or spelling of a SUPPORTED currency still rejects the whole run.
   * No observation date later than the run date (UTC) is ever published. A row dated up to
     `max_forward_dated_days` (default 1) ahead of the run date is capped at the run date; the
     provider's original date is kept in meta[code].provider_date, flagged "forward_dated_clamped" and
@@ -108,8 +111,17 @@ def normalise_providers(value, quote):
     return sorted(keys)
 
 
-def parse_rows(rows, base):
-    """Validate the raw response shape. Returns {QUOTE: (units_per_base, date, providers|None)}."""
+def parse_rows(rows, base, supported=None, excluded=None):
+    """Validate the raw response shape. Returns {QUOTE: (units_per_base, date, providers|None)}.
+
+    The provider serves more than ISO currencies (crypto assets such as AAVE, precious metals, ...). When
+    `supported` (the website's currency inventory) is given, a row whose quote code is not in it is an
+    unsupported provider instrument: it is recorded in `excluded` and skipped WITHOUT being validated or used,
+    so it can neither invalidate nor leak into the published dataset. Every row must still be an object with
+    the expected base and a string quote. A row for a SUPPORTED currency is validated in full, and a quote
+    that is only a malformed spelling of a supported code ("kes", " KES") is rejected, never dropped.
+    Without `supported` every quote must be a 3-letter uppercase code (the original strict behaviour).
+    """
     if not isinstance(rows, list) or not rows:
         raise ValidationError("provider response is not a non-empty list")
     parsed = {}
@@ -119,7 +131,15 @@ def parse_rows(rows, base):
         if row.get("base") != base:
             raise ValidationError(f"provider row has unexpected base {row.get('base')!r}")
         quote, rate, day = row.get("quote"), row.get("rate"), row.get("date")
-        if not isinstance(quote, str) or len(quote) != 3 or not quote.isupper():
+        if not isinstance(quote, str):
+            raise ValidationError(f"bad quote code {quote!r}")
+        if supported is not None and quote not in supported:
+            if quote.strip().upper() in supported:
+                raise ValidationError(f"bad quote code {quote!r}: a malformed spelling of supported currency {quote.strip().upper()}")
+            if excluded is not None:
+                excluded.add(quote)
+            continue  # unsupported provider instrument: ignored, reported in the coverage section
+        if len(quote) != 3 or not quote.isupper():
             raise ValidationError(f"bad quote code {quote!r}")
         if isinstance(rate, bool) or not isinstance(rate, (int, float)) or not math.isfinite(rate) or rate <= 0:
             raise ValidationError(f"{quote}: rate is not a finite positive number ({rate!r})")
@@ -371,14 +391,14 @@ def same_content(a, b):
 
 # ------------------------------------------------------------------------- report
 
-def coverage_report(parsed, currencies, config):
+def coverage_report(parsed, currencies, config, excluded=()):
     """What the LIVE response actually covers, compared with the website's currency list."""
     base = config["base"]
     legacy = config.get("legacy_fixed_conversion", {})
     expected = [c for c in currencies if c != base and c not in legacy]
     supplied = [c for c in expected if c in parsed]
     missing = [c for c in expected if c not in parsed]
-    extras = sorted(set(parsed) - set(currencies))
+    extras = sorted((set(parsed) - set(currencies)) | set(excluded))
     lines = [
         "== LIVE PROVIDER COVERAGE ==",
         f"website currencies: {len(currencies)} (base {base} + {len(legacy)} legacy-fixed {sorted(legacy)} + {len(expected)} provider-supplied expected)",
@@ -387,6 +407,9 @@ def coverage_report(parsed, currencies, config):
         f"missing from provider response: {missing if missing else 'none'}",
         f"provider currencies not used by the website: {len(extras)}",
     ]
+    if extras:
+        shown = ", ".join(extras[:60]) + (f", ... (+{len(extras) - 60} more)" if len(extras) > 60 else "")
+        lines.append(f"excluded, not in the website's {len(currencies)} currencies: {shown}")
     return {"expected": expected, "supplied": supplied, "missing": missing, "extras": extras, "lines": lines}
 
 
@@ -529,8 +552,9 @@ def run(args):
         previous, previous_capped = normalise_previous(previous, now)  # comparison copy; the file on disk is untouched
 
     rows = json.loads(Path(args.input_fixture).read_text(encoding="utf-8")) if args.input_fixture else fetch_provider_rows(config)
-    parsed = parse_rows(rows, config["base"])
-    cov = coverage_report(parsed, currencies, config)
+    excluded = set()
+    parsed = parse_rows(rows, config["base"], set(currencies), excluded)
+    cov = coverage_report(parsed, currencies, config, excluded)
     print("\n".join(cov["lines"]))
     if cov["missing"]:
         emit_summary(["### Live provider coverage", "", "```", *cov["lines"], "```", "", f"**STOP: missing currencies {cov['missing']}**"])

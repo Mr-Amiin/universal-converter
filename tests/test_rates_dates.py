@@ -1,4 +1,5 @@
-"""Observation-date safety tests for fetch_rates.py (offline: synthetic fixtures, never the network).
+"""Observation-date and provider-response safety tests for fetch_rates.py (offline: synthetic fixtures,
+never the network). Also pins the 2026-11-07 AAVE failure (see UnsupportedProviderQuotes below).
 
 Run:  python3 -m unittest tests.test_rates_dates -v
 
@@ -70,6 +71,15 @@ def rows_on(day, overrides=None, scale=None):
             r["rate"] = r["rate"] * scale
         out.append(r)
     return out
+
+
+def aave_row(day=FRI, **overrides):
+    """A provider row for a crypto asset, shaped like Frankfurter v2 `expand=providers` output. This is the row
+    that made production fail with: VALIDATION FAILED: bad quote code 'AAVE'."""
+    row = {"date": day, "base": "USD", "quote": "AAVE", "rate": 0.0052,
+           "providers": [{"key": "CRYPTO", "date": day, "rate": 0.0052}]}
+    row.update(overrides)
+    return row
 
 
 class Pipeline:
@@ -392,7 +402,8 @@ class FuzzNeverPublishesInvalidData(_Base):
     or it succeeds and the result satisfies every invariant."""
 
     MUTATIONS = ["drop_row", "rate_zero", "rate_negative", "rate_nan", "rate_string", "rate_none", "rate_bool",
-                 "date_garbage", "date_far_future", "date_plus_one", "date_old", "base_wrong", "dup_row_old_date"]
+                 "date_garbage", "date_far_future", "date_plus_one", "date_old", "base_wrong", "dup_row_old_date",
+                 "add_aave", "add_aave_garbage"]
 
     def mutate(self, rows, rng):
         for _ in range(rng.randint(1, 3)):
@@ -413,6 +424,8 @@ class FuzzNeverPublishesInvalidData(_Base):
             elif kind == "date_old": r["date"] = rng.choice([THU, "2026-10-01"])
             elif kind == "base_wrong": r["base"] = "EUR"
             elif kind == "dup_row_old_date": rows.append(dict(r, date=THU, rate=r["rate"] * 5))
+            elif kind == "add_aave": rows.append(aave_row())
+            elif kind == "add_aave_garbage": rows.append({"date": None, "base": "USD", "quote": "AAVE", "rate": -3, "providers": "junk"})
         return rows
 
     def test_fuzz(self):
@@ -441,6 +454,182 @@ class FuzzNeverPublishesInvalidData(_Base):
                 self.assertEqual(self.p.digest(), before, f"run {n} was rejected but the published file changed")
         self.assertGreater(rejected, 10, "fuzz should hit plenty of rejections")
         self.assertGreater(accepted, 3, "fuzz should also exercise acceptance")
+
+
+class UnsupportedProviderQuotes(_Base):
+    """2026-11-07 production failure: `VALIDATION FAILED: bad quote code 'AAVE'`.
+
+    The request has no `quotes=` filter, so Frankfurter returns every instrument it serves (currencies, metals,
+    crypto assets). parse_rows used to require every quote in the response to be 3 uppercase letters BEFORE the
+    response was reduced to the website's 156 currencies, so one 4-letter crypto code rejected the whole run.
+    Rule now: a quote outside the website's inventory is an unsupported instrument - excluded, listed in the log,
+    never published. Anything wrong with a SUPPORTED currency still rejects the run.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.good = self.p.seed(rows_on(FRI), T_FRI_1928, FRI)
+        self.before = self.p.digest()
+        self.original_bytes = self.p.pub.read_bytes()
+
+    def _restore(self):
+        self.p.pub.write_bytes(self.original_bytes)
+        return self.p.digest()
+
+    def _without_aave(self, rows, now):
+        """Same run in a separate pipeline, without the unsupported row, for an exact comparison."""
+        with tempfile.TemporaryDirectory() as tmp:
+            q = Pipeline(tmp)
+            q.seed(rows_on(FRI), T_FRI_1928, FRI)
+            self.assertEqual(q.run(rows, now).returncode, 0)
+            return q.load()
+
+    def test_exact_aave_failure_unsupported_code_no_longer_blocks_supported_rates(self):
+        rows = rows_on(MON, scale=1.003)
+        proc = self.p.run(rows + [aave_row(MON)], T_MON_0610)
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+        ds = self.p.load()
+        self.assertEqual(list(ds["rates"]), CURRENCIES)
+        self.assertEqual(len(ds["rates"]), 156)
+        self.assertNotIn("AAVE", json.dumps(ds), "an unsupported instrument must never be published")
+        ref = self._without_aave(rows, T_MON_0610)
+        for key in ("rates", "meta", "observation_date", "observation_date_oldest"):
+            self.assertEqual(ds[key], ref[key], f"{key} must be identical with and without the AAVE row")
+        self.assertIn("provider-supplied currencies present: 153/153", proc.stdout)
+        self.assertIn("excluded, not in the website's 156 currencies: AAVE", proc.stdout)
+
+    def test_many_kinds_of_unsupported_codes_are_excluded_and_reported(self):
+        junk = ["AAVE", "UNI", "1INCH", "WBTC", "XAUT", "BTC", "ETH", "XAU", "XAG", "EURO", "aave", "", "A B"]
+        extra = [aave_row(MON, quote=q) for q in junk]
+        proc = self.p.run(rows_on(MON, scale=1.003) + extra, T_MON_0610)
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+        ds = self.p.load()
+        self.assertEqual(list(ds["rates"]), CURRENCIES)
+        text = json.dumps(ds)
+        for q in junk:
+            if q:
+                self.assertNotIn(f'"{q}"', text, q)
+        self.assertIn("provider currencies not used by the website: %d" % len(set(junk)), proc.stdout)
+        for q in ("AAVE", "UNI", "1INCH", "WBTC", "XAUT", "BTC", "XAU", "EURO", "aave"):
+            self.assertIn(q, proc.stdout.split("excluded, not in the website's 156 currencies:")[1].splitlines()[0])
+
+    def test_unsupported_rows_are_neither_validated_nor_used(self):
+        bad = [dict(rate=0), dict(rate=-1), dict(rate="x"), dict(rate=None), dict(rate=float("nan")),
+               dict(date=None), dict(date="not-a-date"), dict(date="2099-01-01"), dict(providers="junk"), dict(providers=[1, None])]
+        # 4-letter (AAVE) AND 3-letter (BTC crypto, XAU metal) codes: what matters is the inventory, not the code's shape
+        for code in ("AAVE", "BTC", "XAU"):
+            for overrides in bad:
+                with self.subTest(code=code, overrides=overrides):
+                    proc = self.p.run(rows_on(MON, scale=1.003) + [aave_row(MON, quote=code, **overrides)], T_MON_0610)
+                    self.assertEqual(proc.returncode, 0, proc.stderr)
+                    self.assertNotIn(code, self.p.load()["rates"])
+                    self._restore()  # back to the exact original bytes between sub-cases
+
+    def test_unsupported_rows_must_still_be_well_formed_response_rows(self):
+        cases = {
+            "wrong base on the AAVE row": aave_row(MON, base="EUR"),
+            "row is not an object": "AAVE",
+            "quote is null": aave_row(MON, quote=None),
+            "quote is a number": aave_row(MON, quote=123),
+            "quote is a list": aave_row(MON, quote=["AAVE"]),
+        }
+        for label, row in cases.items():
+            with self.subTest(label):
+                proc = self.p.run(rows_on(MON) + [row], T_MON_0610)
+                self.assert_rejected_and_preserved(proc, self.before)
+
+    def test_malformed_supported_currency_still_rejects_the_run_even_with_aave_present(self):
+        mutations = {
+            "rate zero": lambda r: r.update(rate=0), "rate negative": lambda r: r.update(rate=-4.2),
+            "rate string": lambda r: r.update(rate="129.2"), "rate null": lambda r: r.update(rate=None),
+            "rate NaN": lambda r: r.update(rate=float("nan")), "rate inf": lambda r: r.update(rate=float("inf")),
+            "rate bool": lambda r: r.update(rate=True), "bad date": lambda r: r.update(date="2026-13-40"),
+            "null date": lambda r: r.update(date=None), "providers not a list": lambda r: r.update(providers="CBK"),
+        }
+        for label, mutate in mutations.items():
+            with self.subTest(label):
+                rows = rows_on(MON)
+                mutate(next(r for r in rows if r["quote"] == "KES"))
+                before = self._restore()
+                proc = self.p.run([aave_row(MON)] + rows, T_MON_0610)   # AAVE first: it must not mask the real fault
+                self.assert_rejected_and_preserved(proc, before)
+                self.assertIn("KES", proc.stderr, "the failure must name the supported currency, not the unsupported one")
+                self.assertNotIn("AAVE", proc.stderr)
+
+    def test_malformed_spelling_of_a_supported_code_is_rejected_not_silently_dropped(self):
+        for spelled in ("kes", " KES", "KES ", "Kes", "kes\n"):
+            with self.subTest(repr(spelled)):
+                rows = [dict(r, quote=spelled) if r["quote"] == "KES" else r for r in rows_on(MON)]
+                before = self._restore()
+                proc = self.p.run(rows + [aave_row(MON)], T_MON_0610)
+                self.assert_rejected_and_preserved(proc, before, "bad quote code")
+        # an extra malformed duplicate next to a correct KES row is rejected too (strictness is not "last row wins")
+        before = self.p.digest()
+        proc = self.p.run(rows_on(MON) + [dict(next(r for r in rows_on(MON) if r["quote"] == "KES"), quote="kes")], T_MON_0610)
+        self.assert_rejected_and_preserved(proc, before, "bad quote code")
+
+    def test_missing_required_currencies_still_rejected_with_aave_present(self):
+        for drop in (["INR"], ["KES", "SOS"], ["EUR"], [q for q in _quotes() if q != "EUR"][:40]):
+            with self.subTest(dropped=drop[:3]):
+                proc = self.p.run([r for r in rows_on(MON) if r["quote"] not in drop] + [aave_row(MON)], T_MON_0610)
+                self.assert_rejected_and_preserved(proc, self.before, "lacks")
+                self.assertIn("STOP", proc.stderr)
+
+    def test_response_containing_only_unsupported_quote_codes_is_rejected(self):
+        only = [aave_row(MON, quote=q) for q in ("AAVE", "UNI", "BTC", "XAU", "WBTC", "1INCH")]
+        proc = self.p.run(only, T_MON_0610)
+        self.assert_rejected_and_preserved(proc, self.before, "lacks 153 expected currencies")
+        with tempfile.TemporaryDirectory() as tmp:  # first-ever run: nothing may be created either
+            fresh = Pipeline(tmp)
+            proc = fresh.run(only, T_MON_0610)
+            self.assertEqual(proc.returncode, 3, proc.stderr)
+            self.assertFalse(fresh.pub.exists(), "a rejected first run must not create a dataset")
+
+    def test_every_failed_validation_leaves_the_published_file_byte_for_byte_unchanged(self):
+        stat = self.p.pub.stat()
+        failing = [
+            [aave_row(MON)],                                                                   # only unsupported
+            [r for r in rows_on(MON) if r["quote"] != "KES"] + [aave_row(MON)],                # supported missing
+            [dict(r, rate=0) if r["quote"] == "KES" else r for r in rows_on(MON)] + [aave_row(MON)],  # supported malformed
+            rows_on(MON) + [aave_row(MON, base="EUR")],                                        # malformed response
+            rows_on(THU) + [aave_row(THU)],                                                    # genuinely older data
+        ]
+        for rows in failing:
+            self.assertNotEqual(self.p.run(rows, T_MON_0610).returncode, 0)
+            self.assertEqual(self.p.digest(), self.before)
+        self.assertEqual(self.p.pub.stat().st_mtime_ns, stat.st_mtime_ns, "file must not even be rewritten")
+
+    def test_the_large_exclusion_list_is_capped_in_the_log_but_every_code_is_excluded(self):
+        many = [aave_row(MON, quote=f"ZZ{i:03d}") for i in range(100)]
+        proc = self.p.run(rows_on(MON, scale=1.003) + many, T_MON_0610)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.assertEqual(list(self.p.load()["rates"]), CURRENCIES)
+        self.assertIn("provider currencies not used by the website: 100", proc.stdout)
+        self.assertIn("(+40 more)", proc.stdout)
+
+    def test_aave_together_with_the_old_saturday_dated_dataset_recovers(self):
+        """Production is in BOTH states at once: the live file has Saturday dates (old code) and the provider now sends AAVE."""
+        legacy = legacy_like_run14(self.p.seed(rows_on(FRI, overrides={q: SAT for q in SAT_SET}), T_FRI_1928))
+        self.p.pub.write_text(json.dumps(legacy), encoding="utf-8")
+        proc = self.p.run(rows_on(FRI) + [aave_row(FRI)], T_SUN_0608)
+        self.assertEqual(proc.returncode, 0, proc.stderr + proc.stdout)
+        ds = self.p.load()
+        assert_no_future_dates(self, ds, SUN)
+        self.assertEqual(list(ds["rates"]), CURRENCIES)
+        self.assertNotIn("AAVE", json.dumps(ds))
+
+    def test_parse_rows_is_strict_without_an_inventory_and_selective_with_one(self):
+        spec = importlib.util.spec_from_file_location("fetch_rates_parse_under_test", SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        rows = rows_on(FRI) + [aave_row(FRI)]
+        with self.assertRaisesRegex(mod.ValidationError, "bad quote code 'AAVE'"):
+            mod.parse_rows(rows, "USD")                      # original behaviour preserved when no inventory is given
+        excluded = set()
+        parsed = mod.parse_rows(rows, "USD", set(CURRENCIES), excluded)
+        self.assertEqual(excluded, {"AAVE"})
+        self.assertNotIn("AAVE", parsed)
+        self.assertEqual(set(parsed), set(_quotes()))
 
 
 class ValidateDatasetIsTheLastLine(unittest.TestCase):
