@@ -764,36 +764,6 @@ margin: 0.5rem 0 0.8rem;
 margin-top: 0.4rem;
 }
 }
-.recent-searches {
-display: flex;
-flex-wrap: wrap;
-align-items: center;
-gap: 0.55rem;
-min-height: 38px;
-margin-top: 0.6rem;
-color: var(--muted);
-}
-.recent-searches:empty {
-display: none;
-}
-.recent-searches span {
-font-size: 0.84rem;
-font-weight: 800;
-}
-.recent-searches a,
-.recent-searches button {
-min-height: 34px;
-padding: 0.42rem 0.66rem;
-color: var(--text);
-background: color-mix(in srgb, var(--surface) 82%, transparent);
-border: 1px solid var(--line);
-border-radius: var(--radius);
-}
-.recent-searches a:hover,
-.recent-searches button:hover {
-border-color: var(--accent);
-background: var(--surface);
-}
 .header-ad {
 order: 2;
 }
@@ -2467,9 +2437,6 @@ margin: 0.4rem 0 1rem;
 margin-top: 0.6rem;
 gap: 0.45rem;
 }
-.hero .recent-searches {
-margin-top: 0.45rem;
-}
 .section-heading h2,
 .guide-copy h2,
 .future-section h2 {
@@ -2934,6 +2901,21 @@ padding-bottom: 0;
 body.homepage .ad-band {
 margin-top: 0;
 margin-bottom: 0;
+}
+/* Homepage mobile: hide the hero search + category buttons so the converter
+   workspace starts right under the hero text. display:none removes both from
+   layout (no reserved gap). The hero subtitle's bottom margin only existed to
+   separate it from the search box, so it is dropped here too. Scoped to
+   body.homepage and .hero, so the in-workspace #unitSearch / category list and
+   all other pages are unaffected. Desktop/tablet (768px+) is unchanged. */
+@media (max-width: 767px) {
+body.homepage .hero .hero-search,
+body.homepage .hero .popular-actions {
+display: none;
+}
+body.homepage .hero .hero-subtitle {
+margin-bottom: 0;
+}
 }
 /* ==========================================================================
    About page vertical rhythm system
