@@ -2931,6 +2931,16 @@ body.homepage .hero {
 margin-bottom: calc(20px - var(--home-rhythm));
 }
 }
+/* Homepage converter sidebar heading: shown as CATEGORIES. The text comes
+   from the existing translated nav.categories key (so it still follows the
+   language switch); this only upper-cases it. Scoped to body.homepage so
+   the SEO pages' own sidebar label is unaffected. */
+body.homepage .category-panel .field-label {
+display: block;
+margin: 0.3rem 0 0.4rem;
+line-height: 1;
+text-transform: uppercase;
+}
 /* ==========================================================================
    About page vertical rhythm system
    --------------------------------------------------------------------------
