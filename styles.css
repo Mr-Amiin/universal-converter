@@ -2917,6 +2917,20 @@ body.homepage .hero .hero-subtitle {
 margin-bottom: 0;
 }
 }
+/* Homepage desktop/tablet: tighten only the hero -> converter boundary.
+   The popular-category buttons are the last thing in .hero, and the gap
+   below them comes entirely from `body.homepage main { gap }` above (the
+   hero has no bottom padding and #converter has none on the homepage), so
+   it was the full --home-rhythm (up to 80px). A negative bottom margin on
+   the hero (a flex item, so margins do not collapse) cancels all but 20px
+   of that gap. Every other section boundary keeps the unchanged
+   --home-rhythm gap. Starts at 768px because below that the search and
+   buttons are hidden (rule above), so there is no button gap to reduce. */
+@media (min-width: 768px) {
+body.homepage .hero {
+margin-bottom: calc(20px - var(--home-rhythm));
+}
+}
 /* ==========================================================================
    About page vertical rhythm system
    --------------------------------------------------------------------------
