@@ -2487,7 +2487,7 @@ const input = document.getElementById(id);
 if (input) input.addEventListener("input", updateConversion);
 });
 const unitSearch = byId("unitSearch");
-unitSearch.addEventListener("input", () => renderCategoryList(unitSearch.value));
+if (unitSearch) unitSearch.addEventListener("input", () => renderCategoryList(unitSearch.value));
 initGlobalSearch();
 document.addEventListener("keydown", handleGlobalKeyboard);
 // On an individual SEO conversion page, the "Search all units" box above
@@ -3302,7 +3302,8 @@ state.fromUnitId = category.defaultFrom || category.units[0].id;
 state.toUnitId = category.defaultTo || category.units[Math.min(1, category.units.length - 1)].id;
 byId("activeCategoryName").textContent = getCategoryDisplayName(category);
 byId("activeCategoryDescription").textContent = getCategoryDisplayDescription(category);
-byId("activeCategoryKind").textContent = categoryKindLabel(category);
+const activeCategoryKindEl = byId("activeCategoryKind");
+if (activeCategoryKindEl) activeCategoryKindEl.textContent = categoryKindLabel(category);
 updateSeoBreadcrumbCategory(category);
 populateSelect(byId("fromUnit"), category.units, state.fromUnitId);
 populateSelect(byId("toUnit"), category.units, state.toUnitId);
