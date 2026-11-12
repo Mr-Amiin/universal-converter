@@ -8,164 +8,164 @@
  "provider_endpoint": "v2/rates (default blended rates; individual providers not queried)",
  "source_note": "Composite central-bank reference rates published about once per day. Not tick-by-tick live trading quotes.",
  "update_frequency": "6h",
- "generated_at": "2026-11-11T19:39:46Z",
- "retrieved_at": "2026-11-11T19:39:46Z",
- "data_changed_at": "2026-11-11T19:39:46Z",
- "observation_date": "2026-11-11",
+ "generated_at": "2026-11-12T07:18:43Z",
+ "retrieved_at": "2026-11-12T07:18:43Z",
+ "data_changed_at": "2026-11-12T07:18:43Z",
+ "observation_date": "2026-11-12",
  "observation_date_oldest": "2026-11-11",
  "rates": {
   "USD": 1.0,
-  "EUR": 1.11878097625,
-  "GBP": 1.33747057565,
-  "JPY": 0.00630238860528,
-  "CHF": 1.21348914534,
-  "CAD": 0.706364342728,
-  "AUD": 0.688373373718,
-  "NZD": 0.56088395311,
-  "CNY": 0.150028505416,
+  "EUR": 1.11691909038,
+  "GBP": 1.3354165832,
+  "JPY": 0.00629326620516,
+  "CHF": 1.21047789667,
+  "CAD": 0.705417607223,
+  "AUD": 0.687332462712,
+  "NZD": 0.559816380227,
+  "CNY": 0.150042011763,
   "HKD": 0.127377176558,
-  "SGD": 0.781066937437,
-  "KRW": 0.000746664277341,
-  "INR": 0.0106598443663,
-  "IDR": 5.51785024554e-05,
-  "MYR": 0.24611143926,
-  "THB": 0.0298044825942,
-  "PHP": 0.0158478605388,
-  "VND": 3.89529448426e-05,
-  "PKR": 0.00360958706324,
-  "BDT": 0.00802053256336,
-  "LKR": 0.00301068794219,
-  "NPR": 0.00664805212073,
-  "MMK": 0.000476362874183,
-  "KHR": 0.000245157525968,
-  "LAK": 4.46109921485e-05,
-  "BND": 0.781066937437,
+  "SGD": 0.780518264127,
+  "KRW": 0.000747669141452,
+  "INR": 0.0106666666667,
+  "IDR": 5.51480725749e-05,
+  "MYR": 0.245875439502,
+  "THB": 0.0297636764093,
+  "PHP": 0.0158255392553,
+  "VND": 3.8918077447e-05,
+  "PKR": 0.00361089044558,
+  "BDT": 0.0080134626172,
+  "LKR": 0.00301050666827,
+  "NPR": 0.00666533359995,
+  "MMK": 0.000476551293598,
+  "KHR": 0.00024523508235,
+  "LAK": 4.46090020966e-05,
+  "BND": 0.780518264127,
   "MOP": 0.123667482872,
-  "TWD": 0.0304090010643,
-  "MNT": 0.000277710664367,
-  "KZT": 0.00223573600429,
-  "UZS": 8.35352100911e-05,
+  "TWD": 0.0303969846191,
+  "MNT": 0.000277662856207,
+  "KZT": 0.00223653605296,
+  "UZS": 8.35421888053e-05,
   "KGS": 0.0114351057747,
-  "TJS": 0.108733472512,
+  "TJS": 0.10872401496,
   "TMT": 0.285714285714,
-  "AFN": 0.0153183927942,
+  "AFN": 0.0153155774738,
   "AMD": 0.00277361735175,
   "AZN": 0.588269898229,
-  "GEL": 0.385936474856,
-  "RUB": 0.0120743781695,
-  "BYN": 0.334090605372,
-  "UAH": 0.0220055894197,
-  "MDL": 0.0557093753308,
-  "PLN": 0.254420557181,
-  "CZK": 0.0459073589496,
-  "HUF": 0.00307276302852,
-  "RON": 0.209200644338,
-  "BGN": 0.572023629993,
-  "HRK": 0.148487753169,
-  "RSD": 0.00952199581032,
-  "ALL": 0.0123304562269,
-  "MKD": 0.0181781825453,
-  "BAM": 0.572016931701,
-  "ISK": 0.00815527646387,
-  "NOK": 0.105414066453,
-  "SEK": 0.101461038961,
-  "DKK": 0.149526002572,
-  "TRY": 0.0199092139842,
-  "ILS": 0.315706393054,
+  "GEL": 0.38599606284,
+  "RUB": 0.0120831319478,
+  "BYN": 0.333822940312,
+  "UAH": 0.022014309301,
+  "MDL": 0.0556563553992,
+  "PLN": 0.253807106599,
+  "CZK": 0.0458148165117,
+  "HUF": 0.00306522805297,
+  "RON": 0.208833663987,
+  "BGN": 0.571071662865,
+  "HRK": 0.148240638447,
+  "RSD": 0.00949397132821,
+  "ALL": 0.0123076923077,
+  "MKD": 0.0181498085195,
+  "BAM": 0.571069613386,
+  "ISK": 0.00814863102999,
+  "NOK": 0.105237679299,
+  "SEK": 0.101184874885,
+  "DKK": 0.149269326646,
+  "TRY": 0.0199072322975,
+  "ILS": 0.315616715061,
   "JOD": 1.41043723554,
   "LBP": 1.10886873212e-05,
-  "SYP": 0.00819202097157,
-  "IQD": 0.00066003115347,
-  "IRR": 5.22718386515e-07,
+  "SYP": 0.00819269211863,
+  "IQD": 0.000660388572636,
+  "IRR": 5.2266128674e-07,
   "SAR": 0.266666666667,
   "AED": 0.272294077604,
   "QAR": 0.274725274725,
-  "KWD": 3.23300248941,
+  "KWD": 3.23206205559,
   "BHD": 2.65957446809,
   "OMR": 2.60078023407,
-  "YER": 0.00422743606003,
-  "EGP": 0.0187066240156,
-  "LYD": 0.15589922674,
-  "TND": 0.33280085197,
-  "DZD": 0.00733299112708,
-  "MAD": 0.102316444299,
-  "MRU": 0.0247886765326,
-  "XOF": 0.0017055823711,
-  "XAF": 0.0017055823711,
-  "GHS": 0.0855080890652,
-  "NGN": 0.000741086581145,
+  "YER": 0.00422707866593,
+  "EGP": 0.0186933358258,
+  "LYD": 0.155729280219,
+  "TND": 0.332645865212,
+  "DZD": 0.00732976618046,
+  "MAD": 0.102244261541,
+  "MRU": 0.0247579906415,
+  "XOF": 0.00170273629723,
+  "XAF": 0.00170273629723,
+  "GHS": 0.08547739123,
+  "NGN": 0.000741009699817,
   "XPF": 0.00936154278225,
-  "KES": 0.00770178681454,
-  "TZS": 0.000378330729157,
-  "UGX": 0.000244985754078,
-  "RWF": 0.000677153517474,
-  "BIF": 0.000332846268294,
-  "ETB": 0.00617817867293,
-  "SOS": 0.0017502100252,
-  "DJF": 0.00562841222491,
+  "KES": 0.00770119368502,
+  "TZS": 0.000378047535697,
+  "UGX": 0.000244955148712,
+  "RWF": 0.000677066406673,
+  "BIF": 0.000332798636857,
+  "ETB": 0.00617322056917,
+  "SOS": 0.00175051640234,
+  "DJF": 0.00562619556656,
   "SDG": 0.00166491850224,
   "SSP": 0.000173370319001,
   "ERN": 0.0658349517759,
-  "ZAR": 0.0607194034926,
-  "NAD": 0.06076220105,
-  "BWP": 0.0737767809715,
-  "SZL": 0.0605932075014,
-  "LSL": 0.0607378433207,
-  "ZMW": 0.0490364340705,
-  "MWK": 0.000576724550587,
-  "MZN": 0.0157091914479,
-  "AOA": 0.0010886131069,
-  "CDF": 0.000436201210895,
-  "MGA": 0.000219504753375,
-  "MUR": 0.0212219604847,
-  "SCR": 0.0689331899523,
-  "KMF": 0.0022638775695,
-  "CVE": 0.0101461038961,
+  "ZAR": 0.060675561704,
+  "NAD": 0.0607017117883,
+  "BWP": 0.0736990279098,
+  "SZL": 0.0605114427138,
+  "LSL": 0.0606623111127,
+  "ZMW": 0.049029221416,
+  "MWK": 0.000576631434486,
+  "MZN": 0.0157084511467,
+  "AOA": 0.00108901618278,
+  "CDF": 0.000436102292154,
+  "MGA": 0.00021900959481,
+  "MUR": 0.0211608862179,
+  "SCR": 0.0698753423892,
+  "KMF": 0.00225871298534,
+  "CVE": 0.0101296596434,
   "STN": 0.0458421197396,
-  "GMD": 0.0135657600217,
-  "GNF": 0.000112841345069,
+  "GMD": 0.013565944054,
+  "GNF": 0.000112803158488,
   "SLE": 0.0434216239687,
   "LRD": 0.00587924040214,
-  "MXN": 0.053741193162,
-  "BRL": 0.180008280381,
-  "ARS": 0.000646541970272,
-  "CLP": 0.00101976300708,
-  "COP": 0.000303644032028,
-  "PEN": 0.292877225867,
-  "BOB": 0.0852580334382,
-  "PYG": 0.000161264312208,
-  "UYU": 0.0247837616793,
-  "VES": 0.00110954541924,
-  "GYD": 0.00472478147886,
-  "SRD": 0.0266141480811,
-  "TTD": 0.148614909048,
-  "JMD": 0.006325510785,
+  "MXN": 0.0537426372587,
+  "BRL": 0.179914360764,
+  "ARS": 0.000646784510805,
+  "CLP": 0.00101969021811,
+  "COP": 0.000303542646224,
+  "PEN": 0.293005948021,
+  "BOB": 0.0853256881517,
+  "PYG": 0.000161316341345,
+  "UYU": 0.0247770069376,
+  "VES": 0.00110950848774,
+  "GYD": 0.00472634464505,
+  "SRD": 0.0265660698156,
+  "TTD": 0.148619326457,
+  "JMD": 0.00632831287179,
   "BSD": 0.991669972233,
-  "BBD": 0.495441934205,
+  "BBD": 0.489979910824,
   "BZD": 0.493193923851,
   "XCD": 0.364710602137,
-  "HTG": 0.00763242253091,
-  "DOP": 0.016350823264,
+  "HTG": 0.00763184003663,
+  "DOP": 0.0163497539362,
   "CUP": 0.0416666666667,
-  "HNL": 0.0371581450654,
+  "HNL": 0.0371553838151,
   "GTQ": 0.130775367152,
   "NIO": 0.0273044997816,
-  "CRC": 0.00222015008215,
+  "CRC": 0.00222024866785,
   "PAB": 1.0,
-  "PGK": 0.222632856157,
-  "FJD": 0.443242764062,
-  "SBD": 0.124467899729,
-  "TOP": 0.416094536679,
-  "VUV": 0.00835491686858,
-  "WST": 0.362884203651,
-  "BTN": 0.0106598443663,
-  "MVR": 0.0648457966955,
+  "PGK": 0.221405482,
+  "FJD": 0.442067105787,
+  "SBD": 0.124443117051,
+  "TOP": 0.415817705518,
+  "VUV": 0.00834376303713,
+  "WST": 0.362607875843,
+  "BTN": 0.0106666666667,
+  "MVR": 0.0648840845829,
   "BMD": 1.0,
   "KYD": 1.19447198366,
   "ANG": 0.558659217877,
   "AWG": 0.558160303639,
-  "SHP": 1.33747057565,
-  "FKP": 1.33747057565,
+  "SHP": 1.3354165832,
+  "FKP": 1.3354165832,
   "GIP": 1.32343404666,
   "ZWG": 0.0376208570031,
   "KPW": 0.0076928994538,
@@ -177,7 +177,7 @@
   },
   "EUR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -279,7 +279,7 @@
   },
   "GBP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -380,7 +380,7 @@
   },
   "JPY": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -475,7 +475,7 @@
   },
   "CHF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -566,7 +566,7 @@
   },
   "CAD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -659,7 +659,7 @@
   },
   "AUD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -748,7 +748,7 @@
   },
   "NZD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -811,7 +811,7 @@
   },
   "CNY": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -898,7 +898,7 @@
   },
   "HKD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -963,7 +963,7 @@
   },
   "SGD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -1026,7 +1026,7 @@
   },
   "KRW": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -1081,7 +1081,7 @@
   },
   "INR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -1149,7 +1149,7 @@
   },
   "IDR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1189,7 +1189,7 @@
   },
   "MYR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -1239,7 +1239,7 @@
   },
   "THB": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCEAO",
@@ -1290,7 +1290,7 @@
   },
   "PHP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1326,7 +1326,7 @@
   },
   "VND": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCRA",
@@ -1340,7 +1340,6 @@
     "CBR",
     "CBSL",
     "CBU",
-    "LB",
     "MAS",
     "NB",
     "NBC",
@@ -1355,7 +1354,7 @@
   },
   "PKR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1369,7 +1368,6 @@
     "CBSL",
     "CBU",
     "DAB",
-    "LB",
     "NB",
     "NBK",
     "NBKR",
@@ -1383,7 +1381,7 @@
   },
   "BDT": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BB",
@@ -1394,7 +1392,6 @@
     "CBR",
     "CBSL",
     "CBU",
-    "LB",
     "NB",
     "NBP",
     "NBU",
@@ -1403,7 +1400,7 @@
   },
   "LKR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BB",
@@ -1415,7 +1412,6 @@
     "CBO",
     "CBSL",
     "FRED",
-    "LB",
     "NBP",
     "RBM",
     "SAMA"
@@ -1423,7 +1419,7 @@
   },
   "NPR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1438,7 +1434,7 @@
   },
   "MMK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1459,7 +1455,7 @@
   },
   "KHR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1472,7 +1468,7 @@
   },
   "LAK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1485,7 +1481,7 @@
   },
   "BND": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -1493,12 +1489,12 @@
   },
   "MOP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution"
   },
   "TWD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -1516,7 +1512,6 @@
     "CBSL",
     "FRED",
     "HKMA",
-    "LB",
     "MAS",
     "NB",
     "NBC",
@@ -1529,7 +1524,7 @@
   },
   "MNT": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1537,7 +1532,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBK",
     "NBKR",
     "NBP"
@@ -1545,7 +1539,7 @@
   },
   "KZT": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1556,7 +1550,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1570,7 +1563,7 @@
   },
   "UZS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1579,7 +1572,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1590,7 +1582,7 @@
   },
   "KGS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1599,7 +1591,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1611,14 +1602,13 @@
   },
   "TJS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBA",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1630,7 +1620,7 @@
   },
   "TMT": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -1638,14 +1628,13 @@
   },
   "AFN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBKKW",
     "CBU",
     "DAB",
-    "LB",
     "NBKR",
     "NBP",
     "NBT",
@@ -1654,7 +1643,7 @@
   },
   "AMD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1662,7 +1651,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1674,7 +1662,7 @@
   },
   "AZN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1682,7 +1670,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1695,7 +1682,7 @@
   },
   "GEL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1704,7 +1691,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1716,7 +1702,7 @@
   },
   "RUB": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -1754,14 +1740,13 @@
   },
   "BYN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "CBA",
     "CBAR",
     "CBR",
     "CBU",
-    "LB",
     "NB",
     "NBG",
     "NBK",
@@ -1775,7 +1760,7 @@
   },
   "UAH": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1787,7 +1772,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "MNB",
     "NBG",
     "NBK",
@@ -1801,7 +1785,7 @@
   },
   "MDL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1810,7 +1794,6 @@
     "CBKKW",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -1823,7 +1806,7 @@
   },
   "PLN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCEAO",
@@ -1865,7 +1848,7 @@
   },
   "CZK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCEAO",
@@ -1908,7 +1891,7 @@
   },
   "HUF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCEAO",
@@ -1947,7 +1930,7 @@
   },
   "RON": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -1979,21 +1962,21 @@
   },
   "BGN": {
    "status": "legacy_fixed_conversion",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "fixed_units_per_eur": "1.95583",
    "derived_from": "EUR",
    "note": "BGN is no longer a circulating currency; derived from EUR at the official fixed conversion rate."
   },
   "HRK": {
    "status": "legacy_fixed_conversion",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "fixed_units_per_eur": "7.53450",
    "derived_from": "EUR",
    "note": "HRK is no longer a circulating currency; derived from EUR at the official fixed conversion rate."
   },
   "RSD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCRA",
@@ -2005,7 +1988,6 @@
     "CBM",
     "CBR",
     "CBU",
-    "LB",
     "MNB",
     "NBG",
     "NBM",
@@ -2017,13 +1999,12 @@
   },
   "ALL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "BNA",
     "CBKKW",
-    "LB",
     "NBM",
     "NBP",
     "SAMA"
@@ -2031,11 +2012,10 @@
   },
   "MKD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
-    "LB",
     "NBM",
     "NBP",
     "NBRM",
@@ -2044,7 +2024,7 @@
   },
   "BAM": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2052,7 +2032,7 @@
   },
   "ISK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCU",
@@ -2078,7 +2058,7 @@
   },
   "NOK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -2151,7 +2131,7 @@
   },
   "SEK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -2228,7 +2208,7 @@
   },
   "DKK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "AMCM",
@@ -2301,7 +2281,7 @@
   },
   "TRY": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2351,7 +2331,7 @@
   },
   "ILS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCEAO",
@@ -2385,7 +2365,7 @@
   },
   "JOD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2393,7 +2373,7 @@
   },
   "LBP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2401,7 +2381,6 @@
     "BNA",
     "CBO",
     "CBU",
-    "LB",
     "NBP",
     "NBU",
     "PMA",
@@ -2413,14 +2392,13 @@
   },
   "SYP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBKKW",
     "CBO",
     "CBU",
-    "LB",
     "NBP"
    ],
    "flags": [
@@ -2429,7 +2407,7 @@
   },
   "IQD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2438,20 +2416,18 @@
     "CBI",
     "CBKKW",
     "CBU",
-    "LB",
     "NBP"
    ]
   },
   "IRR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BOTA",
     "CBA",
     "CBR",
     "CBU",
-    "LB",
     "NBG",
     "NBK",
     "NBKR",
@@ -2465,7 +2441,7 @@
   },
   "SAR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2473,7 +2449,7 @@
   },
   "AED": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2481,7 +2457,7 @@
   },
   "QAR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2489,7 +2465,7 @@
   },
   "KWD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2512,7 +2488,6 @@
     "CBSL",
     "CBU",
     "IMF",
-    "LB",
     "NBE",
     "NBG",
     "NBK",
@@ -2532,7 +2507,7 @@
   },
   "BHD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2540,7 +2515,7 @@
   },
   "OMR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2548,14 +2523,13 @@
   },
   "YER": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBKKW",
     "CBO",
     "CBU",
-    "LB",
     "NBP",
     "SAMA"
    ],
@@ -2565,7 +2539,7 @@
   },
   "EGP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2593,7 +2567,7 @@
   },
   "LYD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2602,7 +2576,6 @@
     "BOA",
     "CBKKW",
     "CBU",
-    "LB",
     "NBP",
     "SAMA"
    ],
@@ -2612,7 +2585,7 @@
   },
   "TND": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2622,7 +2595,6 @@
     "CBKKW",
     "CBO",
     "CBU",
-    "LB",
     "NBP",
     "NBU",
     "SAMA"
@@ -2630,7 +2602,7 @@
   },
   "DZD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2642,7 +2614,6 @@
     "CBR",
     "CBU",
     "IMF",
-    "LB",
     "NBP",
     "NBU",
     "SAMA"
@@ -2650,7 +2621,7 @@
   },
   "MAD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2661,14 +2632,13 @@
     "CBKKW",
     "CBO",
     "CBU",
-    "LB",
     "NBP",
     "SAMA"
    ]
   },
   "MRU": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2680,7 +2650,7 @@
   },
   "XOF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2688,7 +2658,7 @@
   },
   "XAF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -2696,7 +2666,7 @@
   },
   "GHS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2709,7 +2679,7 @@
   },
   "NGN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2739,7 +2709,7 @@
   },
   "KES": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2752,7 +2722,6 @@
     "CBM",
     "CBO",
     "CBSL",
-    "LB",
     "NBE",
     "NBP",
     "RBM",
@@ -2762,7 +2731,7 @@
   },
   "TZS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -2775,7 +2744,6 @@
     "CBK",
     "CBKKW",
     "CBO",
-    "LB",
     "NBP",
     "RBM",
     "SAMA"
@@ -2783,7 +2751,7 @@
   },
   "UGX": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -2799,7 +2767,7 @@
   },
   "RWF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -2815,7 +2783,7 @@
   },
   "BIF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -2830,7 +2798,7 @@
   },
   "ETB": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2838,7 +2806,6 @@
     "CBKKW",
     "CBO",
     "CBR",
-    "LB",
     "NBE",
     "NBP",
     "RBM",
@@ -2847,7 +2814,7 @@
   },
   "SOS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2861,13 +2828,12 @@
   },
   "DJF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "BFM",
     "CBKKW",
-    "LB",
     "NBE",
     "NBP",
     "SAMA"
@@ -2903,7 +2869,7 @@
   },
   "ERN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2916,7 +2882,7 @@
   },
   "ZAR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -2975,7 +2941,7 @@
   },
   "NAD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -2990,7 +2956,7 @@
   },
   "BWP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3007,7 +2973,7 @@
   },
   "SZL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3021,7 +2987,7 @@
   },
   "LSL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3035,7 +3001,7 @@
   },
   "ZMW": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -3052,7 +3018,7 @@
   },
   "MWK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3066,21 +3032,20 @@
   },
   "MZN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "BM",
     "BNA",
     "CBKKW",
-    "LB",
     "NBP",
     "RBM"
    ]
   },
   "AOA": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -3092,7 +3057,7 @@
   },
   "CDF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCCD",
@@ -3104,13 +3069,12 @@
   },
   "MGA": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "BFM",
     "CBKKW",
-    "LB",
     "NBP",
     "RBM",
     "SAMA"
@@ -3118,7 +3082,7 @@
   },
   "MUR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3134,7 +3098,7 @@
   },
   "SCR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3146,7 +3110,7 @@
   },
   "KMF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3159,7 +3123,7 @@
   },
   "CVE": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -3177,7 +3141,7 @@
   },
   "GMD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3189,12 +3153,11 @@
   },
   "GNF": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBKKW",
-    "LB",
     "NBP",
     "SAMA"
    ]
@@ -3212,7 +3175,7 @@
   },
   "LRD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3223,7 +3186,7 @@
   },
   "MXN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BANXICO",
@@ -3258,7 +3221,7 @@
   },
   "BRL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BAM",
@@ -3305,7 +3268,7 @@
   },
   "ARS": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3316,7 +3279,6 @@
     "BNA",
     "CBKKW",
     "CBU",
-    "LB",
     "NBP",
     "RBM",
     "SAMA"
@@ -3324,7 +3286,7 @@
   },
   "CLP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3336,14 +3298,13 @@
     "BDI",
     "CBKKW",
     "IMF",
-    "LB",
     "NBP",
     "SAMA"
    ]
   },
   "COP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BANREP",
@@ -3354,14 +3315,13 @@
     "BCV",
     "BDI",
     "CBKKW",
-    "LB",
     "NBP",
     "SAMA"
    ]
   },
   "PEN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3374,13 +3334,12 @@
     "BOC",
     "CBKKW",
     "IMF",
-    "LB",
     "NBP"
    ]
   },
   "BOB": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3391,13 +3350,12 @@
     "BNA",
     "CBKKW",
     "CBR",
-    "LB",
     "NBP"
    ]
   },
   "PYG": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3411,7 +3369,7 @@
   },
   "UYU": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCBO",
@@ -3423,7 +3381,6 @@
     "CBKKW",
     "CBU",
     "IMF",
-    "LB",
     "NBP"
    ]
   },
@@ -3436,7 +3393,6 @@
     "BDI",
     "BNA",
     "CBU",
-    "LB",
     "NBP"
    ],
    "flags": [
@@ -3445,7 +3401,7 @@
   },
   "GYD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3457,7 +3413,7 @@
   },
   "SRD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3480,7 +3436,7 @@
   },
   "JMD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3493,7 +3449,7 @@
   },
   "BSD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3508,7 +3464,7 @@
   },
   "BBD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3523,7 +3479,7 @@
   },
   "BZD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3550,7 +3506,7 @@
   },
   "HTG": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3560,7 +3516,7 @@
   },
   "DOP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCV",
@@ -3572,7 +3528,7 @@
   },
   "CUP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3588,7 +3544,7 @@
   },
   "HNL": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3598,7 +3554,7 @@
   },
   "GTQ": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3608,12 +3564,12 @@
   },
   "NIO": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution"
   },
   "CRC": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BCCR",
@@ -3625,12 +3581,11 @@
   },
   "PAB": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
     "CBKKW",
-    "LB",
     "NBP"
    ],
    "flags": [
@@ -3639,7 +3594,7 @@
   },
   "PGK": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3652,7 +3607,7 @@
   },
   "FJD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3665,7 +3620,7 @@
   },
   "SBD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3676,7 +3631,7 @@
   },
   "TOP": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3696,7 +3651,7 @@
   },
   "WST": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3708,7 +3663,7 @@
   },
   "BTN": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -3716,7 +3671,7 @@
   },
   "MVR": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BDI",
@@ -3728,7 +3683,7 @@
   },
   "BMD": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "no_provider_attribution",
    "flags": [
     "managed_or_pegged"
@@ -3811,7 +3766,7 @@
   },
   "KPW": {
    "status": "reference",
-   "date": "2026-11-11",
+   "date": "2026-11-12",
    "basis": "blended",
    "providers": [
     "BOM",
