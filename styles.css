@@ -2917,6 +2917,27 @@ body.homepage .hero .hero-subtitle {
 margin-bottom: 0;
 }
 }
+/* Homepage hero description, mobile-only short version. The hero carries two
+   description paragraphs: .hero-subtitle-full (the original, translated via
+   data-i18n) and .hero-subtitle-mobile (a static English first sentence, with
+   no data-i18n so applyTranslations() never overwrites it). Exactly one is
+   displayed at any width, so there is no duplicate text and the hidden one is
+   out of the accessibility tree. At 768px and above (tablet + desktop) the
+   short one is hidden, leaving the original untouched. Below 768px (the same
+   breakpoint as the hero search/button rule above) the short one replaces it,
+   but only while the page language is English: it is not translated, so every
+   other language keeps showing its own full translated description. */
+body.homepage .hero .hero-subtitle-mobile {
+display: none;
+}
+@media (max-width: 767px) {
+html[lang="en"] body.homepage .hero .hero-subtitle-full {
+display: none;
+}
+html[lang="en"] body.homepage .hero .hero-subtitle-mobile {
+display: block;
+}
+}
 /* Homepage desktop/tablet: tighten only the hero -> converter boundary.
    The popular-category buttons are the last thing in .hero, and the gap
    below them comes entirely from `body.homepage main { gap }` above (the
