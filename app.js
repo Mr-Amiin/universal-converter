@@ -2391,9 +2391,20 @@ return parsed.pathname;
 return String(value).replace(/^https?:\/\//, "").split("/").slice(1).join("/");
 }
 }
+// Moves the existing Favorite button (same element, same id, same handler) from the
+// converter header into the Results action row, directly after Share. Every converter page
+// ships the same static markup and loads this script, so this one step applies everywhere.
+function relocateFavoriteButton() {
+const favoriteButton = document.getElementById("favoriteButton");
+const shareButton = document.getElementById("shareButton");
+if (!favoriteButton || !shareButton || !shareButton.parentNode) return;
+if (shareButton.nextElementSibling === favoriteButton) return;
+shareButton.insertAdjacentElement("afterend", favoriteButton);
+}
 function initConverterApp() {
 const fromValue = document.getElementById("fromValue");
 if (!fromValue) return;
+relocateFavoriteButton();
 const precisionControl = byId("precisionControl");
 const notationMode = byId("notationMode");
 precisionControl.value = String(state.precision);
