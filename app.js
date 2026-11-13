@@ -121,14 +121,14 @@ torque: drawerIcon('<path d="M13.5 3.5a3.5 3.5 0 0 0-4.9 4.2L4 12.3v2.2h2.2l4.6-
 };
 const DEFAULT_CATEGORY_ICON = drawerIcon('<path d="M4 7h9"/><path d="M11 4.5 13.5 7 11 9.5"/><path d="M16 13H7"/><path d="M9 10.5 6.5 13 9 15.5"/>');
 // Every entry here is a real destination already used elsewhere in the
-// site's own header nav (index.html#converter, index.html#calculators,
-// index.html#popular, guides.html, sitemap.html, about.html,
+// site's own header nav (/#converter, /#calculators,
+// /#popular, guides.html, sitemap.html, about.html,
 // contact.html) - nothing new is invented.
 const MOBILE_MAIN_NAV = [
-{ id: "converter", label: "Converter", href: "index.html#converter", i18nKey: "nav.converter" },
+{ id: "converter", label: "Converter", href: "/#converter", i18nKey: "nav.converter" },
 { id: "categories", label: "Categories", expand: true, i18nKey: "nav.categories" },
-{ id: "calculators", label: "Calculators", href: "index.html#calculators", i18nKey: "nav.calculators" },
-{ id: "popular", label: "Popular", href: "index.html#popular", i18nKey: "nav.popular" },
+{ id: "calculators", label: "Calculators", href: "/#calculators", i18nKey: "nav.calculators" },
+{ id: "popular", label: "Popular", href: "/#popular", i18nKey: "nav.popular" },
 { id: "guides", label: "Guides", href: "guides.html", i18nKey: "nav.guides" },
 { id: "about", label: "About", href: "about.html", i18nKey: "nav.about" },
 { id: "contact", label: "Contact", href: "contact.html", i18nKey: "nav.contact" }
@@ -170,6 +170,18 @@ Object.keys(attrs).forEach((name) => link.setAttribute(name, attrs[name]));
 document.head.appendChild(link);
 });
 }
+// The breadcrumb "Home" link and footer logo are static markup on every
+// generated page and still carry a relative ".../index.html" href until the
+// pages are regenerated. Point any link that resolves to the site-root
+// index.html at "/" so visitors land on the root URL. Links to other
+// index.html files (e.g. /length/index.html) resolve to a different path and
+// are left alone.
+function normalizeHomepageLinks() {
+document.querySelectorAll('a[href*="index.html"]').forEach((link) => {
+if (link.origin !== window.location.origin || link.pathname !== "/index.html") return;
+link.setAttribute("href", "/" + link.search + link.hash);
+});
+}
 // Renders the shared site header (hamburger button, brand/logo, desktop
 // top-nav with the Categories dropdown, and theme toggle) into the empty
 // #siteHeader placeholder that every page now ships. This is the missing
@@ -188,7 +200,7 @@ return `<a href="${item.href}" data-i18n="${item.i18nKey}">${item.label}</a>`;
 }).join("");
 header.innerHTML = `
 <button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-<a class="brand" href="/index.html" aria-label="Universal Converter home">${brandLogoHtml("/")}</a>
+<a class="brand" href="/" aria-label="Universal Converter home">${brandLogoHtml("/")}</a>
 <nav class="top-nav" aria-label="Primary navigation">${topNavItemsHtml}</nav>
 <div class="nav-dropdown lang-dropdown" id="langDropdown"><button type="button" class="nav-dropdown-toggle lang-dropdown-toggle" id="langDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="langDropdownMenu" aria-label="Change language"><span class="lang-toggle-flag" id="langToggleFlag" aria-hidden="true"></span><span id="langToggleName"></span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu lang-dropdown-menu" id="langDropdownMenu" role="listbox" aria-label="Select language"></ul></div>
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
@@ -1040,6 +1052,7 @@ let seoConversionDataCache = null;
 let seoConversionDataResolved = false;
 document.addEventListener("DOMContentLoaded", () => {
 renderSiteHeader();
+normalizeHomepageLinks();
 ensureBrandIcons();
 initTheme();
 initHeroCanvas();
@@ -3937,7 +3950,7 @@ return "";
 function converterRouteUrl({ category, from, to, value = "1", slug = "" }) {
 const params = new URLSearchParams({ category, from, to, value });
 if (slug) params.set("slug", slug);
-return `${rootRelativePrefix()}index.html?${params.toString()}#converter`;
+return `/?${params.toString()}#converter`;
 }
 function conversionPageUrl(slug) {
 const config = seoMap.get(slug);
@@ -3952,14 +3965,14 @@ slug
 }
 function mainConverterUrlForConversion(slug) {
 const config = seoMap.get(slug);
-if (!config) return `${rootRelativePrefix()}index.html#converter`;
+if (!config) return "/#converter";
 const params = new URLSearchParams({
 category: config.categoryId,
 from: config.from,
 to: config.to,
 value: "1"
 });
-return `${rootRelativePrefix()}index.html?${params.toString()}#converter`;
+return `/?${params.toString()}#converter`;
 }
 function renderStoredLists() {
 const lang = getStoredLanguageCode();
@@ -5022,7 +5035,7 @@ let currentLanguageCode = DEFAULT_LANGUAGE_CODE;
 const SEO_I18N_CACHE = {};
 
 function seoI18nUrl(langCode) {
-// Root-absolute, exactly like the existing /logo.svg and /index.html
+// Root-absolute, exactly like the existing /logo.svg and "/" home
 // references in renderSiteHeader() - works the same from any page depth
 // (root pages, one level deep, or two levels deep under a category).
 return `/i18n-seo/${langCode}.json`;
