@@ -220,6 +220,9 @@ def make_about_block(paragraphs):
 
 def render_page(base_html: str, spec: dict) -> str:
     html = base_html
+    # The base page's breadcrumb "Home" link and footer logo are relative
+    # ("../../index.html"); the homepage is the site root, "/".
+    html = html.replace('href="../../index.html"', 'href="/"')
 
     new_title = spec["title"]
     new_description = f"Convert {spec['title']} instantly. Free online {spec['category']} unit converter with exact formula, conversion table and FAQ."

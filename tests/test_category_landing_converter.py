@@ -30,6 +30,61 @@ CONVERTER_CATEGORIES = ["agriculture", "angle", "area", "astronomy", "chemistry"
 # Landing-page folder -> registry category id (only where they differ)
 REGISTRY_ID = {"flow-rate": "flow", "fuel-economy": "fuel_economy"}
 
+# Homepage-link fix: files that were intentionally edited so homepage links point at "/" instead of
+# index.html - the hand-written static pages and their STATIC/ mirrors, the page generators (+ their
+# TOOLING/ copies) and the template they read, the homepage itself and the admin page.
+# Exact file names only (no globs, no directories). Generated converter pages
+# (<category>/<slug>/index.html) must never be listed here; the guard test asserts that.
+HOMEPAGE_LINK_FIX_FILES = frozenset({
+    "STATIC/about.html",
+    "STATIC/acre-vs-hectare.html",
+    "STATIC/celsius-vs-fahrenheit.html",
+    "STATIC/contact.html",
+    "STATIC/currency-measurement-converter.html",
+    "STATIC/digital-storage-units-guide.html",
+    "STATIC/guides.html",
+    "STATIC/length-converter.html",
+    "STATIC/metric-vs-imperial.html",
+    "STATIC/offline.html",
+    "STATIC/online-calculator.html",
+    "STATIC/pressure-units-guide.html",
+    "STATIC/privacy.html",
+    "STATIC/references.html",
+    "STATIC/temperature-converter.html",
+    "STATIC/terms.html",
+    "STATIC/unit-converter.html",
+    "STATIC/weight-converter.html",
+    "STATIC/what-is-a-kilometer.html",
+    "TOOLING/generate_new_pages.py",
+    "TOOLING/generate_seo_pages_from_sitemap.py",
+    "about.html",
+    "acre-vs-hectare.html",
+    "admin/index.html",
+    "celsius-vs-fahrenheit.html",
+    "contact.html",
+    "currency-measurement-converter.html",
+    "digital-storage-units-guide.html",
+    "generate_new_pages.py",
+    "generate_seo_pages_from_sitemap.py",
+    "guides.html",
+    "index.html",
+    "length-converter.html",
+    "metric-vs-imperial.html",
+    "offline.html",
+    "online-calculator.html",
+    "pressure-units-guide.html",
+    "privacy.html",
+    "references.html",
+    "sitemap.html",
+    "temperature-converter.html",
+    "templates/kg-to-lbs-template - Copy.html",
+    "templates/kg-to-lbs-template.html",
+    "terms.html",
+    "unit-converter.html",
+    "weight-converter.html",
+    "what-is-a-kilometer.html",
+})
+
 # The existing SEO conversion page each landing converter was copied from. Each
 # was verified at runtime to initialise as its own category. (digital has no SEO
 # page for its default pair byte->megabyte, so a byte->... page was used; torque's
@@ -663,7 +718,8 @@ class TestExistingPagesUnaffected(BrowserCase):
         self.assert_same_as_head("/torque/pound-feet-to-newton-meters/")
 
     def test_no_seo_page_or_other_landing_file_modified(self):
-        """Only app.js, the 27 landing pages and this test file may differ from HEAD.
+        """Only app.js, the 27 landing pages and this test file (plus the explicitly listed
+        HOMEPAGE_LINK_FIX_FILES, plus service-worker.js for its cache-version bump) may differ from HEAD.
         Set UC_BASELINE_STATUS to a file holding `git status --short` taken BEFORE the
         patch was applied to exempt your own pre-existing uncommitted work."""
         changed = subprocess.run(
@@ -677,6 +733,16 @@ class TestExistingPagesUnaffected(BrowserCase):
         }
         # collapsed "All conversions" list: one scoped CSS block + its own test file (collapse_seo_links.py)
         allowed |= {"styles.css", "tests/test_seo_links_disclosure.py"}
+        # homepage-link fix: explicit file names only, and never a generated converter page
+        self.assertEqual(
+            {f for f in HOMEPAGE_LINK_FIX_FILES if f.count("/") >= 2 and f.endswith("/index.html")},
+            set(),
+            "generated converter pages must never be exempted",
+        )
+        allowed |= HOMEPAGE_LINK_FIX_FILES
+        # service worker: intentional one-line cache-version bump (v17 -> v18) shipped with the
+        # homepage-link fix so returning PWA users replace their cached app.js. Exact name only.
+        allowed |= {"service-worker.js"}
         preexisting = set()
         baseline = os.environ.get("UC_BASELINE_STATUS")
         if baseline:

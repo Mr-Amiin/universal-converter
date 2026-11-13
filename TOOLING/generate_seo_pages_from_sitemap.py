@@ -264,7 +264,7 @@ def build_breadcrumb_html(page_data: Dict[str, object], depth: int, category_lab
     # more than one level deep.
     if is_category_page:
         return (
-            f'<a href="../index.html">Home</a>'
+            f'<a href="/">Home</a>'
             f'<span>/</span>'
             f'<span>{escape(category_label)}</span>'
         )
@@ -282,7 +282,7 @@ def build_breadcrumb_html(page_data: Dict[str, object], depth: int, category_lab
     else:
         category_page = "index.html"
     return (
-        f'<a href="../index.html">Home</a>'
+        f'<a href="/">Home</a>'
         f'<span>/</span>'
         f'<a href="../{category_page}">{escape(category_label)}</a>'
         f'<span>/</span>'
@@ -643,7 +643,7 @@ def render_page(page_data: Dict[str, object], canonical: str, depth: int) -> str
     # Ensure the hero heading is the clean human-readable conversion title.
     rendered = rendered.replace('<h1>kg to lbs</h1>', f'<h1>{escape(hero_title)}</h1>')
     rendered = rendered.replace('<p>Convert kilograms to pounds instantly with the same Universal Converter component used on the homepage.</p>', f'<p>{escape(description)}</p>')
-    rendered = rendered.replace('<nav class="breadcrumb" aria-label="Breadcrumb">\n        <a href="../index.html">Home</a>\n        <span>/</span>\n        <a href="../weight-converter.html">Weight</a>\n        <span>/</span>\n        <span>kg to lbs</span>\n      </nav>', f'<nav class="breadcrumb" aria-label="Breadcrumb">\n        {breadcrumb_html}\n      </nav>')
+    rendered = rendered.replace('<nav class="breadcrumb" aria-label="Breadcrumb">\n        <a href="/">Home</a>\n        <span>/</span>\n        <a href="../weight-converter.html">Weight</a>\n        <span>/</span>\n        <span>kg to lbs</span>\n      </nav>', f'<nav class="breadcrumb" aria-label="Breadcrumb">\n        {breadcrumb_html}\n      </nav>')
     # The "Formula" and "Conversion table" page-cards (and their placeholder
     # markup '<p>1 Kilograms = 2.2046226218 Pounds</p>' /
     # '<tbody><tr><td>1</td>...') were removed from the SEO conversion page
