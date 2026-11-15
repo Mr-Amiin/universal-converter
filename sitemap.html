@@ -172,6 +172,37 @@
       }
     }
 
+    /* Static (always-expanded) groups: Main pages, Guides, Trust and legal.
+       Each group is a fixed-height card (same heights as the category cards,
+       via the .page-card rules and media queries above, so all three match)
+       with its page count outside the card border, directly underneath it.
+       Only the link list inside the card scrolls. */
+    .sitemap-grid .sitemap-static-group {
+      align-self: start;
+      min-width: 0;
+    }
+
+    .sitemap-grid .sitemap-static-group[hidden] {
+      display: none;
+    }
+
+    /* Start the static groups on their own row, so they never share a row
+       with the last category cards (the ad placeholders collapse when no ad
+       is served, which would otherwise let them land beside those cards). */
+    .sitemap-grid .sitemap-static-group[data-static-group="main-pages"] {
+      grid-column-start: 1;
+    }
+
+    /* The count under each static card reuses the category cards' original
+       .sitemap-card-count styling (font, color, strip, right alignment, dark
+       theme). Added here: the 8px offset from the card above it, and the
+       line-height the category counts inherit from ".page-card p" in
+       styles.css (this count sits outside the card, so it must set it). */
+    .sitemap-grid .sitemap-static-group .sitemap-card-count {
+      margin: 8px 0 0;
+      line-height: 1.65;
+    }
+
     /* Dark theme support (site uses data-theme="dark" on <html>) */
     html[data-theme="dark"] .sitemap-grid .page-card {
       background: var(--surface, #111827);
@@ -352,18 +383,23 @@
       <strong>Ad slot: sitemap (728x90)</strong>
       <p>Reserved after the Weight category listing.</p>
     </section>
-      <section class="page-card" data-sitemap-category="main-pages"><div class="sitemap-card-head"><h2>Main pages</h2></div><div class="sitemap-card-scroll" hidden></div><button type="button" class="sitemap-card-expand" data-category="main-pages" aria-expanded="false">Show 27 pages</button><p class="sitemap-card-count">27 pages</p></section>
-      <section class="page-card" data-sitemap-category="guides"><div class="sitemap-card-head"><h2>Guides</h2></div><div class="sitemap-card-scroll" hidden></div><button type="button" class="sitemap-card-expand" data-category="guides" aria-expanded="false">Show 12 pages</button><p class="sitemap-card-count">12 pages</p></section>
-      <section class="page-card" data-sitemap-category="trust-and-legal"><div class="sitemap-card-head"><h2>Trust and legal</h2></div><div class="sitemap-card-scroll" hidden></div><button type="button" class="sitemap-card-expand" data-category="trust-and-legal" aria-expanded="false">Show 6 pages</button><p class="sitemap-card-count">6 pages</p></section>
+      <div class="sitemap-static-group" data-static-group="main-pages"><section class="page-card sitemap-card-static" data-sitemap-category="main-pages"><div class="sitemap-card-head"><h2>Main pages</h2></div><div class="sitemap-card-scroll"><ul class="sitemap-links"><li><a href="/">Universal Converter - Home</a></li><li><a href="unit-converter.html">Unit Converter</a></li><li><a href="online-calculator.html">Online Calculator</a></li><li><a href="length-converter.html">Length Converter</a></li><li><a href="weight-converter.html">Weight Converter</a></li><li><a href="temperature-converter.html">Temperature Converter</a></li><li><a href="currency-measurement-converter.html">Currency &amp; Measurement Converter</a></li><li><a href="acre-to-hectare/">Acres to Hectares Converter</a></li><li><a href="inches-to-cm/">Inches to Centimeters Converter</a></li><li><a href="km-to-miles/">Kilometers to Miles Converter</a></li><li><a href="liter-to-gallon/">Liters to Gallons Converter</a></li><li><a href="meter-to-feet/">Meters to Feet Converter</a></li><li><a href="miles-to-km/">Miles to Kilometers Converter</a></li><li><a href="agriculture/">Agriculture Converter</a></li><li><a href="angle/">Angle Converter</a></li><li><a href="area/">Area Converter</a></li><li><a href="astronomy/">Astronomy Converter</a></li><li><a href="chemistry/">Chemistry Converter</a></li><li><a href="cooking/">Cooking Converter</a></li><li><a href="currency/">Currency Converter</a></li><li><a href="density/">Density Converter</a></li><li><a href="digital/">Digital Storage Converter</a></li><li><a href="electricity/">Electricity Converter</a></li><li><a href="energy/">Energy Converter</a></li><li><a href="engineering/">Engineering Converter</a></li><li><a href="flow-rate/">Flow Rate Converter</a></li><li><a href="force/">Force Converter</a></li><li><a href="frequency/">Frequency Converter</a></li><li><a href="fuel-economy/">Fuel Economy Converter</a></li><li><a href="length/">Length and Distance Converter</a></li><li><a href="power/">Power Converter</a></li><li><a href="pressure/">Pressure Converter</a></li><li><a href="radiation/">Radiation Converter</a></li><li><a href="scientific/">Scientific Units Converter</a></li><li><a href="speed/">Speed Converter</a></li><li><a href="temperature/">Temperature Scale Converter</a></li><li><a href="time/">Time Converter</a></li><li><a href="torque/">Torque Converter</a></li><li><a href="volume/">Volume Converter</a></li><li><a href="weight/">Weight and Mass Converter</a></li></ul></div></section><p class="sitemap-card-count sitemap-static-count">40 pages</p></div>
+      <div class="sitemap-static-group" data-static-group="guides"><section class="page-card sitemap-card-static" data-sitemap-category="guides"><div class="sitemap-card-head"><h2>Guides</h2></div><div class="sitemap-card-scroll"><ul class="sitemap-links"><li><a href="guides.html">Guides</a></li><li><a href="celsius-vs-fahrenheit.html">Celsius vs Fahrenheit</a></li><li><a href="metric-vs-imperial.html">Metric vs Imperial</a></li><li><a href="digital-storage-units-guide.html">Digital Storage Units Guide</a></li><li><a href="pressure-units-guide.html">Pressure Units Guide</a></li><li><a href="acre-vs-hectare.html">Acre vs Hectare</a></li><li><a href="what-is-a-kilometer.html">What Is a Kilometer</a></li></ul></div></section><p class="sitemap-card-count sitemap-static-count">7 pages</p></div>
+      <div class="sitemap-static-group" data-static-group="trust-and-legal"><section class="page-card sitemap-card-static" data-sitemap-category="trust-and-legal"><div class="sitemap-card-head"><h2>Trust and legal</h2></div><div class="sitemap-card-scroll"><ul class="sitemap-links"><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Use</a></li><li><a href="references.html">References</a></li></ul></div></section><p class="sitemap-card-count sitemap-static-count">5 pages</p></div>
     </section></main>
 
   
   
   <footer class="site-footer">
-    <nav aria-label="Footer navigation"><a href="https://theuniversalconverter.com/about.html">About</a>
-      <a href="https://theuniversalconverter.com/privacy.html">Privacy</a>
-      <a href="https://theuniversalconverter.com/terms.html">Terms</a>
-      <a href="https://theuniversalconverter.com/contact.html">Contact</a>
+    <div>
+      <a class="brand footer-brand" href="/"><img src="logo.svg" alt="" width="32" height="32"><span>Universal Converter</span></a>
+      <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+    </div>
+    <nav aria-label="Footer navigation">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms</a>
+      <a href="guides.html">Guides</a><a href="sitemap.html">Sitemap</a>
     </nav>
   </footer>
 
@@ -462,10 +498,19 @@
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.page-card'));
     var timer = null;
 
+    // Static cards (Main pages, Guides, Trust and legal) sit in a group with
+    // their page count, so hide/show the whole group, not just the card.
+    function setCardHidden(card, isHidden) {
+      card.hidden = isHidden;
+      var group = card.closest('.sitemap-static-group');
+      if (group) group.hidden = isHidden;
+    }
+
     function runFilter() {
       var query = input.value.trim().toLowerCase();
       if (!query) {
-        cards.forEach(function (card) { card.hidden = false; });
+        cards.forEach(function (card) { setCardHidden(card, false); });
+        Array.prototype.forEach.call(grid.querySelectorAll('.sitemap-card-static li'), function (li) { li.hidden = false; });
         status.textContent = '';
         return;
       }
@@ -477,8 +522,16 @@
         var cachedMatch = cache[slug] && cache[slug].some(function (pair) {
           return pair[1].toLowerCase().indexOf(query) !== -1;
         });
-        var visible = nameMatch || cachedMatch;
-        card.hidden = !visible;
+        var staticHits = 0;
+        if (card.classList.contains('sitemap-card-static')) {
+          Array.prototype.forEach.call(card.querySelectorAll('.sitemap-links li'), function (li) {
+            var hit = nameMatch || li.textContent.toLowerCase().indexOf(query) !== -1;
+            li.hidden = !hit;
+            if (hit) staticHits++;
+          });
+        }
+        var visible = nameMatch || cachedMatch || staticHits > 0;
+        setCardHidden(card, !visible);
         if (visible) matchingCategories++;
       });
       status.textContent = matchingCategories === 0
