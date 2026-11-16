@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Watts to Amps Converter | TheUniversalConverter</title>
+<meta name="description" content="Calculate amps from watts for DC, single-phase AC and three-phase AC. Watts alone are not enough: you also need the voltage and, for AC, the power factor.">
+<meta name="keywords" content="watts to amps, watts to amps calculator, watts to amps converter">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://theuniversalconverter.com/electricity/watts-to-amperes/">
+  <meta property="og:title" content="Watts to Amps Converter | TheUniversalConverter">
+  <meta property="og:description" content="Calculate amps from watts for DC, single-phase AC and three-phase AC. Watts alone are not enough: you also need the voltage and, for AC, the power factor.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://theuniversalconverter.com/electricity/watts-to-amperes/">
+  <meta property="og:image" content="https://theuniversalconverter.com/og-image.png?v=2">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Watts to Amps Converter | TheUniversalConverter">
+  <meta name="twitter:description" content="Calculate amps from watts for DC, single-phase AC and three-phase AC. Watts alone are not enough: you also need the voltage and, for AC, the power factor.">
+  <meta name="twitter:image" content="https://theuniversalconverter.com/og-image.png?v=2">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="stylesheet" href="../../styles.css">
+  <script src="../../app.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Watts to Amps Converter | TheUniversalConverter","description":"Calculate amps from watts for DC, single-phase AC and three-phase AC. Watts alone are not enough: you also need the voltage and, for AC, the power factor.","url":"https://theuniversalconverter.com/electricity/watts-to-amperes/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://theuniversalconverter.com/index.html"},{"@type":"ListItem","position":2,"name":"Electricity","item":"https://theuniversalconverter.com/electricity/"},{"@type":"ListItem","position":3,"name":"Watts to Amps","item":"https://theuniversalconverter.com/electricity/watts-to-amperes/"}]}}</script>
+  <script src="../../adsense-config.js"></script>
+  <script src="../../adsense.js" defer></script>
+  <meta name="google-adsense-account" content="ca-pub-2057098005458261">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2057098005458261"
+     crossorigin="anonymous"></script>
+  <style>
+  .wa-calc .wa-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+  .wa-calc label{display:flex;flex-direction:column;gap:4px;font-weight:600}
+  .wa-calc input,.wa-calc select{min-height:40px;padding:6px 8px;border:1px solid currentColor;border-radius:6px;font:inherit;color:inherit;background:transparent;box-sizing:border-box;max-width:100%}
+  .wa-calc .wa-inline{display:flex;gap:8px}.wa-calc .wa-inline input{flex:1;min-width:0}
+  .wa-calc .wa-note{font-size:.92em;opacity:.85}
+  .about-info-cards .wa-table{grid-column:1/-1;overflow-x:auto}
+  .wa-calc #waResult{font-size:1.6rem}
+  </style>
+</head>
+<body class="seo-page">
+  <header class="site-header" id="siteHeader"></header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
+
+  <main class="page-shell shared-page-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span>/</span>
+        <a href="/electricity/">Electricity</a>
+        <span>/</span>
+        <span>Watts to Amps</span>
+      </nav>
+
+      <section class="hero seo-top" style="order: 0;">
+        <div class="hero-content">
+          <h1>Watts to Amps Converter</h1>
+          <p>Watts cannot be converted to amps without the voltage, and for AC circuits the power factor as well. Choose DC, single-phase or three-phase, enter your values, and see the current with the formula and the assumptions behind it.</p>
+        </div>
+      </section>
+
+      <section class="converter-section">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">Watts to Amperes converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Electricity Converter</h2>
+                  <p id="activeCategoryDescription">Convert electrical units by family and calculate voltage, current, resistance, power, and energy with context values.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">1 W at 120 V (DC) = 0.008333 A</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">Watt is one joule per second.</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">Ampere is one coulomb of charge per second.</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">Result = input ÷ voltage (DC or power factor 1).</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Watts convert to amps only with a voltage. This converter assumes DC or power factor 1; use the calculator below for AC and three-phase.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="seo-content">
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-top" aria-label="Top advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content top (728x90)</strong>
+            <p>Reserved above the conversion cards and below the converter.</p>
+          </section>
+
+          <article class="seo-article">
+<h2>How to Convert Watts to Amps</h2>
+<p>Watts measure power and amps measure electric current, so they cannot be converted with one fixed factor the way meters and feet can. The link between them is the voltage. For alternating current (AC) it also depends on the power factor and on whether the supply is single-phase or three-phase. Choose the case that matches your circuit in the calculator below. The formulas use real electrical power in watts, meaning the power the load actually draws.</p>
+<div class="info-card wa-calc" id="wattsAmpsCalc">
+  <h3 id="waCalcTitle">Watts to amps calculator</h3>
+  <div class="wa-grid">
+    <label>Circuit type
+      <select id="waType"><option value="dc">DC (or AC with power factor 1)</option><option value="ac1">Single-phase AC</option><option value="ac3">Three-phase AC</option></select>
+    </label>
+    <label>Power (real electrical power drawn)
+      <span class="wa-inline"><input id="waPower" type="number" min="0" step="any" value="1000"><select id="waPowerUnit" aria-label="Power unit"><option value="1">W</option><option value="1000">kW</option></select></span>
+    </label>
+    <label>Voltage (V)
+      <input id="waVoltage" type="number" min="0" step="any" value="230">
+    </label>
+    <label id="waPFLabel" hidden>Power factor (0 to 1)
+      <input id="waPF" type="number" min="0" max="1" step="any" value="0.9">
+    </label>
+  </div>
+  <p class="wa-note" id="waVoltNote">Enter the voltage of your supply.</p>
+  <p class="info-card-formula" id="waFormula" aria-live="polite">I = P ÷ V = 1,000 ÷ 230</p>
+  <p><strong id="waResult" aria-live="polite">4.348 A</strong></p>
+  <p class="wa-note" id="waAssume">Assumes DC or a purely resistive AC load (power factor 1).</p>
+  <p class="wa-note">Use the electrical power the equipment draws. A motor rating is usually mechanical output power, which is lower than the electrical power it draws, so divide by the efficiency first.</p>
+</div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var type=$('waType'),pw=$('waPower'),pu=$('waPowerUnit'),vo=$('waVoltage'),pf=$('waPF'),pfl=$('waPFLabel'),res=$('waResult'),fo=$('waFormula'),as=$('waAssume'),vn=$('waVoltNote');
+  if(!(type&&pw&&pu&&vo&&pf&&pfl&&res&&fo&&as&&vn)){return;}
+  function fmt(x){return x.toLocaleString('en-US',{maximumSignificantDigits:4});}
+  function amps(t,p,v,f){
+    if(!Number.isFinite(p)||p<0||!Number.isFinite(v)||v<=0){return null;}
+    if(t==='dc'){return p/v;}
+    if(!(f>0&&f<=1)){return null;}
+    return t==='ac1'?p/(v*f):p/(Math.sqrt(3)*v*f);
+  }
+  function update(){
+    var t=type.value,p=parseFloat(pw.value)*parseFloat(pu.value),v=parseFloat(vo.value),f=parseFloat(pf.value);
+    pfl.hidden=(t==='dc');
+    vn.textContent=t==='ac3'?'Enter the line-to-line voltage of the three-phase supply.':'Enter the voltage of your supply.';
+    var a=amps(t,p,v,f);
+    if(a===null){res.textContent='Enter a valid power (0 or greater) and a voltage above 0'+(t==='dc'?'':', and a power factor above 0 up to 1')+'.';fo.textContent='';return;}
+    var ps=fmt(p),vs=fmt(v),fs=fmt(f);
+    if(t==='dc'){fo.textContent='I = P ÷ V = '+ps+' ÷ '+vs;as.textContent='Assumes DC or a purely resistive AC load (power factor 1).';}
+    else if(t==='ac1'){fo.textContent='I = P ÷ (V × PF) = '+ps+' ÷ ('+vs+' × '+fs+')';as.textContent='Single-phase AC with the power factor you entered.';}
+    else{fo.textContent='I = P ÷ (√3 × V × PF) = '+ps+' ÷ (√3 × '+vs+' × '+fs+')';as.textContent='Balanced three-phase AC with the line-to-line voltage. The result is the current in each line.';}
+    res.textContent=fmt(a)+' A';
+  }
+  [type,pw,pu,vo,pf].forEach(function(e){e.addEventListener('input',update);e.addEventListener('change',update);});
+  update();
+})();
+</script>
+
+<div class="about-info-cards">
+  <div class="info-card">
+    <h3>Formula for DC and resistive loads</h3>
+    <p class="info-card-formula">I = P ÷ V</p>
+    <p>I is the current in amperes (A), P is the power in watts (W) and V is the voltage in volts (V). Use this for DC circuits and for AC loads with a power factor of 1, such as simple heaters.</p>
+  </div>
+  <div class="info-card">
+    <h3>Formula for single-phase AC</h3>
+    <p class="info-card-formula">I = P ÷ (V × PF)</p>
+    <p>PF is the power factor, a number above 0 and up to 1. A lower power factor means more current for the same real power.</p>
+  </div>
+  <div class="info-card">
+    <h3>Formula for three-phase AC</h3>
+    <p class="info-card-formula">I = P ÷ (√3 × V × PF)</p>
+    <p>P is the total real power of all three phases, V is the line-to-line voltage and the load is assumed balanced. The result is the line current, the current in each supply line.</p>
+  </div>
+  <div class="info-card">
+    <h3>Worked examples</h3>
+    <p class="info-card-formula">60 W ÷ 12 V = 5 A</p>
+    <p class="info-card-formula">1,500 W ÷ (230 V × 1) = 6.522 A</p>
+    <p class="info-card-formula">750 W ÷ (230 V × 0.8) = 4.076 A</p>
+    <p class="info-card-formula">15,000 W ÷ (√3 × 400 V × 0.85) = 25.47 A</p>
+    <p>The four examples are a 12 V DC load, a resistive 230 V load, a 230 V load with a power factor of 0.8, and a balanced three-phase load.</p>
+  </div>
+  <div class="info-card wa-table">
+    <h3>Amps from watts at common voltages (DC or power factor 1)</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">Power</th><th scope="col">12 V</th><th scope="col">24 V</th><th scope="col">120 V</th><th scope="col">230 V</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>100 W</td><td>8.333 A</td><td>4.167 A</td><td>0.8333 A</td><td>0.4348 A</td></tr>
+        <tr><td>500 W</td><td>41.67 A</td><td>20.83 A</td><td>4.167 A</td><td>2.174 A</td></tr>
+        <tr><td>1,000 W</td><td>83.33 A</td><td>41.67 A</td><td>8.333 A</td><td>4.348 A</td></tr>
+        <tr><td>1,500 W</td><td>125 A</td><td>62.5 A</td><td>12.5 A</td><td>6.522 A</td></tr>
+        <tr><td>2,000 W</td><td>166.7 A</td><td>83.33 A</td><td>16.67 A</td><td>8.696 A</td></tr>
+        <tr><td>3,000 W</td><td>250 A</td><td>125 A</td><td>25 A</td><td>13.04 A</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-card wa-table">
+    <h3>How power factor changes the current (single-phase, 230 V)</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">Power factor</th><th scope="col">Current at 230 V (1,000 W)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>4.348 A</td></tr>
+        <tr><td>0.95</td><td>4.577 A</td></tr>
+        <tr><td>0.9</td><td>4.831 A</td></tr>
+        <tr><td>0.8</td><td>5.435 A</td></tr>
+        <tr><td>0.7</td><td>6.211 A</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-card wa-table">
+    <h3>Three-phase example (balanced load, 400 V line-to-line)</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">Power factor</th><th scope="col">Current at 400 V (10,000 W)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>14.43 A</td></tr>
+        <tr><td>0.9</td><td>16.04 A</td></tr>
+        <tr><td>0.8</td><td>18.04 A</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="info-card">
+    <h3>Amps back to watts</h3>
+    <p class="info-card-formula">P = V × I (DC) &nbsp;|&nbsp; P = V × I × PF (single-phase AC) &nbsp;|&nbsp; P = √3 × V × I × PF (three-phase AC)</p>
+  </div>
+  <div class="info-card">
+    <h3>About the converter above</h3>
+    <p>The converter at the top of this page turns watts into amperes using the voltage in its context panel and assumes DC or a power factor of 1. For AC with a power factor below 1, or for three-phase supplies, use the calculator in this section.</p>
+  </div>
+</div>
+          </article>
+
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-middle" aria-label="Middle advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content middle (728x90)</strong>
+            <p>Reserved between the cards and the FAQ so the page stays balanced.</p>
+          </section>
+
+          <section class="seo-faq" aria-label="FAQ">
+            <h2>Frequently asked questions</h2>
+            <div class="faq-item">
+              <h3>How do you convert watts to amps?</h3>
+              <p>Divide the power in watts by the voltage in volts for a DC circuit or a purely resistive AC load: I = P ÷ V. For single-phase AC with a power factor below 1, divide by the voltage times the power factor. For three-phase AC, divide by the square root of 3 times the line-to-line voltage times the power factor.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Can you convert watts to amps without knowing the voltage?</h3>
+              <p>No. Watts measure power and amps measure current, and the voltage is what links them, so there is no single conversion factor. The same wattage draws more current at a lower voltage.</p>
+            </div>
+            <div class="faq-item">
+              <h3>How many amps is 1,000 watts?</h3>
+              <p>It depends on the voltage. Assuming DC or a power factor of 1, 1,000 W is 83.33 A at 12 V, 8.333 A at 120 V and 4.348 A at 230 V. On a 230 V single-phase AC supply with a power factor of 0.9 it is 4.831 A.</p>
+            </div>
+            <div class="faq-item">
+              <h3>What is power factor and which value should I use?</h3>
+              <p>Power factor is the ratio of real power in watts to apparent power in volt-amperes in an AC circuit, a number from 0 to 1. Use the value on the equipment nameplate or data sheet when you have it. Resistive loads such as heaters are close to 1, while motors and many electronic power supplies are lower.</p>
+            </div>
+            <div class="faq-item">
+              <h3>How do I calculate amps from watts for three-phase power?</h3>
+              <p>Use I = P ÷ (√3 × V × PF), where P is the total real power, V is the line-to-line voltage and the load is balanced. For example, 15,000 W at 400 V with a power factor of 0.85 draws a line current of about 25.47 A.</p>
+            </div>
+            <div class="faq-item">
+              <h3>Can I use this for a motor rating or to size a breaker?</h3>
+              <p>The calculator uses the electrical power a load draws. A motor nameplate in kW is usually mechanical output power, so divide by the efficiency to estimate the electrical input power first. The result is a steady-state current, not a starting current, and breaker, fuse and wire sizing must follow your local electrical code and a qualified electrician.</p>
+            </div>
+          </section>
+
+          <section class="page-grid">
+            <article class="page-card">
+              <h2>Related conversions</h2>
+              <ul class="seo-link-list"><li><a href="../watts-to-kilowatts/">Watts to Kilowatts</a></li><li><a href="../kilowatts-to-watts/">Kilowatts to Watts</a></li><li><a href="../amperes-to-milliamperes/">Amperes to Milliamperes</a></li><li><a href="../../watts-to-horsepower/">Watts to Horsepower</a></li><li><a href="/electricity/">All electricity conversions</a></li></ul>
+            </article>
+          </section>
+      </section>
+
+    </main>
+
+  <script src="../../analytics-config.js" defer></script>
+<footer class="site-footer">
+          <div>
+            <a class="brand footer-brand" href="../../index.html" aria-label="Universal Converter home">
+              <img src="../../logo.svg" alt="" width="32" height="32">
+              <span>Universal Converter</span>
+            </a>
+            <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="../../privacy.html">Privacy</a>
+            <a href="../../terms.html">Terms</a>
+            <a href="../../contact.html">Contact</a>
+            <a href="../../guides.html">Guides</a>
+            <a href="../../sitemap.html">Sitemap</a>
+          </nav>
+      </footer>
+</body>
+</html>
