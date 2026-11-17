@@ -14,6 +14,25 @@ const ROOT = path.resolve(__dirname, "..");
 const UCSearch = require(path.join(ROOT, "search-engine.js"));
 const SITE = "https://theuniversalconverter.com";
 
+/*
+ * These pages intentionally have SEO titles that differ from their search-index
+ * display titles. All other conversion pages must still match their result title.
+ */
+const TITLE_PREFIX_EXCEPTIONS = new Set([
+  "celsius-to-fahrenheit/",
+  "fahrenheit-to-celsius/",
+  "gallons-to-liters/",
+  "inches-to-cm/",
+  "kg-to-lbs/",
+  "km-to-miles/",
+  "lbs-to-kg/",
+  "liters-to-gallons/",
+  "meters-to-feet/",
+  "miles-to-km/",
+  "mph-to-kmh/",
+  "electricity/watts-to-amperes/",
+]);
+
 /** fetchJson that reads the static files from disk, like GitHub Pages would serve them. */
 function diskLoader(log) {
   return async (url) => {
@@ -47,7 +66,14 @@ function assertResolvesToIntendedPage(item) {
   assert.ok(!/<meta[^>]+name="robots"[^>]+noindex/i.test(head), `${item.path} is noindex`);
   if (item.kind === "conv") {
     const title = (/<title>(.*?)<\/title>/is.exec(head) || [])[1] || "";
-    assert.ok(title.startsWith(item.title), `page title "${title}" should start with "${item.title}"`);
+    assert.ok(title.trim().length > 0, `${item.path} has no page title`);
+
+    if (!TITLE_PREFIX_EXCEPTIONS.has(item.path)) {
+      assert.ok(
+        title.startsWith(item.title),
+        `page title "${title}" should start with "${item.title}"`
+      );
+    }
   }
 }
 
@@ -290,4 +316,146 @@ test("singular/plural variants", () => {
   assert.ok(v("feet").includes("foot") && v("foot").includes("feet"));
   assert.ok(v("kilometers per hour").includes("kilometer per hour"));
   assert.ok(v("inch").includes("inches") && v("inches").includes("inch"));
+});
+
+/* ------------------------------------------------------------------------------------------
+ * Watts to Amps: /electricity/watts-to-amperes/ must be discoverable from the homepage search.
+ *
+ * The page's <title> ("Watts to Amps Converter | ...") is deliberately NOT compared with the
+ * result's display name ("Watts to Amperes"): the returned URL and the intended result are
+ * verified independently, against the real page on disk.
+ * ---------------------------------------------------------------------------------------- */
+
+const WATTS_TO_AMPS = "electricity/watts-to-amperes/";
+
+test("watts to amps queries return /electricity/watts-to-amperes/ as the first result", async () => {
+  const engine = newEngine();
+  for (const q of ["watts to amps", "watt to amp", "W to A", "watts to amperes"]) {
+    const r = await run(engine, q, 10);
+    assert.equal(r.errors.length, 0, q);
+    assert.ok(r.items.length > 0, `${q}: no results`);
+    const top = r.items[0];
+    assert.equal(top.path, WATTS_TO_AMPS, `${q}: first result is ${top.path}`);
+    assert.equal(top.kind, "conv", q);
+    assert.equal(top.categoryId, "electricity", q);
+    assert.equal(top.href, WATTS_TO_AMPS, `${q}: href`);
+    assert.equal(r.items.filter((i) => i.path === WATTS_TO_AMPS).length, 1, `${q}: listed exactly once`);
+  }
+});
+
+test("the watts-to-amperes result resolves to the real, indexable, self-canonical page", async () => {
+  const engine = newEngine();
+  const top = (await run(engine, "watts to amps", 5)).items[0];
+  assert.equal(top.path, WATTS_TO_AMPS);
+  const abs = path.join(ROOT, top.path, "index.html");
+  assert.ok(fs.existsSync(abs), `${top.path} does not exist on disk`);
+  const head = fs.readFileSync(abs, "utf8").slice(0, 16384);
+  const canonical = /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i.exec(head);
+  assert.ok(canonical, "page declares a canonical URL");
+  assert.equal(canonical[1], `${SITE}/${WATTS_TO_AMPS}`, "canonical equals the result URL");
+  assert.ok(!/<meta[^>]+name="robots"[^>]+noindex/i.test(head), "page is not noindex");
+});
+
+test("watts-to-amperes: its bitmap bit is set and the shard matches the manifest", async () => {
+  const engine = newEngine();
+  await engine.ready();
+  const cat = engine.core.catById["electricity"];
+  const idx = (slug) => cat.units.findIndex((u) => u && u.slug === slug);
+  const w = idx("watts");
+  const a = idx("amperes");
+  assert.ok(w >= 0 && a >= 0, "watts and amperes are electricity units");
+  const shard = JSON.parse(fs.readFileSync(path.join(ROOT, "search-index/pairs/electricity.json"), "utf8"));
+  const bytes = Buffer.from(shard.b, "base64");
+  const bit = (i, j) => (bytes[(i * shard.n + j) >> 3] >> ((i * shard.n + j) & 7)) & 1;
+  assert.equal(bit(w, a), 1, "watts -> amperes bit");
+  const manifest = JSON.parse(fs.readFileSync(path.join(ROOT, "search-index/manifest.json"), "utf8"));
+  assert.equal(manifest.categories.find((c) => c.id === "electricity").pages, shard.p);
+  let set = 0;
+  for (const b of bytes) set += b.toString(2).replace(/0/g, "").length;
+  assert.equal(set, shard.p, "set bits == page count");
+});
+
+test("every electricity page folder is represented in the electricity shard (no page left out)", async () => {
+  const engine = newEngine();
+  await engine.ready();
+  const cat = engine.core.catById["electricity"];
+  const shard = JSON.parse(fs.readFileSync(path.join(ROOT, "search-index/pairs/electricity.json"), "utf8"));
+  const bytes = Buffer.from(shard.b, "base64");
+  const has = (i, j) => (bytes[(i * shard.n + j) >> 3] >> ((i * shard.n + j) & 7)) & 1;
+  const bySlug = new Map(cat.units.map((u, i) => [u && u.slug, i]));
+  const missing = [];
+  for (const dir of fs.readdirSync(path.join(ROOT, "electricity"), { withFileTypes: true })) {
+    if (!dir.isDirectory()) continue;
+    const m = /^(.+?)-to-(.+)$/.exec(dir.name);
+    if (!m || !fs.existsSync(path.join(ROOT, "electricity", dir.name, "index.html"))) continue;
+    const head = fs.readFileSync(path.join(ROOT, "electricity", dir.name, "index.html"), "utf8").slice(0, 16384);
+    if (/<meta[^>]+name="robots"[^>]+noindex/i.test(head)) continue;
+    const c = /<link[^>]+rel="canonical"[^>]+href="([^"]+)"/i.exec(head);
+    if (c && c[1] !== `${SITE}/electricity/${dir.name}/`) continue; // duplicate of another page
+    const i = bySlug.get(m[1]);
+    const j = bySlug.get(m[2]);
+    if (i === undefined || j === undefined || !has(i, j)) missing.push(dir.name);
+  }
+  assert.deepEqual(missing, [], `electricity pages missing from the search index: ${missing.slice(0, 5)}`);
+});
+
+/* ------------------------------------------------------------------------------------------
+ * Popular root conversions: display names and symbols are curated and must not drift when the
+ * index is regenerated (several of those pages now carry SEO titles such as "Convert kg to lbs").
+ * Expected values are the entries committed before the Watts to Amps change.
+ * ---------------------------------------------------------------------------------------- */
+
+const POPULAR_ROOT_ENTRIES = [
+  ["acre-to-hectare/", "Acres to Hectares", "", ""],
+  ["acres-to-hectares/", "Acres to Hectares", "ac", "ha"],
+  ["celsius-to-fahrenheit/", "Celsius to Fahrenheit", "C", "F"],
+  ["fahrenheit-to-celsius/", "Fahrenheit to Celsius", "F", "C"],
+  ["feet-to-meters/", "Feet to Meters", "ft", "m"],
+  ["gallons-to-liters/", "Gallons to Liters", "gal", "L"],
+  ["gb-to-mb/", "GB to MB", "GB", "MB"],
+  ["grams-to-ounces/", "Grams to Ounces", "g", "oz"],
+  ["hectares-to-acres/", "Hectares to Acres", "ha", "ac"],
+  ["inches-to-cm/", "Inches to Centimeters", "", ""],
+  ["kg-to-lbs/", "Kilograms to Pounds", "kg", "lb"],
+  ["km-to-miles/", "Kilometers to Miles", "", ""],
+  ["lbs-to-kg/", "Pounds to Kilograms", "lb", "kg"],
+  ["liter-to-gallon/", "Liters to Gallons", "", ""],
+  ["liters-to-gallons/", "Liters to Gallons", "L", "gal"],
+  ["meter-to-feet/", "Meters to Feet", "", ""],
+  ["meters-to-feet/", "Meters to Feet", "m", "ft"],
+  ["miles-to-km/", "Miles to Kilometers", "", ""],
+  ["mph-to-kmh/", "mph to km/h", "mph", "km/h"],
+  ["psi-to-bar/", "PSI to Bars", "psi", "bar"],
+  ["square-feet-to-square-meters/", "Square feet to Square Meters", "ft2", "m2"],
+  ["watts-to-horsepower/", "Watts to Horsepowers", "W", "hp"],
+];
+
+test("popular root conversions keep their curated display names and symbols", async () => {
+  const engine = newEngine();
+  await engine.ready();
+  const conv = engine.core.pages.filter((p) => p.kind === "conv");
+  assert.equal(conv.length, POPULAR_ROOT_ENTRIES.length, "same set of popular root conversions");
+  for (const [u, title, fromSymbol, toSymbol] of POPULAR_ROOT_ENTRIES) {
+    const p = conv.find((x) => x.path === u);
+    assert.ok(p, `${u} is in the index`);
+    assert.equal(p.title, title, `${u}: title`);
+    assert.equal(p.from.symbol, fromSymbol, `${u}: from symbol`);
+    assert.equal(p.to.symbol, toSymbol, `${u}: to symbol`);
+  }
+});
+
+test("popular root conversions are still returned, with their curated titles, by search", async () => {
+  const engine = newEngine();
+  for (const [q, u, title] of [
+    ["kg to lbs", "kg-to-lbs/", "Kilograms to Pounds"],
+    ["kilograms to pounds", "kg-to-lbs/", "Kilograms to Pounds"],
+    ["km to miles", "km-to-miles/", "Kilometers to Miles"],
+    ["meters to feet", "meters-to-feet/", "Meters to Feet"],
+    ["celsius to fahrenheit", "celsius-to-fahrenheit/", "Celsius to Fahrenheit"],
+    ["mph to km/h", "mph-to-kmh/", "mph to km/h"],
+  ]) {
+    const hit = (await run(engine, q, 30)).items.find((i) => i.path === u);
+    assert.ok(hit, `${q}: ${u} is returned`);
+    assert.equal(hit.title, title, `${q}: display title`);
+  }
 });

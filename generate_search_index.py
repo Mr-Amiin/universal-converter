@@ -209,6 +209,27 @@ TIER_DEFAULT = 99
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 CONV_TITLE_RE = re.compile(r"^(.*) Converter — (.*)$")
 TITLE_TAG_RE = re.compile(rb"<title>(.*?)</title>", re.S | re.I)
+
+# Curated display names/symbols for popular ROOT conversion pages whose <title> no longer
+# follows the "<Names> Converter — <symbols>" pattern the generator parses (their titles were
+# later rewritten as "Convert kg to lbs" for SEO). Without this table, regenerating the index
+# would turn e.g. "Kilograms to Pounds" into "Convert kg to lbs" and drop the unit symbols.
+# slug -> (from name, from symbol, to name, to symbol); "" means "no symbol", exactly as in
+# the committed pages.json. Consulted ONLY for popular root pages (/kg-to-lbs/ ...); category
+# pages and every other root page keep the title-derived names.
+POPULAR_ROOT_DISPLAY: dict[str, tuple[str, str, str, str]] = {
+    "celsius-to-fahrenheit": ("Celsius", "C", "Fahrenheit", "F"),
+    "fahrenheit-to-celsius": ("Fahrenheit", "F", "Celsius", "C"),
+    "gallons-to-liters": ("Gallons", "gal", "Liters", "L"),
+    "inches-to-cm": ("Inches", "", "Centimeters", ""),
+    "kg-to-lbs": ("Kilograms", "kg", "Pounds", "lb"),
+    "km-to-miles": ("Kilometers", "", "Miles", ""),
+    "lbs-to-kg": ("Pounds", "lb", "Kilograms", "kg"),
+    "liters-to-gallons": ("Liters", "L", "Gallons", "gal"),
+    "meters-to-feet": ("Meters", "m", "Feet", "ft"),
+    "miles-to-km": ("Miles", "", "Kilometers", ""),
+    "mph-to-kmh": ("mph", "mph", "km/h", "km/h"),
+}
 IRREGULAR_PLURALS = {"foot": "feet", "inch": "inches", "mouse": "mice"}
 IRREGULAR_SINGULARS = {v: k for k, v in IRREGULAR_PLURALS.items()}
 
@@ -438,7 +459,10 @@ def build_documents(b: Build):
         if e["kind"] == "conv":
             m = CONV_TITLE_RE.match(e["rawTitle"])
             names = syms = None
-            if m:
+            curated = POPULAR_ROOT_DISPLAY.get(e["slug"])
+            if curated:
+                names, syms = [curated[0], curated[2]], [curated[1], curated[3]]
+            elif m:
                 n = m.group(1).split(" to ")
                 s = m.group(2).split(" to ")
                 if len(n) == 2 and len(s) == 2:
