@@ -1,4 +1,4 @@
-const CACHE_NAME = "universal-converter-v18";
+const CACHE_NAME = "universal-converter-v19";
 const APP_SHELL = [
 "/",
 "/index.html",
