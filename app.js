@@ -1034,6 +1034,45 @@ ZWG: { name: 'Zimbabwe Gold', country: 'Zimbabwe', symbol: 'ZiG' },
 KPW: { name: 'North Korean Won', country: 'North Korea', symbol: '₩' },
 XCG: { name: 'Caribbean Guilder', country: 'Curacao and Sint Maarten', symbol: 'Cg' }
 };
+// Page-scoped crop standard for bushel conversions. Only units flagged cropBushel
+// (bushel_per_acre, bushel_wheat_soy) are affected, and the value only changes when a
+// page contains the #cropStandard selector, so every other converter keeps the
+// default 60 lb (wheat/soybean) bushel and no generic unit is redefined.
+const CROP_STANDARDS = { 56: { label: "Shelled corn" }, 60: { label: "Wheat and soybeans" } };
+const CROP_POUND_KG = 0.45359237;
+const CROP_ACRE_HECTARES = 0.40468564224;
+let cropStandardLb = 60;
+function cropScaledUnit(unit) {
+return unit && unit.cropBushel && cropStandardLb !== 60 ? { ...unit, factor: unit.factor / 60 * cropStandardLb } : unit;
+}
+function cropStandardKg() { return cropStandardLb * CROP_POUND_KG; }
+function cropStandardName() { return (CROP_STANDARDS[cropStandardLb] || CROP_STANDARDS[60]).label; }
+function cropStandardSummary() {
+return `${cropStandardName()} (${cropStandardLb} lb per bushel = ${formatNumber(cropStandardKg())} kg per bushel)`;
+}
+function cropUnitDefinition(unit) {
+const kg = cropStandardKg();
+const std = `${cropStandardName()}, ${cropStandardLb} lb per bushel (${formatNumber(kg)} kg)`;
+if (unit.id === "bushel_per_acre") {
+return `One bushel per acre is ${formatNumber(kg)} kg per international acre (0.40468564224 ha), about ${formatNumber(kg / CROP_ACRE_HECTARES)} kg/ha, using the selected standard: ${std}.`;
+}
+return `One bushel using the selected standard: ${std}.`;
+}
+function applyCropStandardText(result, from, to) {
+const panel = byId("cropStandardNote");
+if (!panel || !(from.cropBushel || to.cropBushel)) return;
+const scaledFrom = cropScaledUnit(from);
+const scaledTo = cropScaledUnit(to);
+const factor = scaledFrom.factor / scaledTo.factor;
+const otherLb = cropStandardLb === 56 ? 60 : 56;
+const exponent = (from.cropBushel ? 1 : 0) - (to.cropBushel ? 1 : 0);
+const otherFactor = factor * Math.pow(otherLb / cropStandardLb, exponent);
+const otherName = (CROP_STANDARDS[otherLb] || {}).label;
+const summary = cropStandardSummary();
+result.formula = `Selected standard: ${summary}. Result = input x ${formatNumber(factor)}.`;
+result.note = `Crop standard in use: ${summary}. The ${otherName} standard (${otherLb} lb per bushel) would use x ${formatNumber(otherFactor)}.`;
+panel.textContent = `Using ${summary}: 1 ${getUnitDisplayName(from)} = ${formatNumber(factor)} ${getUnitDisplayName(to)}. With ${otherName} (${otherLb} lb per bushel) the factor is ${formatNumber(otherFactor)}.`;
+}
 const categories = extendCategoriesForSeoPages(applyCustomUnits(buildCategories()));
 const categoryMap = new Map(categories.map((category) => [category.id, category]));
 const seoMap = new Map(seoConversions.map((item) => [item.slug, item]));
@@ -1814,7 +1853,7 @@ const extraUnits = [
   {"c": "chemistry", "id": "milliequivalent_per_liter", "n": "Milliequivalent per liter", "s": "mEq/L", "f": 1.0, "d": "molarity", "t": "A milliequivalent per liter is one thousandth of an equivalent of solute per liter of solution.", "a": ["meq/l", "milliequivalents per liter"]},
   {"c": "chemistry", "id": "nanogram_per_milliliter", "n": "Nanogram per milliliter", "s": "ng/mL", "f": 1e-06, "d": "mass_concentration", "t": "One nanogram per milliliter is 10⁻⁹ grams per 10⁻³ liters, or 10⁻⁶ g/L.", "a": ["ng/ml", "nanograms per milliliter"]},
   {"c": "agriculture", "id": "quintal_per_hectare", "n": "Quintal per hectare", "s": "q/ha", "f": 0.01, "d": "mass_application_rate", "t": "One quintal per hectare is 100 kilograms per hectare (10⁻² kg/m²).", "a": ["quintals per hectare", "q/ha"]},
-  {"c": "agriculture", "id": "bushel_per_acre", "n": "Bushel per acre", "s": "bu/ac", "f": 0.006725106937166736, "d": "mass_application_rate", "t": "A bushel per acre is a yield rate. At the wheat and soybean standard of 60 pounds per bushel, 1 bu/ac = 27.2155422 kg ÷ 4,046.8564224 m² ≈ 67.25 kg/ha.", "a": ["bushels per acre", "bushels per acre (corn/wheat std)"]},
+  {"c": "agriculture", "id": "bushel_per_acre", "n": "Bushel per acre", "s": "bu/ac", "f": 0.006725106937166736, "d": "mass_application_rate", "t": "A bushel per acre is a yield rate. Its mass depends on the crop standard selected on the page: wheat and soybeans at 60 lb per bushel (27.2155422 kg, about 67.25 kg/ha per bu/ac) or shelled corn at 56 lb per bushel (25.40117272 kg, about 62.77 kg/ha per bu/ac).", "a": ["bushels per acre", "bushels per acre (corn/wheat std)"], "cb": 1},
   {"c": "agriculture", "id": "seed_per_square_meter", "n": "Seed per square meter", "s": "seeds/m²", "f": 1.0, "d": "seed_rate", "t": "One seed per square meter is a planting density of one seed on each square meter.", "a": ["seeds per square meter"]},
   {"c": "agriculture", "id": "seed_per_acre", "n": "Seed per acre", "s": "seeds/ac", "f": 0.0002471053814671653, "d": "seed_rate", "t": "One seed per acre is a planting density of one seed on each acre (4,046.8564224 m²).", "a": ["seeds per acre"]},
   {"c": "agriculture", "id": "seed_per_hectare", "n": "Seed per hectare", "s": "seeds/ha", "f": 0.0001, "d": "seed_rate", "t": "One seed per hectare is a planting density of one seed on each 10,000 m².", "a": ["seeds per hectare"]},
@@ -1826,7 +1865,7 @@ const extraUnits = [
   {"c": "agriculture", "id": "kilogram", "n": "Kilogram", "s": "kg", "f": 1.0, "d": "mass", "t": "The kilogram is the SI base unit of mass.", "a": ["kilograms", "kg"]},
   {"c": "agriculture", "id": "tonne", "n": "Metric ton", "s": "t", "f": 1000.0, "d": "mass", "t": "A metric ton is 1,000 kilograms.", "a": ["metric tons", "metric tonne", "tonne", "tonnes"]},
   {"c": "agriculture", "id": "quintal", "n": "Quintal", "s": "q", "f": 100.0, "d": "mass", "t": "A metric quintal is 100 kilograms.", "a": ["quintals"]},
-  {"c": "agriculture", "id": "bushel_wheat_soy", "n": "Bushel (wheat/soy)", "s": "bu", "f": 27.2155422, "d": "mass", "t": "A bushel of wheat or soybeans is the standard 60 pounds, exactly 27.2155422 kilograms.", "a": ["bushels", "bushels (wheat/soy std)", "bushel"]},
+  {"c": "agriculture", "id": "bushel_wheat_soy", "n": "Bushel (crop standard)", "s": "bu", "f": 27.2155422, "d": "mass", "t": "A bushel is a volume unit that grain is traded by weight: shelled corn is 56 lb (25.40117272 kg) per bushel, wheat and soybeans 60 lb (27.2155422 kg). The page selector chooses the standard; the default is wheat and soybeans.", "a": ["bushels", "bushels (wheat/soy std)", "bushel", "bushel (wheat/soy)", "bushel wheat soy"], "cb": 1},
   {"c": "agriculture", "id": "pound_per_1000_square_foot", "n": "Pound per 1,000 square feet", "s": "lb/1000 ft²", "f": 0.00488242763638305, "d": "mass_application_rate", "t": "One pound per 1,000 square feet is 0.45359237 kg over 92.90304 m², about 48.83 kg/ha.", "a": ["pounds per 1000 sq ft", "lb/1000 sq ft"]},
   {"c": "cooking", "id": "deciliter", "n": "Deciliter", "s": "dL", "f": 0.0001, "d": "volume", "t": "A deciliter is one tenth of a liter: 100 milliliters.", "a": ["deciliters", "dl"]},
   {"c": "cooking", "id": "tablespoon_uk", "n": "UK tablespoon", "s": "UK tbsp", "f": 1.5e-05, "d": "volume", "t": "The modern UK tablespoon is 15 milliliters.", "a": ["uk tablespoons", "uk tablespoons (15 ml)", "tablespoon uk"]},
@@ -1920,6 +1959,7 @@ unit = { ...fuel(item.id, item.n, item.s, item.m, item.f), definition: item.t, a
 unit = u(item.id, item.n, item.s, item.f, item.t, item.a || [], item.d);
 }
 if (item.x) unit.special = item.x;
+if (item.cb) unit.cropBushel = true;
 category.units.push(unit);
 });
 return baseCategories;
@@ -2694,6 +2734,26 @@ toSelect.value = nextTo;
 updateConversion();
 trackEvent("swap_units", { category: state.categoryId });
 });
+const cropStandardPanel = byId("cropStandardPanel");
+if (cropStandardPanel) {
+const readCropStandard = () => {
+const checked = cropStandardPanel.querySelector('input[name="cropStandard"]:checked');
+const lb = Number(checked ? checked.value : 60);
+cropStandardLb = CROP_STANDARDS[lb] ? lb : 60;
+};
+readCropStandard();
+if (cropStandardLb !== 60) updateConversion();
+window.addEventListener("pageshow", () => {
+const previous = cropStandardLb;
+readCropStandard();
+if (previous !== cropStandardLb) updateConversion();
+});
+cropStandardPanel.addEventListener("change", () => {
+readCropStandard();
+updateConversion();
+trackEvent("crop_standard_change", { standard: cropStandardLb });
+});
+}
 byId("copyButton").addEventListener("click", copyResult);
 byId("shareButton").addEventListener("click", shareResult);
 byId("favoriteButton").addEventListener("click", toggleFavorite);
@@ -3779,6 +3839,7 @@ note.textContent = result.note || getCategoryDisplayNote(category) || getTransla
 updateDefinitionPanel(category, from, to, result);
 return;
 }
+applyCropStandardText(result, from, to);
 const formatted = formatNumber(result.value);
 output.value = formatted;
 resultText.textContent = `${formatNumber(amount)} ${getUnitDisplayName(from)} = ${formatted} ${getUnitDisplayName(to)}`;
@@ -3792,6 +3853,10 @@ const fromDefinition = byId("fromDefinition");
 if (!fromDefinition) return;
 byId("fromDefinition").textContent = getUnitDisplayDefinition(from) || `${getUnitDisplayName(from)} definition.`;
 byId("toDefinition").textContent = getUnitDisplayDefinition(to) || `${getUnitDisplayName(to)} definition.`;
+if (byId("cropStandardPanel")) {
+if (from.cropBushel) byId("fromDefinition").textContent = cropUnitDefinition(from);
+if (to.cropBushel) byId("toDefinition").textContent = cropUnitDefinition(to);
+}
 byId("formulaText").textContent = result && result.formula
 ? result.formula
 : formulaFor(category, from, to);
@@ -3893,6 +3958,8 @@ function normalizeRouteValue(value) {
 return String(value || "").trim().toLowerCase().replace(/\+/g, " ").replace(/[_\s-]+/g, "_");
 }
 function convert(category, amount, from, to) {
+from = cropScaledUnit(from);
+to = cropScaledUnit(to);
 if (from.id === to.id) return { ok: true, value: amount, note: getTranslation("messages.sameUnit", currentLanguageCode), formula: localizedFormula("formula_same_unit") || "Source and target units are identical." };
 if (from.special || to.special) {
 const specialResult = convertSpecial(amount, from, to);
