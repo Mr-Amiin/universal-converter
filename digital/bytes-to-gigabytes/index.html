@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bytes to Gigabytes Converter — B to GB</title>
+  <meta name="description" content="Convert Bytes (B) to Gigabytes (GB) using the exact conversion factor (1 byte = 1 × 10⁻⁹ gigabyte). See the formula, worked examples, conversion table, unit comparison and common uses.">
+  <meta name="keywords" content="byte to gigabyte, bytes to gigabytes, storage converter">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://theuniversalconverter.com/digital/bytes-to-gigabytes/">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="stylesheet" href="../../styles.css">
+  <script src="../../app.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Bytes to Gigabytes Converter — B to GB","description":"Convert Bytes (B) to Gigabytes (GB) using the exact conversion factor (1 byte = 1 × 10⁻⁹ gigabyte). See the formula, worked examples, conversion table, unit comparison and common uses.","url":"https://theuniversalconverter.com/digital/bytes-to-gigabytes/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://theuniversalconverter.com/index.html"},{"@type":"ListItem","position":2,"name":"Digital Storage","item":"https://theuniversalconverter.com/digital/"},{"@type":"ListItem","position":3,"name":"Bytes to Gigabytes","item":"https://theuniversalconverter.com/digital/bytes-to-gigabytes/"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many gigabytes are in 1 byte?","acceptedAnswer":{"@type":"Answer","text":"1 byte equals 1 × 10⁻⁹ gigabytes."}},{"@type":"Question","name":"How do I convert byte to gigabyte?","acceptedAnswer":{"@type":"Answer","text":"Multiply the byte value by 1 × 10⁻⁹. The converter above does this instantly to whatever precision you set."}},{"@type":"Question","name":"How do I convert gigabyte back to byte?","acceptedAnswer":{"@type":"Answer","text":"Use the reverse factor: 1 gigabyte equals 1000000000 bytes. You can also use the swap control in the converter above to flip the direction instantly."}},{"@type":"Question","name":"What is a byte?","acceptedAnswer":{"@type":"Answer","text":"Byte (B) measures storage. A byte is 8 bits."}},{"@type":"Question","name":"What is a gigabyte?","acceptedAnswer":{"@type":"Answer","text":"Gigabyte (GB) measures storage. A gigabyte is 10⁹ bytes (decimal, SI prefix)."}},{"@type":"Question","name":"Is the byte to gigabyte conversion exact?","acceptedAnswer":{"@type":"Answer","text":"Yes. Both units are fixed by definition, so the factor is exact and any rounding you see is a display choice."}},{"@type":"Question","name":"Where is the byte used today?","acceptedAnswer":{"@type":"Answer","text":"File sizes and memory."}}]}</script>
+  <script src="../../adsense-config.js"></script>
+  <script src="../../adsense.js" defer></script>
+  <meta name="google-adsense-account" content="ca-pub-2057098005458261">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2057098005458261"
+     crossorigin="anonymous"></script>
+</head>
+<body class="seo-page">
+  <header class="site-header" id="siteHeader"></header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
+
+  <main class="page-shell shared-page-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span>/</span>
+        <a href="/digital/">Digital Storage</a>
+        <span>/</span>
+        <span>Bytes to Gigabytes</span>
+      </nav>
+
+      <section class="hero seo-top" style="order: 0;">
+        <div class="hero-content">
+          <h1>Bytes to Gigabytes Converter — B to GB</h1>
+          <p>Convert Bytes (B) to Gigabytes (GB) using the exact conversion factor (1 byte = 1 × 10⁻⁹ gigabyte). See the formula, worked examples, conversion table, unit comparison and common uses.</p>
+        </div>
+      </section>
+
+      <section class="converter-section">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">Bytes to Gigabytes converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Digital Storage Converter</h2>
+                  <p id="activeCategoryDescription">Convert bits, bytes, decimal storage, binary storage, nibbles, and word sizes.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">1 byte = 1 × 10⁻⁹ gigabyte</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">A byte is 8 bits.</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">A gigabyte is 10⁹ bytes (decimal, SI prefix).</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">Result = input x 1 × 10⁻⁹.</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Digital storage uses bits as the base unit.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="seo-content">
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-top" aria-label="Top advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content top (728x90)</strong>
+            <p>Reserved above the conversion cards and below the converter.</p>
+          </section>
+
+          <article class="seo-article">
+<h2>About Converting Bytes to Gigabytes</h2>
+<p>Byte and gigabyte are both units of storage. A byte is 8 bits. A gigabyte is 10⁹ bytes (decimal, SI prefix).</p>
+
+<div class="about-info-cards">
+  <div class="info-card">
+    <h3>Formula</h3>
+    <p class="info-card-formula">GB = B × 1 × 10⁻⁹</p>
+    <p>This factor comes from the defined size of each unit: 1 byte equals 1 × 10⁻⁹ gigabytes, and the reverse factor is 1000000000.</p>
+  </div>
+  <div class="info-card">
+    <h3>Simple example</h3>
+    <p class="info-card-formula">1 B × 1 × 10⁻⁹ = 1 × 10⁻⁹ GB</p><p><strong>1 byte = 1 × 10⁻⁹ gigabytes.</strong></p>
+  </div>
+<div class="info-card">
+    <h3>Real-world example</h3>
+    <p class="info-card-formula">10 B × 1 × 10⁻⁹ = 1 × 10⁻⁸ GB</p><p><strong>10 bytes = 1 × 10⁻⁸ gigabytes.</strong></p>
+  </div>
+  <div class="info-card">
+    <h3>Conversion table</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">Byte (B)</th><th scope="col">Gigabyte (GB)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1 B</td><td>1 × 10⁻⁹ GB</td></tr>
+<tr><td>5 B</td><td>5 × 10⁻⁹ GB</td></tr>
+<tr><td>10 B</td><td>1 × 10⁻⁸ GB</td></tr>
+<tr><td>50 B</td><td>5 × 10⁻⁸ GB</td></tr>
+<tr><td>100 B</td><td>1 × 10⁻⁷ GB</td></tr>
+<tr><td>1000 B</td><td>0.000001 GB</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<h3>Reverse conversion: Gigabytes to Bytes</h3>
+<div class="info-card">
+  <p class="info-card-formula">1 GB × 1000000000 = 1000000000 B</p><p><strong>1 gigabyte = 1000000000 bytes.</strong></p><p class="info-card-formula">B = GB × 1000000000</p>
+</div>
+<p>For a page dedicated to this direction, see <a href="../gigabytes-to-bytes/">Gigabytes to Bytes</a>.</p>
+
+<h3>Byte vs. gigabyte</h3>
+<table class="info-card-table">
+<thead><tr><th scope="col">Aspect</th><th scope="col">Byte</th><th scope="col">Gigabyte</th></tr></thead>
+<tbody>
+<tr><td>Family</td><td>storage</td><td>storage</td></tr>
+<tr><td>Symbol</td><td>B</td><td>GB</td></tr>
+<tr><td>Typical use</td><td>File sizes and memory</td><td>Drive, phone and download capacities</td></tr>
+<tr><td>Exact by definition?</td><td>Yes — fixed by definition</td><td>Yes — fixed by definition</td></tr>
+</tbody>
+</table>
+
+<h3>Understanding the Byte</h3>
+<p>Byte (B) measures <strong>storage</strong>. A byte is 8 bits.</p>
+<h4>Standard and definition</h4>
+<p>The byte is covered by IEC 80000-13 — Information science and technology: quantities and units.</p>
+<h4>Uses of the byte today</h4>
+<ul><li>File sizes and memory</li><li>Data-transfer and storage specifications</li></ul>
+
+<h3>Understanding the Gigabyte</h3>
+<p>Gigabyte (GB) measures <strong>storage</strong>. A gigabyte is 10⁹ bytes (decimal, SI prefix).</p>
+<h4>Standard and definition</h4>
+<p>The gigabyte is covered by IEC 80000-13 — Information science and technology: quantities and units.</p>
+<h4>Uses of the gigabyte today</h4>
+<ul><li>Drive, phone and download capacities</li><li>Data plans</li></ul>
+
+<div class="about-sources">
+<h4>Byte — sources</h4><ul class="source-list"><li>IEC 80000-13 — Information science and technology: quantities and units — Defines the bit, the byte and the binary multiples (kibi, mebi, gibi, tebi).</li></ul>
+<h4>Gigabyte — sources</h4><ul class="source-list"><li>IEC 80000-13 — Information science and technology: quantities and units — Defines the bit, the byte and the binary multiples (kibi, mebi, gibi, tebi).</li></ul>
+</div>
+          </article>
+
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-middle" aria-label="Middle advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content middle (728x90)</strong>
+            <p>Reserved between the cards and the FAQ so the page stays balanced.</p>
+          </section>
+
+          <section class="seo-faq" aria-label="FAQ">
+            <h2>Frequently asked questions</h2>
+            <div class="faq-item">
+              <h3>How many gigabytes are in 1 byte?</h3>
+              <p>1 byte equals 1 × 10⁻⁹ gigabytes.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert byte to gigabyte?</h3>
+              <p>Multiply the byte value by 1 × 10⁻⁹. The converter above does this instantly to whatever precision you set.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert gigabyte back to byte?</h3>
+              <p>Use the reverse factor: 1 gigabyte equals 1000000000 bytes. You can also use the swap control in the converter above to flip the direction instantly.</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a byte?</h3>
+              <p>Byte (B) measures storage. A byte is 8 bits.</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a gigabyte?</h3>
+              <p>Gigabyte (GB) measures storage. A gigabyte is 10⁹ bytes (decimal, SI prefix).</p>
+            </div>
+<div class="faq-item">
+              <h3>Is the byte to gigabyte conversion exact?</h3>
+              <p>Yes. Both units are fixed by definition, so the factor is exact and any rounding you see is a display choice.</p>
+            </div>
+<div class="faq-item">
+              <h3>Where is the byte used today?</h3>
+              <p>File sizes and memory.</p>
+            </div>
+          </section>
+
+          <section class="page-grid">
+            <article class="page-card">
+              <h2>Related conversions</h2>
+              <ul class="seo-link-list"><li><a href="../gigabytes-to-bytes/">Gigabytes to Bytes</a></li><li><a href="../megabytes-to-gigabytes/">Megabytes to Gigabytes</a></li><li><a href="../gb-to-mb/">Gigabytes to Megabytes</a></li><li><a href="../gigabytes-to-terabytes/">Gigabytes to Terabytes</a></li><li><a href="../terabytes-to-gigabytes/">Terabytes to Gigabytes</a></li><li><a href="../bytes-to-kilobytes/">Bytes to Kilobytes</a></li><li><a href="../kilobytes-to-bytes/">Kilobytes to Bytes</a></li><li><a href="/digital/">All digital storage conversions</a></li></ul>
+            </article>
+          </section>
+      </section>
+
+    </main>
+
+  <script src="../../analytics-config.js" defer></script>
+<footer class="site-footer">
+          <div>
+            <a class="brand footer-brand" href="../../index.html" aria-label="Universal Converter home">
+              <img src="../../logo.svg" alt="" width="32" height="32">
+              <span>Universal Converter</span>
+            </a>
+            <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="../../privacy.html">Privacy</a>
+            <a href="../../terms.html">Terms</a>
+            <a href="../../contact.html">Contact</a>
+            <a href="../../guides.html">Guides</a>
+            <a href="../../sitemap.html">Sitemap</a>
+          </nav>
+      </footer>
+</body>
+</html>

@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gauss to Tesla Converter — G to T</title>
+  <meta name="description" content="Convert Gauss (G) to Tesla (T) using the exact conversion factor (1 gauss = 0.0001 tesla). See the formula, worked examples, conversion table, unit comparison and common uses.">
+  <meta name="keywords" content="gauss to tesla, gauss to tesla, magnetic flux density converter">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://theuniversalconverter.com/scientific/gauss-to-tesla/">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="stylesheet" href="../../styles.css">
+  <script src="../../app.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Gauss to Tesla Converter — G to T","description":"Convert Gauss (G) to Tesla (T) using the exact conversion factor (1 gauss = 0.0001 tesla). See the formula, worked examples, conversion table, unit comparison and common uses.","url":"https://theuniversalconverter.com/scientific/gauss-to-tesla/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://theuniversalconverter.com/index.html"},{"@type":"ListItem","position":2,"name":"Scientific Units","item":"https://theuniversalconverter.com/scientific/"},{"@type":"ListItem","position":3,"name":"Gauss to Tesla","item":"https://theuniversalconverter.com/scientific/gauss-to-tesla/"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many teslas are in 1 gauss?","acceptedAnswer":{"@type":"Answer","text":"1 gauss equals 0.0001 teslas."}},{"@type":"Question","name":"How do I convert gauss to tesla?","acceptedAnswer":{"@type":"Answer","text":"Multiply the gauss value by 0.0001. The converter above does this instantly to whatever precision you set."}},{"@type":"Question","name":"How do I convert tesla back to gauss?","acceptedAnswer":{"@type":"Answer","text":"Use the reverse factor: 1 tesla equals 10000 gauss. You can also use the swap control in the converter above to flip the direction instantly."}},{"@type":"Question","name":"What is a gauss?","acceptedAnswer":{"@type":"Answer","text":"Gauss (G) measures magnetic flux density. The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla."}},{"@type":"Question","name":"What is a tesla?","acceptedAnswer":{"@type":"Answer","text":"Tesla (T) measures magnetic flux density. The tesla is the SI unit of magnetic flux density."}},{"@type":"Question","name":"Is the gauss to tesla conversion exact?","acceptedAnswer":{"@type":"Answer","text":"Yes. Both units are fixed by definition, so the factor is exact and any rounding you see is a display choice."}},{"@type":"Question","name":"Where is the gauss used today?","acceptedAnswer":{"@type":"Answer","text":"Geomagnetism and gaussmeters."}}]}</script>
+  <script src="../../adsense-config.js"></script>
+  <script src="../../adsense.js" defer></script>
+  <meta name="google-adsense-account" content="ca-pub-2057098005458261">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2057098005458261"
+     crossorigin="anonymous"></script>
+</head>
+<body class="seo-page">
+  <header class="site-header" id="siteHeader"></header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
+
+  <main class="page-shell shared-page-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span>/</span>
+        <a href="/scientific/">Scientific Units</a>
+        <span>/</span>
+        <span>Gauss to Tesla</span>
+      </nav>
+
+      <section class="hero seo-top" style="order: 0;">
+        <div class="hero-content">
+          <h1>Gauss to Tesla Converter — G to T</h1>
+          <p>Convert Gauss (G) to Tesla (T) using the exact conversion factor (1 gauss = 0.0001 tesla). See the formula, worked examples, conversion table, unit comparison and common uses.</p>
+        </div>
+      </section>
+
+      <section class="converter-section">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">Gauss to Tesla converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Scientific Units Converter</h2>
+                  <p id="activeCategoryDescription">Convert SI derived units, scientific notation-friendly units, atomic units, and lab measurements.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">1 gauss = 0.0001 tesla</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla.</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">The tesla is the SI unit of magnetic flux density.</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">Result = input x 0.0001.</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Energy units are compatible.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="seo-content">
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-top" aria-label="Top advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content top (728x90)</strong>
+            <p>Reserved above the conversion cards and below the converter.</p>
+          </section>
+
+          <article class="seo-article">
+<h2>About Converting Gauss to Tesla</h2>
+<p>Gauss and tesla are both units of magnetic flux density. The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla. The tesla is the SI unit of magnetic flux density.</p>
+
+<div class="about-info-cards">
+  <div class="info-card">
+    <h3>Formula</h3>
+    <p class="info-card-formula">T = G × 0.0001</p>
+    <p>This factor comes from the defined size of each unit: 1 gauss equals 0.0001 teslas, and the reverse factor is 10000.</p>
+  </div>
+  <div class="info-card">
+    <h3>Simple example</h3>
+    <p class="info-card-formula">1 G × 0.0001 = 0.0001 T</p><p><strong>1 gauss = 0.0001 teslas.</strong></p>
+  </div>
+<div class="info-card">
+    <h3>Real-world example</h3>
+    <p class="info-card-formula">10 G × 0.0001 = 0.001 T</p><p><strong>10 gauss = 0.001 teslas.</strong></p>
+  </div>
+  <div class="info-card">
+    <h3>Conversion table</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">Gauss (G)</th><th scope="col">Tesla (T)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1 G</td><td>0.0001 T</td></tr>
+<tr><td>5 G</td><td>0.0005 T</td></tr>
+<tr><td>10 G</td><td>0.001 T</td></tr>
+<tr><td>50 G</td><td>0.005 T</td></tr>
+<tr><td>100 G</td><td>0.01 T</td></tr>
+<tr><td>1000 G</td><td>0.1 T</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<h3>Reverse conversion: Tesla to Gauss</h3>
+<div class="info-card">
+  <p class="info-card-formula">1 T × 10000 = 10000 G</p><p><strong>1 tesla = 10000 gauss.</strong></p><p class="info-card-formula">G = T × 10000</p>
+</div>
+<p>For a page dedicated to this direction, see <a href="../tesla-to-gauss/">Tesla to Gauss</a>.</p>
+
+<h3>Gauss vs. tesla</h3>
+<table class="info-card-table">
+<thead><tr><th scope="col">Aspect</th><th scope="col">Gauss</th><th scope="col">Tesla</th></tr></thead>
+<tbody>
+<tr><td>Family</td><td>magnetic flux density</td><td>magnetic flux density</td></tr>
+<tr><td>Symbol</td><td>G</td><td>T</td></tr>
+<tr><td>Typical use</td><td>Geomagnetism and gaussmeters</td><td>MRI and laboratory magnets</td></tr>
+<tr><td>Exact by definition?</td><td>Yes — fixed by definition</td><td>Yes — fixed by definition</td></tr>
+</tbody>
+</table>
+
+<h3>Understanding the Gauss</h3>
+<p>Gauss (G) measures <strong>magnetic flux density</strong>. The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla.</p>
+<h4>Standard and definition</h4>
+<p>The gauss is covered by BIPM — The International System of Units (SI Brochure).</p>
+<h4>Uses of the gauss today</h4>
+<ul><li>Geomagnetism and gaussmeters</li><li>Older magnetic literature</li></ul>
+
+<h3>Understanding the Tesla</h3>
+<p>Tesla (T) measures <strong>magnetic flux density</strong>. The tesla is the SI unit of magnetic flux density.</p>
+<h4>Standard and definition</h4>
+<p>The tesla is covered by BIPM — The International System of Units (SI Brochure).</p>
+<h4>Uses of the tesla today</h4>
+<ul><li>MRI and laboratory magnets</li><li>Magnetic sensors</li></ul>
+
+<div class="about-sources">
+<h4>Gauss — sources</h4><ul class="source-list"><li>BIPM — The International System of Units (SI Brochure) — Defines the SI base and derived units, their prefixes and the non-SI units accepted for use with the SI.</li></ul>
+<h4>Tesla — sources</h4><ul class="source-list"><li>BIPM — The International System of Units (SI Brochure) — Defines the SI base and derived units, their prefixes and the non-SI units accepted for use with the SI.</li></ul>
+</div>
+          </article>
+
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-middle" aria-label="Middle advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content middle (728x90)</strong>
+            <p>Reserved between the cards and the FAQ so the page stays balanced.</p>
+          </section>
+
+          <section class="seo-faq" aria-label="FAQ">
+            <h2>Frequently asked questions</h2>
+            <div class="faq-item">
+              <h3>How many teslas are in 1 gauss?</h3>
+              <p>1 gauss equals 0.0001 teslas.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert gauss to tesla?</h3>
+              <p>Multiply the gauss value by 0.0001. The converter above does this instantly to whatever precision you set.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert tesla back to gauss?</h3>
+              <p>Use the reverse factor: 1 tesla equals 10000 gauss. You can also use the swap control in the converter above to flip the direction instantly.</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a gauss?</h3>
+              <p>Gauss (G) measures magnetic flux density. The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla.</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a tesla?</h3>
+              <p>Tesla (T) measures magnetic flux density. The tesla is the SI unit of magnetic flux density.</p>
+            </div>
+<div class="faq-item">
+              <h3>Is the gauss to tesla conversion exact?</h3>
+              <p>Yes. Both units are fixed by definition, so the factor is exact and any rounding you see is a display choice.</p>
+            </div>
+<div class="faq-item">
+              <h3>Where is the gauss used today?</h3>
+              <p>Geomagnetism and gaussmeters.</p>
+            </div>
+          </section>
+
+          <section class="page-grid">
+            <article class="page-card">
+              <h2>Related conversions</h2>
+              <ul class="seo-link-list"><li><a href="../tesla-to-gauss/">Tesla to Gauss</a></li><li><a href="../electronvolts-to-joules/">Electronvolts to Joules</a></li><li><a href="../joules-to-electronvolts/">Joules to Electronvolts</a></li><li><a href="../angstroms-to-nanometers/">Angstroms to Nanometers</a></li><li><a href="../nanometers-to-angstroms/">Nanometers to Angstroms</a></li><li><a href="../atomic-mass-units-to-kilograms/">Daltons (u) to Kilograms</a></li><li><a href="../kilograms-to-atomic-mass-units/">Kilograms to Daltons (u)</a></li><li><a href="/scientific/">All scientific conversions</a></li></ul>
+            </article>
+          </section>
+      </section>
+
+    </main>
+
+  <script src="../../analytics-config.js" defer></script>
+<footer class="site-footer">
+          <div>
+            <a class="brand footer-brand" href="../../index.html" aria-label="Universal Converter home">
+              <img src="../../logo.svg" alt="" width="32" height="32">
+              <span>Universal Converter</span>
+            </a>
+            <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="../../privacy.html">Privacy</a>
+            <a href="../../terms.html">Terms</a>
+            <a href="../../contact.html">Contact</a>
+            <a href="../../guides.html">Guides</a>
+            <a href="../../sitemap.html">Sitemap</a>
+          </nav>
+      </footer>
+</body>
+</html>

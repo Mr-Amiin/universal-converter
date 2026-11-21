@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>dBm to Watts Converter — dBm to W</title>
+  <meta name="description" content="Convert dBm (dBm) to Watts (W) with the correct formula (P(W) = 10^(P(dBm) ÷ 10) ÷ 1000). See worked examples, a conversion table, unit comparison and common uses.">
+  <meta name="keywords" content="dbm to watt, dbm to watts, power converter">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://theuniversalconverter.com/power/dbm-to-watts/">
+  <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossorigin>
+  <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com">
+  <link rel="stylesheet" href="../../styles.css">
+  <script src="../../app.js" defer></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"dBm to Watts Converter — dBm to W","description":"Convert dBm (dBm) to Watts (W) with the correct formula (P(W) = 10^(P(dBm) ÷ 10) ÷ 1000). See worked examples, a conversion table, unit comparison and common uses.","url":"https://theuniversalconverter.com/power/dbm-to-watts/","breadcrumb":{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://theuniversalconverter.com/index.html"},{"@type":"ListItem","position":2,"name":"Power","item":"https://theuniversalconverter.com/power/"},{"@type":"ListItem","position":3,"name":"dBm to Watts","item":"https://theuniversalconverter.com/power/dbm-to-watts/"}]}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How many watts are in 1 dBm?","acceptedAnswer":{"@type":"Answer","text":"-30 dBm equals 0.000001 watts; the relationship is not a single fixed factor, so see the formula above."}},{"@type":"Question","name":"How do I convert dBm to watt?","acceptedAnswer":{"@type":"Answer","text":"Raise 10 to the power of dBm ÷ 10 to get milliwatts, then divide by 1,000 for watts (and scale to the target unit). The converter above does this instantly to whatever precision you set."}},{"@type":"Question","name":"How do I convert watt back to dBm?","acceptedAnswer":{"@type":"Answer","text":"Convert the power to milliwatts, take the base-10 logarithm and multiply by 10. You can also use the swap control in the converter above to flip the direction instantly."}},{"@type":"Question","name":"What is a dBm?","acceptedAnswer":{"@type":"Answer","text":"dBm (dBm) measures power. dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW)."}},{"@type":"Question","name":"What is a watt?","acceptedAnswer":{"@type":"Answer","text":"Watt (W) measures power. The watt is the SI unit of power: one joule per second."}},{"@type":"Question","name":"Is the dBm to watt conversion exact?","acceptedAnswer":{"@type":"Answer","text":"The relationship is a mathematical formula rather than a single fixed factor, so results are exact for the numbers you enter and rounded only for display."}},{"@type":"Question","name":"Which convention does this conversion use?","acceptedAnswer":{"@type":"Answer","text":"Logarithmic conversion with 1 mW = 0 dBm. Watts and milliwatts must be positive to have a finite dBm value."}},{"@type":"Question","name":"Where is the dBm used today?","acceptedAnswer":{"@type":"Answer","text":"Radio-frequency, fiber-optic and Wi-Fi signal levels."}}]}</script>
+  <script src="../../adsense-config.js"></script>
+  <script src="../../adsense.js" defer></script>
+  <meta name="google-adsense-account" content="ca-pub-2057098005458261">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2057098005458261"
+     crossorigin="anonymous"></script>
+</head>
+<body class="seo-page">
+  <header class="site-header" id="siteHeader"></header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
+
+  <main class="page-shell shared-page-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="../../index.html">Home</a>
+        <span>/</span>
+        <a href="/power/">Power</a>
+        <span>/</span>
+        <span>dBm to Watts</span>
+      </nav>
+
+      <section class="hero seo-top" style="order: 0;">
+        <div class="hero-content">
+          <h1>dBm to Watts Converter — dBm to W</h1>
+          <p>Convert dBm (dBm) to Watts (W) with the correct formula (P(W) = 10^(P(dBm) ÷ 10) ÷ 1000). See worked examples, a conversion table, unit comparison and common uses.</p>
+        </div>
+      </section>
+
+      <section class="converter-section">
+        <section class="tool-section" id="converter" aria-labelledby="converterTitle">
+          <h2 id="converterTitle" class="visually-hidden">dBm to Watts converter</h2>
+
+          <div class="tool-layout">
+            <aside class="category-panel" aria-label="Converter categories">
+              <label class="field-label" for="unitSearch">Search all units</label>
+              <input class="compact-search" id="unitSearch" type="search" placeholder="Search all units">
+              <div class="category-list" id="categoryList"></div>
+            </aside>
+
+            <section class="converter-panel" aria-label="Active converter">
+              <div class="converter-header">
+                <div>
+                  <p class="panel-kicker" id="activeCategoryKind">Converter</p>
+                  <h2 id="activeCategoryName">Power Converter</h2>
+                  <p id="activeCategoryDescription">Convert watts, horsepower, refrigeration tons, BTU per hour, and engineering power units.</p>
+                </div>
+                <button class="favorite-button" id="favoriteButton" type="button" aria-pressed="false">
+                  <span aria-hidden="true">+</span>
+                  Favorite
+                </button>
+              </div>
+
+              <div class="converter-grid">
+                <label class="unit-box" for="fromValue">
+                  <span>From Unit</span>
+                  <input id="fromValue" type="text" inputmode="decimal" value="1" autocomplete="off">
+                  <select id="fromUnit" aria-label="From unit"></select>
+                </label>
+
+                <button class="swap-button" id="swapButton" type="button" aria-label="Swap units">&#8644;</button>
+
+                <label class="unit-box" for="toValue">
+                  <span>To Unit</span>
+                  <input id="toValue" type="text" readonly>
+                  <select id="toUnit" aria-label="To unit"></select>
+                </label>
+              </div>
+
+              <div class="converter-controls" aria-label="Result formatting controls">
+                <label>Decimal control
+                  <input id="precisionControl" type="number" min="2" max="15" value="12">
+                </label>
+                <label>Notation
+                  <select id="notationMode">
+                    <option value="auto">Auto</option>
+                    <option value="decimal">Decimal</option>
+                    <option value="scientific">Scientific</option>
+                    <option value="engineering">Engineering</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="context-panel" id="contextPanel" hidden>
+                <div class="context-copy">
+                  <strong>Context values</strong>
+                  <span id="contextHelp">Some unit families need one extra value for a physically accurate result.</span>
+                </div>
+                <div class="context-grid electricity-context">
+                  <label>Voltage
+                    <input id="contextVoltage" type="number" min="0" step="any" value="120">
+                  </label>
+                  <label>Current
+                    <input id="contextCurrent" type="number" min="0" step="any" value="10">
+                  </label>
+                  <label>Resistance
+                    <input id="contextResistance" type="number" min="0" step="any" value="12">
+                  </label>
+                  <label>Hours
+                    <input id="contextHours" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+                <div class="context-grid agriculture-context">
+                  <label>Liquid density, kg/L
+                    <input id="contextDensity" type="number" min="0" step="any" value="1">
+                  </label>
+                </div>
+              </div>
+
+              <div class="result-bar">
+                <div>
+                  <span class="result-label">Result</span>
+                  <strong id="resultText">-30 dBm = 0.000001 watt</strong>
+                </div>
+                <div class="result-actions">
+                  <button class="copy-button" id="copyButton" type="button">Copy result</button>
+                  <button class="copy-button secondary" id="shareButton" type="button">Share</button>
+                </div>
+              </div>
+              <section class="converter-ad-slot" data-ad-placement="converter" aria-label="Converter advertisement placeholder">
+                <span>Advertisement</span>
+                <strong>Converter ad slot</strong>
+                <p>Reserved below the result so the calculator remains usable.</p>
+              </section>
+              <div class="definition-panel" id="definitionPanel">
+                <article>
+                  <span>From definition</span>
+                  <p id="fromDefinition">dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW).</p>
+                </article>
+                <article>
+                  <span>To definition</span>
+                  <p id="toDefinition">The watt is the SI unit of power: one joule per second.</p>
+                </article>
+                <article>
+                  <span>Formula</span>
+                  <p id="formulaText">P(W) = 10^(P(dBm) ÷ 10) ÷ 1000</p>
+                </article>
+              </div>
+              <p class="conversion-note" id="conversionNote">Power uses the watt as the base unit.</p>
+            </section>
+
+            <aside class="activity-panel" aria-label="Saved and recent conversions">
+              <aside class="sidebar-ad" data-ad-placement="sidebar" aria-label="Sidebar advertisement placeholder">
+                Advertisement
+              </aside>
+              <section>
+                <div class="activity-heading">
+                  <h3>Favorite converters</h3>
+                  <button type="button" id="clearFavorites">Clear</button>
+                </div>
+                <div class="mini-list" id="favoritesList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Recently used</h3>
+                  <button type="button" id="clearRecent">Clear</button>
+                </div>
+                <div class="mini-list" id="recentList"></div>
+              </section>
+              <section>
+                <div class="activity-heading">
+                  <h3>Conversion history</h3>
+                  <button type="button" id="clearHistory">Clear</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+              </section>
+            </aside>
+          </div>
+        </section>
+      </section>
+
+      <section class="seo-content">
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-top" aria-label="Top advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content top (728x90)</strong>
+            <p>Reserved above the conversion cards and below the converter.</p>
+          </section>
+
+          <article class="seo-article">
+<h2>About Converting dBm to Watts</h2>
+<p>dBm and watt are both units of power. dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW). The watt is the SI unit of power: one joule per second.</p>
+
+<div class="about-info-cards">
+  <div class="info-card">
+    <h3>Formula</h3>
+    <p class="info-card-formula">P(W) = 10^(P(dBm) ÷ 10) ÷ 1000</p>
+    <p>Raise 10 to the power of dBm ÷ 10 to get milliwatts, then divide by 1,000 for watts (and scale to the target unit).</p>
+  </div>
+  <div class="info-card">
+    <h3>Simple example</h3>
+    <p class="info-card-formula">-30 dBm = 0.000001 W</p><p><strong>-30 dBm = 0.000001 watts.</strong></p>
+  </div>
+<div class="info-card">
+    <h3>Real-world example</h3>
+    <p class="info-card-formula">0 dBm = 0.001 W</p><p><strong>0 dBm = 0.001 watts.</strong></p>
+  </div>
+  <div class="info-card">
+    <h3>Conversion table</h3>
+    <table class="info-card-table">
+      <thead>
+        <tr><th scope="col">dBm (dBm)</th><th scope="col">Watt (W)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>-30 dBm</td><td>0.000001 W</td></tr>
+<tr><td>-10 dBm</td><td>0.0001 W</td></tr>
+<tr><td>0 dBm</td><td>0.001 W</td></tr>
+<tr><td>10 dBm</td><td>0.01 W</td></tr>
+<tr><td>20 dBm</td><td>0.1 W</td></tr>
+<tr><td>30 dBm</td><td>1 W</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>Convention used on this page</h3>
+<p>Logarithmic conversion with 1 mW = 0 dBm. Watts and milliwatts must be positive to have a finite dBm value.</p>
+
+<h3>Reverse conversion: Watts to dBm</h3>
+<div class="info-card">
+  <p class="info-card-formula">P(dBm) = 10 · log₁₀(P in mW)</p><p>Use the swap control above to run the reverse direction instantly.</p>
+</div>
+<p>For a page dedicated to this direction, see <a href="../watts-to-dbm/">Watts to dBm</a>.</p>
+
+<h3>dBm vs. watt</h3>
+<table class="info-card-table">
+<thead><tr><th scope="col">Aspect</th><th scope="col">dBm</th><th scope="col">Watt</th></tr></thead>
+<tbody>
+<tr><td>Family</td><td>power</td><td>power</td></tr>
+<tr><td>Symbol</td><td>dBm</td><td>W</td></tr>
+<tr><td>Typical use</td><td>Radio-frequency, fiber-optic and Wi-Fi signal levels</td><td>Electrical and mechanical power</td></tr>
+<tr><td>Exact by definition?</td><td>Yes — fixed by definition</td><td>Yes — fixed by definition</td></tr>
+</tbody>
+</table>
+
+<h3>Understanding the dBm</h3>
+<p>dBm (dBm) measures <strong>power</strong>. dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW).</p>
+<p><strong>Convention:</strong> Logarithmic conversion with 1 mW = 0 dBm. Watts and milliwatts must be positive to have a finite dBm value.</p>
+<h4>Standard and definition</h4>
+<p>The dBm is covered by IEC 60027-3 — Logarithmic and related quantities, and their units.</p>
+<h4>Uses of the dBm today</h4>
+<ul><li>Radio-frequency, fiber-optic and Wi-Fi signal levels</li><li>Antenna, amplifier and link-budget calculations</li></ul>
+
+<h3>Understanding the Watt</h3>
+<p>Watt (W) measures <strong>power</strong>. The watt is the SI unit of power: one joule per second.</p>
+<h4>Standard and definition</h4>
+<p>The watt is covered by BIPM — The International System of Units (SI Brochure).</p>
+<h4>Uses of the watt today</h4>
+<ul><li>Electrical and mechanical power</li><li>Lighting and appliances</li></ul>
+
+<div class="about-sources">
+<h4>dBm — sources</h4><ul class="source-list"><li>IEC 60027-3 — Logarithmic and related quantities, and their units — Defines level quantities and the decibel.</li></ul>
+<h4>Watt — sources</h4><ul class="source-list"><li>BIPM — The International System of Units (SI Brochure) — Defines the SI base and derived units, their prefixes and the non-SI units accepted for use with the SI.</li><li>NIST Special Publication 811 — Guide for the Use of the International System of Units (SI) — Appendix B gives exact conversion factors between SI and non-SI units.</li></ul>
+</div>
+          </article>
+
+          <section class="in-content-ad adsense-placeholder" data-ad-placement="content-middle" aria-label="Middle advertisement placeholder">
+            <span>Advertisement</span>
+            <strong>Ad slot: content middle (728x90)</strong>
+            <p>Reserved between the cards and the FAQ so the page stays balanced.</p>
+          </section>
+
+          <section class="seo-faq" aria-label="FAQ">
+            <h2>Frequently asked questions</h2>
+            <div class="faq-item">
+              <h3>How many watts are in 1 dBm?</h3>
+              <p>-30 dBm equals 0.000001 watts; the relationship is not a single fixed factor, so see the formula above.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert dBm to watt?</h3>
+              <p>Raise 10 to the power of dBm ÷ 10 to get milliwatts, then divide by 1,000 for watts (and scale to the target unit). The converter above does this instantly to whatever precision you set.</p>
+            </div>
+<div class="faq-item">
+              <h3>How do I convert watt back to dBm?</h3>
+              <p>Convert the power to milliwatts, take the base-10 logarithm and multiply by 10. You can also use the swap control in the converter above to flip the direction instantly.</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a dBm?</h3>
+              <p>dBm (dBm) measures power. dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW).</p>
+            </div>
+<div class="faq-item">
+              <h3>What is a watt?</h3>
+              <p>Watt (W) measures power. The watt is the SI unit of power: one joule per second.</p>
+            </div>
+<div class="faq-item">
+              <h3>Is the dBm to watt conversion exact?</h3>
+              <p>The relationship is a mathematical formula rather than a single fixed factor, so results are exact for the numbers you enter and rounded only for display.</p>
+            </div>
+<div class="faq-item">
+              <h3>Which convention does this conversion use?</h3>
+              <p>Logarithmic conversion with 1 mW = 0 dBm. Watts and milliwatts must be positive to have a finite dBm value.</p>
+            </div>
+<div class="faq-item">
+              <h3>Where is the dBm used today?</h3>
+              <p>Radio-frequency, fiber-optic and Wi-Fi signal levels.</p>
+            </div>
+          </section>
+
+          <section class="page-grid">
+            <article class="page-card">
+              <h2>Related conversions</h2>
+              <ul class="seo-link-list"><li><a href="../watts-to-dbm/">Watts to dBm</a></li><li><a href="../watts-to-kilowatts/">Watts to Kilowatts</a></li><li><a href="../kilowatts-to-watts/">Kilowatts to Watts</a></li><li><a href="../watts-to-horsepower/">Watts to Horsepower</a></li><li><a href="../horsepower-to-watts/">Horsepower to Watts</a></li><li><a href="../btu-per-hour-to-watts/">BTU per Hour to Watts</a></li><li><a href="../watts-to-btu-per-hour/">Watts to BTU per Hour</a></li><li><a href="/power/">All power conversions</a></li></ul>
+            </article>
+          </section>
+      </section>
+
+    </main>
+
+  <script src="../../analytics-config.js" defer></script>
+<footer class="site-footer">
+          <div>
+            <a class="brand footer-brand" href="../../index.html" aria-label="Universal Converter home">
+              <img src="../../logo.svg" alt="" width="32" height="32">
+              <span>Universal Converter</span>
+            </a>
+            <p>Fast conversions for everyday, scientific, engineering, and business units.</p>
+          </div>
+          <nav aria-label="Footer navigation">
+            <a href="../../privacy.html">Privacy</a>
+            <a href="../../terms.html">Terms</a>
+            <a href="../../contact.html">Contact</a>
+            <a href="../../guides.html">Guides</a>
+            <a href="../../sitemap.html">Sitemap</a>
+          </nav>
+      </footer>
+</body>
+</html>

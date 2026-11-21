@@ -1034,7 +1034,7 @@ ZWG: { name: 'Zimbabwe Gold', country: 'Zimbabwe', symbol: 'ZiG' },
 KPW: { name: 'North Korean Won', country: 'North Korea', symbol: '₩' },
 XCG: { name: 'Caribbean Guilder', country: 'Curacao and Sint Maarten', symbol: 'Cg' }
 };
-const categories = applyCustomUnits(buildCategories());
+const categories = extendCategoriesForSeoPages(applyCustomUnits(buildCategories()));
 const categoryMap = new Map(categories.map((category) => [category.id, category]));
 const seoMap = new Map(seoConversions.map((item) => [item.slug, item]));
 let state = {
@@ -1738,6 +1738,228 @@ category.units.push(u(item.id, item.name, item.symbol, Number(item.factor), item
 category.units = uniqueUnits(category.units);
 });
 return baseCategories;
+}
+// Additive unit definitions that back the extra SEO converter pages (for example
+// quintals, tesla, miles per liter, dBm). Units are only appended when their id is
+// not already present, so no existing unit is ever changed or replaced.
+function extendCategoriesForSeoPages(baseCategories) {
+const extraUnits = [
+  {"c": "area", "id": "dunam", "n": "Dunam", "s": "dunam", "f": 1000.0, "d": "value", "t": "A dunam is 1,000 square meters (0.1 hectare) in its standardized metric form.", "a": []},
+  {"c": "volume", "id": "acre_foot", "n": "Acre-foot", "s": "ac ft", "f": 1233.48183754752, "d": "value", "t": "An acre-foot is the volume of one acre covered to a depth of one international foot: 43,560 cubic feet, about 1,233.48 cubic meters.", "a": []},
+  {"c": "weight", "id": "quintal", "n": "Quintal", "s": "q", "f": 100.0, "d": "value", "t": "A metric quintal is 100 kilograms (0.1 metric ton).", "a": []},
+  {"c": "speed", "id": "inch_per_second", "n": "Inch per second", "s": "in/s", "f": 0.0254, "d": "value", "t": "One inch per second is 0.0254 meters per second.", "a": []},
+  {"c": "speed", "id": "minute_per_kilometer", "n": "Minute per kilometer", "s": "min/km", "f": 1000.0, "d": "value", "t": "Minutes per kilometer is a pace: the time needed to cover one kilometer. It is the reciprocal of speed.", "a": [], "x": "pace"},
+  {"c": "speed", "id": "minute_per_mile", "n": "Minute per mile", "s": "min/mi", "f": 1609.344, "d": "value", "t": "Minutes per mile is a pace: the time needed to cover one statute mile. It is the reciprocal of speed.", "a": [], "x": "pace"},
+  {"c": "pressure", "id": "inch_of_water", "n": "Inch of water", "s": "inH2O", "f": 249.08891, "d": "value", "t": "The conventional inch of water is 0.0254 m of water column at the conventional 9,806.65 Pa per meter of water: 249.08891 pascals.", "a": ["inch of water column", "inH2O", "in wc"]},
+  {"c": "pressure", "id": "kilogram_force_per_square_centimeter", "n": "Kilogram-force per square centimeter", "s": "kgf/cm²", "f": 98066.5, "d": "value", "t": "One kilogram-force per square centimeter is 98,066.5 pascals (the technical atmosphere).", "a": ["kgf/cm2", "kg/cm2", "kilograms-force per sq cm", "kilogram-force per sq cm"]},
+  {"c": "energy", "id": "megawatt_hour", "n": "Megawatt-hour", "s": "MWh", "f": 3600000000.0, "d": "value", "t": "A megawatt-hour is one million watt-hours, or 3.6 gigajoules.", "a": []},
+  {"c": "energy", "id": "ton_tnt", "n": "Ton of TNT", "s": "tTNT", "f": 4184000000.0, "d": "value", "t": "A ton of TNT is defined by convention as exactly 4.184 gigajoules.", "a": []},
+  {"c": "energy", "id": "barrel_oil_equivalent", "n": "Barrel of oil equivalent", "s": "boe", "f": 6117863200.0, "d": "value", "t": "A barrel of oil equivalent is the energy released by burning one barrel of crude oil, about 6.1179 gigajoules.", "a": []},
+  {"c": "energy", "id": "calorie_it", "n": "Calorie (IT)", "s": "cal IT", "f": 4.1868, "d": "value", "t": "The International Table calorie is exactly 4.1868 joules.", "a": []},
+  {"c": "energy", "id": "hartree", "n": "Hartree", "s": "Eh", "f": 4.359744722206e-18, "d": "value", "t": "The hartree is the atomic unit of energy, about 4.3597447 × 10⁻¹⁸ joules (27.211386 electronvolts).", "a": []},
+  {"c": "power", "id": "joule_per_second", "n": "Joule per second", "s": "J/s", "f": 1.0, "d": "value", "t": "One joule per second is one watt.", "a": []},
+  {"c": "power", "id": "kilocalorie_per_hour", "n": "Kilocalorie per hour", "s": "kcal/h", "f": 1.163, "d": "value", "t": "One International Table kilocalorie per hour is 1.163 watts.", "a": []},
+  {"c": "power", "id": "boiler_horsepower", "n": "Boiler horsepower", "s": "bhp", "f": 9810.55407401514, "d": "value", "t": "A boiler horsepower is 33,475 BTU per hour, about 9.81 kilowatts.", "a": []},
+  {"c": "power", "id": "dbm", "n": "dBm", "s": "dBm", "f": 1.0, "d": "value", "t": "dBm is a logarithmic power level referenced to one milliwatt: P(dBm) = 10 · log₁₀(P / 1 mW).", "a": [], "x": "dbm"},
+  {"c": "force", "id": "ton_force_metric", "n": "Ton-force (metric)", "s": "tf", "f": 9806.65, "d": "value", "t": "A metric ton-force is the force exerted by 1,000 kilograms under standard gravity: 9,806.65 newtons.", "a": ["metric ton-force", "tonne-force", "tons-force-metric"]},
+  {"c": "force", "id": "ton_force_us", "n": "Ton-force (US)", "s": "tonf", "f": 8896.443230521, "d": "value", "t": "A US (short) ton-force is 2,000 pound-force, about 8,896.44 newtons.", "a": ["short ton-force", "tons-force-us", "ton force us"]},
+  {"c": "force", "id": "gram_force", "n": "Gram-force", "s": "gf", "f": 0.00980665, "d": "value", "t": "A gram-force is the force exerted by one gram of mass under standard gravity: 0.00980665 newtons.", "a": []},
+  {"c": "force", "id": "poundal", "n": "Poundal", "s": "pdl", "f": 0.138254954376, "d": "value", "t": "A poundal is the force that accelerates one pound by one foot per second squared: 0.138254954376 newtons.", "a": []},
+  {"c": "torque", "id": "kilogram_force_centimeter", "n": "Kilogram-force centimeter", "s": "kgf cm", "f": 0.0980665, "d": "value", "t": "One kilogram-force centimeter is 0.0980665 newton meters.", "a": []},
+  {"c": "torque", "id": "gram_force_centimeter", "n": "Gram-force centimeter", "s": "gf cm", "f": 9.80665e-05, "d": "value", "t": "One gram-force centimeter is 0.0000980665 newton meters.", "a": []},
+  {"c": "torque", "id": "newton_centimeter", "n": "Newton centimeter", "s": "N cm", "f": 0.01, "d": "value", "t": "One newton centimeter is 0.01 newton meters.", "a": []},
+  {"c": "torque", "id": "dyne_centimeter", "n": "Dyne centimeter", "s": "dyn cm", "f": 1e-07, "d": "value", "t": "One dyne centimeter is 10⁻⁷ newton meters.", "a": []},
+  {"c": "torque", "id": "kip_foot", "n": "Kip-foot", "s": "kip ft", "f": 1355.8179483314004, "d": "value", "t": "A kip-foot is the moment of 1,000 pound-force acting at one foot: 1,355.8179 newton meters.", "a": []},
+  {"c": "electricity", "id": "ampere_hour", "n": "Ampere-hour", "s": "Ah", "f": 3600.0, "d": "charge", "t": "An ampere-hour is the charge carried by one ampere for one hour: 3,600 coulombs.", "a": ["amp-hours", "amp hour", "Ah"]},
+  {"c": "electricity", "id": "milliampere_hour", "n": "Milliampere-hour", "s": "mAh", "f": 3.6, "d": "charge", "t": "A milliampere-hour is one thousandth of an ampere-hour: 3.6 coulombs.", "a": ["milliamp-hours", "milliamp hour", "mAh"]},
+  {"c": "electricity", "id": "tesla", "n": "Tesla", "s": "T", "f": 1.0, "d": "magnetic_flux_density", "t": "The tesla is the SI unit of magnetic flux density: one weber per square meter.", "a": []},
+  {"c": "electricity", "id": "millitesla", "n": "Millitesla", "s": "mT", "f": 0.001, "d": "magnetic_flux_density", "t": "A millitesla is one thousandth of a tesla.", "a": []},
+  {"c": "electricity", "id": "gauss", "n": "Gauss", "s": "G", "f": 0.0001, "d": "magnetic_flux_density", "t": "The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla.", "a": []},
+  {"c": "electricity", "id": "weber", "n": "Weber", "s": "Wb", "f": 1.0, "d": "magnetic_flux", "t": "The weber is the SI unit of magnetic flux: one volt-second.", "a": []},
+  {"c": "electricity", "id": "maxwell", "n": "Maxwell", "s": "Mx", "f": 1e-08, "d": "magnetic_flux", "t": "The maxwell is the CGS unit of magnetic flux: 10⁻⁸ weber.", "a": []},
+  {"c": "frequency", "id": "degree_per_second", "n": "Degree per second", "s": "°/s", "f": 0.002777777777777778, "d": "value", "t": "One degree per second is 1/360 of a revolution per second, or 1/360 hertz.", "a": []},
+  {"c": "frequency", "id": "cycle_per_second", "n": "Cycle per second", "s": "cps", "f": 1.0, "d": "value", "t": "One cycle per second is one hertz.", "a": []},
+  {"c": "frequency", "id": "frame_per_second", "n": "Frame per second", "s": "fps", "f": 1.0, "d": "value", "t": "One frame per second is one frame (one cycle) each second, equivalent to one hertz.", "a": []},
+  {"c": "frequency", "id": "revolution_per_hour", "n": "Revolution per hour", "s": "rev/h", "f": 0.0002777777777777778, "d": "value", "t": "One revolution per hour is 1/3,600 hertz.", "a": []},
+  {"c": "frequency", "id": "degree_per_minute", "n": "Degree per minute", "s": "°/min", "f": 4.6296296296296294e-05, "d": "value", "t": "One degree per minute is 1/21,600 hertz.", "a": []},
+  {"c": "frequency", "id": "radian_per_minute", "n": "Radian per minute", "s": "rad/min", "f": 0.0026525823848649226, "d": "value", "t": "One radian per minute is 1/(2π × 60) hertz.", "a": []},
+  {"c": "digital", "id": "word_32", "n": "32-bit double word", "s": "dword", "f": 32.0, "d": "value", "t": "A double word (DWORD) is 32 bits, or 4 bytes.", "a": ["double words", "double word", "dword"]},
+  {"c": "digital", "id": "word_64", "n": "64-bit quad word", "s": "qword", "f": 64.0, "d": "value", "t": "A quad word (QWORD) is 64 bits, or 8 bytes.", "a": ["quad words", "quad word", "qword"]},
+  {"c": "angle", "id": "quadrant", "n": "Quadrant", "s": "quadrant", "f": 1.5707963267948966, "d": "value", "t": "A quadrant is a quarter of a full circle: 90 degrees or π/2 radians.", "a": []},
+  {"c": "fuel_economy", "id": "mile_per_liter", "n": "Miles per liter", "s": "mi/L", "f": 1609344.0, "d": "fuel", "t": "Miles per liter is the distance in statute miles travelled per liter of fuel.", "a": ["miles per liter", "mile per liter"], "m": "efficiency"},
+  {"c": "fuel_economy", "id": "liter_per_100_mile", "n": "Liters per 100 miles", "s": "L/100 mi", "f": 6.21371192237334e-09, "d": "fuel", "t": "Liters per 100 miles is the fuel volume in liters used to travel 100 statute miles.", "a": ["liters per 100 miles", "liter per 100 mile"], "m": "consumption"},
+  {"c": "radiation", "id": "millirem", "n": "Millirem", "s": "mrem", "f": 1e-05, "d": "equivalent_dose", "t": "A millirem is one thousandth of a rem, or 10⁻⁵ sievert (10 microsieverts).", "a": []},
+  {"c": "radiation", "id": "megabecquerel", "n": "Megabecquerel", "s": "MBq", "f": 1000000.0, "d": "activity", "t": "A megabecquerel is one million becquerels (10⁶ decays per second).", "a": []},
+  {"c": "radiation", "id": "gigabecquerel", "n": "Gigabecquerel", "s": "GBq", "f": 1000000000.0, "d": "activity", "t": "A gigabecquerel is one billion becquerels (10⁹ decays per second).", "a": []},
+  {"c": "radiation", "id": "kilobecquerel", "n": "Kilobecquerel", "s": "kBq", "f": 1000.0, "d": "activity", "t": "A kilobecquerel is one thousand becquerels.", "a": []},
+  {"c": "radiation", "id": "millicurie", "n": "Millicurie", "s": "mCi", "f": 37000000.0, "d": "activity", "t": "A millicurie is one thousandth of a curie: 3.7 × 10⁷ becquerels.", "a": []},
+  {"c": "radiation", "id": "microcurie", "n": "Microcurie", "s": "µCi", "f": 37000.0, "d": "activity", "t": "A microcurie is one millionth of a curie: 3.7 × 10⁴ becquerels.", "a": ["uCi", "microcuries"]},
+  {"c": "radiation", "id": "disintegration_per_minute", "n": "Disintegration per minute", "s": "dpm", "f": 0.016666666666666666, "d": "activity", "t": "One disintegration per minute is 1/60 becquerel.", "a": ["dpm", "disintegrations per minute"]},
+  {"c": "radiation", "id": "disintegration_per_second", "n": "Disintegration per second", "s": "dps", "f": 1.0, "d": "activity", "t": "One disintegration per second is one becquerel.", "a": ["dps", "disintegrations per second"]},
+  {"c": "radiation", "id": "rutherford", "n": "Rutherford", "s": "Rd", "f": 1000000.0, "d": "activity", "t": "A rutherford is one million disintegrations per second: 10⁶ becquerels.", "a": []},
+  {"c": "radiation", "id": "roentgen", "n": "Roentgen", "s": "R", "f": 0.000258, "d": "exposure", "t": "The roentgen is the unit of ionizing-radiation exposure in air: exactly 2.58 × 10⁻⁴ coulombs per kilogram.", "a": []},
+  {"c": "radiation", "id": "milliroentgen", "n": "Milliroentgen", "s": "mR", "f": 2.58e-07, "d": "exposure", "t": "A milliroentgen is one thousandth of a roentgen: 2.58 × 10⁻⁷ C/kg.", "a": []},
+  {"c": "radiation", "id": "coulomb_per_kilogram", "n": "Coulomb per kilogram", "s": "C/kg", "f": 1.0, "d": "exposure", "t": "One coulomb per kilogram is the SI unit of radiation exposure.", "a": []},
+  {"c": "radiation", "id": "microsievert_per_hour", "n": "Microsievert per hour", "s": "µSv/h", "f": 2.7777777777777777e-10, "d": "equivalent_dose_rate", "t": "A microsievert per hour is an equivalent dose rate of 10⁻⁶ sievert in one hour.", "a": ["uSv/h", "microsieverts per hour"]},
+  {"c": "radiation", "id": "millisievert_per_hour", "n": "Millisievert per hour", "s": "mSv/h", "f": 2.7777777777777776e-07, "d": "equivalent_dose_rate", "t": "A millisievert per hour is an equivalent dose rate of 10⁻³ sievert in one hour.", "a": []},
+  {"c": "radiation", "id": "millirem_per_hour", "n": "Millirem per hour", "s": "mrem/h", "f": 2.777777777777778e-09, "d": "equivalent_dose_rate", "t": "A millirem per hour is an equivalent dose rate of 10⁻⁵ sievert in one hour.", "a": []},
+  {"c": "chemistry", "id": "nanomole_per_liter", "n": "Nanomolar", "s": "nmol/L", "f": 1e-06, "d": "molarity", "t": "Nanomolar is 10⁻⁹ moles of solute per liter of solution.", "a": ["nanomolar", "nmol/L", "nM"]},
+  {"c": "chemistry", "id": "percent_weight_volume", "n": "Percent weight/volume", "s": "% w/v", "f": 10.0, "d": "mass_concentration", "t": "Percent weight/volume is grams of solute per 100 milliliters of solution: 1 % w/v = 10 g/L.", "a": ["% w/v", "percent w/v", "percent weight/volume"]},
+  {"c": "chemistry", "id": "parts_per_million", "n": "Parts per million", "s": "ppm", "f": 1e-06, "d": "fraction", "t": "One part per million is a dimensionless ratio of 10⁻⁶.", "a": []},
+  {"c": "chemistry", "id": "parts_per_billion", "n": "Parts per billion", "s": "ppb", "f": 1e-09, "d": "fraction", "t": "One part per billion is a dimensionless ratio of 10⁻⁹.", "a": ["ppb (fraction)"]},
+  {"c": "chemistry", "id": "parts_per_trillion", "n": "Parts per trillion", "s": "ppt", "f": 1e-12, "d": "fraction", "t": "One part per trillion is a dimensionless ratio of 10⁻¹².", "a": []},
+  {"c": "chemistry", "id": "percent", "n": "Percent", "s": "%", "f": 0.01, "d": "fraction", "t": "One percent is one part in a hundred: a dimensionless ratio of 0.01.", "a": []},
+  {"c": "chemistry", "id": "molecule", "n": "Molecule", "s": "molecule", "f": 1.6605390671738466e-24, "d": "amount", "t": "One molecule, counted as an amount of substance, is 1/N_A mole, where the Avogadro constant N_A = 6.02214076 × 10²³ per mole (exact).", "a": ["molecules", "molecules (avogadro)", "molecule (avogadro)"]},
+  {"c": "chemistry", "id": "mole_per_kilogram", "n": "Mole per kilogram", "s": "mol/kg", "f": 1.0, "d": "molality", "t": "One mole per kilogram is a molality of one mole of solute per kilogram of solvent.", "a": ["moles per kilogram"]},
+  {"c": "chemistry", "id": "millimole_per_kilogram", "n": "Millimole per kilogram", "s": "mmol/kg", "f": 0.001, "d": "molality", "t": "A millimole per kilogram is 10⁻³ mol of solute per kilogram of solvent.", "a": ["millimoles per kilogram"]},
+  {"c": "chemistry", "id": "milliequivalent_per_liter", "n": "Milliequivalent per liter", "s": "mEq/L", "f": 1.0, "d": "molarity", "t": "A milliequivalent per liter is one thousandth of an equivalent of solute per liter of solution.", "a": ["meq/l", "milliequivalents per liter"]},
+  {"c": "chemistry", "id": "nanogram_per_milliliter", "n": "Nanogram per milliliter", "s": "ng/mL", "f": 1e-06, "d": "mass_concentration", "t": "One nanogram per milliliter is 10⁻⁹ grams per 10⁻³ liters, or 10⁻⁶ g/L.", "a": ["ng/ml", "nanograms per milliliter"]},
+  {"c": "agriculture", "id": "quintal_per_hectare", "n": "Quintal per hectare", "s": "q/ha", "f": 0.01, "d": "mass_application_rate", "t": "One quintal per hectare is 100 kilograms per hectare (10⁻² kg/m²).", "a": ["quintals per hectare", "q/ha"]},
+  {"c": "agriculture", "id": "bushel_per_acre", "n": "Bushel per acre", "s": "bu/ac", "f": 0.006725106937166736, "d": "mass_application_rate", "t": "A bushel per acre is a yield rate. At the wheat and soybean standard of 60 pounds per bushel, 1 bu/ac = 27.2155422 kg ÷ 4,046.8564224 m² ≈ 67.25 kg/ha.", "a": ["bushels per acre", "bushels per acre (corn/wheat std)"]},
+  {"c": "agriculture", "id": "seed_per_square_meter", "n": "Seed per square meter", "s": "seeds/m²", "f": 1.0, "d": "seed_rate", "t": "One seed per square meter is a planting density of one seed on each square meter.", "a": ["seeds per square meter"]},
+  {"c": "agriculture", "id": "seed_per_acre", "n": "Seed per acre", "s": "seeds/ac", "f": 0.0002471053814671653, "d": "seed_rate", "t": "One seed per acre is a planting density of one seed on each acre (4,046.8564224 m²).", "a": ["seeds per acre"]},
+  {"c": "agriculture", "id": "seed_per_hectare", "n": "Seed per hectare", "s": "seeds/ha", "f": 0.0001, "d": "seed_rate", "t": "One seed per hectare is a planting density of one seed on each 10,000 m².", "a": ["seeds per hectare"]},
+  {"c": "agriculture", "id": "acre_inch", "n": "Acre-inch", "s": "ac in", "f": 102.79015312896, "d": "volume", "t": "An acre-inch is the volume of water covering one acre to a depth of one inch: 102.790153128 cubic meters.", "a": []},
+  {"c": "agriculture", "id": "acre_foot", "n": "Acre-foot", "s": "ac ft", "f": 1233.48183754752, "d": "volume", "t": "An acre-foot is the volume of water covering one acre to a depth of one foot: 1,233.48183754752 cubic meters.", "a": []},
+  {"c": "agriculture", "id": "cubic_meter", "n": "Cubic meter", "s": "m³", "f": 1.0, "d": "volume", "t": "The cubic meter is the SI unit of volume.", "a": ["cubic meters", "m3"]},
+  {"c": "agriculture", "id": "millimeter_depth", "n": "Millimeter (depth)", "s": "mm (depth)", "f": 4.0468564224, "d": "volume", "t": "A millimeter of depth over one acre is 4.0468564224 cubic meters of water.", "a": ["millimeters (depth)", "mm depth"]},
+  {"c": "agriculture", "id": "millimeter_irrigation", "n": "Millimeter (irrigation)", "s": "mm (irrig.)", "f": 0.001, "d": "liquid_application_rate", "t": "A millimeter of irrigation water is a depth of 1 mm, equal to 1 liter per square meter.", "a": ["millimeters (irrigation)", "mm irrigation"]},
+  {"c": "agriculture", "id": "kilogram", "n": "Kilogram", "s": "kg", "f": 1.0, "d": "mass", "t": "The kilogram is the SI base unit of mass.", "a": ["kilograms", "kg"]},
+  {"c": "agriculture", "id": "tonne", "n": "Metric ton", "s": "t", "f": 1000.0, "d": "mass", "t": "A metric ton is 1,000 kilograms.", "a": ["metric tons", "metric tonne", "tonne", "tonnes"]},
+  {"c": "agriculture", "id": "quintal", "n": "Quintal", "s": "q", "f": 100.0, "d": "mass", "t": "A metric quintal is 100 kilograms.", "a": ["quintals"]},
+  {"c": "agriculture", "id": "bushel_wheat_soy", "n": "Bushel (wheat/soy)", "s": "bu", "f": 27.2155422, "d": "mass", "t": "A bushel of wheat or soybeans is the standard 60 pounds, exactly 27.2155422 kilograms.", "a": ["bushels", "bushels (wheat/soy std)", "bushel"]},
+  {"c": "agriculture", "id": "pound_per_1000_square_foot", "n": "Pound per 1,000 square feet", "s": "lb/1000 ft²", "f": 0.00488242763638305, "d": "mass_application_rate", "t": "One pound per 1,000 square feet is 0.45359237 kg over 92.90304 m², about 48.83 kg/ha.", "a": ["pounds per 1000 sq ft", "lb/1000 sq ft"]},
+  {"c": "cooking", "id": "deciliter", "n": "Deciliter", "s": "dL", "f": 0.0001, "d": "volume", "t": "A deciliter is one tenth of a liter: 100 milliliters.", "a": ["deciliters", "dl"]},
+  {"c": "cooking", "id": "tablespoon_uk", "n": "UK tablespoon", "s": "UK tbsp", "f": 1.5e-05, "d": "volume", "t": "The modern UK tablespoon is 15 milliliters.", "a": ["uk tablespoons", "uk tablespoons (15 ml)", "tablespoon uk"]},
+  {"c": "cooking", "id": "dessertspoon", "n": "Dessertspoon", "s": "dstsp", "f": 1e-05, "d": "volume", "t": "The metric dessertspoon is 10 milliliters.", "a": ["dessertspoons"]},
+  {"c": "astronomy", "id": "kiloparsec", "n": "Kiloparsec", "s": "kpc", "f": 3.085677581491367e+19, "d": "distance", "t": "A kiloparsec is 1,000 parsecs, about 3,261.56 light-years.", "a": []},
+  {"c": "astronomy", "id": "megaparsec", "n": "Megaparsec", "s": "Mpc", "f": 3.0856775814913676e+22, "d": "distance", "t": "A megaparsec is one million parsecs, about 3.26156 million light-years.", "a": []},
+  {"c": "astronomy", "id": "lunar_distance", "n": "Lunar distance", "s": "LD", "f": 384400000.0, "d": "distance", "t": "The lunar distance is the mean Earth–Moon distance, conventionally 384,400 kilometers.", "a": []},
+  {"c": "astronomy", "id": "solar_radius", "n": "Solar radius", "s": "R☉", "f": 695700000.0, "d": "distance", "t": "The nominal solar radius is exactly 695,700 kilometers (IAU 2015).", "a": ["solar radii"]},
+  {"c": "astronomy", "id": "earth_radius", "n": "Earth radius", "s": "R⊕", "f": 6378100.0, "d": "distance", "t": "The nominal equatorial Earth radius is exactly 6,378.1 kilometers (IAU 2015).", "a": ["earth radii"]},
+  {"c": "astronomy", "id": "light_minute", "n": "Light-minute", "s": "lmin", "f": 17987547480.0, "d": "distance", "t": "A light-minute is the distance light travels in vacuum in one minute: 17,987,547,480 meters.", "a": ["light-minutes", "light minutes"]},
+  {"c": "astronomy", "id": "light_second", "n": "Light-second", "s": "ls", "f": 299792458.0, "d": "distance", "t": "A light-second is the distance light travels in vacuum in one second: exactly 299,792,458 meters.", "a": ["light-seconds", "light seconds"]},
+  {"c": "astronomy", "id": "julian_year", "n": "Julian year", "s": "a", "f": 31557600.0, "d": "time", "t": "A Julian year is exactly 365.25 days of 86,400 seconds: 31,557,600 seconds.", "a": ["julian years"]},
+  {"c": "astronomy", "id": "sidereal_day", "n": "Sidereal day", "s": "sd", "f": 86164.0905, "d": "time", "t": "A mean sidereal day is the time Earth takes to rotate once relative to the stars: about 86,164.0905 seconds (23 h 56 min 4.0905 s).", "a": ["sidereal days"]},
+  {"c": "astronomy", "id": "solar_hour", "n": "Solar hour", "s": "h", "f": 3600.0, "d": "time", "t": "A mean solar hour is 3,600 seconds, one twenty-fourth of a mean solar day.", "a": ["solar hours"]},
+  {"c": "engineering", "id": "centipoise", "n": "Centipoise", "s": "cP", "f": 0.001, "d": "dynamic_viscosity", "t": "A centipoise is one hundredth of a poise: 0.001 pascal-second (1 mPa·s).", "a": []},
+  {"c": "engineering", "id": "pascal_second", "n": "Pascal-second", "s": "Pa·s", "f": 1.0, "d": "dynamic_viscosity", "t": "The pascal-second is the SI unit of dynamic viscosity: one newton-second per square meter.", "a": ["pascal-seconds", "pa s"]},
+  {"c": "engineering", "id": "millipascal_second", "n": "Millipascal-second", "s": "mPa·s", "f": 0.001, "d": "dynamic_viscosity", "t": "A millipascal-second is 0.001 pascal-second and equals one centipoise.", "a": ["millipascal-seconds"]},
+  {"c": "engineering", "id": "centistokes", "n": "Centistokes", "s": "cSt", "f": 1e-06, "d": "kinematic_viscosity", "t": "A centistokes is one hundredth of a stokes: 10⁻⁶ square meters per second (1 mm²/s).", "a": ["centistoke"]},
+  {"c": "engineering", "id": "square_millimeter_per_second", "n": "Square millimeter per second", "s": "mm²/s", "f": 1e-06, "d": "kinematic_viscosity", "t": "One square millimeter per second is 10⁻⁶ square meters per second and equals one centistokes.", "a": ["square millimeters per second"]},
+  {"c": "engineering", "id": "square_meter_per_second", "n": "Square meter per second", "s": "m²/s", "f": 1.0, "d": "kinematic_viscosity", "t": "The square meter per second is the SI unit of kinematic viscosity and diffusivity.", "a": ["square meters per second"]},
+  {"c": "engineering", "id": "stokes", "n": "Stokes", "s": "St", "f": 0.0001, "d": "kinematic_viscosity", "t": "The stokes is the CGS unit of kinematic viscosity: 10⁻⁴ square meters per second.", "a": []},
+  {"c": "engineering", "id": "watt_per_meter_kelvin", "n": "Watt per meter-kelvin", "s": "W/(m·K)", "f": 1.0, "d": "thermal_conductivity", "t": "The watt per meter-kelvin is the SI unit of thermal conductivity.", "a": ["watts per meter-kelvin", "watts per meter kelvin"]},
+  {"c": "engineering", "id": "btu_per_hour_foot_f", "n": "BTU per hour-foot-°F", "s": "BTU/(h·ft·°F)", "f": 1.7307346663713912, "d": "thermal_conductivity", "t": "One BTU per hour-foot-°F is 1.730734666 W/(m·K), using the International Table BTU.", "a": ["btu per hour-foot-f", "btu per hour foot f"]},
+  {"c": "engineering", "id": "kilocalorie_per_hour_meter_c", "n": "Kilocalorie per hour-meter-°C", "s": "kcal/(h·m·°C)", "f": 1.163, "d": "thermal_conductivity", "t": "One kilocalorie per hour-meter-°C is 1.163 W/(m·K), using the International Table kilocalorie.", "a": ["kilocalories per hour-meter-c", "kcal per hour meter c"]},
+  {"c": "engineering", "id": "watt_per_square_meter_kelvin", "n": "Watt per square meter-kelvin", "s": "W/(m²·K)", "f": 1.0, "d": "heat_transfer_coefficient", "t": "The watt per square meter-kelvin is the SI unit of heat-transfer coefficient (U-value).", "a": ["watts per square meter-kelvin"]},
+  {"c": "engineering", "id": "btu_per_hour_sqft_f", "n": "BTU per hour-sq ft-°F", "s": "BTU/(h·ft²·°F)", "f": 5.678263341113488, "d": "heat_transfer_coefficient", "t": "One BTU per hour-square-foot-°F is 5.678263 W/(m²·K), using the International Table BTU.", "a": ["btu per hour-sq ft-f", "btu per hour sq ft f"]},
+  {"c": "engineering", "id": "watt_per_square_meter", "n": "Watt per square meter", "s": "W/m²", "f": 1.0, "d": "heat_flux", "t": "The watt per square meter is the SI unit of heat flux and irradiance.", "a": ["watts per square meter"]},
+  {"c": "engineering", "id": "btu_per_hour_sqft", "n": "BTU per hour-sq ft", "s": "BTU/(h·ft²)", "f": 3.154590745063049, "d": "heat_flux", "t": "One BTU per hour-square-foot is 3.154591 W/m², using the International Table BTU.", "a": ["btu per hour-sq ft", "btu per hour sq ft"]},
+  {"c": "engineering", "id": "joule_per_kilogram_kelvin", "n": "Joule per kilogram-kelvin", "s": "J/(kg·K)", "f": 1.0, "d": "specific_heat", "t": "The joule per kilogram-kelvin is the SI unit of specific heat capacity.", "a": ["joules per kilogram-kelvin"]},
+  {"c": "engineering", "id": "kilojoule_per_kilogram_kelvin", "n": "Kilojoule per kilogram-kelvin", "s": "kJ/(kg·K)", "f": 1000.0, "d": "specific_heat", "t": "One kilojoule per kilogram-kelvin is 1,000 J/(kg·K).", "a": ["kilojoules per kilogram-kelvin"]},
+  {"c": "engineering", "id": "btu_per_pound_f", "n": "BTU per pound-°F", "s": "BTU/(lb·°F)", "f": 4186.8, "d": "specific_heat", "t": "One BTU per pound-°F is exactly 4,186.8 J/(kg·K), the International Table definition of specific heat of water.", "a": ["btu per pound-f", "btu per pound f"]},
+  {"c": "engineering", "id": "centimeter_4", "n": "Centimeter to the 4th", "s": "cm⁴", "f": 1e-08, "d": "area_moment_of_inertia", "t": "One centimeter to the fourth power is 10⁻⁸ m⁴, a unit of area moment of inertia (second moment of area).", "a": ["centimeters to the 4th", "cm4", "cm^4"]},
+  {"c": "engineering", "id": "inch_4", "n": "Inch to the 4th", "s": "in⁴", "f": 4.162314256e-07, "d": "area_moment_of_inertia", "t": "One inch to the fourth power is exactly 4.1623144 × 10⁻⁷ m⁴ (41.623144 cm⁴).", "a": ["inches to the 4th", "in4", "in^4"]},
+  {"c": "engineering", "id": "meter_4", "n": "Meter to the 4th", "s": "m⁴", "f": 1.0, "d": "area_moment_of_inertia", "t": "One meter to the fourth power is the SI unit of area moment of inertia.", "a": ["meters to the 4th", "m4", "m^4"]},
+  {"c": "engineering", "id": "millimeter_4", "n": "Millimeter to the 4th", "s": "mm⁴", "f": 1e-12, "d": "area_moment_of_inertia", "t": "One millimeter to the fourth power is 10⁻¹² m⁴.", "a": ["millimeters to the 4th", "mm4", "mm^4"]},
+  {"c": "engineering", "id": "kilogram_meter_squared", "n": "Kilogram-meter squared", "s": "kg·m²", "f": 1.0, "d": "mass_moment_of_inertia", "t": "The kilogram-meter squared is the SI unit of mass moment of inertia.", "a": ["kilograms-meter squared"]},
+  {"c": "engineering", "id": "pound_foot_squared", "n": "Pound-foot squared", "s": "lb·ft²", "f": 0.0421401100938048, "d": "mass_moment_of_inertia", "t": "One pound-foot squared is 0.0421401100938 kg·m².", "a": ["pound-foot squared"]},
+  {"c": "engineering", "id": "newton_per_millimeter", "n": "Newton per millimeter", "s": "N/mm", "f": 1000.0, "d": "stiffness", "t": "One newton per millimeter is 1,000 newtons per meter, a stiffness (spring rate).", "a": ["newtons per millimeter"]},
+  {"c": "engineering", "id": "pound_per_inch", "n": "Pound-force per inch", "s": "lbf/in", "f": 175.1268352464764, "d": "stiffness", "t": "One pound-force per inch is 175.126835 N/m (0.175126835 N/mm).", "a": ["pounds per inch"]},
+  {"c": "engineering", "id": "kilonewton_per_cubic_meter", "n": "Kilonewton per cubic meter", "s": "kN/m³", "f": 1000.0, "d": "unit_weight", "t": "One kilonewton per cubic meter is a unit weight (weight per volume) of 1,000 N/m³.", "a": ["kilonewtons per cubic meter"]},
+  {"c": "engineering", "id": "pound_per_cubic_foot", "n": "Pound-force per cubic foot", "s": "lbf/ft³", "f": 157.0874638462462, "d": "unit_weight", "t": "One pound-force per cubic foot is 157.0874606 N/m³ (0.1570874606 kN/m³).", "a": ["pounds per cubic foot"]},
+  {"c": "engineering", "id": "megapascal_sqrt_meter", "n": "Megapascal square root meter", "s": "MPa√m", "f": 1000000.0, "d": "fracture_toughness", "t": "One megapascal square-root-meter is 10⁶ Pa·√m, a unit of stress-intensity factor and fracture toughness.", "a": ["megapascals-sqrt(m)", "mpa sqrt m"]},
+  {"c": "engineering", "id": "ksi_sqrt_inch", "n": "KSI square root inch", "s": "ksi√in", "f": 1098843.4941087547, "d": "fracture_toughness", "t": "One ksi√in is 1.0988434 MPa√m, a unit of stress-intensity factor and fracture toughness.", "a": ["ksi-sqrt(in)", "ksi sqrt in"]},
+  {"c": "engineering", "id": "newton_meter_per_radian", "n": "Newton-meter per radian", "s": "N·m/rad", "f": 1.0, "d": "torsional_stiffness", "t": "One newton-meter per radian is the SI unit of torsional stiffness.", "a": ["newton-meters per radian"]},
+  {"c": "engineering", "id": "pound_foot_per_degree", "n": "Pound-foot per degree", "s": "lbf·ft/°", "f": 77.68264622747556, "d": "torsional_stiffness", "t": "One pound-foot per degree is 77.68 newton-meters per radian.", "a": ["pound-feet per degree"]},
+  {"c": "engineering", "id": "kilogram_per_second", "n": "Kilogram per second", "s": "kg/s", "f": 1.0, "d": "mass_flow", "t": "The kilogram per second is the SI unit of mass flow rate.", "a": ["kilograms per second"]},
+  {"c": "engineering", "id": "pound_per_hour", "n": "Pound per hour", "s": "lb/h", "f": 0.00012599788055555556, "d": "mass_flow", "t": "One pound per hour is 0.45359237 kg per 3,600 s: 0.000125997881 kg/s.", "a": ["pounds per hour"]},
+  {"c": "scientific", "id": "newton", "n": "Newton", "s": "N", "f": 1.0, "d": "force", "t": "The newton is the SI unit of force.", "a": []},
+  {"c": "scientific", "id": "dyne", "n": "Dyne", "s": "dyn", "f": 1e-05, "d": "force", "t": "The dyne is the CGS unit of force: 10⁻⁵ newton.", "a": []},
+  {"c": "scientific", "id": "tesla", "n": "Tesla", "s": "T", "f": 1.0, "d": "magnetic_flux_density", "t": "The tesla is the SI unit of magnetic flux density.", "a": []},
+  {"c": "scientific", "id": "gauss", "n": "Gauss", "s": "G", "f": 0.0001, "d": "magnetic_flux_density", "t": "The gauss is the CGS unit of magnetic flux density: 10⁻⁴ tesla.", "a": []},
+  {"c": "scientific", "id": "lux", "n": "Lux", "s": "lx", "f": 1.0, "d": "illuminance", "t": "The lux is the SI unit of illuminance: one lumen per square meter.", "a": []},
+  {"c": "scientific", "id": "foot_candle", "n": "Foot-candle", "s": "fc", "f": 10.763910416709722, "d": "illuminance", "t": "One foot-candle is one lumen per square foot: 10.7639104 lux.", "a": ["foot-candles", "footcandle"]},
+  {"c": "scientific", "id": "lumen_per_square_meter", "n": "Lumen per square meter", "s": "lm/m²", "f": 1.0, "d": "illuminance", "t": "One lumen per square meter is exactly one lux.", "a": ["lumens per square meter"]},
+  {"c": "scientific", "id": "candela_per_square_meter", "n": "Candela per square meter", "s": "cd/m²", "f": 1.0, "d": "luminance", "t": "The candela per square meter is the SI unit of luminance, also called the nit.", "a": ["candelas per square meter"]},
+  {"c": "scientific", "id": "nit", "n": "Nit", "s": "nit", "f": 1.0, "d": "luminance", "t": "One nit is one candela per square meter.", "a": ["nits"]},
+  {"c": "scientific", "id": "foot_lambert", "n": "Foot-lambert", "s": "fL", "f": 3.4262590996353905, "d": "luminance", "t": "One foot-lambert is (1/π) candela per square foot: 3.4262591 cd/m².", "a": ["foot-lamberts"]},
+  {"c": "scientific", "id": "reciprocal_centimeter", "n": "Reciprocal centimeter", "s": "cm⁻¹", "f": 1.9864458571489288e-23, "d": "energy", "t": "The reciprocal centimeter (wavenumber, cm⁻¹) counts waves per centimeter. As an energy equivalent, E = h·c·ν̃, so 1 cm⁻¹ ≙ 1.98644586 × 10⁻²³ J.", "a": ["reciprocal centimeters", "reciprocal centimeters (cm^-1)", "wavenumber", "cm-1", "cm^-1"], "x": "wavenumber"},
+  {"c": "scientific", "id": "kelvin_energy", "n": "Kelvin", "s": "K", "f": 1.380649e-23, "d": "energy", "t": "As an energy equivalent, one kelvin corresponds to k_B × 1 K = 1.380649 × 10⁻²³ joules.", "a": ["kelvins", "kelvin (energy equivalent)"]},
+  {"c": "scientific", "id": "calorie_thermochemical", "n": "Calorie (thermochemical)", "s": "cal th", "f": 4.184, "d": "energy", "t": "The thermochemical calorie is exactly 4.184 joules.", "a": ["calorie (thermochemical)", "thermochemical calorie"]},
+  {"c": "scientific", "id": "hartree", "n": "Hartree", "s": "Eh", "f": 4.359744722206e-18, "d": "energy", "t": "The hartree is the atomic unit of energy: 4.359 744 722 206 × 10⁻¹⁸ J, about 27.2114 eV.", "a": ["hartrees"]},
+  {"c": "scientific", "id": "kilojoule_per_mole", "n": "Kilojoule per mole", "s": "kJ/mol", "f": 1.6605390671738467e-21, "d": "energy", "t": "One kilojoule per mole corresponds to 1000 J ÷ N_A = 1.66054 × 10⁻²¹ J per particle.", "a": ["kilojoules per mole", "kj/mol"]},
+  {"c": "scientific", "id": "kilocalorie_per_mole", "n": "Kilocalorie per mole", "s": "kcal/mol", "f": 6.947695457055374e-21, "d": "energy", "t": "One kilocalorie per mole corresponds to 4,184 J ÷ N_A per particle (thermochemical kilocalorie).", "a": ["kilocalories per mole", "kcal/mol"]},
+  {"c": "scientific", "id": "poise", "n": "Poise", "s": "P", "f": 0.1, "d": "dynamic_viscosity", "t": "The poise is the CGS unit of dynamic viscosity: 0.1 pascal-second.", "a": []},
+  {"c": "scientific", "id": "pascal_second", "n": "Pascal-second", "s": "Pa·s", "f": 1.0, "d": "dynamic_viscosity", "t": "The pascal-second is the SI unit of dynamic viscosity.", "a": ["pascal-seconds"]},
+  {"c": "scientific", "id": "weber", "n": "Weber", "s": "Wb", "f": 1.0, "d": "magnetic_flux", "t": "The weber is the SI unit of magnetic flux: one volt-second.", "a": []},
+  {"c": "scientific", "id": "maxwell", "n": "Maxwell", "s": "Mx", "f": 1e-08, "d": "magnetic_flux", "t": "The maxwell is the CGS unit of magnetic flux: 10⁻⁸ weber.", "a": []},
+  {"c": "scientific", "id": "oersted", "n": "Oersted", "s": "Oe", "f": 79.57747154594767, "d": "magnetic_field_strength", "t": "The oersted is the CGS unit of magnetic field strength: 1000/(4π) amperes per meter ≈ 79.5775 A/m.", "a": []},
+  {"c": "scientific", "id": "ampere_per_meter", "n": "Ampere per meter", "s": "A/m", "f": 1.0, "d": "magnetic_field_strength", "t": "The ampere per meter is the SI unit of magnetic field strength.", "a": ["amperes per meter"]},
+  {"c": "scientific", "id": "barn", "n": "Barn", "s": "b", "f": 1e-28, "d": "area", "t": "The barn is 10⁻²⁸ square meters, used for nuclear cross-sections.", "a": ["barns"]},
+  {"c": "scientific", "id": "square_centimeter", "n": "Square centimeter", "s": "cm²", "f": 0.0001, "d": "area", "t": "One square centimeter is 10⁻⁴ square meters.", "a": ["square centimeters"]},
+  {"c": "scientific", "id": "debye", "n": "Debye", "s": "D", "f": 3.335640951981521e-30, "d": "dipole_moment", "t": "The debye is the CGS-based unit of electric dipole moment: 10⁻²¹/c coulomb-meters ≈ 3.33564 × 10⁻³⁰ C·m.", "a": ["debyes"]},
+  {"c": "scientific", "id": "coulomb_meter", "n": "Coulomb-meter", "s": "C·m", "f": 1.0, "d": "dipole_moment", "t": "The coulomb-meter is the SI unit of electric dipole moment.", "a": ["coulomb-meters"]},
+  {"c": "scientific", "id": "bohr_radius", "n": "Bohr radius", "s": "a₀", "f": 5.29177210544e-11, "d": "length", "t": "The Bohr radius is the atomic unit of length: 5.291 772 105 44 × 10⁻¹¹ meters (0.529177 Å).", "a": ["bohr radii", "bohr"]},
+  {"c": "scientific", "id": "svedberg", "n": "Svedberg", "s": "S", "f": 1e-13, "d": "time", "t": "The svedberg is 10⁻¹³ seconds, the unit of sedimentation coefficient.", "a": ["svedbergs"]},
+  {"c": "scientific", "id": "second", "n": "Second", "s": "s", "f": 1.0, "d": "time", "t": "The second is the SI base unit of time.", "a": ["seconds"]},
+  {"c": "scientific", "id": "dalton", "n": "Dalton", "s": "Da", "f": 0.0009999999996544214, "d": "molar_mass", "t": "The dalton (unified atomic mass unit, u) is 1/12 the mass of a carbon-12 atom. Per mole of entities, 1 Da ≙ 0.99999999965 g/mol.", "a": ["daltons", "daltons (u)"]},
+  {"c": "scientific", "id": "gram_per_mole", "n": "Gram per mole", "s": "g/mol", "f": 0.001, "d": "molar_mass", "t": "One gram per mole is the SI-derived unit of molar mass (10⁻³ kg/mol).", "a": ["grams per mole"]},
+  {"c": "flow", "id": "million_gallon_us_per_day", "n": "Million US gallons per day", "s": "MGD", "f": 0.04381263638888889, "d": "flow", "t": "One million US gallons per day (MGD) is 3,785.411784 cubic meters per day, about 43.81 liters per second.", "a": ["million gallons per day", "mgd"]},
+  {"c": "flow", "id": "acre_foot_per_day", "n": "Acre-foot per day", "s": "ac ft/d", "f": 0.0142764101568, "d": "flow", "t": "One acre-foot per day is 1,233.48183754752 cubic meters per day, about 0.014276 cubic meters per second.", "a": ["acre-feet per day", "acre feet per day"]},
+  {"c": "flow", "id": "standard_cubic_foot_per_minute", "n": "Standard cubic foot per minute", "s": "SCFM", "f": 0.0004719474432, "d": "flow", "t": "One standard cubic foot per minute is 1 cubic foot of gas per minute, measured at a stated reference (standard) temperature and pressure; numerically 0.471947443 liters per second.", "a": ["standard cubic feet per minute", "scfm"]}
+];
+extraUnits.forEach((item) => {
+const category = baseCategories.find((entry) => entry.id === item.c);
+if (!category || category.units.some((unit) => unit.id === item.id)) return;
+let unit;
+if (item.c === "fuel_economy") {
+const allAliases = buildAliases(item.id, item.n, item.s, item.a || []);
+unit = { ...fuel(item.id, item.n, item.s, item.m, item.f), definition: item.t, aliases: allAliases, synonyms: allAliases };
+} else {
+unit = u(item.id, item.n, item.s, item.f, item.t, item.a || [], item.d);
+}
+if (item.x) unit.special = item.x;
+category.units.push(unit);
+});
+return baseCategories;
+}
+// Conversions that are not a simple factor: dBm (logarithmic), pace (reciprocal of
+// speed) and wavenumber <-> wavelength (reciprocal). Returns null when the pair is
+// an ordinary same-dimension factor conversion so convert() continues as before.
+function convertSpecial(amount, from, to) {
+const invalid = (note) => ({ ok: false, message: note, note });
+if (from.special === "dbm" || to.special === "dbm") {
+if (from.special === "dbm") {
+const watts = Math.pow(10, amount / 10) / 1000;
+return { ok: true, value: watts / to.factor, note: "dBm is a logarithmic power level referenced to 1 mW.", formula: "Power = 10^(dBm / 10) mW, then divide by the target unit in watts." };
+}
+const watts = amount * from.factor;
+if (!(watts > 0)) return invalid("Power must be greater than zero to have a finite dBm value.");
+return { ok: true, value: 10 * Math.log10(watts * 1000), note: "dBm is a logarithmic power level referenced to 1 mW.", formula: "dBm = 10 x log10(power in mW)." };
+}
+if (from.special === "pace" || to.special === "pace") {
+if (from.special === "pace") {
+if (!(amount > 0)) return invalid("Pace must be greater than zero.");
+const metersPerSecond = from.factor / (amount * 60);
+if (to.special === "pace") return { ok: true, value: to.factor / (metersPerSecond * 60), note: "Pace is the reciprocal of speed.", formula: "Pace converts through speed: speed = distance / (pace x 60)." };
+return { ok: true, value: metersPerSecond / to.factor, note: "Pace is the reciprocal of speed.", formula: "Speed = distance / (pace x 60 seconds per minute)." };
+}
+const metersPerSecond = amount * from.factor;
+if (!(metersPerSecond > 0)) return invalid("Speed must be greater than zero to have a finite pace.");
+return { ok: true, value: to.factor / (metersPerSecond * 60), note: "Pace is the reciprocal of speed.", formula: "Pace (min per distance) = distance / (speed x 60)." };
+}
+if (from.special === "wavenumber" && to.dimension === "length") {
+if (!(amount > 0)) return invalid("Wavenumber must be greater than zero to have a finite wavelength.");
+return { ok: true, value: 1 / (100 * amount) / to.factor, note: "Wavelength is the reciprocal of wavenumber.", formula: "Wavelength = 1 / wavenumber (cm^-1 converted to meters)." };
+}
+if (to.special === "wavenumber" && from.dimension === "length") {
+const meters = amount * from.factor;
+if (!(meters > 0)) return invalid("Wavelength must be greater than zero to have a finite wavenumber.");
+return { ok: true, value: 1 / (100 * meters), note: "Wavenumber is the reciprocal of wavelength.", formula: "Wavenumber (cm^-1) = 1 / wavelength (cm)." };
+}
+return null;
 }
 function uniqueUnits(units) {
 const seen = new Set();
@@ -3673,6 +3895,10 @@ return String(value || "").trim().toLowerCase().replace(/\+/g, " ").replace(/[_\
 }
 function convert(category, amount, from, to) {
 if (from.id === to.id) return { ok: true, value: amount, note: getTranslation("messages.sameUnit", currentLanguageCode), formula: localizedFormula("formula_same_unit") || "Source and target units are identical." };
+if (from.special || to.special) {
+const specialResult = convertSpecial(amount, from, to);
+if (specialResult) return specialResult;
+}
 if (category.type === "linear" || category.type === "currency") {
 return {
 ok: true,
