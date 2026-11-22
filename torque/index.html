@@ -247,20 +247,21 @@
                 grid.innerHTML = data.map((item) =>
                   '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
                 ).join('');
-                hasFiltered = false;
+                hasFiltered = false; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
               }
               if (count) {
-                count.textContent = data.length + ' of ' + data.length + ' conversions shown';
+                count.textContent = window.ucHubCount ? window.ucHubCount(data.length, data.length) : data.length + ' of ' + data.length + ' conversions shown';
               }
               return;
             }
-            const filtered = data.filter((item) => item.title.toLowerCase().includes(term));
+            const hubMatch = window.ucHubSearchMatcher ? window.ucHubSearchMatcher(term) : null;
+            const filtered = data.filter((item) => hubMatch ? hubMatch(item) : item.title.toLowerCase().includes(term));
             grid.innerHTML = filtered.map((item) =>
               '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
             ).join('');
-            hasFiltered = true;
+            hasFiltered = true; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
             if (count) {
-              count.textContent = filtered.length + ' of ' + data.length + ' conversions shown';
+              count.textContent = window.ucHubCount ? window.ucHubCount(filtered.length, data.length) : filtered.length + ' of ' + data.length + ' conversions shown';
             }
           }
           if (search) {

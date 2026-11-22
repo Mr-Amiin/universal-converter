@@ -251,20 +251,21 @@
                 grid.innerHTML = data.map((item) =>
                   '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
                 ).join('');
-                hasFiltered = false;
+                hasFiltered = false; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
               }
               if (count) {
-                count.textContent = data.length.toLocaleString() + ' of ' + data.length.toLocaleString() + ' conversions shown';
+                count.textContent = window.ucHubCount ? window.ucHubCount(data.length.toLocaleString(), data.length.toLocaleString()) : data.length.toLocaleString() + ' of ' + data.length.toLocaleString() + ' conversions shown';
               }
               return;
             }
-            const filtered = data.filter((item) => item.title.toLowerCase().includes(term));
+            const hubMatch = window.ucHubSearchMatcher ? window.ucHubSearchMatcher(term) : null;
+            const filtered = data.filter((item) => hubMatch ? hubMatch(item) : item.title.toLowerCase().includes(term));
             grid.innerHTML = filtered.map((item) =>
               '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
             ).join('');
-            hasFiltered = true;
+            hasFiltered = true; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
             if (count) {
-              count.textContent = filtered.length.toLocaleString() + ' of ' + data.length.toLocaleString() + ' conversions shown';
+              count.textContent = window.ucHubCount ? window.ucHubCount(filtered.length.toLocaleString(), data.length.toLocaleString()) : filtered.length.toLocaleString() + ' of ' + data.length.toLocaleString() + ' conversions shown';
             }
           }
           if (search) {
