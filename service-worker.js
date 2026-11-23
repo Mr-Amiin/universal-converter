@@ -1,29 +1,59 @@
-// Universal Converter service worker.
-//
-// Offline strategy: the homepage ("/") already contains the complete converter (all units,
-// formulas and calculators live in app.js), so being offline never needs a second converter.
-// This worker's job is to make sure the homepage and every file its converter needs are in the
-// cache, and to send offline navigations to that cached homepage.
-//
-// v20: homepage-first offline fallback, validated /rates.json + exact search-index precache,
-// no HTML ever returned for failed sub-resources, 404/error responses are never cached.
 const CACHE_NAME = "universal-converter-v20";
-
-// REQUIRED: the homepage and everything its converter needs to initialise. If any of these
-// cannot be stored, installation fails and the previously active worker (and its cache) stays
-// in charge, instead of activating a worker with an incomplete offline shell.
-const CORE_ASSETS = [
-  "/",
-  "/styles.css",
-  "/app.js",
-  "/search-engine.js",
-  "/offline.html",
-  "/logo.svg?v=2",
-  "/logo-dark.svg?v=2",
-  "/logo-icon.svg?v=2",
-  "/logo-icon-dark.svg?v=2",
-  "/favicon.svg?v=2",
-  "/site.webmanifest?v=2"
+const APP_SHELL = [
+"/",
+"/index.html",
+"/styles.css",
+"/app.js",
+"/search-engine.js",
+"/adsense-config.js",
+"/adsense.js",
+"/analytics-config.js",
+"/google-analytics.js",
+"/logo.svg?v=2",
+"/logo-dark.svg?v=2",
+"/logo-icon.svg?v=2",
+"/logo-icon-dark.svg?v=2",
+"/favicon.svg?v=2",
+"/site.webmanifest?v=2",
+"/unit-converter.html",
+"/online-calculator.html",
+"/sitemap.html",
+"/404.html",
+"/offline.html",
+"/guides.html",
+"/metric-vs-imperial.html",
+"/what-is-a-kilometer.html",
+"/acre-vs-hectare.html",
+"/celsius-vs-fahrenheit.html",
+"/digital-storage-units-guide.html",
+"/pressure-units-guide.html",
+"/references.html",
+"/about.html",
+"/contact.html",
+"/privacy.html",
+"/terms.html",
+"/meter-to-feet/",
+"/meters-to-feet/",
+"/feet-to-meters/",
+"/miles-to-km/",
+"/km-to-miles/",
+"/inches-to-cm/",
+"/kg-to-lbs/",
+"/lbs-to-kg/",
+"/grams-to-ounces/",
+"/celsius-to-fahrenheit/",
+"/fahrenheit-to-celsius/",
+"/liter-to-gallon/",
+"/liters-to-gallons/",
+"/gallons-to-liters/",
+"/acre-to-hectare/",
+"/acres-to-hectares/",
+"/hectares-to-acres/",
+"/square-feet-to-square-meters/",
+"/mph-to-kmh/",
+"/psi-to-bar/",
+"/gb-to-mb/",
+"/watts-to-horsepower/"
 ];
 
 // BEST EFFORT: stored individually, so one failing file never blocks installation.

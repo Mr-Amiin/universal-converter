@@ -5803,6 +5803,11 @@ const SEO_CHROME_LABEL_MAP = {
 "Conversion table": "conversion_table"
 };
 
+// The fixed heading is POPULAR Converters; unit-card headings are translated dynamically from the actual unit name derived from each card's first link.
+const SEO_INTERNAL_LINK_HEADING_KEYS = {
+  "POPULAR Converters": "popular_converters"
+};
+
 // The generator's own English wording for each category's pair-intro
 // sentence-1 ("{UNIT_A} and {UNIT_B} both measure length.", "Comparing
 // {UNIT_A} and {UNIT_B} is common in ...", etc.) - one fixed template per
@@ -5875,8 +5880,19 @@ document.querySelectorAll(".seo-faq > h2").forEach((el) => {
 if (seoData.faq && seoData.faq.faq_heading) setTranslatedText(el, seoData.faq.faq_heading);
 });
 document.querySelectorAll(".page-card h2").forEach((el) => {
-if (originalText(el) === "Related conversions" && chrome.related_conversions) {
+const original = originalText(el);
+if (original === "Related conversions" && chrome.related_conversions) {
 setTranslatedText(el, chrome.related_conversions);
+} else if (SEO_INTERNAL_LINK_HEADING_KEYS[original] && chrome[SEO_INTERNAL_LINK_HEADING_KEYS[original]]) {
+setTranslatedText(el, chrome[SEO_INTERNAL_LINK_HEADING_KEYS[original]]);
+} else if (/^More .+ Conversions$/.test(original) && chrome.more_unit_conversions_template) {
+// Resolve the heading's unit from the first link in this card, using the page's real unit catalog.
+const unitCard = el.closest(".page-card");
+const unitLink = unitCard && unitCard.querySelector(".seo-link-list a");
+const unitCtx = unitLink && typeof deriveConversionFromPath === "function" ? deriveConversionFromPath(unitLink.getAttribute("href")) : null;
+const unitCategory = unitCtx && categoryMap.get(unitCtx.categoryId);
+const headingUnit = unitCategory && getUnit(unitCategory, unitCtx.fromUnitId);
+if (headingUnit) setTranslatedText(el, fillTemplateSafe(chrome.more_unit_conversions_template, { UNIT: getUnitDisplayName(headingUnit) }));
 }
 });
 }
@@ -6686,6 +6702,20 @@ if (typeof deriveConversionFromPath !== "function") return;
 document.querySelectorAll(".page-card .seo-link-list a").forEach((a) => {
 const href = a.getAttribute("href");
 if (!href) return;
+// "POPULAR Converters" links point at category hubs ("/length/"): label them "{Category} Converter"
+// from the same translated category names the rest of the app uses, never as "All ... conversions".
+const linkCard = a.closest(".page-card");
+const linkCardHeading = linkCard && linkCard.querySelector("h2");
+if (linkCardHeading && originalText(linkCardHeading) === "POPULAR Converters") {
+const hubSegments = href.split("/").filter(Boolean);
+const hubIdForSlug = { "flow-rate": "flow", "fuel-economy": "fuel_economy" };
+const hubCategory = hubSegments.length === 1 ? categoryMap.get(hubIdForSlug[hubSegments[0]] || hubSegments[0]) : null;
+const hubChrome = seoData.chrome || {};
+if (hubCategory && hubChrome.category_converter_template) {
+setTranslatedText(a, fillTemplateSafe(hubChrome.category_converter_template, { CATEGORY: getCategoryDisplayName(hubCategory) }));
+}
+return;
+}
 const linkCtx = deriveConversionFromPath(href);
 if (linkCtx) {
 const category = categoryMap.get(linkCtx.categoryId);
