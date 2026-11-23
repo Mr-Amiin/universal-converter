@@ -92,7 +92,8 @@ const newScript = `<script>
         var li = document.createElement('li');
         var a = document.createElement('a');
         a.href = list[i][0];
-        a.textContent = list[i][1];
+        a.dataset.ucLabel = list[i][1];
+        a.textContent = window.ucSitemapLabel ? window.ucSitemapLabel(list[i][0], list[i][1]) : list[i][1];
         li.appendChild(a);
         frag.appendChild(li);
       }
@@ -105,7 +106,9 @@ const newScript = `<script>
         var more = document.createElement('button');
         more.type = 'button';
         more.className = 'sitemap-card-more';
-        more.textContent = 'Show more (' + upTo + ' of ' + list.length + ')';
+        more.dataset.shown = upTo;
+        more.dataset.total = list.length;
+        more.textContent = window.ucSitemapText ? window.ucSitemapText('show_more_template', { SHOWN: upTo, TOTAL: list.length }, 'Show more (' + upTo + ' of ' + list.length + ')') : 'Show more (' + upTo + ' of ' + list.length + ')';
         more.addEventListener('click', function () {
           renderPage(slug, container, list, Math.min(list.length, upTo + PAGE_SIZE));
         });
@@ -121,7 +124,7 @@ const newScript = `<script>
         if (expandBtn) expandBtn.hidden = true;
         return;
       }
-      if (expandBtn) { expandBtn.disabled = true; expandBtn.textContent = 'Loading…'; }
+      if (expandBtn) { expandBtn.disabled = true; expandBtn.textContent = window.ucSitemapText ? window.ucSitemapText('loading', {}, 'Loading…') : 'Loading…'; }
       fetch('sitemap-data/' + slug + '.json')
         .then(function (res) {
           if (!res.ok) throw new Error('failed to load ' + slug);
@@ -134,7 +137,7 @@ const newScript = `<script>
           renderPage(slug, container, list, Math.min(list.length, PAGE_SIZE));
         })
         .catch(function () {
-          if (expandBtn) { expandBtn.disabled = false; expandBtn.textContent = 'Could not load — try again'; }
+          if (expandBtn) { expandBtn.disabled = false; expandBtn.textContent = window.ucSitemapText ? window.ucSitemapText('load_failed', {}, 'Could not load — try again') : 'Could not load — try again'; }
         });
     }
 
@@ -171,16 +174,17 @@ const newScript = `<script>
         var name = (card.querySelector('h2') || {}).textContent || '';
         var nameMatch = name.toLowerCase().indexOf(query) !== -1;
         var cachedMatch = cache[slug] && cache[slug].some(function (pair) {
-          return pair[1].toLowerCase().indexOf(query) !== -1;
+          return (pair[1] + ' ' + (window.ucSitemapLabel ? window.ucSitemapLabel(pair[0], pair[1]) : '')).toLowerCase().indexOf(query) !== -1;
         });
         var visible = nameMatch || cachedMatch;
         card.hidden = !visible;
         if (visible) matchingCategories++;
       });
-      status.textContent = matchingCategories === 0
+      var statusEn = matchingCategories === 0
         ? 'No matching categories. Try a shorter term, or open a category below to search its pages directly.'
         : 'Showing ' + matchingCategories + ' matching categor' + (matchingCategories === 1 ? 'y' : 'ies') +
           '. Open a category to search its individual pages.';
+      status.textContent = window.ucSitemapText ? window.ucSitemapText(matchingCategories === 0 ? 'status_none' : 'status_some', { COUNT: matchingCategories }, statusEn) : statusEn;
     }
 
     input.addEventListener('input', function () {

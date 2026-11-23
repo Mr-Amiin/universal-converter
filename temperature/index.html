@@ -37,7 +37,7 @@
   <script type="text/plain" data-cookie-category="advertising" data-src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2057098005458261" async crossorigin="anonymous"></script>
 </head>
 <body class="seo-page">
-  <header class="site-header">
+  <header class="site-header" id="siteHeader" data-upgrade-header>
     <a class="brand" href="../index.html" aria-label="Universal Converter home">
       <picture class="brand-logo brand-logo-light"><source media="(max-width: 380px)" srcset="../logo-icon.svg?v=2"><img src="../logo.svg?v=2" alt="Universal Converter" width="136" height="40" decoding="async"></picture>
       <picture class="brand-logo brand-logo-dark" aria-hidden="true"><source media="(max-width: 380px)" srcset="../logo-icon-dark.svg?v=2"><img src="../logo-dark.svg?v=2" alt="" width="136" height="40" decoding="async"></picture>
@@ -56,6 +56,7 @@
     </button>
       <div class="category-dropdown-container" id="categoryDropdownContainer"><ul class="nav-dropdown-menu" id="categoriesNavMenuMobile"><li><a href="/length/">Length</a></li><li><a href="/area/">Area</a></li><li><a href="/volume/">Volume</a></li><li><a href="/weight/">Weight</a></li><li><a href="/temperature/">Temperature</a></li><li><a href="/speed/">Speed</a></li><li><a href="/pressure/">Pressure</a></li><li><a href="/power/">Power</a></li><li><a href="/energy/">Energy</a></li><li><a href="/electricity/">Electricity</a></li><li><a href="/frequency/">Frequency</a></li><li><a href="/angle/">Angle</a></li><li><a href="/digital/">Digital storage</a></li><li><a href="/currency/">Currency</a></li><li><a href="/flow-rate/">Flow Rate</a></li></ul></div>
   </header>
+<div class="mobile-drawer-overlay" id="mobileDrawerOverlay" hidden></div><nav class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation"></nav>
 
   <main class="page-shell shared-page-container">
       <nav class="breadcrumb" aria-label="Breadcrumb">
@@ -261,20 +262,21 @@
                 grid.innerHTML = data.map((item) =>
                   '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
                 ).join('');
-                hasFiltered = false;
+                hasFiltered = false; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
               }
               if (count) {
-                count.textContent = data.length + ' of ' + data.length + ' conversions shown';
+                count.textContent = window.ucHubCount ? window.ucHubCount(data.length, data.length) : data.length + ' of ' + data.length + ' conversions shown';
               }
               return;
             }
-            const filtered = data.filter((item) => item.title.toLowerCase().includes(term));
+            const hubMatch = window.ucHubSearchMatcher ? window.ucHubSearchMatcher(term) : null;
+            const filtered = data.filter((item) => hubMatch ? hubMatch(item) : item.title.toLowerCase().includes(term));
             grid.innerHTML = filtered.map((item) =>
               '<a class="conversion-card" role="listitem" href="' + item.href + '">' + item.title + '</a>'
             ).join('');
-            hasFiltered = true;
+            hasFiltered = true; if (window.ucHubCardsChanged) window.ucHubCardsChanged();
             if (count) {
-              count.textContent = filtered.length + ' of ' + data.length + ' conversions shown';
+              count.textContent = window.ucHubCount ? window.ucHubCount(filtered.length, data.length) : filtered.length + ' of ' + data.length + ' conversions shown';
             }
           }
           if (search) {

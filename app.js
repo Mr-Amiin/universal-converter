@@ -191,7 +191,10 @@ link.setAttribute("href", "/" + link.search + link.hash);
 // hand-authored per page.
 function renderSiteHeader() {
 const header = document.getElementById("siteHeader");
-if (!header || header.childElementCount) return;
+// A header that ships static (crawlable) markup is only rebuilt when it opts in via
+// data-upgrade-header (the Temperature hub keeps its original static nav links for
+// SEO but still needs the standard header: language menu and mobile drawer).
+if (!header || (header.childElementCount && !header.hasAttribute("data-upgrade-header"))) return;
 const topNavItemsHtml = MOBILE_MAIN_NAV.map((item) => {
 if (item.expand) {
 return `<div class="nav-dropdown"><button type="button" class="nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" aria-controls="categoriesNavMenu"><span data-i18n="${item.i18nKey}">${item.label}</span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu" id="categoriesNavMenu"></ul></div>`;
@@ -199,11 +202,11 @@ return `<div class="nav-dropdown"><button type="button" class="nav-dropdown-togg
 return `<a href="${item.href}" data-i18n="${item.i18nKey}">${item.label}</a>`;
 }).join("");
 header.innerHTML = `
-<button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-<a class="brand" href="/" aria-label="Universal Converter home">${brandLogoHtml("/")}</a>
-<nav class="top-nav" aria-label="Primary navigation">${topNavItemsHtml}</nav>
-<div class="nav-dropdown lang-dropdown" id="langDropdown"><button type="button" class="nav-dropdown-toggle lang-dropdown-toggle" id="langDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="langDropdownMenu" aria-label="Change language"><span class="lang-toggle-flag" id="langToggleFlag" aria-hidden="true"></span><span id="langToggleName"></span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu lang-dropdown-menu" id="langDropdownMenu" role="listbox" aria-label="Select language"></ul></div>
-<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
+<button class="mobile-menu-toggle" id="mobileMenuToggle" type="button" aria-label="Open menu" data-i18n="nav.openMenu" data-i18n-attr="aria-label" aria-haspopup="true" aria-expanded="false" aria-controls="mobileDrawer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+<a class="brand" href="/" aria-label="Universal Converter home" data-i18n="nav.homeLink" data-i18n-attr="aria-label">${brandLogoHtml("/")}</a>
+<nav class="top-nav" aria-label="Primary navigation" data-i18n="nav.primaryNavigation" data-i18n-attr="aria-label">${topNavItemsHtml}</nav>
+<div class="nav-dropdown lang-dropdown" id="langDropdown"><button type="button" class="nav-dropdown-toggle lang-dropdown-toggle" id="langDropdownToggle" aria-haspopup="true" aria-expanded="false" aria-controls="langDropdownMenu" aria-label="Change language"><span class="lang-toggle-flag" id="langToggleFlag" aria-hidden="true"></span><span id="langToggleName"></span><span class="nav-caret" aria-hidden="true"></span></button><ul class="nav-dropdown-menu lang-dropdown-menu" id="langDropdownMenu" role="listbox" aria-label="Select language" data-i18n="nav.selectLanguage" data-i18n-attr="aria-label"></ul></div>
+<button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch color theme" data-i18n="nav.switchTheme" data-i18n-attr="aria-label"><span class="theme-dot" aria-hidden="true"></span><span id="themeText">Dark</span></button>
 `;
 }
 function renderMobileDrawer() {
@@ -252,12 +255,24 @@ return `<li><a class="mobile-drawer-link" href="${item.href}">${icon}<span data-
 }).join("");
 drawer.innerHTML = `
 <div class="mobile-drawer-head">
-<button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu">
+<button type="button" class="mobile-drawer-close" id="mobileDrawerClose" aria-label="Close menu" data-i18n="nav.closeMenu" data-i18n-attr="aria-label">
 <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><line x1="5" y1="5" x2="15" y2="15"/><line x1="15" y1="5" x2="5" y2="15"/></svg>
 </button>
 </div>
 <ul class="mobile-drawer-nav">${navItemsHtml}</ul>
 `;
+// The drawer is (re)built after applyTranslations() has already run, so its
+// data-i18n labels/ARIA text must be translated here or they stay English.
+translateMobileDrawer(drawer);
+}
+function translateMobileDrawer(drawer) {
+const langCode = getStoredLanguageCode();
+drawer.setAttribute("aria-label", getTranslation("nav.mobileNavigation", langCode));
+drawer.querySelectorAll("[data-i18n]").forEach((el) => {
+const value = getTranslation(el.getAttribute("data-i18n"), langCode);
+const attr = el.getAttribute("data-i18n-attr");
+if (attr) el.setAttribute(attr, value); else el.textContent = value;
+});
 }
 // Expands/collapses the Categories submenu as a true accordion: the
 // panel stays `position: static` and part of normal document flow, so
@@ -480,7 +495,7 @@ id: "id-ID", so: "so-SO"
 };
 const TRANSLATIONS = {
 en: {
-nav: { home: "Home", converter: "Converter", categories: "Categories", allCategories: "All categories", calculators: "Calculators", popular: "Popular", guides: "Guides", sitemap: "Sitemap", about: "About", contact: "Contact", search: "Search", language: "Language", theme: "Theme", menu: "Menu", themeDark: "Dark", themeLight: "Light", privacy: "Privacy" },
+nav: { home: "Home", converter: "Converter", categories: "Categories", allCategories: "All categories", calculators: "Calculators", popular: "Popular", guides: "Guides", sitemap: "Sitemap", about: "About", contact: "Contact", search: "Search", language: "Language", theme: "Theme", menu: "Menu", themeDark: "Dark", themeLight: "Light", privacy: "Privacy", openMenu: "Open menu", closeMenu: "Close menu", mobileNavigation: "Mobile navigation", primaryNavigation: "Primary navigation", homeLink: "Universal Converter home", switchTheme: "Switch color theme", selectLanguage: "Select language", changeLanguage: "Change language, current language {LANG}" },
 converter: { searchAllUnits: "Search all units", fromUnit: "From Unit", toUnit: "To Unit", swap: "Swap units", decimalControl: "Decimal control", notation: "Notation", notationAuto: "Auto", notationDecimal: "Decimal", notationScientific: "Scientific", notationEngineering: "Engineering", result: "Result", copyResult: "Copy result", share: "Share", favorite: "Favorite", contextValues: "Context values", fromDefinition: "From definition", toDefinition: "To definition", formula: "Formula", enterValue: "Enter a number to convert", useDecimalNotation: "Use decimal or scientific notation, such as 1.25e6.", searchConversionPlaceholder: "Search conversion...", voltageLabel: "Voltage", currentLabel: "Current", resistanceLabel: "Resistance", hoursLabel: "Hours", liquidDensityLabel: "Liquid density, kg/L", contextHelpDefault: "Some unit families need one extra value for a physically accurate result.", contextHelpElectricity: "Cross-family electrical results use voltage, current, resistance, and hours. Same-family electrical units convert directly.", kindDefault: "Converter", kindCurrency: "Currency calculator", kindElectricity: "Electrical calculator", seoAdSlotConverterLabel: "Converter ad slot", seoAdSlotConverterReserved: "Reserved below the result so the calculator remains usable.", seoAdSlotContentTopLabel: "Ad slot: content top (728x90)", seoAdSlotContentTopReserved: "Reserved above the conversion cards and below the converter.", seoAdSlotContentMiddleLabel: "Ad slot: content middle (728x90)", seoAdSlotContentMiddleReserved: "Reserved between the cards and the FAQ so the page stays balanced.", saved: "Saved" },
 sidebar: { advertisement: "Advertisement", favoriteConverters: "Favorite converters", recentlyUsed: "Recently used", conversionHistory: "Conversion history", clear: "Clear", noFavorites: "No favorites yet. Save a converter to keep it here.", noRecent: "Recent converters will appear here after you use them.", noHistory: "Your latest conversions stay on this device and work offline.", noMatchingConverter: "No matching converter found. Try a unit symbol, category name, or formula keyword." },
 common: { resultCopied: "Result copied to clipboard.", copyUnavailable: "Copy is unavailable in this browser, but the result is ready to select.", shareOpened: "Share dialog opened.", shareCopied: "Share text copied to clipboard.", shareCancelled: "Share was cancelled or unavailable.", addApiEndpoint: "Add an API endpoint or use offline fallback rates.", couldNotLoadRates: "Could not load live rates. Offline fallback remains active." },
@@ -491,7 +506,7 @@ calculators: { heading: "Business, finance, health, date, and agriculture calcul
 cookieBanner: { messagePrefix: "We use cookies to improve your experience and to enable Google Analytics and Google AdSense. By continuing, you agree to our ", privacyPolicyLink: "Privacy Policy", messageSuffix: ".", decline: "Decline", accept: "Accept", ariaLabel: "Cookie notice" }
 },
 es: {
-nav: { home: "Inicio", converter: "Conversor", categories: "Categorías", allCategories: "Todas las categorías", calculators: "Calculadoras", popular: "Popular", guides: "Guías", sitemap: "Mapa del sitio", about: "Acerca de", contact: "Contacto", search: "Buscar", language: "Idioma", theme: "Tema", menu: "Menú", themeDark: "Oscuro", themeLight: "Claro", privacy: "Privacidad" },
+nav: { home: "Inicio", converter: "Conversor", categories: "Categorías", allCategories: "Todas las categorías", calculators: "Calculadoras", popular: "Popular", guides: "Guías", sitemap: "Mapa del sitio", about: "Acerca de", contact: "Contacto", search: "Buscar", language: "Idioma", theme: "Tema", menu: "Menú", themeDark: "Oscuro", themeLight: "Claro", privacy: "Privacidad", openMenu: "Abrir menú", closeMenu: "Cerrar menú", mobileNavigation: "Navegación móvil", primaryNavigation: "Navegación principal", homeLink: "Inicio de Universal Converter", switchTheme: "Cambiar tema de color", selectLanguage: "Seleccionar idioma", changeLanguage: "Cambiar idioma, idioma actual: {LANG}" },
 converter: { searchAllUnits: "Buscar todas las unidades", fromUnit: "Unidad de origen", toUnit: "Unidad de destino", swap: "Intercambiar unidades", decimalControl: "Control de decimales", notation: "Notación", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Ingeniería", result: "Resultado", copyResult: "Copiar resultado", share: "Compartir", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definición de origen", toDefinition: "Definición de destino", formula: "Fórmula", enterValue: "Introduce un número para convertir", useDecimalNotation: "Usa notación decimal o científica, como 1.25e6.", searchConversionPlaceholder: "Buscar conversión...", voltageLabel: "Voltaje", currentLabel: "Corriente", resistanceLabel: "Resistencia", hoursLabel: "Horas", liquidDensityLabel: "Densidad del líquido, kg/L", contextHelpDefault: "Algunas familias de unidades necesitan un valor adicional para obtener un resultado físicamente preciso.", contextHelpElectricity: "Los resultados eléctricos entre familias distintas usan voltaje, corriente, resistencia y horas. Las unidades eléctricas de la misma familia se convierten directamente.", kindDefault: "Conversor", kindCurrency: "Calculadora de divisas", kindElectricity: "Calculadora eléctrica", seoAdSlotConverterLabel: "Ranura de anuncio del conversor", seoAdSlotConverterReserved: "Reservado debajo del resultado para que la calculadora siga siendo utilizable.", seoAdSlotContentTopLabel: "Espacio publicitario: parte superior del contenido (728x90)", seoAdSlotContentTopReserved: "Reservado encima de las tarjetas de conversión y debajo del conversor.", seoAdSlotContentMiddleLabel: "Espacio publicitario: centro del contenido (728x90)", seoAdSlotContentMiddleReserved: "Reservado entre las tarjetas y las preguntas frecuentes para mantener el equilibrio de la página.", saved: "Guardado" },
 sidebar: { advertisement: "Publicidad", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recientemente", conversionHistory: "Historial de conversiones", clear: "Borrar", noFavorites: "Aún no hay favoritos. Guarda un conversor para verlo aquí.", noRecent: "Los conversores recientes aparecerán aquí después de usarlos.", noHistory: "Tus conversiones más recientes permanecen en este dispositivo y funcionan sin conexión.", noMatchingConverter: "No se encontró ningún conversor coincidente. Prueba con un símbolo de unidad, un nombre de categoría o una palabra clave de fórmula." },
 common: { resultCopied: "Resultado copiado al portapapeles.", copyUnavailable: "Copiar no está disponible en este navegador, pero el resultado está listo para seleccionar.", shareOpened: "Se abrió el diálogo para compartir.", shareCopied: "Texto para compartir copiado al portapapeles.", shareCancelled: "Se canceló o no está disponible la función de compartir.", addApiEndpoint: "Agrega un endpoint de API o usa las tasas sin conexión.", couldNotLoadRates: "No se pudieron cargar las tasas en vivo. Sigue activo el modo sin conexión." },
@@ -502,7 +517,7 @@ calculators: { heading: "Calculadoras de negocios, finanzas, salud, fechas y agr
 cookieBanner: { messagePrefix: "Utilizamos cookies para mejorar tu experiencia y habilitar Google Analytics y Google AdSense. Al continuar, aceptas nuestra ", privacyPolicyLink: "Política de privacidad", messageSuffix: ".", decline: "Rechazar", accept: "Aceptar", ariaLabel: "Aviso de cookies" }
 },
 fr: {
-nav: { home: "Accueil", converter: "Convertisseur", categories: "Catégories", allCategories: "Toutes les catégories", calculators: "Calculatrices", popular: "Populaire", guides: "Guides", sitemap: "Plan du site", about: "À propos", contact: "Contact", search: "Rechercher", language: "Langue", theme: "Thème", menu: "Menu", themeDark: "Sombre", themeLight: "Clair", privacy: "Confidentialité" },
+nav: { home: "Accueil", converter: "Convertisseur", categories: "Catégories", allCategories: "Toutes les catégories", calculators: "Calculatrices", popular: "Populaire", guides: "Guides", sitemap: "Plan du site", about: "À propos", contact: "Contact", search: "Rechercher", language: "Langue", theme: "Thème", menu: "Menu", themeDark: "Sombre", themeLight: "Clair", privacy: "Confidentialité", openMenu: "Ouvrir le menu", closeMenu: "Fermer le menu", mobileNavigation: "Navigation mobile", primaryNavigation: "Navigation principale", homeLink: "Accueil Universal Converter", switchTheme: "Changer le thème de couleur", selectLanguage: "Choisir la langue", changeLanguage: "Changer de langue, langue actuelle : {LANG}" },
 converter: { searchAllUnits: "Rechercher toutes les unités", fromUnit: "Unité de départ", toUnit: "Unité d'arrivée", swap: "Inverser les unités", decimalControl: "Contrôle des décimales", notation: "Notation", notationAuto: "Automatique", notationDecimal: "Décimale", notationScientific: "Scientifique", notationEngineering: "Ingénierie", result: "Résultat", copyResult: "Copier le résultat", share: "Partager", favorite: "Favori", contextValues: "Valeurs de contexte", fromDefinition: "Définition de départ", toDefinition: "Définition d'arrivée", formula: "Formule", enterValue: "Entrez un nombre à convertir", useDecimalNotation: "Utilisez la notation décimale ou scientifique, par exemple 1.25e6.", searchConversionPlaceholder: "Rechercher une conversion...", voltageLabel: "Tension", currentLabel: "Courant", resistanceLabel: "Résistance", hoursLabel: "Heures", liquidDensityLabel: "Densité du liquide, kg/L", contextHelpDefault: "Certaines familles d'unités nécessitent une valeur supplémentaire pour un résultat physiquement précis.", contextHelpElectricity: "Les résultats électriques entre familles différentes utilisent la tension, le courant, la résistance et les heures. Les unités électriques de la même famille se convertissent directement.", kindDefault: "Convertisseur", kindCurrency: "Calculatrice de devises", kindElectricity: "Calculatrice électrique", seoAdSlotConverterLabel: "Emplacement publicitaire du convertisseur", seoAdSlotConverterReserved: "Réservé sous le résultat afin que la calculatrice reste utilisable.", seoAdSlotContentTopLabel: "Emplacement publicitaire : haut du contenu (728x90)", seoAdSlotContentTopReserved: "Réservé au-dessus des cartes de conversion et sous le convertisseur.", seoAdSlotContentMiddleLabel: "Emplacement publicitaire : milieu du contenu (728x90)", seoAdSlotContentMiddleReserved: "Réservé entre les cartes et la FAQ afin que la page reste équilibrée.", saved: "Enregistré" },
 sidebar: { advertisement: "Publicité", favoriteConverters: "Convertisseurs favoris", recentlyUsed: "Utilisés récemment", conversionHistory: "Historique des conversions", clear: "Effacer", noFavorites: "Aucun favori pour l'instant. Enregistrez un convertisseur pour le retrouver ici.", noRecent: "Les convertisseurs récents apparaîtront ici après utilisation.", noHistory: "Vos dernières conversions restent sur cet appareil et fonctionnent hors ligne.", noMatchingConverter: "Aucun convertisseur correspondant trouvé. Essayez un symbole d'unité, un nom de catégorie ou un mot-clé de formule." },
 common: { resultCopied: "Résultat copié dans le presse-papiers.", copyUnavailable: "La copie n'est pas disponible dans ce navigateur, mais le résultat peut être sélectionné.", shareOpened: "Boîte de dialogue de partage ouverte.", shareCopied: "Texte de partage copié dans le presse-papiers.", shareCancelled: "Le partage a été annulé ou n'est pas disponible.", addApiEndpoint: "Ajoutez un point d'accès API ou utilisez les taux hors ligne.", couldNotLoadRates: "Impossible de charger les taux en direct. Le mode hors ligne reste actif." },
@@ -513,7 +528,7 @@ calculators: { heading: "Calculatrices d'entreprise, de finance, de santé, de d
 cookieBanner: { messagePrefix: "Nous utilisons des cookies pour améliorer votre expérience et activer Google Analytics et Google AdSense. En continuant, vous acceptez notre ", privacyPolicyLink: "Politique de confidentialité", messageSuffix: ".", decline: "Refuser", accept: "Accepter", ariaLabel: "Avis sur les cookies" }
 },
 de: {
-nav: { home: "Startseite", converter: "Umrechner", categories: "Kategorien", allCategories: "Alle Kategorien", calculators: "Rechner", popular: "Beliebt", guides: "Anleitungen", sitemap: "Sitemap", about: "Über uns", contact: "Kontakt", search: "Suche", language: "Sprache", theme: "Design", menu: "Menü", themeDark: "Dunkel", themeLight: "Hell", privacy: "Datenschutz" },
+nav: { home: "Startseite", converter: "Umrechner", categories: "Kategorien", allCategories: "Alle Kategorien", calculators: "Rechner", popular: "Beliebt", guides: "Anleitungen", sitemap: "Sitemap", about: "Über uns", contact: "Kontakt", search: "Suche", language: "Sprache", theme: "Design", menu: "Menü", themeDark: "Dunkel", themeLight: "Hell", privacy: "Datenschutz", openMenu: "Menü öffnen", closeMenu: "Menü schließen", mobileNavigation: "Mobile Navigation", primaryNavigation: "Hauptnavigation", homeLink: "Universal Converter Startseite", switchTheme: "Farbdesign wechseln", selectLanguage: "Sprache auswählen", changeLanguage: "Sprache ändern, aktuelle Sprache: {LANG}" },
 converter: { searchAllUnits: "Alle Einheiten durchsuchen", fromUnit: "Von-Einheit", toUnit: "Zu-Einheit", swap: "Einheiten tauschen", decimalControl: "Dezimalstellen", notation: "Schreibweise", notationAuto: "Automatisch", notationDecimal: "Dezimal", notationScientific: "Wissenschaftlich", notationEngineering: "Technisch", result: "Ergebnis", copyResult: "Ergebnis kopieren", share: "Teilen", favorite: "Favorit", contextValues: "Kontextwerte", fromDefinition: "Definition (von)", toDefinition: "Definition (zu)", formula: "Formel", enterValue: "Zahl zum Umrechnen eingeben", useDecimalNotation: "Verwenden Sie Dezimal- oder wissenschaftliche Schreibweise, z. B. 1.25e6.", searchConversionPlaceholder: "Umrechnung suchen...", voltageLabel: "Spannung", currentLabel: "Strom", resistanceLabel: "Widerstand", hoursLabel: "Stunden", liquidDensityLabel: "Flüssigkeitsdichte, kg/L", contextHelpDefault: "Manche Einheitenfamilien benötigen einen zusätzlichen Wert für ein physikalisch genaues Ergebnis.", contextHelpElectricity: "Familienübergreifende elektrische Ergebnisse verwenden Spannung, Strom, Widerstand und Stunden. Elektrische Einheiten derselben Familie werden direkt umgerechnet.", kindDefault: "Umrechner", kindCurrency: "Währungsrechner", kindElectricity: "Elektrorechner", seoAdSlotConverterLabel: "Anzeigenplatz des Umrechners", seoAdSlotConverterReserved: "Unterhalb des Ergebnisses reserviert, damit der Rechner nutzbar bleibt.", seoAdSlotContentTopLabel: "Anzeigenplatz: oberer Inhaltsbereich (728x90)", seoAdSlotContentTopReserved: "Oberhalb der Umrechnungskarten und unterhalb des Umrechners reserviert.", seoAdSlotContentMiddleLabel: "Anzeigenplatz: mittlerer Inhaltsbereich (728x90)", seoAdSlotContentMiddleReserved: "Zwischen den Karten und den FAQ reserviert, damit die Seite ausgewogen bleibt.", saved: "Gespeichert" },
 sidebar: { advertisement: "Werbung", favoriteConverters: "Favorisierte Umrechner", recentlyUsed: "Zuletzt verwendet", conversionHistory: "Umrechnungsverlauf", clear: "Löschen", noFavorites: "Noch keine Favoriten. Speichern Sie einen Umrechner, damit er hier erscheint.", noRecent: "Zuletzt verwendete Umrechner erscheinen hier nach der Nutzung.", noHistory: "Ihre letzten Umrechnungen bleiben auf diesem Gerät gespeichert und funktionieren offline.", noMatchingConverter: "Kein passender Umrechner gefunden. Versuchen Sie ein Einheitensymbol, einen Kategorienamen oder ein Formel-Schlüsselwort." },
 common: { resultCopied: "Ergebnis in die Zwischenablage kopiert.", copyUnavailable: "Kopieren ist in diesem Browser nicht verfügbar, das Ergebnis kann aber markiert werden.", shareOpened: "Teilen-Dialog geöffnet.", shareCopied: "Text zum Teilen in die Zwischenablage kopiert.", shareCancelled: "Teilen wurde abgebrochen oder ist nicht verfügbar.", addApiEndpoint: "Fügen Sie einen API-Endpunkt hinzu oder nutzen Sie die Offline-Kurse.", couldNotLoadRates: "Live-Kurse konnten nicht geladen werden. Der Offline-Modus bleibt aktiv." },
@@ -524,7 +539,7 @@ calculators: { heading: "Rechner für Wirtschaft, Finanzen, Gesundheit, Datum un
 cookieBanner: { messagePrefix: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern und Google Analytics sowie Google AdSense zu ermöglichen. Durch die Fortsetzung stimmen Sie unserer ", privacyPolicyLink: "Datenschutzrichtlinie", messageSuffix: ".", decline: "Ablehnen", accept: "Akzeptieren", ariaLabel: "Cookie-Hinweis" }
 },
 pt: {
-nav: { home: "Início", converter: "Conversor", categories: "Categorias", allCategories: "Todas as categorias", calculators: "Calculadoras", popular: "Popular", guides: "Guias", sitemap: "Mapa do site", about: "Sobre", contact: "Contato", search: "Pesquisar", language: "Idioma", theme: "Tema", menu: "Menu", themeDark: "Escuro", themeLight: "Claro", privacy: "Privacidade" },
+nav: { home: "Início", converter: "Conversor", categories: "Categorias", allCategories: "Todas as categorias", calculators: "Calculadoras", popular: "Popular", guides: "Guias", sitemap: "Mapa do site", about: "Sobre", contact: "Contato", search: "Pesquisar", language: "Idioma", theme: "Tema", menu: "Menu", themeDark: "Escuro", themeLight: "Claro", privacy: "Privacidade", openMenu: "Abrir menu", closeMenu: "Fechar menu", mobileNavigation: "Navegação móvel", primaryNavigation: "Navegação principal", homeLink: "Página inicial do Universal Converter", switchTheme: "Alternar tema de cores", selectLanguage: "Selecionar idioma", changeLanguage: "Alterar idioma, idioma atual: {LANG}" },
 converter: { searchAllUnits: "Pesquisar todas as unidades", fromUnit: "Unidade de origem", toUnit: "Unidade de destino", swap: "Trocar unidades", decimalControl: "Controle de casas decimais", notation: "Notação", notationAuto: "Automática", notationDecimal: "Decimal", notationScientific: "Científica", notationEngineering: "Engenharia", result: "Resultado", copyResult: "Copiar resultado", share: "Compartilhar", favorite: "Favorito", contextValues: "Valores de contexto", fromDefinition: "Definição de origem", toDefinition: "Definição de destino", formula: "Fórmula", enterValue: "Digite um número para converter", useDecimalNotation: "Use notação decimal ou científica, como 1.25e6.", searchConversionPlaceholder: "Buscar conversão...", voltageLabel: "Tensão", currentLabel: "Corrente", resistanceLabel: "Resistência", hoursLabel: "Horas", liquidDensityLabel: "Densidade do líquido, kg/L", contextHelpDefault: "Algumas famílias de unidades precisam de um valor extra para um resultado fisicamente preciso.", contextHelpElectricity: "Resultados elétricos entre famílias diferentes usam tensão, corrente, resistência e horas. Unidades elétricas da mesma família convertem diretamente.", kindDefault: "Conversor", kindCurrency: "Calculadora de moedas", kindElectricity: "Calculadora elétrica", seoAdSlotConverterLabel: "Espaço de anúncio do conversor", seoAdSlotConverterReserved: "Reservado abaixo do resultado para que a calculadora continue utilizável.", seoAdSlotContentTopLabel: "Espaço de anúncio: topo do conteúdo (728x90)", seoAdSlotContentTopReserved: "Reservado acima dos cartões de conversão e abaixo do conversor.", seoAdSlotContentMiddleLabel: "Espaço de anúncio: meio do conteúdo (728x90)", seoAdSlotContentMiddleReserved: "Reservado entre os cartões e as perguntas frequentes para manter a página equilibrada.", saved: "Salvo" },
 sidebar: { advertisement: "Publicidade", favoriteConverters: "Conversores favoritos", recentlyUsed: "Usados recentemente", conversionHistory: "Histórico de conversões", clear: "Limpar", noFavorites: "Ainda não há favoritos. Salve um conversor para vê-lo aqui.", noRecent: "Os conversores recentes aparecerão aqui após o uso.", noHistory: "Suas conversões mais recentes ficam neste dispositivo e funcionam offline.", noMatchingConverter: "Nenhum conversor correspondente encontrado. Tente um símbolo de unidade, um nome de categoria ou uma palavra-chave de fórmula." },
 common: { resultCopied: "Resultado copiado para a área de transferência.", copyUnavailable: "A cópia não está disponível neste navegador, mas o resultado pode ser selecionado.", shareOpened: "Caixa de diálogo de compartilhamento aberta.", shareCopied: "Texto de compartilhamento copiado para a área de transferência.", shareCancelled: "O compartilhamento foi cancelado ou não está disponível.", addApiEndpoint: "Adicione um endpoint de API ou use as taxas offline.", couldNotLoadRates: "Não foi possível carregar as taxas em tempo real. O modo offline continua ativo." },
@@ -535,7 +550,7 @@ calculators: { heading: "Calculadoras de negócios, finanças, saúde, datas e a
 cookieBanner: { messagePrefix: "Usamos cookies para melhorar sua experiência e habilitar o Google Analytics e o Google AdSense. Ao continuar, você concorda com nossa ", privacyPolicyLink: "Política de Privacidade", messageSuffix: ".", decline: "Recusar", accept: "Aceitar", ariaLabel: "Aviso de cookies" }
 },
 it: {
-nav: { home: "Home", converter: "Convertitore", categories: "Categorie", allCategories: "Tutte le categorie", calculators: "Calcolatrici", popular: "Popolare", guides: "Guide", sitemap: "Mappa del sito", about: "Chi siamo", contact: "Contatti", search: "Cerca", language: "Lingua", theme: "Tema", menu: "Menu", themeDark: "Scuro", themeLight: "Chiaro", privacy: "Privacy" },
+nav: { home: "Home", converter: "Convertitore", categories: "Categorie", allCategories: "Tutte le categorie", calculators: "Calcolatrici", popular: "Popolare", guides: "Guide", sitemap: "Mappa del sito", about: "Chi siamo", contact: "Contatti", search: "Cerca", language: "Lingua", theme: "Tema", menu: "Menu", themeDark: "Scuro", themeLight: "Chiaro", privacy: "Privacy", openMenu: "Apri menu", closeMenu: "Chiudi menu", mobileNavigation: "Navigazione mobile", primaryNavigation: "Navigazione principale", homeLink: "Home di Universal Converter", switchTheme: "Cambia tema colore", selectLanguage: "Seleziona lingua", changeLanguage: "Cambia lingua, lingua attuale: {LANG}" },
 converter: { searchAllUnits: "Cerca tutte le unità", fromUnit: "Unità di partenza", toUnit: "Unità di arrivo", swap: "Scambia unità", decimalControl: "Controllo decimali", notation: "Notazione", notationAuto: "Automatica", notationDecimal: "Decimale", notationScientific: "Scientifica", notationEngineering: "Ingegneristica", result: "Risultato", copyResult: "Copia risultato", share: "Condividi", favorite: "Preferito", contextValues: "Valori di contesto", fromDefinition: "Definizione di partenza", toDefinition: "Definizione di arrivo", formula: "Formula", enterValue: "Inserisci un numero da convertire", useDecimalNotation: "Usa la notazione decimale o scientifica, ad esempio 1.25e6.", searchConversionPlaceholder: "Cerca conversione...", voltageLabel: "Tensione", currentLabel: "Corrente", resistanceLabel: "Resistenza", hoursLabel: "Ore", liquidDensityLabel: "Densità del liquido, kg/L", contextHelpDefault: "Alcune famiglie di unità richiedono un valore aggiuntivo per un risultato fisicamente accurato.", contextHelpElectricity: "I risultati elettrici tra famiglie diverse usano tensione, corrente, resistenza e ore. Le unità elettriche della stessa famiglia si convertono direttamente.", kindDefault: "Convertitore", kindCurrency: "Calcolatrice valutaria", kindElectricity: "Calcolatrice elettrica", seoAdSlotConverterLabel: "Spazio pubblicitario del convertitore", seoAdSlotConverterReserved: "Riservato sotto il risultato affinché la calcolatrice resti utilizzabile.", seoAdSlotContentTopLabel: "Spazio pubblicitario: parte superiore del contenuto (728x90)", seoAdSlotContentTopReserved: "Riservato sopra le schede di conversione e sotto il convertitore.", seoAdSlotContentMiddleLabel: "Spazio pubblicitario: centro del contenuto (728x90)", seoAdSlotContentMiddleReserved: "Riservato tra le schede e le FAQ per mantenere la pagina equilibrata.", saved: "Salvato" },
 sidebar: { advertisement: "Pubblicità", favoriteConverters: "Convertitori preferiti", recentlyUsed: "Usati di recente", conversionHistory: "Cronologia conversioni", clear: "Cancella", noFavorites: "Nessun preferito ancora. Salva un convertitore per trovarlo qui.", noRecent: "I convertitori recenti appariranno qui dopo l'uso.", noHistory: "Le tue conversioni più recenti restano su questo dispositivo e funzionano offline.", noMatchingConverter: "Nessun convertitore corrispondente trovato. Prova un simbolo di unità, un nome di categoria o una parola chiave della formula." },
 common: { resultCopied: "Risultato copiato negli appunti.", copyUnavailable: "La copia non è disponibile in questo browser, ma il risultato è pronto per essere selezionato.", shareOpened: "Finestra di condivisione aperta.", shareCopied: "Testo di condivisione copiato negli appunti.", shareCancelled: "La condivisione è stata annullata o non è disponibile.", addApiEndpoint: "Aggiungi un endpoint API oppure usa i tassi offline.", couldNotLoadRates: "Impossibile caricare i tassi in tempo reale. La modalità offline resta attiva." },
@@ -546,7 +561,7 @@ calculators: { heading: "Calcolatrici per affari, finanza, salute, date e agrico
 cookieBanner: { messagePrefix: "Utilizziamo i cookie per migliorare la tua esperienza e abilitare Google Analytics e Google AdSense. Continuando, accetti la nostra ", privacyPolicyLink: "Informativa sulla privacy", messageSuffix: ".", decline: "Rifiuta", accept: "Accetta", ariaLabel: "Avviso sui cookie" }
 },
 ar: {
-nav: { home: "الرئيسية", converter: "المحوّل", categories: "الفئات", allCategories: "كل الفئات", calculators: "الحاسبات", popular: "الأكثر استخدامًا", guides: "الأدلة", sitemap: "خريطة الموقع", about: "من نحن", contact: "تواصل معنا", search: "بحث", language: "اللغة", theme: "المظهر", menu: "القائمة", themeDark: "داكن", themeLight: "فاتح", privacy: "الخصوصية" },
+nav: { home: "الرئيسية", converter: "المحوّل", categories: "الفئات", allCategories: "كل الفئات", calculators: "الحاسبات", popular: "الأكثر استخدامًا", guides: "الأدلة", sitemap: "خريطة الموقع", about: "من نحن", contact: "تواصل معنا", search: "بحث", language: "اللغة", theme: "المظهر", menu: "القائمة", themeDark: "داكن", themeLight: "فاتح", privacy: "الخصوصية", openMenu: "فتح القائمة", closeMenu: "إغلاق القائمة", mobileNavigation: "التنقل على الجوال", primaryNavigation: "التنقل الرئيسي", homeLink: "الصفحة الرئيسية لـ Universal Converter", switchTheme: "تبديل مظهر الألوان", selectLanguage: "اختيار اللغة", changeLanguage: "تغيير اللغة، اللغة الحالية: {LANG}" },
 converter: { searchAllUnits: "ابحث في كل الوحدات", fromUnit: "الوحدة الأصلية", toUnit: "الوحدة الهدف", swap: "تبديل الوحدتين", decimalControl: "عدد الخانات العشرية", notation: "طريقة العرض", notationAuto: "تلقائي", notationDecimal: "عشري", notationScientific: "علمي", notationEngineering: "هندسي", result: "النتيجة", copyResult: "نسخ النتيجة", share: "مشاركة", favorite: "المفضلة", contextValues: "قيم سياقية إضافية", fromDefinition: "تعريف الوحدة الأصلية", toDefinition: "تعريف الوحدة الهدف", formula: "المعادلة", enterValue: "أدخل رقمًا للتحويل", useDecimalNotation: "استخدم الصيغة العشرية أو العلمية، مثل 1.25e6.", searchConversionPlaceholder: "البحث عن تحويل...", voltageLabel: "الجهد", currentLabel: "التيار", resistanceLabel: "المقاومة", hoursLabel: "الساعات", liquidDensityLabel: "كثافة السائل، كجم/لتر", contextHelpDefault: "تحتاج بعض عائلات الوحدات إلى قيمة إضافية للحصول على نتيجة دقيقة فيزيائيًا.", contextHelpElectricity: "تستخدم النتائج الكهربائية بين العائلات المختلفة الجهد والتيار والمقاومة والساعات. الوحدات الكهربائية من نفس العائلة تتحول مباشرة.", kindDefault: "محوّل", kindCurrency: "حاسبة العملات", kindElectricity: "حاسبة كهربائية", seoAdSlotConverterLabel: "مساحة إعلان المحوّل", seoAdSlotConverterReserved: "محجوزة أسفل النتيجة حتى تظل الحاسبة قابلة للاستخدام.", seoAdSlotContentTopLabel: "مساحة إعلانية: أعلى المحتوى (728×90)", seoAdSlotContentTopReserved: "محجوزة أعلى بطاقات التحويل وأسفل المحوّل.", seoAdSlotContentMiddleLabel: "مساحة إعلانية: منتصف المحتوى (728×90)", seoAdSlotContentMiddleReserved: "محجوزة بين البطاقات والأسئلة الشائعة لإبقاء الصفحة متوازنة.", saved: "محفوظ" },
 sidebar: { advertisement: "إعلان", favoriteConverters: "المحوّلات المفضّلة", recentlyUsed: "المستخدَمة مؤخرًا", conversionHistory: "سجل التحويلات", clear: "مسح", noFavorites: "لا توجد مفضلة بعد. احفظ محوّلًا ليظهر هنا.", noRecent: "ستظهر المحوّلات المستخدمة مؤخرًا هنا بعد استخدامها.", noHistory: "تبقى آخر تحويلاتك محفوظة على هذا الجهاز وتعمل دون اتصال بالإنترنت.", noMatchingConverter: "لم يتم العثور على محول مطابق. جرّب رمز وحدة أو اسم فئة أو كلمة مفتاحية من الصيغة." },
 common: { resultCopied: "تم نسخ النتيجة إلى الحافظة.", copyUnavailable: "النسخ غير متاح في هذا المتصفح، لكن النتيجة جاهزة للتحديد.", shareOpened: "تم فتح نافذة المشاركة.", shareCopied: "تم نسخ نص المشاركة إلى الحافظة.", shareCancelled: "تم إلغاء المشاركة أو أنها غير متاحة.", addApiEndpoint: "أضف نقطة وصول API أو استخدم الأسعار غير المتصلة.", couldNotLoadRates: "تعذّر تحميل الأسعار المباشرة. لا يزال الوضع غير المتصل نشطًا." },
@@ -557,7 +572,7 @@ calculators: { heading: "آلات حاسبة للأعمال والمالية و�
 cookieBanner: { messagePrefix: "نستخدم ملفات تعريف الارتباط لتحسين تجربتك ولتمكين Google Analytics وGoogle AdSense. بالمتابعة، فإنك توافق على ", privacyPolicyLink: "سياسة الخصوصية", messageSuffix: ".", decline: "رفض", accept: "قبول", ariaLabel: "إشعار ملفات تعريف الارتباط" }
 },
 zh: {
-nav: { home: "首页", converter: "换算器", categories: "分类", allCategories: "所有分类", calculators: "计算器", popular: "热门", guides: "指南", sitemap: "网站地图", about: "关于我们", contact: "联系我们", search: "搜索", language: "语言", theme: "主题", menu: "菜单", themeDark: "深色", themeLight: "浅色", privacy: "隐私" },
+nav: { home: "首页", converter: "换算器", categories: "分类", allCategories: "所有分类", calculators: "计算器", popular: "热门", guides: "指南", sitemap: "网站地图", about: "关于我们", contact: "联系我们", search: "搜索", language: "语言", theme: "主题", menu: "菜单", themeDark: "深色", themeLight: "浅色", privacy: "隐私", openMenu: "打开菜单", closeMenu: "关闭菜单", mobileNavigation: "移动导航", primaryNavigation: "主导航", homeLink: "Universal Converter 首页", switchTheme: "切换颜色主题", selectLanguage: "选择语言", changeLanguage: "切换语言，当前语言：{LANG}" },
 converter: { searchAllUnits: "搜索所有单位", fromUnit: "原单位", toUnit: "目标单位", swap: "交换单位", decimalControl: "小数位数", notation: "表示法", notationAuto: "自动", notationDecimal: "小数", notationScientific: "科学计数法", notationEngineering: "工程计数法", result: "结果", copyResult: "复制结果", share: "分享", favorite: "收藏", contextValues: "附加参数", fromDefinition: "原单位定义", toDefinition: "目标单位定义", formula: "换算公式", enterValue: "输入要换算的数值", useDecimalNotation: "请使用小数或科学计数法，例如 1.25e6。", searchConversionPlaceholder: "搜索换算…", voltageLabel: "电压", currentLabel: "电流", resistanceLabel: "电阻", hoursLabel: "小时", liquidDensityLabel: "液体密度，kg/L", contextHelpDefault: "某些单位系列需要一个额外的数值才能得到物理上准确的结果。", contextHelpElectricity: "跨系列电学结果需要电压、电流、电阻和小时数。同一系列的电学单位可直接换算。", kindDefault: "换算器", kindCurrency: "货币计算器", kindElectricity: "电学计算器", seoAdSlotConverterLabel: "换算器广告位", seoAdSlotConverterReserved: "预留在结果下方，以确保计算器仍可正常使用。", seoAdSlotContentTopLabel: "广告位：内容顶部 (728x90)", seoAdSlotContentTopReserved: "预留在换算卡片上方、换算器下方。", seoAdSlotContentMiddleLabel: "广告位：内容中部 (728x90)", seoAdSlotContentMiddleReserved: "预留在卡片和常见问题之间，以保持页面平衡。", saved: "已收藏" },
 sidebar: { advertisement: "广告", favoriteConverters: "收藏的换算器", recentlyUsed: "最近使用", conversionHistory: "换算记录", clear: "清除", noFavorites: "暂无收藏。保存一个换算器后会显示在这里。", noRecent: "使用过的换算器会在此处显示。", noHistory: "最近的换算记录保存在本设备上，离线也可使用。", noMatchingConverter: "未找到匹配的换算器。请尝试输入单位符号、分类名称或公式关键词。" },
 common: { resultCopied: "结果已复制到剪贴板。", copyUnavailable: "此浏览器不支持复制，但结果已可供选中。", shareOpened: "已打开分享窗口。", shareCopied: "分享文本已复制到剪贴板。", shareCancelled: "分享已取消或不可用。", addApiEndpoint: "请添加 API 端点，或使用离线备用汇率。", couldNotLoadRates: "无法加载实时汇率，已继续使用离线备用汇率。" },
@@ -568,7 +583,7 @@ calculators: { heading: "商业、财务、健康、日期与农业计算器", b
 cookieBanner: { messagePrefix: "我们使用 Cookie 来改善您的体验，并启用 Google Analytics 与 Google AdSense。继续使用即表示您同意我们的", privacyPolicyLink: "隐私政策", messageSuffix: "。", decline: "拒绝", accept: "接受", ariaLabel: "Cookie 提示" }
 },
 ja: {
-nav: { home: "ホーム", converter: "コンバーター", categories: "カテゴリー", allCategories: "すべてのカテゴリー", calculators: "計算ツール", popular: "人気", guides: "ガイド", sitemap: "サイトマップ", about: "サイトについて", contact: "お問い合わせ", search: "検索", language: "言語", theme: "テーマ", menu: "メニュー", themeDark: "ダーク", themeLight: "ライト", privacy: "プライバシー" },
+nav: { home: "ホーム", converter: "コンバーター", categories: "カテゴリー", allCategories: "すべてのカテゴリー", calculators: "計算ツール", popular: "人気", guides: "ガイド", sitemap: "サイトマップ", about: "サイトについて", contact: "お問い合わせ", search: "検索", language: "言語", theme: "テーマ", menu: "メニュー", themeDark: "ダーク", themeLight: "ライト", privacy: "プライバシー", openMenu: "メニューを開く", closeMenu: "メニューを閉じる", mobileNavigation: "モバイルナビゲーション", primaryNavigation: "メインナビゲーション", homeLink: "Universal Converter ホーム", switchTheme: "カラーテーマを切り替える", selectLanguage: "言語を選択", changeLanguage: "言語を変更、現在の言語：{LANG}" },
 converter: { searchAllUnits: "すべての単位を検索", fromUnit: "変換元の単位", toUnit: "変換先の単位", swap: "単位を入れ替え", decimalControl: "小数点以下の桁数", notation: "表記形式", notationAuto: "自動", notationDecimal: "小数", notationScientific: "指数表記", notationEngineering: "工学表記", result: "結果", copyResult: "結果をコピー", share: "共有", favorite: "お気に入り", contextValues: "追加パラメータ", fromDefinition: "変換元単位の定義", toDefinition: "変換先単位の定義", formula: "計算式", enterValue: "変換する数値を入力してください", useDecimalNotation: "1.25e6 のように小数表記または指数表記を使用してください。", searchConversionPlaceholder: "変換を検索...", voltageLabel: "電圧", currentLabel: "電流", resistanceLabel: "抵抗", hoursLabel: "時間", liquidDensityLabel: "液体密度、kg/L", contextHelpDefault: "一部の単位系では、物理的に正確な結果を得るために追加の値が1つ必要です。", contextHelpElectricity: "系列をまたぐ電気系の結果には、電圧、電流、抵抗、時間が使用されます。同じ系列の電気単位は直接変換されます。", kindDefault: "コンバーター", kindCurrency: "通貨計算機", kindElectricity: "電気計算機", seoAdSlotConverterLabel: "コンバーター広告枠", seoAdSlotConverterReserved: "計算機が使いやすいままになるよう、結果の下に確保されています。", seoAdSlotContentTopLabel: "広告枠：コンテンツ上部（728x90）", seoAdSlotContentTopReserved: "変換カードの上、コンバーターの下に確保されています。", seoAdSlotContentMiddleLabel: "広告枠：コンテンツ中央（728x90）", seoAdSlotContentMiddleReserved: "カードとFAQの間に確保され、ページのバランスを保ちます。", saved: "保存済み" },
 sidebar: { advertisement: "広告", favoriteConverters: "お気に入りのコンバーター", recentlyUsed: "最近使用したもの", conversionHistory: "変換履歴", clear: "削除", noFavorites: "お気に入りはまだありません。コンバーターを保存するとここに表示されます。", noRecent: "使用したコンバーターがここに表示されます。", noHistory: "最近の変換履歴はこの端末に保存され、オフラインでも利用できます。", noMatchingConverter: "一致する変換ツールが見つかりません。単位記号、カテゴリ名、または数式のキーワードを試してください。" },
 common: { resultCopied: "結果をクリップボードにコピーしました。", copyUnavailable: "このブラウザではコピーを利用できませんが、結果は選択できます。", shareOpened: "共有ダイアログを開きました。", shareCopied: "共有用のテキストをクリップボードにコピーしました。", shareCancelled: "共有がキャンセルされたか、利用できません。", addApiEndpoint: "APIエンドポイントを追加するか、オフラインの参考レートを使用してください。", couldNotLoadRates: "最新レートを取得できませんでした。オフラインの参考レートを引き続き使用します。" },
@@ -579,7 +594,7 @@ calculators: { heading: "ビジネス、財務、健康、日付、農業の電�
 cookieBanner: { messagePrefix: "お客様の体験を向上させ、Google AnalyticsとGoogle AdSenseを有効にするためにCookieを使用しています。続行することで、以下の", privacyPolicyLink: "プライバシーポリシー", messageSuffix: "。", decline: "拒否", accept: "同意する", ariaLabel: "Cookieに関する通知" }
 },
 ko: {
-nav: { home: "홈", converter: "변환기", categories: "카테고리", allCategories: "전체 카테고리", calculators: "계산기", popular: "인기", guides: "가이드", sitemap: "사이트맵", about: "소개", contact: "문의하기", search: "검색", language: "언어", theme: "테마", menu: "메뉴", themeDark: "다크", themeLight: "라이트", privacy: "개인정보" },
+nav: { home: "홈", converter: "변환기", categories: "카테고리", allCategories: "전체 카테고리", calculators: "계산기", popular: "인기", guides: "가이드", sitemap: "사이트맵", about: "소개", contact: "문의하기", search: "검색", language: "언어", theme: "테마", menu: "메뉴", themeDark: "다크", themeLight: "라이트", privacy: "개인정보", openMenu: "메뉴 열기", closeMenu: "메뉴 닫기", mobileNavigation: "모바일 내비게이션", primaryNavigation: "기본 내비게이션", homeLink: "Universal Converter 홈", switchTheme: "색상 테마 전환", selectLanguage: "언어 선택", changeLanguage: "언어 변경, 현재 언어: {LANG}" },
 converter: { searchAllUnits: "모든 단위 검색", fromUnit: "변환 전 단위", toUnit: "변환 후 단위", swap: "단위 바꾸기", decimalControl: "소수점 자릿수", notation: "표기 방식", notationAuto: "자동", notationDecimal: "소수", notationScientific: "지수 표기", notationEngineering: "공학 표기", result: "결과", copyResult: "결과 복사", share: "공유", favorite: "즐겨찾기", contextValues: "추가 값", fromDefinition: "변환 전 단위 정의", toDefinition: "변환 후 단위 정의", formula: "공식", enterValue: "변환할 숫자를 입력하세요", useDecimalNotation: "1.25e6과 같은 소수 또는 지수 표기를 사용하세요.", searchConversionPlaceholder: "변환 검색...", voltageLabel: "전압", currentLabel: "전류", resistanceLabel: "저항", hoursLabel: "시간", liquidDensityLabel: "액체 밀도, kg/L", contextHelpDefault: "일부 단위 계열은 물리적으로 정확한 결과를 얻기 위해 추가 값이 하나 더 필요합니다.", contextHelpElectricity: "계열 간 전기 결과에는 전압, 전류, 저항, 시간이 사용됩니다. 같은 계열의 전기 단위는 직접 변환됩니다.", kindDefault: "변환기", kindCurrency: "통화 계산기", kindElectricity: "전기 계산기", seoAdSlotConverterLabel: "변환기 광고 영역", seoAdSlotConverterReserved: "계산기가 계속 사용 가능하도록 결과 아래에 예약되어 있습니다.", seoAdSlotContentTopLabel: "광고 영역: 콘텐츠 상단 (728x90)", seoAdSlotContentTopReserved: "변환 카드 위, 변환기 아래에 예약되어 있습니다.", seoAdSlotContentMiddleLabel: "광고 영역: 콘텐츠 중간 (728x90)", seoAdSlotContentMiddleReserved: "카드와 FAQ 사이에 예약되어 페이지 균형을 유지합니다.", saved: "저장됨" },
 sidebar: { advertisement: "광고", favoriteConverters: "즐겨찾는 변환기", recentlyUsed: "최근 사용", conversionHistory: "변환 기록", clear: "지우기", noFavorites: "아직 즐겨찾기가 없습니다. 변환기를 저장하면 여기에 표시됩니다.", noRecent: "최근에 사용한 변환기가 여기에 표시됩니다.", noHistory: "최근 변환 기록은 이 기기에 저장되며 오프라인에서도 사용할 수 있습니다.", noMatchingConverter: "일치하는 변환기를 찾을 수 없습니다. 단위 기호, 카테고리 이름 또는 공식 키워드를 입력해 보세요." },
 common: { resultCopied: "결과가 클립보드에 복사되었습니다.", copyUnavailable: "이 브라우저에서는 복사를 사용할 수 없지만 결과를 선택할 수 있습니다.", shareOpened: "공유 대화상자가 열렸습니다.", shareCopied: "공유 텍스트가 클립보드에 복사되었습니다.", shareCancelled: "공유가 취소되었거나 사용할 수 없습니다.", addApiEndpoint: "API 엔드포인트를 추가하거나 오프라인 참고 환율을 사용하세요.", couldNotLoadRates: "실시간 환율을 불러오지 못했습니다. 오프라인 참고 환율이 계속 사용됩니다." },
@@ -590,7 +605,7 @@ calculators: { heading: "비즈니스, 금융, 건강, 날짜, 농업 계산기"
 cookieBanner: { messagePrefix: "사용자 경험을 개선하고 Google Analytics 및 Google AdSense를 사용하기 위해 쿠키를 사용합니다. 계속 진행하면 당사의 ", privacyPolicyLink: "개인정보 처리방침", messageSuffix: ".", decline: "거부", accept: "수락", ariaLabel: "쿠키 안내" }
 },
 hi: {
-nav: { home: "होम", converter: "कनवर्टर", categories: "श्रेणियाँ", allCategories: "सभी श्रेणियाँ", calculators: "कैलकुलेटर", popular: "लोकप्रिय", guides: "गाइड", sitemap: "साइटमैप", about: "हमारे बारे में", contact: "संपर्क करें", search: "खोजें", language: "भाषा", theme: "थीम", menu: "मेनू", themeDark: "डार्क", themeLight: "लाइट", privacy: "गोपनीयता" },
+nav: { home: "होम", converter: "कनवर्टर", categories: "श्रेणियाँ", allCategories: "सभी श्रेणियाँ", calculators: "कैलकुलेटर", popular: "लोकप्रिय", guides: "गाइड", sitemap: "साइटमैप", about: "हमारे बारे में", contact: "संपर्क करें", search: "खोजें", language: "भाषा", theme: "थीम", menu: "मेनू", themeDark: "डार्क", themeLight: "लाइट", privacy: "गोपनीयता", openMenu: "मेनू खोलें", closeMenu: "मेनू बंद करें", mobileNavigation: "मोबाइल नेविगेशन", primaryNavigation: "मुख्य नेविगेशन", homeLink: "Universal Converter होम", switchTheme: "रंग थीम बदलें", selectLanguage: "भाषा चुनें", changeLanguage: "भाषा बदलें, वर्तमान भाषा: {LANG}" },
 converter: { searchAllUnits: "सभी इकाइयाँ खोजें", fromUnit: "मूल इकाई", toUnit: "लक्ष्य इकाई", swap: "इकाइयाँ बदलें", decimalControl: "दशमलव अंकों की संख्या", notation: "संकेतन", notationAuto: "स्वतः", notationDecimal: "दशमलव", notationScientific: "वैज्ञानिक", notationEngineering: "इंजीनियरिंग", result: "परिणाम", copyResult: "परिणाम कॉपी करें", share: "साझा करें", favorite: "पसंदीदा", contextValues: "अतिरिक्त मान", fromDefinition: "मूल इकाई की परिभाषा", toDefinition: "लक्ष्य इकाई की परिभाषा", formula: "सूत्र", enterValue: "बदलने के लिए एक संख्या दर्ज करें", useDecimalNotation: "दशमलव या वैज्ञानिक संकेतन का उपयोग करें, जैसे 1.25e6।", searchConversionPlaceholder: "रूपांतरण खोजें...", voltageLabel: "वोल्टेज", currentLabel: "करंट", resistanceLabel: "प्रतिरोध", hoursLabel: "घंटे", liquidDensityLabel: "तरल घनत्व, kg/L", contextHelpDefault: "भौतिक रूप से सटीक परिणाम के लिए कुछ इकाई समूहों को एक अतिरिक्त मान की आवश्यकता होती है।", contextHelpElectricity: "विभिन्न समूहों के बीच विद्युत परिणामों के लिए वोल्टेज, करंट, प्रतिरोध और घंटों का उपयोग किया जाता है। एक ही समूह की विद्युत इकाइयाँ सीधे रूपांतरित होती हैं।", kindDefault: "कनवर्टर", kindCurrency: "मुद्रा कैलकुलेटर", kindElectricity: "विद्युत कैलकुलेटर", seoAdSlotConverterLabel: "कनवर्टर विज्ञापन स्थान", seoAdSlotConverterReserved: "परिणाम के नीचे आरक्षित है ताकि कैलकुलेटर उपयोग योग्य बना रहे।", seoAdSlotContentTopLabel: "विज्ञापन स्थान: सामग्री का शीर्ष भाग (728x90)", seoAdSlotContentTopReserved: "रूपांतरण कार्ड के ऊपर और कनवर्टर के नीचे आरक्षित है।", seoAdSlotContentMiddleLabel: "विज्ञापन स्थान: सामग्री का मध्य भाग (728x90)", seoAdSlotContentMiddleReserved: "कार्ड और सामान्य प्रश्नों के बीच आरक्षित है ताकि पृष्ठ संतुलित रहे।", saved: "सहेजा गया" },
 sidebar: { advertisement: "विज्ञापन", favoriteConverters: "पसंदीदा कनवर्टर", recentlyUsed: "हाल ही में उपयोग किए गए", conversionHistory: "रूपांतरण इतिहास", clear: "साफ़ करें", noFavorites: "अभी तक कोई पसंदीदा नहीं है। कनवर्टर सहेजें ताकि वह यहाँ दिखे।", noRecent: "हाल ही में उपयोग किए गए कनवर्टर उपयोग के बाद यहाँ दिखाई देंगे।", noHistory: "आपके नवीनतम रूपांतरण इस डिवाइस पर सुरक्षित रहते हैं और ऑफ़लाइन भी काम करते हैं।", noMatchingConverter: "कोई मेल खाता कनवर्टर नहीं मिला। कोई इकाई प्रतीक, श्रेणी का नाम, या सूत्र कीवर्ड आज़माएँ।" },
 common: { resultCopied: "परिणाम क्लिपबोर्ड पर कॉपी किया गया।", copyUnavailable: "इस ब्राउज़र में कॉपी करना उपलब्ध नहीं है, लेकिन परिणाम चुनने के लिए तैयार है।", shareOpened: "शेयर डायलॉग खोला गया।", shareCopied: "शेयर टेक्स्ट क्लिपबोर्ड पर कॉपी किया गया।", shareCancelled: "शेयर रद्द कर दिया गया या उपलब्ध नहीं है।", addApiEndpoint: "कोई API एंडपॉइंट जोड़ें या ऑफ़लाइन दरें उपयोग करें।", couldNotLoadRates: "लाइव दरें लोड नहीं हो सकीं। ऑफ़लाइन दरें सक्रिय रहेंगी।" },
@@ -601,7 +616,7 @@ calculators: { heading: "व्यवसाय, वित्त, स्वास
 cookieBanner: { messagePrefix: "हम आपके अनुभव को बेहतर बनाने और Google Analytics तथा Google AdSense को सक्षम करने के लिए कुकीज़ का उपयोग करते हैं। जारी रखकर, आप हमारी ", privacyPolicyLink: "गोपनीयता नीति", messageSuffix: "।", decline: "अस्वीकार करें", accept: "स्वीकार करें", ariaLabel: "कुकी सूचना" }
 },
 tr: {
-nav: { home: "Ana Sayfa", converter: "Dönüştürücü", categories: "Kategoriler", allCategories: "Tüm kategoriler", calculators: "Hesap Makineleri", popular: "Popüler", guides: "Rehberler", sitemap: "Site Haritası", about: "Hakkımızda", contact: "İletişim", search: "Ara", language: "Dil", theme: "Tema", menu: "Menü", themeDark: "Koyu", themeLight: "Açık", privacy: "Gizlilik" },
+nav: { home: "Ana Sayfa", converter: "Dönüştürücü", categories: "Kategoriler", allCategories: "Tüm kategoriler", calculators: "Hesap Makineleri", popular: "Popüler", guides: "Rehberler", sitemap: "Site Haritası", about: "Hakkımızda", contact: "İletişim", search: "Ara", language: "Dil", theme: "Tema", menu: "Menü", themeDark: "Koyu", themeLight: "Açık", privacy: "Gizlilik", openMenu: "Menüyü aç", closeMenu: "Menüyü kapat", mobileNavigation: "Mobil gezinme", primaryNavigation: "Ana gezinme", homeLink: "Universal Converter ana sayfa", switchTheme: "Renk temasını değiştir", selectLanguage: "Dil seç", changeLanguage: "Dili değiştir, geçerli dil: {LANG}" },
 converter: { searchAllUnits: "Tüm birimlerde ara", fromUnit: "Kaynak Birim", toUnit: "Hedef Birim", swap: "Birimleri değiştir", decimalControl: "Ondalık basamak sayısı", notation: "Gösterim", notationAuto: "Otomatik", notationDecimal: "Ondalık", notationScientific: "Bilimsel", notationEngineering: "Mühendislik", result: "Sonuç", copyResult: "Sonucu kopyala", share: "Paylaş", favorite: "Favori", contextValues: "Ek bağlam değerleri", fromDefinition: "Kaynak birim tanımı", toDefinition: "Hedef birim tanımı", formula: "Formül", enterValue: "Dönüştürülecek sayıyı girin", useDecimalNotation: "1.25e6 gibi ondalık veya bilimsel gösterim kullanın.", searchConversionPlaceholder: "Dönüştürme ara...", voltageLabel: "Voltaj", currentLabel: "Akım", resistanceLabel: "Direnç", hoursLabel: "Saat", liquidDensityLabel: "Sıvı yoğunluğu, kg/L", contextHelpDefault: "Bazı birim aileleri fiziksel olarak doğru bir sonuç için ek bir değere ihtiyaç duyar.", contextHelpElectricity: "Aileler arası elektrik sonuçları voltaj, akım, direnç ve saat kullanır. Aynı aileden elektrik birimleri doğrudan dönüştürülür.", kindDefault: "Dönüştürücü", kindCurrency: "Döviz hesap makinesi", kindElectricity: "Elektrik hesap makinesi", seoAdSlotConverterLabel: "Dönüştürücü reklam alanı", seoAdSlotConverterReserved: "Hesap makinesinin kullanılabilir kalması için sonucun altında ayrılmıştır.", seoAdSlotContentTopLabel: "Reklam alanı: içerik üstü (728x90)", seoAdSlotContentTopReserved: "Dönüştürme kartlarının üstünde ve dönüştürücünün altında ayrılmıştır.", seoAdSlotContentMiddleLabel: "Reklam alanı: içerik ortası (728x90)", seoAdSlotContentMiddleReserved: "Sayfanın dengeli kalması için kartlar ile SSS arasında ayrılmıştır.", saved: "Kaydedildi" },
 sidebar: { advertisement: "Reklam", favoriteConverters: "Favori dönüştürücüler", recentlyUsed: "Son kullanılanlar", conversionHistory: "Dönüştürme geçmişi", clear: "Temizle", noFavorites: "Henüz favori yok. Burada görünmesi için bir dönüştürücü kaydedin.", noRecent: "Kullandığınız dönüştürücüler burada görünecek.", noHistory: "Son dönüştürmeleriniz bu cihazda saklanır ve çevrimdışı da çalışır.", noMatchingConverter: "Eşleşen bir dönüştürücü bulunamadı. Bir birim sembolü, kategori adı veya formül anahtar kelimesi deneyin." },
 common: { resultCopied: "Sonuç panoya kopyalandı.", copyUnavailable: "Bu tarayıcıda kopyalama kullanılamıyor, ancak sonuç seçilmeye hazır.", shareOpened: "Paylaşım penceresi açıldı.", shareCopied: "Paylaşım metni panoya kopyalandı.", shareCancelled: "Paylaşım iptal edildi veya kullanılamıyor.", addApiEndpoint: "Bir API uç noktası ekleyin veya çevrimdışı kurları kullanın.", couldNotLoadRates: "Anlık kurlar yüklenemedi. Çevrimdışı kurlar kullanılmaya devam ediyor." },
@@ -612,7 +627,7 @@ calculators: { heading: "İş, finans, sağlık, tarih ve tarım hesap makineler
 cookieBanner: { messagePrefix: "Deneyiminizi geliştirmek ve Google Analytics ile Google AdSense'i etkinleştirmek için çerezler kullanıyoruz. Devam ederek ", privacyPolicyLink: "Gizlilik Politikası", messageSuffix: ".", decline: "Reddet", accept: "Kabul et", ariaLabel: "Çerez bildirimi" }
 },
 id: {
-nav: { home: "Beranda", converter: "Konverter", categories: "Kategori", allCategories: "Semua kategori", calculators: "Kalkulator", popular: "Populer", guides: "Panduan", sitemap: "Peta situs", about: "Tentang", contact: "Kontak", search: "Cari", language: "Bahasa", theme: "Tema", menu: "Menu", themeDark: "Gelap", themeLight: "Terang", privacy: "Privasi" },
+nav: { home: "Beranda", converter: "Konverter", categories: "Kategori", allCategories: "Semua kategori", calculators: "Kalkulator", popular: "Populer", guides: "Panduan", sitemap: "Peta situs", about: "Tentang", contact: "Kontak", search: "Cari", language: "Bahasa", theme: "Tema", menu: "Menu", themeDark: "Gelap", themeLight: "Terang", privacy: "Privasi", openMenu: "Buka menu", closeMenu: "Tutup menu", mobileNavigation: "Navigasi seluler", primaryNavigation: "Navigasi utama", homeLink: "Beranda Universal Converter", switchTheme: "Ganti tema warna", selectLanguage: "Pilih bahasa", changeLanguage: "Ubah bahasa, bahasa saat ini: {LANG}" },
 converter: { searchAllUnits: "Cari semua satuan", fromUnit: "Satuan Asal", toUnit: "Satuan Tujuan", swap: "Tukar satuan", decimalControl: "Kontrol desimal", notation: "Notasi", notationAuto: "Otomatis", notationDecimal: "Desimal", notationScientific: "Ilmiah", notationEngineering: "Rekayasa", result: "Hasil", copyResult: "Salin hasil", share: "Bagikan", favorite: "Favorit", contextValues: "Nilai konteks tambahan", fromDefinition: "Definisi satuan asal", toDefinition: "Definisi satuan tujuan", formula: "Rumus", enterValue: "Masukkan angka yang akan dikonversi", useDecimalNotation: "Gunakan notasi desimal atau ilmiah, misalnya 1.25e6.", searchConversionPlaceholder: "Cari konversi...", voltageLabel: "Tegangan", currentLabel: "Arus", resistanceLabel: "Resistansi", hoursLabel: "Jam", liquidDensityLabel: "Kepadatan cairan, kg/L", contextHelpDefault: "Beberapa keluarga satuan memerlukan satu nilai tambahan untuk hasil yang akurat secara fisik.", contextHelpElectricity: "Hasil listrik lintas keluarga menggunakan tegangan, arus, resistansi, dan jam. Satuan listrik dalam keluarga yang sama dikonversi secara langsung.", kindDefault: "Konverter", kindCurrency: "Kalkulator mata uang", kindElectricity: "Kalkulator listrik", seoAdSlotConverterLabel: "Slot iklan konverter", seoAdSlotConverterReserved: "Dicadangkan di bawah hasil agar kalkulator tetap dapat digunakan.", seoAdSlotContentTopLabel: "Slot iklan: bagian atas konten (728x90)", seoAdSlotContentTopReserved: "Dicadangkan di atas kartu konversi dan di bawah konverter.", seoAdSlotContentMiddleLabel: "Slot iklan: bagian tengah konten (728x90)", seoAdSlotContentMiddleReserved: "Dicadangkan di antara kartu dan FAQ agar halaman tetap seimbang.", saved: "Tersimpan" },
 sidebar: { advertisement: "Iklan", favoriteConverters: "Konverter favorit", recentlyUsed: "Baru digunakan", conversionHistory: "Riwayat konversi", clear: "Hapus", noFavorites: "Belum ada favorit. Simpan konverter agar muncul di sini.", noRecent: "Konverter yang baru digunakan akan muncul di sini.", noHistory: "Konversi terbaru Anda tersimpan di perangkat ini dan tetap berfungsi secara offline.", noMatchingConverter: "Tidak ditemukan konverter yang cocok. Coba simbol satuan, nama kategori, atau kata kunci rumus." },
 common: { resultCopied: "Hasil disalin ke clipboard.", copyUnavailable: "Salin tidak tersedia di browser ini, tetapi hasil siap untuk dipilih.", shareOpened: "Dialog berbagi terbuka.", shareCopied: "Teks berbagi disalin ke clipboard.", shareCancelled: "Berbagi dibatalkan atau tidak tersedia.", addApiEndpoint: "Tambahkan endpoint API atau gunakan kurs offline.", couldNotLoadRates: "Kurs langsung tidak dapat dimuat. Kurs offline tetap digunakan." },
@@ -623,7 +638,7 @@ calculators: { heading: "Kalkulator bisnis, keuangan, kesehatan, tanggal, dan pe
 cookieBanner: { messagePrefix: "Kami menggunakan cookie untuk meningkatkan pengalaman Anda dan mengaktifkan Google Analytics serta Google AdSense. Dengan melanjutkan, Anda menyetujui ", privacyPolicyLink: "Kebijakan Privasi", messageSuffix: ".", decline: "Tolak", accept: "Terima", ariaLabel: "Pemberitahuan cookie" }
 },
 so: {
-nav: { home: "Bogga hore", converter: "Beddelaha", categories: "Qaybaha", allCategories: "Dhammaan qaybaha", calculators: "Xisaabiyayaasha", popular: "Caanka ah", guides: "Hagayaasha", sitemap: "Khariidadda bogga", about: "Nagu saabsan", contact: "Nala soo xiriir", search: "Raadi", language: "Luqadda", theme: "Muuqaalka", menu: "Menu-ga", themeDark: "Madow", themeLight: "Iftiin", privacy: "Asturnaanta" },
+nav: { home: "Bogga hore", converter: "Beddelaha", categories: "Qaybaha", allCategories: "Dhammaan qaybaha", calculators: "Xisaabiyayaasha", popular: "Caanka ah", guides: "Hagayaasha", sitemap: "Khariidadda bogga", about: "Nagu saabsan", contact: "Nala soo xiriir", search: "Raadi", language: "Luqadda", theme: "Muuqaalka", menu: "Menu-ga", themeDark: "Madow", themeLight: "Iftiin", privacy: "Asturnaanta", openMenu: "Fur menu-ga", closeMenu: "Xir menu-ga", mobileNavigation: "Hagitaanka moobilka", primaryNavigation: "Hagitaanka ugu weyn", homeLink: "Bogga hore ee Universal Converter", switchTheme: "Beddel muuqaalka midabka", selectLanguage: "Dooro luqadda", changeLanguage: "Beddel luqadda, luqadda hadda: {LANG}" },
 converter: { searchAllUnits: "Ka raadi dhammaan cabbirrada", fromUnit: "Cabbirka laga beddelayo", toUnit: "Cabbirka loo beddelayo", swap: "Isbeddel cabbirrada", decimalControl: "Xakameynta tirooyinka jajabka", notation: "Habka muujinta", notationAuto: "Si toos ah", notationDecimal: "Jajab tobanle", notationScientific: "Sayniska", notationEngineering: "Injineernimo", result: "Natiijada", copyResult: "Koobi natiijada", share: "La wadaag", favorite: "Ku dar door bidaan", contextValues: "Qiyamka dheeraadka ah", fromDefinition: "Sharaxaadda cabbirka laga beddelayo", toDefinition: "Sharaxaadda cabbirka loo beddelayo", formula: "Qaacidada", enterValue: "Geli lambar aad beddesho", useDecimalNotation: "Isticmaal habka jajabka tobanlaha ah ama kan sayniska, sida 1.25e6.", searchConversionPlaceholder: "Raadi beddel...", voltageLabel: "Fooliyada", currentLabel: "Kore-socodka", resistanceLabel: "Iska-caabinta", hoursLabel: "Saacadaha", liquidDensityLabel: "Cufnaanta dareeraha, kg/L", contextHelpDefault: "Qaar ka mid ah qoysaska cabbirrada waxay u baahan yihiin hal qiimo oo dheeraad ah si natiijo dhabta ah loo helo.", contextHelpElectricity: "Natiijooyinka koronto ee qoysas kala duwan waxay isticmaalaan fooliyada, kore-socodka, iska-caabinta, iyo saacadaha. Cabbirrada korontada ee isku qoyska ah si toos ah ayey isugu beddelaan.", kindDefault: "Beddelaha", kindCurrency: "Xisaabiyaha Lacagta", kindElectricity: "Xisaabiyaha Korontada", seoAdSlotConverterLabel: "Booska xayeysiiska beddelaha", seoAdSlotConverterReserved: "Waxaa loo qorsheeyay natiijada hoosteeda si xisaabiyuhu u sii ahaado mid la isticmaali karo.", seoAdSlotContentTopLabel: "Booska xayeysiiska: qaybta sare ee content-ka (728x90)", seoAdSlotContentTopReserved: "Waxaa loo qorsheeyay kaararka beddelka korkooda iyo beddelaha hoostiisa.", seoAdSlotContentMiddleLabel: "Booska xayeysiiska: bartamaha content-ka (728x90)", seoAdSlotContentMiddleReserved: "Waxaa loo qorsheeyay kaararka iyo su'aalaha inta u dhaxaysa si boggu u sii ahaado mid dheelli tiran.", saved: "La Keydiyay" },
 sidebar: { advertisement: "Xayeysiin", favoriteConverters: "Beddelayaasha door bidan", recentlyUsed: "Dhawaan la isticmaalay", conversionHistory: "Taariikhda beddelka", clear: "Nadiifi", noFavorites: "Wali ma jiraan door bidaan. Kaydi beddelaha si uu halkan uga soo muuqdo.", noRecent: "Beddelayaasha dhawaan la isticmaalay ayaa halkan ka soo muuqan doona.", noHistory: "Beddelladaada ugu dambeeyay ayaa ku hadhaya qalabkan waxayna u shaqeeyaan offline.", noMatchingConverter: "Lama helin beddel la mid ah. Isku day summad cabbir, magaca qaybta, ama kelmad furaha qaacidada ah." },
 common: { resultCopied: "Natiijadu waxay ku koobiyowday xarunta xusuusta.", copyUnavailable: "Koobiyaha lama heli karo biraawsarkan, laakiin natiijadu diyaar bay u tahay in la doorto.", shareOpened: "Sanduuqa wadaagista ayaa la furay.", shareCopied: "Qoraalka wadaagista ayaa ku koobiyowday xarunta xusuusta.", shareCancelled: "Wadaagistu waa la joojiyay ama lama heli karo.", addApiEndpoint: "Ku dar dhamaadka API ama isticmaal qiimayaasha offline-ka ah.", couldNotLoadRates: "Qiimayaasha toos ah lama soo geli karin. Qiimayaasha offline-ku wali way shaqeynayaan." },
@@ -2093,6 +2108,7 @@ el.setAttribute(attr, value);
 el.textContent = value;
 }
 });
+document.querySelectorAll("#mobileDrawer").forEach((el) => { el.setAttribute("aria-label", getTranslation("nav.mobileNavigation", langCode)); });
 document.querySelectorAll("[data-i18n-title]").forEach((el) => {
 el.setAttribute("title", getTranslation(el.getAttribute("data-i18n-title"), langCode));
 });
@@ -2361,7 +2377,7 @@ const nameEl = document.getElementById("langToggleName");
 if (flagEl) flagEl.textContent = lang.flag;
 if (nameEl) nameEl.textContent = lang.name;
 const toggle = document.getElementById("langDropdownToggle");
-if (toggle) toggle.setAttribute("aria-label", `Change language, current language ${lang.name}`);
+if (toggle) toggle.setAttribute("aria-label", getTranslation("nav.changeLanguage", lang.code).replace("{LANG}", lang.name));
 document.querySelectorAll("#langDropdownMenu [role=\"option\"]").forEach((item) => {
 const isSelected = item.dataset.langCode === lang.code;
 item.setAttribute("aria-selected", String(isSelected));
@@ -3917,6 +3933,9 @@ return normalizeRouteValue(value)
 }
 function singularizeToken(token) {
 if (token.length <= 3) return token;
+// irregular plurals used in route slugs ("pound-feet" must resolve to the unit "pound-foot")
+if (token === "feet") return "foot";
+if (token === "teeth") return "tooth";
 if (token.endsWith("ies")) return token.slice(0, -3) + "y";
 if (/(ches|shes|xes|ses|zes)$/.test(token)) return token.slice(0, -2);
 if (token.endsWith("s") && !token.endsWith("ss")) return token.slice(0, -1);
@@ -5559,14 +5578,167 @@ function restoreOriginalSeoText() {
 document.querySelectorAll("[data-i18n-seo-original]").forEach((el) => {
 el.textContent = el.dataset.i18nSeoOriginal;
 });
+document.querySelectorAll("[data-i18n-placeholder-original]").forEach((el) => {
+el.setAttribute("placeholder", el.dataset.i18nPlaceholderOriginal);
+});
 document.querySelectorAll("[data-i18n-seo-original-html]").forEach((el) => {
 el.innerHTML = el.dataset.i18nSeoOriginalHtml;
 });
 }
 
+// ---------------------------------------------------------------------
+// sitemap.html (the user-facing HTML sitemap - NOT sitemap.xml or any
+// sitemap-data/*.json, which stay untouched). Static English markup plus an
+// inline script that writes more English at runtime; localised here from
+// chrome.sitemap_* + seoData.sitemapLabels, with the inline script calling
+// the window.ucSitemap* hooks below for the text it (re)generates.
+// ---------------------------------------------------------------------
+function isSitemapPage() {
+return !!document.querySelector(".sitemap-grid");
+}
+function setTranslatedAttr(el, attr, value) {
+if (!el || value == null) return;
+const key = "i18nAttrOrig_" + attr.replace(/-/g, "_");
+if (el.dataset[key] === undefined) {
+el.dataset[key] = el.getAttribute(attr) || "";
+el.dataset.i18nAttrList = (el.dataset.i18nAttrList ? el.dataset.i18nAttrList + "," : "") + attr;
+}
+el.setAttribute(attr, value);
+}
+function restoreTranslatedAttrs() {
+document.querySelectorAll("[data-i18n-attr-list]").forEach((el) => {
+el.dataset.i18nAttrList.split(",").forEach((attr) => {
+const key = "i18nAttrOrig_" + attr.replace(/-/g, "_");
+if (el.dataset[key] !== undefined) el.setAttribute(attr, el.dataset[key]);
+});
+});
+}
+function sitemapChrome() {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return null;
+const seoData = currentSeoData();
+return seoData && seoData.chrome ? seoData.chrome : null;
+}
+window.ucSitemapText = function (key, vars, fallback) {
+const chrome = sitemapChrome();
+const tpl = chrome && (chrome["sitemap_" + key] || chrome["sitemap_" + key + "_template"]);
+const filled = tpl && fillTemplateSafe(tpl, vars || {});
+return filled || fallback;
+};
+const sitemapLabelCache = new Map();
+window.ucSitemapLabel = function (href, label) {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return label;
+const key = `${currentLanguageCode}|${href}`;
+if (sitemapLabelCache.has(key)) return sitemapLabelCache.get(key);
+let out = label;
+const ctx = deriveConversionFromPath(`/${String(href).replace(/^\//, "")}`);
+if (ctx) {
+const cat = categoryMap.get(ctx.categoryId);
+const f = cat && getUnit(cat, ctx.fromUnitId);
+const t = cat && getUnit(cat, ctx.toUnitId);
+if (f && t) out = `${getUnitDisplayName(f)} \u2192 ${getUnitDisplayName(t)}`;
+}
+sitemapLabelCache.set(key, out);
+return out;
+};
+function sitemapCategoryForSlug(slug) {
+const idForSlug = { "flow-rate": "flow", "fuel-economy": "fuel_economy" };
+return categoryMap.get(idForSlug[slug] || slug) || null;
+}
+// Static-group labels: direct dictionary hit, else the shared nav words, else
+// "{NAME} Converter" built from a translated category or conversion-pair name.
+function sitemapStaticLabel(original, href, seoData) {
+const direct = seoData.sitemapLabels && seoData.sitemapLabels[original];
+if (direct) return direct;
+const navKey = { "Guides": "nav.guides", "About": "nav.about", "Contact": "nav.contact", "Sitemap": "nav.sitemap" }[original];
+if (navKey) return getTranslation(navKey, currentLanguageCode);
+const m = /^(.+) Converter$/.exec(original);
+const tpl = seoData.chrome && seoData.chrome.sitemap_converter_template;
+if (m && tpl) {
+let name = null;
+const cat = categories.find((c) => String(c.name).toLowerCase() === original.toLowerCase() || String(c.name).toLowerCase() === m[1].toLowerCase());
+if (cat) name = getCategoryDisplayName(cat);
+if (!name && /-to-/.test(href || "")) {
+const label = window.ucSitemapLabel(href.replace(/^\//, ""), m[1]);
+if (label !== m[1]) name = label;
+}
+if (name) return fillTemplateSafe(tpl, { NAME: name });
+}
+return null;
+}
+function translateSitemapPage(seoData) {
+const english = !seoData;
+const chrome = (seoData && seoData.chrome) || {};
+const lang = currentLanguageCode;
+const text = (el, value) => { if (el && value) setTranslatedText(el, value); };
+const attr = (el, name, value) => { if (el && value) setTranslatedAttr(el, name, value); };
+if (!english) {
+text(document.querySelector(".page-hero .eyebrow"), chrome.sitemap_eyebrow);
+text(document.querySelector("title"), `${getTranslation("nav.sitemap", lang)} | Universal Converter`);
+text(document.querySelector(".page-hero h1"), getTranslation("nav.sitemap", lang));
+text(document.querySelector(".page-hero > p:not(.eyebrow)"), chrome.sitemap_intro);
+text(document.querySelector('.page-actions a[href="sitemap.xml"]'), chrome.sitemap_open_xml);
+text(document.querySelector('.page-actions a[href="/"]'), chrome.sitemap_back_home);
+attr(document.querySelector(".page-summary"), "aria-label", chrome.sitemap_overview_aria);
+attr(document.querySelector(".sitemap-search-bar"), "aria-label", chrome.sitemap_search_aria);
+attr(document.querySelector(".sitemap-grid"), "aria-label", chrome.sitemap_categories_aria);
+const route = document.getElementById("sitemapRouteCount");
+const rm = route && /^([\d,]+) /.exec(originalText(route));
+if (rm && chrome.sitemap_route_count_template) text(route, fillTemplateSafe(chrome.sitemap_route_count_template, { COUNT: rm[1] }));
+text(document.querySelector(".sitemap-search-label"), chrome.sitemap_search_label);
+attr(document.getElementById("sitemapSearchInput"), "placeholder", chrome.sitemap_search_placeholder);
+const adLabel = getTranslation("sidebar.advertisement", lang);
+document.querySelectorAll(".sitemap-grid .in-content-ad > span").forEach((el) => text(el, adLabel));
+document.querySelectorAll(".sitemap-grid .in-content-ad").forEach((el) => attr(el, "aria-label", adLabel));
+document.querySelectorAll(".sitemap-grid .page-card[data-sitemap-category]").forEach((card) => {
+const h2 = card.querySelector("h2");
+const slug = card.getAttribute("data-sitemap-category");
+if (card.classList.contains("sitemap-card-static")) {
+if (h2) text(h2, sitemapStaticLabel(originalText(h2), "", seoData));
+card.querySelectorAll(".sitemap-links a").forEach((a) => text(a, sitemapStaticLabel(originalText(a), a.getAttribute("href"), seoData)));
+} else {
+const cat = sitemapCategoryForSlug(slug);
+if (h2 && cat) text(h2, getCategoryDisplayName(cat).toLocaleUpperCase(lang));
+const btn = card.querySelector(".sitemap-card-expand");
+const bm = btn && !btn.disabled && !btn.hidden && /^Show ([\d,]+) pages$/.exec(originalText(btn));
+if (bm && chrome.sitemap_show_pages_template) text(btn, fillTemplateSafe(chrome.sitemap_show_pages_template, { COUNT: bm[1] }));
+}
+const holder = card.closest(".sitemap-static-group") || card;
+const countEl = holder.querySelector(".sitemap-card-count");
+const cm = countEl && /^([\d,]+) pages$/.exec(originalText(countEl));
+if (cm && chrome.sitemap_pages_count_template) text(countEl, fillTemplateSafe(chrome.sitemap_pages_count_template, { COUNT: cm[1] }));
+});
+}
+// Text the inline script generated at runtime (link labels, "Show more",
+// search status) is re-derived for the active language - including back to
+// English - since restoreOriginalSeoText() only knows cached originals.
+document.querySelectorAll(".sitemap-links a[data-uc-label]").forEach((a) => {
+a.textContent = window.ucSitemapLabel(a.getAttribute("href"), a.dataset.ucLabel);
+});
+document.querySelectorAll(".sitemap-card-more").forEach((btn) => {
+const shown = btn.dataset.shown, total = btn.dataset.total;
+btn.textContent = window.ucSitemapText("show_more_template", { SHOWN: shown, TOTAL: total }, `Show more (${shown} of ${total})`);
+});
+const searchInput = document.getElementById("sitemapSearchInput");
+if (searchInput && searchInput.value) searchInput.dispatchEvent(new Event("input"));
+}
+// Category dictionary names are stored capitalised ("Longitud"), which is right
+// for headings/labels but reads unnaturally in the middle of a sentence in
+// languages that lower-case common nouns ("conversiones de Longitud"). The name
+// is lower-cased only when the template around it is sentence-case, it is not
+// the first word, it is not an acronym and it is not a conversion-pair name.
+const SENTENCE_CASE_LANGS = new Set(["es", "fr", "pt", "it", "id", "tr", "so"]);
+function sentenceCaseVar(tpl, key, value) {
+if (!SENTENCE_CASE_LANGS.has(currentLanguageCode) || (key !== "CATEGORY" && key !== "NAME") || typeof value !== "string") return value;
+if (value.length < 2 || value.includes("\u2192") || value[0] === value[0].toLowerCase() || value[1] !== value[1].toLowerCase()) return value;
+const idx = tpl.indexOf("{" + key + "}");
+if (idx < 0 || !tpl.slice(0, idx).replace(/[\u00bf\u00a1\s]+/g, "")) return value;
+const others = tpl.replace(/^[\u00bf\u00a1\s]+/, "").replace(/\{\w+\}/g, " ").split(/\s+/).filter((w) => /^\p{L}/u.test(w)).slice(1);
+if (others.some((w) => w[0] !== w[0].toLowerCase())) return value;
+return value[0].toLowerCase() + value.slice(1);
+}
 function fillTemplate(tpl, vars) {
 if (!tpl) return null;
-return tpl.replace(/\{(\w+)\}/g, (match, key) => (vars[key] != null ? vars[key] : match));
+return tpl.replace(/\{(\w+)\}/g, (match, key) => (vars[key] != null ? sentenceCaseVar(tpl, key, vars[key]) : match));
 }
 
 // Same as fillTemplate, but returns null instead of text containing a
@@ -5586,6 +5758,11 @@ const SEO_CHROME_LABEL_MAP = {
 "Simple example": "simple_example",
 "Real-world example": "real_world_example",
 "Conversion table": "conversion_table"
+};
+
+// The fixed heading is POPULAR Converters; unit-card headings are translated dynamically from the actual unit name derived from each card's first link.
+const SEO_INTERNAL_LINK_HEADING_KEYS = {
+  "POPULAR Converters": "popular_converters"
 };
 
 // The generator's own English wording for each category's pair-intro
@@ -5660,8 +5837,19 @@ document.querySelectorAll(".seo-faq > h2").forEach((el) => {
 if (seoData.faq && seoData.faq.faq_heading) setTranslatedText(el, seoData.faq.faq_heading);
 });
 document.querySelectorAll(".page-card h2").forEach((el) => {
-if (originalText(el) === "Related conversions" && chrome.related_conversions) {
+const original = originalText(el);
+if (original === "Related conversions" && chrome.related_conversions) {
 setTranslatedText(el, chrome.related_conversions);
+} else if (SEO_INTERNAL_LINK_HEADING_KEYS[original] && chrome[SEO_INTERNAL_LINK_HEADING_KEYS[original]]) {
+setTranslatedText(el, chrome[SEO_INTERNAL_LINK_HEADING_KEYS[original]]);
+} else if (/^More .+ Conversions$/.test(original) && chrome.more_unit_conversions_template) {
+// Resolve the heading's unit from the first link in this card, using the page's real unit catalog.
+const unitCard = el.closest(".page-card");
+const unitLink = unitCard && unitCard.querySelector(".seo-link-list a");
+const unitCtx = unitLink && typeof deriveConversionFromPath === "function" ? deriveConversionFromPath(unitLink.getAttribute("href")) : null;
+const unitCategory = unitCtx && categoryMap.get(unitCtx.categoryId);
+const headingUnit = unitCategory && getUnit(unitCategory, unitCtx.fromUnitId);
+if (headingUnit) setTranslatedText(el, fillTemplateSafe(chrome.more_unit_conversions_template, { UNIT: getUnitDisplayName(headingUnit) }));
 }
 });
 }
@@ -5968,7 +6156,7 @@ for (const unit of candidates) {
 if (!unit) continue;
 const singular = String(unit.name || "").toLowerCase();
 const plural = String(pluralizeUnitName(unit.name) || "").toLowerCase();
-if (norm === singular || norm === plural) return unit;
+if (norm === singular || norm === plural || norm === singular + "s") return unit;
 }
 return null;
 }
@@ -5984,14 +6172,14 @@ return null;
 // exactly like every other translate*() helper's graceful-degradation
 // contract in this file.
 function translateNameFormulaLine(original, fromUnit, toUnit) {
-let m = original.match(/^([A-Za-z][A-Za-z\s/]*?)\s*=\s*([A-Za-z][A-Za-z\s/]*?)\s*[×x]\s*([\d.,]+(?:e[+-]?\d+)?)$/i);
+let m = original.match(/^([A-Za-z][A-Za-z\s/-]*?)\s*=\s*([A-Za-z][A-Za-z\s/-]*?)\s*[×x]\s*([\d.,]+(?:e[+-]?\d+)?)$/i);
 if (m) {
 const left = matchUnitByName(m[1], fromUnit, toUnit);
 const right = matchUnitByName(m[2], fromUnit, toUnit);
 if (!left || !right || left === right) return null;
 return `${pluralizeUnitDisplayName(left)} = ${pluralizeUnitDisplayName(right)} × ${m[3]}`;
 }
-m = original.match(/^([\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/]*?)\s*=\s*([\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/]*?)\.?$/i);
+m = original.match(/^(-?[\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/-]*?)\s*=\s*(-?[\d.,]+(?:e[+-]?\d+)?)\s+([A-Za-z][A-Za-z\s/-]*?)\.?$/i);
 if (m) {
 const left = matchUnitByName(m[2], fromUnit, toUnit);
 const right = matchUnitByName(m[4], fromUnit, toUnit);
@@ -6007,7 +6195,7 @@ return null;
 // exactly. Returns null (leave English) if the captured name doesn't
 // match fromUnit/toUnit.
 function translateNameSymbolFragment(original, fromUnit, toUnit) {
-const m = original.match(/^([A-Za-z][A-Za-z\s/]*?)\s*\(([^)]+)\)$/);
+const m = original.match(/^([A-Za-z][A-Za-z\s/-]*?)\s*\(([^)]+)\)$/);
 if (!m) return null;
 const unit = matchUnitByName(m[1], fromUnit, toUnit);
 if (!unit) return null;
@@ -6140,6 +6328,74 @@ if (wu[sideB.id]) setTranslatedText(cells[2], wu[sideB.id]);
 });
 });
 }
+
+// The comparison table's Family / Typical use cell CONTENT is drawn from a
+// small, bounded per-unit vocabulary (53 + 142 distinct strings across all
+// 327k pages), translated once in seoData.comparisonText and looked up by the
+// cell's exact original English text - so it works for any pair of units.
+const comparisonText = seoData.comparisonText || {};
+article.querySelectorAll(".info-card-table tbody tr").forEach((tr) => {
+const cells = tr.querySelectorAll("td");
+if (cells.length !== 3 || !/^(Family|Typical use|Where it's used)$/i.test(originalText(cells[0]))) return;
+[1, 2].forEach((i) => {
+const translated = comparisonText[originalText(cells[i])];
+if (translated) setTranslatedText(cells[i], translated);
+});
+});
+
+// "This factor comes from each unit's defined relationship to the category's
+// base unit: 1 {A} equals {x} base unit(s), and 1 {B} equals {y} base
+// unit(s), so dividing one by the other gives the direct {A}-to-{B} factor of
+// {z}." - one sentence frame; unit names come from the page's own unit pair
+// and the numbers are carried over verbatim (never recomputed).
+if (chrome.factor_explanation_template) {
+const factorRe = /^This factor comes from each unit's defined relationship to the category's base unit: 1 (.+?) equals (\S+) base units?, and 1 (.+?) equals (\S+) base units?, so dividing one by the other gives the direct (.+?)-to-(.+?) factor of (\S+?)\.$/;
+article.querySelectorAll(".info-card p").forEach((p) => {
+const m = factorRe.exec(originalText(p));
+if (!m) return;
+const sideA = matchUnitByName(m[1], fromUnit, toUnit);
+const sideB = matchUnitByName(m[3], fromUnit, toUnit);
+if (!sideA || !sideB || sideA === sideB) return;
+const filled = fillTemplateSafe(chrome.factor_explanation_template, {
+FROM: getUnitDisplayName(sideA), FROM_FACTOR: m[2], TO: getUnitDisplayName(sideB), TO_FACTOR: m[4], RESULT: m[7]
+});
+if (filled) setTranslatedText(p, filled);
+});
+}
+
+// Exact-sentence phrases (temperature formula prose, "where it's used" cells):
+// raw text nodes whose trimmed text is a key of seoData.comparisonText are
+// wrapped once in <span class="uc-phrase"> so they carry a restorable original.
+document.querySelectorAll("article.seo-article p, article.seo-article td, article.seo-article li").forEach((el) => {
+Array.from(el.childNodes).forEach((node) => {
+if (node.nodeType !== 3 || !comparisonText[node.nodeValue.trim()]) return;
+const span = document.createElement("span");
+span.className = "uc-phrase";
+span.textContent = node.nodeValue;
+node.replaceWith(span);
+});
+});
+if (chrome.where_used_label) {
+document.querySelectorAll("article.seo-article p > strong").forEach((el) => {
+if (originalText(el).trim() === "Where it's used:") setTranslatedText(el, chrome.where_used_label);
+});
+}
+document.querySelectorAll("article.seo-article span.uc-phrase").forEach((el) => {
+const translated = comparisonText[originalText(el).trim()];
+if (translated) setTranslatedText(el, /^\s/.test(originalText(el)) ? " " + translated : translated);
+});
+// "{A} is a widely used everyday temperature scale, while {B} is a historical ..." frames.
+const histMixed = /^(.+?) is a widely used everyday temperature scale, while (.+?) is a historical temperature scale no longer in common use — this conversion is mainly useful for historical reference or comparing older scientific texts against modern figures\.$/;
+const histBoth = /^(.+?) and (.+?) are both historical temperature scales no longer in everyday use — this conversion is mainly useful for historical reference or comparing older scientific texts against each other\.$/;
+article.querySelectorAll("p").forEach((p) => {
+const orig = originalText(p).trim();
+let m = histMixed.exec(orig), tpl = chrome.temp_historical_mixed_template;
+if (!m) { m = histBoth.exec(orig); tpl = chrome.temp_historical_both_template; }
+if (!m || !tpl) return;
+const a = matchUnitByName(m[1], fromUnit, toUnit), b = matchUnitByName(m[2], fromUnit, toUnit);
+if (!a || !b || a === b) return;
+setTranslatedText(p, fillTemplateSafe(tpl, { A: getUnitDisplayName(a), B: getUnitDisplayName(b) }));
+});
 
 // "Reverse conversion: {TO} to {FROM}" heading.
 if (chrome.reverse_conversion_template) {
@@ -6403,6 +6659,20 @@ if (typeof deriveConversionFromPath !== "function") return;
 document.querySelectorAll(".page-card .seo-link-list a").forEach((a) => {
 const href = a.getAttribute("href");
 if (!href) return;
+// "POPULAR Converters" links point at category hubs ("/length/"): label them "{Category} Converter"
+// from the same translated category names the rest of the app uses, never as "All ... conversions".
+const linkCard = a.closest(".page-card");
+const linkCardHeading = linkCard && linkCard.querySelector("h2");
+if (linkCardHeading && originalText(linkCardHeading) === "POPULAR Converters") {
+const hubSegments = href.split("/").filter(Boolean);
+const hubIdForSlug = { "flow-rate": "flow", "fuel-economy": "fuel_economy" };
+const hubCategory = hubSegments.length === 1 ? categoryMap.get(hubIdForSlug[hubSegments[0]] || hubSegments[0]) : null;
+const hubChrome = seoData.chrome || {};
+if (hubCategory && hubChrome.category_converter_template) {
+setTranslatedText(a, fillTemplateSafe(hubChrome.category_converter_template, { CATEGORY: getCategoryDisplayName(hubCategory) }));
+}
+return;
+}
 const linkCtx = deriveConversionFromPath(href);
 if (linkCtx) {
 const category = categoryMap.get(linkCtx.categoryId);
@@ -6455,6 +6725,215 @@ setTranslatedText(a, `${chrome.all_conversions_prefix} ${getCategoryDisplayName(
 // present, so a category with only the intro section curated still gets
 // that much translated correctly while its deeper article sections (not
 // yet authored for every category) safely stay in English.
+// ---------------------------------------------------------------------
+// Category hub: "Popular Conversions" and "All {CATEGORY} Conversions".
+// These two sections are static English markup shipped in every one of the
+// 27 hub pages (card titles are "<Unit> to <Unit>" plain text, the count and
+// Show/Hide labels are written by an inline script), so they are localised
+// here from shared chrome.* templates plus the existing unit-name dictionary
+// (the same getUnitDisplayName() path related-conversion links already use).
+// The hub inline scripts call window.ucHubCardTitle / window.ucHubCount so
+// text they (re)generate on search is localised too.
+// ---------------------------------------------------------------------
+const hubTitleCache = new Map();
+function hubCategorySlug() {
+const seg = location.pathname.split("/").filter(Boolean).find((x) => x !== "index.html");
+return seg || "";
+}
+function hubConversionTitle(slug, fallback) {
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE || !slug) return fallback;
+const catSlug = hubCategorySlug();
+const key = `${currentLanguageCode}|${catSlug}|${slug}`;
+if (hubTitleCache.has(key)) return hubTitleCache.get(key);
+let out = fallback;
+const ctx = deriveConversionFromPath(`/${catSlug}/${slug}/`);
+if (ctx) {
+const cat = categoryMap.get(ctx.categoryId);
+const f = cat && getUnit(cat, ctx.fromUnitId);
+const t = cat && getUnit(cat, ctx.toUnitId);
+if (f && t) out = `${getUnitDisplayName(f)} \u2192 ${getUnitDisplayName(t)}`;
+}
+hubTitleCache.set(key, out);
+return out;
+}
+let hubCardObserver = null;
+let hubCardToken = 0;
+// Cards that link to the converter ("../index.html?category=cooking&from=cup_us&to=milliliter")
+// carry unit ids instead of a slug.
+function hubQueryCardTitle(href) {
+const q = String(href || "").split("?")[1];
+if (!q) return null;
+const params = new URLSearchParams(q.split("#")[0]);
+const cat = categoryMap.get(params.get("category"));
+const f = cat && getUnit(cat, params.get("from"));
+const t = cat && getUnit(cat, params.get("to"));
+return f && t ? `${getUnitDisplayName(f)} \u2192 ${getUnitDisplayName(t)}` : null;
+}
+function applyHubCard(a) {
+setTranslatedText(a, hubConversionTitle(hubSlugFromHref(a.getAttribute("href")), originalText(a)));
+}
+function scheduleHubCardTranslation() {
+if (hubCardObserver) { hubCardObserver.disconnect(); hubCardObserver = null; }
+const token = ++hubCardToken;
+const grid = document.getElementById("allConversionsGrid");
+if (!grid || currentLanguageCode === DEFAULT_LANGUAGE_CODE || typeof IntersectionObserver === "undefined") return;
+hubCardObserver = new IntersectionObserver((entries) => {
+entries.forEach((entry) => {
+if (!entry.isIntersecting) return;
+hubCardObserver.unobserve(entry.target);
+applyHubCard(entry.target);
+});
+}, { rootMargin: "600px" });
+const cards = grid.getElementsByClassName("conversion-card");
+let i = 0;
+(function observeChunk() {
+if (token !== hubCardToken) return;
+const end = Math.min(i + 4000, cards.length);
+for (; i < end; i++) hubCardObserver.observe(cards[i]);
+if (i < cards.length) setTimeout(observeChunk, 0);
+})();
+}
+window.ucHubCardsChanged = scheduleHubCardTranslation;
+// Hub search in a non-English language: the typed query is translated instead
+// of the data. Each token is matched against the category's translated unit
+// names (a few hundred at most) and mapped to the English unit names that the
+// card titles contain, so the single pass over the (up to 166k) titles costs
+// the same as an English search. Small hubs also keep matching the full
+// translated title. Tokens of 3 characters or fewer that match no unit (e.g.
+// the connector "zu"/"a"/"para") are ignored rather than excluding every card.
+const hubUnitIndexCache = new Map();
+const hubTokenWordsCache = new Map();
+function hubUnitIndex() {
+const slug = hubCategorySlug();
+const key = `${currentLanguageCode}|${slug}`;
+if (hubUnitIndexCache.has(key)) return hubUnitIndexCache.get(key);
+const cat = sitemapCategoryForSlug(slug);
+const index = (cat && cat.units ? cat.units : []).map((unit) => ({
+local: String(getUnitDisplayName(unit) || "").toLowerCase(),
+words: String(unit.name || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").split("-").filter(Boolean)
+}));
+hubUnitIndexCache.set(key, index);
+return index;
+}
+// English words shared by EVERY unit whose translated name contains the token
+// (e.g. "pie" -> per, foot; "cubico" -> per, cubic). Unit slugs contain those
+// words, so a card matches when its slug contains all of them.
+function hubTokenWords(token) {
+const key = `${currentLanguageCode}|${hubCategorySlug()}|${token}`;
+if (hubTokenWordsCache.has(key)) return hubTokenWordsCache.get(key);
+let common = null;
+hubUnitIndex().forEach((u) => {
+if (!u.local || !u.local.includes(token)) return;
+common = common === null ? new Set(u.words) : new Set(u.words.filter((w) => common.has(w)));
+});
+const words = common ? Array.from(common) : [];
+hubTokenWordsCache.set(key, words);
+return words;
+}
+window.ucHubSearchMatcher = function (term) {
+const plain = (item) => String(item.title).toLowerCase().includes(term);
+if (currentLanguageCode === DEFAULT_LANGUAGE_CODE) return plain;
+const small = (window.__categoryConversions || []).length <= 3000;
+const tokens = term.split(/[\s\u2192>,;/-]+/).filter(Boolean);
+const words = tokens.map(hubTokenWords);
+const usable = tokens.map((token, i) => words[i].length > 0 || token.length > 3);
+if (!words.some((w) => w.length) && !small) return plain;
+return (item) => {
+const title = String(item.title).toLowerCase();
+if (title.includes(term)) return true;
+if (small && hubConversionTitle(item.slug, "").toLowerCase().includes(term)) return true;
+for (let i = 0; i < tokens.length; i++) {
+if (!usable[i] || title.includes(tokens[i])) continue;
+const w = words[i];
+if (!w.length) return false;
+for (let k = 0; k < w.length; k++) { if (item.slug.indexOf(w[k]) < 0) return false; }
+}
+return tokens.some((_, i) => usable[i]);
+};
+};
+window.ucHubCardTitle = function (item) {
+return hubConversionTitle(item && item.slug, item && item.title);
+};
+window.ucHubCount = function (shown, total) {
+const seoData = currentLanguageCode !== DEFAULT_LANGUAGE_CODE ? currentSeoData() : null;
+const tpl = seoData && seoData.chrome && seoData.chrome.all_conversions_count_template;
+const filled = tpl && fillTemplateSafe(tpl, { SHOWN: String(shown), TOTAL: String(total) });
+return filled || `${shown} of ${total} conversions shown`;
+};
+function refreshHubSearch() {
+const search = document.getElementById("allConversionsSearch");
+if (search && search.value) search.dispatchEvent(new Event("input"));
+}
+function hubSlugFromHref(href) {
+const segs = String(href || "").split("?")[0].split("/").filter((seg) => seg && seg !== ".." && seg !== "." && seg !== "index.html");
+return segs[segs.length - 1] || "";
+}
+function translateCategoryHubConversions(seoData, category, catName) {
+const chrome = seoData.chrome || {};
+const popularTitle = document.getElementById("popularHubTitle");
+if (popularTitle && chrome.popular_conversions_heading) setTranslatedText(popularTitle, chrome.popular_conversions_heading);
+const allTitle = document.getElementById("allConversionsTitle");
+if (allTitle && catName && chrome.all_conversions_heading_template) setTranslatedText(allTitle, fillTemplateSafe(chrome.all_conversions_heading_template, { CATEGORY: catName }));
+document.querySelectorAll("#popularHubGrid .popular-grid-card span").forEach((span) => {
+const a = span.closest("a");
+const href = a && a.getAttribute("href");
+const queryTitle = currentLanguageCode !== DEFAULT_LANGUAGE_CODE ? hubQueryCardTitle(href) : null;
+setTranslatedText(span, queryTitle || hubConversionTitle(hubSlugFromHref(href), originalText(span)));
+});
+const data = window.__categoryConversions || [];
+// The All Conversions grid can hold 100k+ cards (flow-rate: 102,080, density:
+// 166,056), so cards are translated lazily as they scroll into view - never
+// in one pass.
+scheduleHubCardTranslation();
+const label = document.querySelector('label[for="allConversionsSearch"]');
+if (label && catName && chrome.all_conversions_search_label_template) {
+setTranslatedText(label, fillTemplateSafe(chrome.all_conversions_search_label_template, { CATEGORY: catName }));
+}
+const search = document.getElementById("allConversionsSearch");
+if (search && catName && chrome.all_conversions_search_label_template) {
+if (search.dataset.i18nPlaceholderOriginal === undefined) search.dataset.i18nPlaceholderOriginal = search.getAttribute("placeholder") || "";
+let placeholder = fillTemplateSafe(chrome.all_conversions_search_label_template, { CATEGORY: catName });
+const ex = /, e\.g\. (.+)$/.exec(search.dataset.i18nPlaceholderOriginal);
+if (ex && chrome.all_conversions_example_suffix) {
+const item = data.find((entry) => String(entry.title).toLowerCase() === ex[1].toLowerCase());
+const exampleText = item ? hubConversionTitle(item.slug, null) : null;
+const suffix = exampleText && fillTemplateSafe(chrome.all_conversions_example_suffix, { EXAMPLE: exampleText });
+if (suffix) placeholder += suffix;
+}
+if (placeholder) search.setAttribute("placeholder", placeholder);
+}
+const total = data.length;
+const count = document.getElementById("allConversionsCount");
+if (count && total) {
+const m = /^(\d[\d,]*) of (\d[\d,]*)/.exec(originalText(count));
+setTranslatedText(count, window.ucHubCount(m ? m[1] : total, m ? m[2] : total));
+}
+const closed = document.querySelector("#allConversionsToggle .seo-links-when-closed");
+const open = document.querySelector("#allConversionsToggle .seo-links-when-open");
+const numIn = (el) => { const mm = el && /(\d[\d,]*)/.exec(originalText(el)); return mm ? mm[1] : total.toLocaleString("en-US"); };
+if (closed && chrome.all_conversions_show_template) setTranslatedText(closed, fillTemplateSafe(chrome.all_conversions_show_template, { TOTAL: numIn(closed) }));
+if (open && chrome.all_conversions_hide_template) setTranslatedText(open, fillTemplateSafe(chrome.all_conversions_hide_template, { TOTAL: numIn(open) }));
+// "Why Convert {CATEGORY} Units?" body: one translated template per category
+// (seoData.whyConvertBody[slug]) whose {L1}.. placeholders are replaced by the
+// page's own original <a href> values (read from the cached original HTML) with
+// link text built from the translated category names.
+const whyP = document.querySelector(".seo-why-convert p");
+const whyBody = seoData.whyConvertBody && seoData.whyConvertBody[hubCategorySlug()];
+if (whyP && whyBody && chrome.category_converters_link_template) {
+const holder = document.createElement("div");
+holder.innerHTML = originalHtml(whyP);
+const hrefs = Array.from(holder.querySelectorAll("a")).map((a) => a.getAttribute("href"));
+const html = whyBody.replace(/\{L(\d+)\}/g, (match, n) => {
+const href = hrefs[Number(n) - 1];
+const seg = String(href || "").split("/").filter((x) => x && x !== ".." && x !== "." && x !== "index.html")[0];
+const cat = seg && sitemapCategoryForSlug(seg);
+if (!cat) return match;
+return `<a href="${href}">${fillTemplateSafe(chrome.category_converters_link_template, { CATEGORY: getCategoryDisplayName(cat) })}</a>`;
+});
+if (!/\{L\d+\}/.test(html)) setTranslatedHtml(whyP, html);
+}
+refreshHubSearch();
+}
 function translateCategoryLandingPage(seoData, category) {
 const chrome = seoData.chrome || {};
 const catInfo = seoData.categories && seoData.categories[category.id];
@@ -6566,6 +7045,7 @@ if (h2 && chrome.category_why_heading_template) setTranslatedText(h2, fillTempla
 // yet, so it is intentionally left alone rather than guessed at.
 }
 }
+translateCategoryHubConversions(seoData, category, catName);
 translateAboutConversionBlock(seoData, category, catName);
 }
 
@@ -6633,8 +7113,11 @@ if (list && about) {
 // the possibly-already-translated live DOM - is what makes this
 // reliable on a second or third language switch, not just the first.
 const cached = originalHtml(list);
-const subCount = (cached.match(/<ul class="seo-feature-list">/g) || []).length;
-const topLevelCount = (cached.match(/<li>/g) || []).length - subCount;
+const probe = document.createElement("ul");
+probe.innerHTML = cached;
+const directItems = Array.from(probe.children).filter((node) => node.tagName === "LI");
+const subCount = directItems.filter((li) => li.querySelector(":scope > ul")).length;
+const topLevelCount = directItems.length - subCount;
 const expectedTop = Array.isArray(about.quickFactsItems) ? about.quickFactsItems.length : 0;
 const expectedSubLists = Array.isArray(about.quickFactsSubLists) ? about.quickFactsSubLists : [];
 if (topLevelCount === expectedTop && subCount === expectedSubLists.length) {
@@ -6854,6 +7337,10 @@ function applySeoTranslations(langCode) {
 currentLanguageCode = langCode;
 if (langCode === DEFAULT_LANGUAGE_CODE) {
 restoreOriginalSeoText();
+scheduleHubCardTranslation();
+restoreTranslatedAttrs();
+if (isSitemapPage()) translateSitemapPage(null);
+refreshHubSearch();
 refreshLanguageAwareConverter();
 return;
 }
@@ -6862,6 +7349,7 @@ loadSeoTranslations(langCode).then((seoData) => {
 // flight - never apply a stale response on top of a newer choice.
 if (currentLanguageCode !== langCode || !seoData) return;
 hydrateSeoArticleContent(seoData);
+if (isSitemapPage()) translateSitemapPage(seoData);
 refreshLanguageAwareConverter();
 });
 }
