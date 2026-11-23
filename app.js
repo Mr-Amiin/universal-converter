@@ -1109,7 +1109,6 @@ renderSiteHeader();
 normalizeHomepageLinks();
 ensureBrandIcons();
 initTheme();
-initHeroCanvas();
 renderCategoryDropdownMenus();
 initCategoriesNav();
 initLanguageSelector();
@@ -1197,7 +1196,8 @@ provider: payload.provider,
 providerName: payload.provider_name,
 retrievedAt: payload.retrieved_at,
 observationDate: payload.observation_date,
-meta: payload.meta || null
+meta: payload.meta || null,
+rates: payload.rates
 };
 if (document.getElementById("currencyTool") && typeof updateCurrency === "function") updateCurrency();
 if (state && state.categoryId === "currency" && document.getElementById("fromValue") && typeof updateConversion === "function") {
@@ -2506,91 +2506,6 @@ const header = dropdown.closest(".site-header");
 const insideHeader = header && header.contains(event.target);
 if (!insideDropdown && !insideContainer && !insideHeader) closeDropdown(dropdown);
 });
-});
-}
-function initHeroCanvas() {
-const canvas = document.getElementById("heroCanvas");
-if (!canvas) return;
-const context = canvas.getContext("2d");
-const reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const marks = [];
-let width = 0;
-let height = 0;
-let raf = 0;
-function resize() {
-const ratio = Math.min(window.devicePixelRatio || 1, 2);
-width = canvas.clientWidth;
-height = canvas.clientHeight;
-canvas.width = Math.floor(width * ratio);
-canvas.height = Math.floor(height * ratio);
-context.setTransform(ratio, 0, 0, ratio, 0, 0);
-marks.length = 0;
-const count = Math.max(36, Math.floor(width / 26));
-for (let index = 0; index < count; index += 1) {
-marks.push({
-x: Math.random() * width,
-y: Math.random() * height,
-length: 14 + Math.random() * 60,
-speed: 0.12 + Math.random() * 0.42,
-tilt: -0.6 + Math.random() * 1.2,
-warm: Math.random() > 0.72
-});
-}
-}
-function drawGrid() {
-context.clearRect(0, 0, width, height);
-const theme = document.documentElement.dataset.theme;
-const gridColor = theme === "dark" ? "rgba(255,255,255,0.07)" : "rgba(21,32,46,0.07)";
-const accent = theme === "dark" ? "rgba(53,196,186,0.42)" : "rgba(15,159,154,0.36)";
-const warm = theme === "dark" ? "rgba(246,189,96,0.42)" : "rgba(244,168,61,0.38)";
-context.strokeStyle = gridColor;
-context.lineWidth = 1;
-for (let x = 0; x <= width; x += 52) drawLine(x, 0, x, height);
-for (let y = 0; y <= height; y += 52) drawLine(0, y, width, y);
-context.lineCap = "round";
-marks.forEach((mark) => {
-mark.y += reducedMotion ? 0 : mark.speed;
-mark.x += reducedMotion ? 0 : mark.tilt * 0.15;
-if (mark.y > height + 30) mark.y = -30;
-if (mark.x < -60) mark.x = width + 60;
-if (mark.x > width + 60) mark.x = -60;
-context.strokeStyle = mark.warm ? warm : accent;
-context.lineWidth = mark.warm ? 2 : 1.5;
-drawLine(mark.x, mark.y, mark.x + mark.length, mark.y + mark.tilt * 18);
-context.fillStyle = mark.warm ? warm : accent;
-context.beginPath();
-context.arc(mark.x, mark.y, 2.4, 0, Math.PI * 2);
-context.fill();
-});
-if (!reducedMotion) raf = window.requestAnimationFrame(drawGrid);
-}
-function drawLine(x1, y1, x2, y2) {
-context.beginPath();
-context.moveTo(x1, y1);
-context.lineTo(x2, y2);
-context.stroke();
-}
-window.requestAnimationFrame(() => {
-resize();
-drawGrid();
-});
-let resizeRaf = 0;
-window.addEventListener("resize", () => {
-if (resizeRaf) window.cancelAnimationFrame(resizeRaf);
-resizeRaf = window.requestAnimationFrame(() => {
-resizeRaf = 0;
-window.cancelAnimationFrame(raf);
-resize();
-drawGrid();
-});
-});
-document.addEventListener("visibilitychange", () => {
-if (document.hidden) {
-window.cancelAnimationFrame(raf);
-} else if (!reducedMotion) {
-window.cancelAnimationFrame(raf);
-drawGrid();
-}
 });
 }
 function applyPageConversion(pageConversion) {
