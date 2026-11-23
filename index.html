@@ -254,8 +254,8 @@
 
 
   <main>
-    <section class="hero">
-      <canvas id="heroCanvas" aria-hidden="true"></canvas>
+    <section class="hero hero-net">
+      <div class="hero-network" id="heroNetwork" aria-hidden="true"></div>
       <div class="hero-content">
        
         <h1 data-i18n="homepage.heroTitle">Convert Any Unit Instantly</h1>
@@ -801,5 +801,366 @@
   <script src="google-analytics.js" defer></script>
 
   <script src="app.js" defer></script>
+  <script>
+/* Homepage hero: "Universal Conversion Network".
+   Decorative SVG visualisation (aria-hidden). Rows cycle through all 27 categories; currency rows are
+   computed from window.__currencyRatesMeta.rates, the dataset app.js already loads (no extra request). */
+(function () {
+  "use strict";
+  var host = document.getElementById("heroNetwork");
+  if (!host) return;
+  var NS = "http://www.w3.org/2000/svg";
+  var BEAT_MS = 5200;
+  var motion = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+
+  /* Ring order = scene order, so each scene lights one contiguous arc. [id, label, glyph] */
+  var CATS = [
+    ["length", "Length", "m"], ["area", "Area", "ha"], ["volume", "Volume", "L"], ["weight", "Weight", "kg"],
+    ["temperature", "Temperature", "\u00b0C"], ["time", "Time", "s"], ["speed", "Speed", "km/h"], ["cooking", "Cooking", "tbsp"],
+    ["currency", "Currency", "$"],
+    ["pressure", "Pressure", "bar"], ["energy", "Energy", "kWh"], ["power", "Power", "kW"], ["electricity", "Electricity", "V"],
+    ["density", "Density", "g/cm\u00b3"], ["force", "Force", "N"], ["torque", "Torque", "N\u00b7m"], ["engineering", "Engineering", "MPa"],
+    ["digital", "Digital Storage", "GiB"], ["frequency", "Frequency", "Hz"], ["flow", "Flow Rate", "L/s"], ["agriculture", "Agriculture", "t/ha"],
+    ["astronomy", "Astronomy", "pc"], ["chemistry", "Chemistry", "g/L"], ["fuel_economy", "Fuel Economy", "mpg"], ["radiation", "Radiation", "Gy"],
+    ["scientific", "Scientific", "\u00c5"], ["angle", "Angle", "\u00b0"]
+  ];
+  var LABEL = {};
+  CATS.forEach(function (c) { LABEL[c[0]] = c[1]; });
+
+  /* Fixed rows: [category, source text, result number, decimals, result unit]. Verified against the
+     site's own unit definitions; the currency beat has no fixed numbers. */
+  var BEATS = [
+    { scene: "Physical measurements", rows: [
+      ["length", "1 m", 3.28084, 5, "ft"], ["area", "1 ha", 2.47105, 5, "ac"],
+      ["volume", "1 L", 0.264172, 6, "US gal"], ["weight", "1 kg", 2.20462, 5, "lb"]] },
+    { scene: "Everyday measurements", rows: [
+      ["temperature", "0 \u00b0C", 32, 0, "\u00b0F"], ["time", "1 h", 3600, 0, "s"],
+      ["speed", "100 km/h", 62.1371, 4, "mph"], ["cooking", "1 cup (US)", 236.588, 3, "mL"]] },
+    { scene: "Currency", currency: true },
+    { scene: "Science & engineering", rows: [
+      ["pressure", "1 bar", 100, 0, "kPa"], ["energy", "1 kWh", 3.6, 1, "MJ"],
+      ["power", "1 kW", 1000, 0, "W"], ["electricity", "1 kV", 1000, 0, "V"]] },
+    { scene: "Science & engineering", rows: [
+      ["density", "1 g/cm\u00b3", 1000, 0, "kg/m\u00b3"], ["force", "1 kN", 224.809, 3, "lbf"],
+      ["torque", "1 N\u00b7m", 0.737562, 6, "ft\u00b7lbf"], ["engineering", "1 MPa", 145.038, 3, "psi"]] },
+    { scene: "Digital & specialised", rows: [
+      ["digital", "1 GiB", 1024, 0, "MiB"], ["frequency", "1 kHz", 1000, 0, "Hz"],
+      ["flow", "1 L/s", 15.8503, 4, "gal/min"], ["agriculture", "1 t/ha", 892.179, 3, "lb/ac"]] },
+    { scene: "Digital & specialised", rows: [
+      ["astronomy", "1 pc", 3.26156, 5, "ly"], ["chemistry", "1 g/L", 1000, 0, "mg/L"],
+      ["fuel_economy", "30 mpg", 7.84049, 5, "L/100 km"], ["radiation", "1 Gy", 100, 0, "rad"]] },
+    { scene: "Digital & specialised", rows: [
+      ["scientific", "1 \u00c5", 0.1, 1, "nm"], ["angle", "180\u00b0", 3.14159, 5, "rad"]] }
+  ];
+
+  /* Unit symbols shown per category (all valid units of that category). Interleaved so every category
+     appears evenly wherever the hero has room for fewer symbols. */
+  var SYMS = {
+    length: ["m", "km", "cm", "mm", "ft", "in", "mi", "yd"], area: ["m\u00b2", "km\u00b2", "ha", "acre", "ft\u00b2", "mi\u00b2"],
+    volume: ["L", "mL", "m\u00b3", "gal", "ft\u00b3", "qt"], weight: ["kg", "g", "mg", "lb", "oz", "tonne"],
+    temperature: ["\u00b0C", "\u00b0F", "K", "\u00b0R"], time: ["s", "min", "h", "day", "year", "ms"],
+    speed: ["km/h", "mph", "m/s", "knot", "Mach"], pressure: ["Pa", "kPa", "bar", "psi", "atm", "mmHg"],
+    power: ["W", "kW", "MW", "hp", "BTU/h"], energy: ["J", "kJ", "MJ", "kWh", "cal", "BTU"],
+    electricity: ["V", "A", "\u03a9", "mAh", "mV", "kV"], frequency: ["Hz", "kHz", "MHz", "GHz", "rpm"],
+    angle: ["\u00b0", "rad", "grad", "arcmin", "turn"], digital: ["bit", "byte", "KB", "MB", "GB", "TB", "KiB", "MiB", "GiB"],
+    currency: ["USD", "EUR", "GBP", "KES", "JPY", "INR", "CAD", "$", "\u20ac", "\u00a3", "\u00a5"],
+    density: ["kg/m\u00b3", "g/cm\u00b3", "lb/ft\u00b3", "g/mL"], flow: ["L/s", "L/min", "m\u00b3/h", "gal/min", "cfm"],
+    agriculture: ["kg/ha", "t/ha", "bushel", "acre", "lb/ac"], astronomy: ["AU", "ly", "pc", "parsec"],
+    chemistry: ["mol", "mmol", "M", "ppm", "ppb", "g/L"], cooking: ["tsp", "tbsp", "cup", "fl oz", "pt"],
+    engineering: ["MPa", "GPa", "kN", "mm", "N\u00b7m", "ksi"], force: ["N", "kN", "lbf", "dyn", "kgf"],
+    fuel_economy: ["km/L", "mpg", "L/100km"], radiation: ["Gy", "Sv", "Bq", "Ci", "rad", "rem"],
+    scientific: ["mol", "cd", "lx", "lm", "\u00c5", "eV"], torque: ["N\u00b7m", "lb\u00b7ft", "kgf\u00b7m", "oz\u00b7in"]
+  };
+  /* Categories lit in each beat (the whole scene family, so far more symbols glow than rows are shown). */
+  var PHYS = ["length", "area", "volume", "weight"], EVERY = ["temperature", "time", "speed", "cooking"];
+  var SCI = ["pressure", "energy", "power", "electricity", "density", "force", "torque", "engineering"];
+  var SPEC = ["digital", "frequency", "flow", "agriculture", "astronomy", "chemistry", "fuel_economy", "radiation", "scientific", "angle"];
+  var SCENE_CATS = [PHYS, EVERY, ["currency"], SCI, SCI, SPEC, SPEC, SPEC];
+
+  var svg, W = 0, H = 0, wide = false, pills = [], syms = [], cpath = {}, parts = [], note, tick = null;
+  var tickRows = [], tickCap = "", tickIdx = -1, tickTimer = 0, tickRaf = 0;
+  var beat = 0, timer = 0, raf = 0, running = false, visible = true, shown = null;
+  var PILL_H = 40;
+
+  function el(tag, attrs, parent, text) {
+    var n = document.createElementNS(NS, tag);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text !== undefined) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+  function fmt(n, d) {
+    return n.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
+  }
+  function rng(seed) { return function () { seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+
+  /* Currency rows come only from the rates app.js loaded; otherwise an illustration with no result. */
+  function currencyBeat() {
+    var m = window.__currencyRatesMeta, r = m && m.rates, usable = m && (m.source === "live" || m.source === "offline") && r;
+    function rate(code) { var v = usable ? Number(r[code]) : NaN; return isFinite(v) && v > 0 ? v : null; }
+    var eur = rate("EUR"), gbp = rate("GBP"), kes = rate("KES");
+    function d(v) { return v >= 100 ? 2 : v >= 1 ? 4 : 5; }
+    function row(from, to, sym, val) {
+      return ["currency", "1 " + from, val, val === null ? 0 : d(val), val === null ? sym + " " + to : to, val === null];
+    }
+    var rows = [
+      row("USD", "EUR", "\u20ac", eur === null ? null : 1 / eur), row("USD", "GBP", "\u00a3", gbp === null ? null : 1 / gbp),
+      row("USD", "KES", "KSh", kes === null ? null : 1 / kes), row("EUR", "USD", "$", eur)
+    ];
+    var caption = "";
+    if (usable && m.source === "live" && m.observationDate) caption = "Reference rates \u00b7 observed " + m.observationDate + (m.providerName ? " \u00b7 " + m.providerName : "");
+    else if (usable && m.source === "offline" && m.generatedAt) caption = "Offline snapshot \u00b7 " + String(m.generatedAt).slice(0, 10);
+    return { scene: "Currency", rows: rows, caption: caption };
+  }
+
+
+
+  /* Smooth curve through a category's symbols so same-category symbols are linked in one colour. */
+  function smooth(p) {
+    var d = "M" + p[0].x.toFixed(1) + " " + p[0].y.toFixed(1);
+    for (var i = 1; i < p.length - 1; i++) d += "Q" + p[i].x.toFixed(1) + " " + p[i].y.toFixed(1) + " " + ((p[i].x + p[i + 1].x) / 2).toFixed(1) + " " + ((p[i].y + p[i + 1].y) / 2).toFixed(1);
+    var l = p[p.length - 1]; return d + "L" + l.x.toFixed(1) + " " + l.y.toFixed(1);
+  }
+
+  function build() {
+    W = host.clientWidth; H = host.clientHeight;
+    if (!W || !H) return false;
+    wide = W >= 1360;
+    if (svg) host.removeChild(svg);
+    svg = el("svg", { viewBox: "0 0 " + W + " " + H, width: W, height: H, focusable: "false" });
+    host.insertBefore(svg, host.firstChild);
+    pills = []; syms = []; cpath = {}; parts = []; note = tick = null;
+
+    var flank = wide ? (W - 980) / 2 - 24 : 0, usableH = H - (wide ? 0 : 22), small = W < 600, rnd = rng(20261123);
+    var zx0 = wide ? (W - 980) / 2 : 34, zx1 = wide ? (W + 980) / 2 : W - 34, reserved = [];
+    if (wide) reserved.push([0, 0, flank + 28, PILL_H + 22], [W - flank - 28, 0, W, PILL_H + 22], [0, H - PILL_H - 22, flank + 28, H], [W - flank - 28, H - PILL_H - 46, W, H]);
+
+    /* Jittered lattice over the whole hero (corners, sides and the calm centre), shuffled deterministically. */
+    var sx = small ? 40 : wide ? 58 : 46, sy = small ? 32 : wide ? 44 : 38;
+    var cols = Math.max(4, Math.round(W / sx)), rows = Math.max(3, Math.round(usableH / sy)), cw = W / cols, rh = usableH / rows, pts = [];
+    for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+      var x = (c + 0.5) * cw + (r % 2 ? cw / 2 : 0) + (rnd() - 0.5) * cw * 0.35, y = (r + 0.5) * rh + (rnd() - 0.5) * rh * 0.3;
+      if (x < 12 || x > W - 12) continue;
+      if (reserved.some(function (b) { return x > b[0] && x < b[2] && y > b[1] && y < b[3]; })) continue;
+      pts.push({ x: x, y: y });
+    }
+    for (var i = pts.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), t = pts[i]; pts[i] = pts[j]; pts[j] = t; }
+    var list = [], maxLen = 0, ids = CATS.map(function (c) { return c[0]; });
+    ids.forEach(function (id) { maxLen = Math.max(maxLen, SYMS[id].length); });
+    for (var k = 0; k < maxLen; k++) ids.forEach(function (id) { var sy2 = SYMS[id][k]; if (sy2 && (!small || sy2.length <= 5)) list.push([id, sy2]); });
+    var n = Math.min(pts.length, list.length), byCat = {};
+    for (i = 0; i < n; i++) { (byCat[list[i][0]] = byCat[list[i][0]] || []).push({ x: pts[i].x, y: pts[i].y, s: list[i][1] }); }
+
+    var pg = el("g", {}, svg), sg = el("g", {}, svg);
+    ids.forEach(function (id) {
+      var p = byCat[id]; if (!p) return;
+      p.sort(function (a, b) { return a.x - b.x; });
+      if (p.length > 1) { var d = smooth(p); cpath[id] = { el: el("path", { "class": "hn-cpath k-" + id, d: d }, pg), d: d }; }
+      p.forEach(function (q) {
+        var t = el("text", { "class": "hn-sym k-" + id + (q.x > zx0 && q.x < zx1 ? " mid" : ""), x: q.x.toFixed(1), y: q.y.toFixed(1), "font-size": small ? 9.5 : 11, "text-anchor": "middle", dy: "0.35em" }, sg, q.s);
+        syms.push({ id: id, el: t });
+      });
+    });
+    for (i = 0; i < 8; i++) parts.push(el("circle", { "class": "hn-p", r: 2.8, cx: 0, cy: 0 }, svg));
+
+    if (wide) {
+      /* One conversion pill in each corner: TL, TR, BL, BR. */
+      [[0, 12], [1, 12], [0, H - PILL_H - 12], [1, H - PILL_H - 12]].forEach(function (s) {
+        var g = el("g", { "class": "hn-row hn-pill" }, svg), rect = el("rect", { y: s[1], height: PILL_H, rx: 8 }, g);
+        var l = { g: g, rect: rect, right: s[0] === 1, y: s[1], max: flank, cat: el("text", { "class": "hn-cat", y: s[1] + 14 }, g, ""), line: el("text", { "class": "hn-val", y: s[1] + 31 }, g, ""), row: null };
+        l.src = el("tspan", {}, l.line, ""); el("tspan", { "class": "hn-arrow" }, l.line, " \u2192 "); l.res = el("tspan", { "class": "hn-out" }, l.line, "");
+        pills.push(l);
+      });
+      note = el("text", { "class": "hn-note k-currency", "text-anchor": "end" }, svg, "");
+    } else {
+      /* Narrow screens: a full-width conversion rail in the band under the text. */
+      var ty = H - 9, tg = el("g", { "class": "hn-tick" }, svg);
+      tick = { g: tg, y: ty, k: "", line: el("path", { "class": "hn-rail" }, tg), dot: el("circle", { "class": "hn-p hn-rp", r: 2.8, cx: 0, cy: 0 }, tg),
+        cat: el("text", { "class": "hn-cat", y: ty }, tg, ""), src: el("text", { "class": "hn-val hn-src", y: ty }, tg, ""), res: el("text", { "class": "hn-val hn-out", y: ty, "text-anchor": "end" }, tg, "") };
+    }
+    return true;
+  }
+
+  function fitPill(s, final) {
+    s.cat.textContent = LABEL[s.row[0]].toUpperCase() + (s.row[5] ? "" : "");
+    s.src.textContent = s.row[1]; s.res.textContent = final;
+    var fsz = 13; s.line.setAttribute("font-size", fsz);
+    var w = s.line.getComputedTextLength() + 22;
+    if (w > s.max) { fsz = Math.max(10.5, fsz * s.max / w); s.line.setAttribute("font-size", fsz.toFixed(1)); w = Math.min(s.max, s.line.getComputedTextLength() + 22); }
+    var x = s.right ? W - 20 - w : 20;
+    s.rect.setAttribute("x", x); s.rect.setAttribute("width", w.toFixed(1));
+    s.cat.setAttribute("x", x + 11); s.line.setAttribute("x", x + 11);
+    s.cat.setAttribute("text-anchor", "start");
+  }
+  function resText(r, v) { return r[2] === null ? r[4] : fmt(v, r[3]) + " " + r[4]; }
+
+  function placeRail(animate, value) {
+    var r = tickRows[tickIdx], resStr = value === undefined ? resText(r, r[2]) : value;
+    if (tick.k) tick.g.classList.remove(tick.k);
+    tick.k = "k-" + r[0]; tick.g.classList.add(tick.k);
+    tick.cat.textContent = LABEL[r[0]].toUpperCase() + (r[0] === "currency" && tickCap ? " \u00b7 " + tickCap : "");
+    tick.src.textContent = r[1];
+    tick.res.textContent = resStr;
+    var cw = tick.cat.getComputedTextLength();
+    tick.cat.setAttribute("x", 16); tick.src.setAttribute("x", 16 + cw + 8);
+    var sw = tick.src.getComputedTextLength(), x1 = 16 + cw + 8 + sw + 10;
+    tick.res.setAttribute("x", W - 16);
+    var x2 = W - 16 - Math.max(tick.res.getComputedTextLength(), (r[2] === null ? 0 : fmt(r[2], r[3]).length * 7.2 + (r[4].length + 1) * 7.2)) - 10;
+    if (x2 < x1 + 24) x2 = x1 + 24;
+    var d = "M" + x1.toFixed(1) + " " + (tick.y - 4.5) + "H" + x2.toFixed(1);
+    tick.line.setAttribute("d", d); tick.dot.style.offsetPath = "path('" + d + "')";
+  }
+  function showTick(animate) {
+    cancelAnimationFrame(tickRaf);
+    if (!tick || !tickRows.length) return;
+    var r = tickRows[tickIdx];
+    placeRail(false);
+    if (animate && r[2] !== null) {
+      tick.g.classList.remove("go"); void tick.g.getBoundingClientRect(); tick.g.classList.add("go");
+      var t0 = 0, f = function (t) {
+        if (!t0) t0 = t;
+        var k = Math.min(1, (t - t0) / 700), e = 1 - Math.pow(1 - k, 3);
+        tick.res.textContent = fmt(r[2] * e, r[3]) + " " + r[4];
+        if (k < 1) tickRaf = requestAnimationFrame(f);
+      };
+      tickRaf = requestAnimationFrame(f);
+    }
+  }
+  function tickNext() {
+    tick.g.classList.add("is-out");
+    tickTimer = setTimeout(function () {
+      tickIdx = (tickIdx + 1) % tickRows.length;
+      showTick(true); tick.g.classList.remove("is-out");
+      tickTimer = setTimeout(tickNext, 1000);
+    }, 200);
+  }
+
+  function setBeatContent(b) {
+    var data = b.currency ? currencyBeat() : b, cats = SCENE_CATS[beat], on = {};
+    shown = data;
+    cats.forEach(function (c) { on[c] = 1; });
+    syms.forEach(function (s) { s.el.classList.toggle("on", !!on[s.id]); });
+    for (var id in cpath) cpath[id].el.classList.toggle("on", !!on[id]);
+    /* Coloured particles travel along the active categories' own paths (currency: several on its path). */
+    var act = cats.filter(function (c) { return cpath[c]; }), jobs = [];
+    if (act.length === 1) for (var q = 0; q < 4; q++) jobs.push([act[0], q * 0.45]);
+    else act.slice(0, 8).forEach(function (c, i) { jobs.push([c, i * 0.15]); });
+    parts.forEach(function (p, i) {
+      var jb = jobs[i];
+      p.style.display = jb ? "" : "none";
+      if (!jb) return;
+      p.setAttribute("class", "hn-p k-" + jb[0]); p.style.offsetPath = "path('" + cpath[jb[0]].d + "')"; p.style.animationDelay = jb[1] + "s";
+    });
+    if (note) {
+      var cap = (data.caption || "").split(" \u00b7 ");
+      note.textContent = "";
+      if (cap[0]) {
+        var nx = W - 20, ny = H - PILL_H - 12 - 20;
+        note.setAttribute("x", nx); note.setAttribute("y", ny - 11 * (cap.length - 1));
+        cap.forEach(function (ln, i) { el("tspan", { x: nx, dy: i ? 11 : 0 }, note, ln); });
+      }
+    }
+    if (tick) {
+      var c2 = data.caption || "";
+      tickCap = !b.currency ? "" : /^Offline/.test(c2) ? "snapshot " + c2.slice(-10) : /observed (\d{4}-\d\d-\d\d)/.test(c2) ? c2.match(/observed (\d{4}-\d\d-\d\d)/)[1] : "";
+      tickRows = data.rows; tickIdx = 0; showTick(false);
+    }
+    pills.forEach(function (s, i) {
+      var r = data.rows[i];
+      s.row = r || null;
+      s.g.style.display = r ? "" : "none";
+      if (r) { s.g.setAttribute("class", "hn-row hn-pill k-" + r[0]); fitPill(s, resText(r, r[2])); }
+    });
+  }
+
+  function countUp() {
+    cancelAnimationFrame(raf);
+    var rows = pills.filter(function (s) { return s.row && s.row[2] !== null; });
+    if (!rows.length || motion.matches) return;
+    var t0 = 0, dur = 1000;
+    function frame(t) {
+      if (!t0) t0 = t;
+      var k = Math.min(1, (t - t0) / dur);
+      rows.forEach(function (s, i) {
+        var kk = Math.max(0, Math.min(1, k * 1.25 - i * 0.08)), ee = 1 - Math.pow(1 - kk, 3);
+        s.res.textContent = resText(s.row, s.row[2] * ee);
+      });
+      if (k < 1) raf = requestAnimationFrame(frame);
+      else rows.forEach(function (s) { s.res.textContent = resText(s.row, s.row[2]); s.g.classList.remove("flash"); void s.g.getBoundingClientRect(); s.g.classList.add("flash"); });
+    }
+    raf = requestAnimationFrame(frame);
+  }
+
+  function flow() {
+    host.classList.remove("go"); void host.offsetWidth; host.classList.add("go");
+  }
+
+  function step() {
+    host.classList.add("is-out");
+    timer = setTimeout(function () {
+      beat = (beat + 1) % BEATS.length;
+      clearTimeout(tickTimer);
+      setBeatContent(BEATS[beat]);
+      host.classList.remove("is-out");
+      if (tick) tickTimer = setTimeout(tickNext, 1000);
+      flow(); countUp();
+      timer = setTimeout(step, BEAT_MS);
+    }, 420);
+  }
+
+  function start() {
+    if (running || motion.matches || !visible || document.hidden || !svg) return;
+    running = true; host.classList.remove("is-paused");
+    timer = setTimeout(step, BEAT_MS);
+    if (tick) tickTimer = setTimeout(tickNext, 1000);
+  }
+  function stop() {
+    running = false; clearTimeout(timer); clearTimeout(tickTimer); cancelAnimationFrame(raf); cancelAnimationFrame(tickRaf);
+    host.classList.add("is-paused"); host.classList.remove("is-out");
+    if (tick && tickRows.length) { tick.g.classList.remove("is-out"); showTick(false); }
+    pills.forEach(function (s) { if (s.row) s.res.textContent = resText(s.row, s.row[2]); });
+  }
+
+  function init() {
+    if (!build()) return;
+    setBeatContent(BEATS[beat]);
+    host.classList.toggle("is-static", motion.matches);
+    if (motion.matches) host.classList.add("is-paused");
+    start();
+    if (!motion.matches) flow();
+  }
+
+  var rz = 0, lastW = 0, lastH = 0;
+  function onResize() {
+    clearTimeout(rz);
+    rz = setTimeout(function () {
+      if (host.clientWidth === lastW && host.clientHeight === lastH) return;
+      lastW = host.clientWidth; lastH = host.clientHeight;
+      var was = running; stop();
+      if (build()) { setBeatContent(BEATS[beat]); }
+      if (was) start();
+    }, 200);
+  }
+
+  function boot() {
+    lastW = host.clientWidth; lastH = host.clientHeight;
+    init();
+    if (window.ResizeObserver) new ResizeObserver(onResize).observe(host); else window.addEventListener("resize", onResize);
+    if (window.IntersectionObserver) {
+      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (visible) start(); else stop(); }).observe(host);
+    }
+    document.addEventListener("visibilitychange", function () { if (document.hidden) stop(); else start(); });
+    var onMotion = function () { stop(); host.classList.toggle("is-static", motion.matches); setBeatContent(BEATS[beat]); start(); };
+    if (motion.addEventListener) motion.addEventListener("change", onMotion);
+  }
+
+  /* Start after the headline and search are interactive so the animation never delays them. */
+  function later() { boot(); }
+  function schedule() {
+    if (window.requestIdleCallback) window.requestIdleCallback(later, { timeout: 1500 }); else setTimeout(later, 300);
+  }
+  if (document.readyState === "complete") schedule(); else window.addEventListener("load", schedule);
+})();
+  </script>
 </body>
 </html>

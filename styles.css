@@ -494,12 +494,173 @@ content: "";
 background: linear-gradient(180deg, transparent, var(--bg));
 z-index: -1;
 }
-#heroCanvas {
+/* Homepage hero: Universal Conversion Network (decorative, aria-hidden; scoped to the homepage hero).
+   About 150 unit symbols and colour-coded pathways cover the whole hero; every category keeps its own
+   colour. The text column stays calm (symbols there are dim, plus a soft scrim).
+   Static fallback = this grid; the SVG scene is added by the inline script in index.html. */
+.hero-network {
+position: absolute;
+inset: 0;
+z-index: -2;
+overflow: hidden;
+pointer-events: none;
+--hn-grid: rgba(21, 32, 46, 0.055);
+--hn-scrim: rgba(245, 247, 251, 0.82);
+--k-length: #3b5bdb; --kt-length: #2f46b8;
+--k-area: #0f8b8d; --kt-area: #0b6e70;
+--k-volume: #06b6d4; --kt-volume: #0e7490;
+--k-weight: #f97316; --kt-weight: #c2540a;
+--k-temperature: #ef4444; --kt-temperature: #c81e1e;
+--k-time: #8b5cf6; --kt-time: #6d3fd6;
+--k-speed: #84cc16; --kt-speed: #4d7c0f;
+--k-pressure: #4f46e5; --kt-pressure: #3730a3;
+--k-power: #eab308; --kt-power: #a16207;
+--k-energy: #f59e0b; --kt-energy: #b45309;
+--k-electricity: #0099ff; --kt-electricity: #0a64b8;
+--k-frequency: #d946ef; --kt-frequency: #a21caf;
+--k-angle: #40e0d0; --kt-angle: #0f9d8f;
+--k-digital: #38bdf8; --kt-digital: #0a74a8;
+--k-currency: #10b981; --kt-currency: #047857;
+--k-density: #8a9a1b; --kt-density: #626f12;
+--k-flow: #4fd1c5; --kt-flow: #13857c;
+--k-agriculture: #22c55e; --kt-agriculture: #15803d;
+--k-astronomy: #6d28d9; --kt-astronomy: #5b21b6;
+--k-chemistry: #ec4899; --kt-chemistry: #be185d;
+--k-cooking: #ff6b5e; --kt-cooking: #d9433a;
+--k-engineering: #4682b4; --kt-engineering: #2f6590;
+--k-force: #dc143c; --kt-force: #b0102f;
+--k-fuel_economy: #f2b705; --kt-fuel_economy: #94700a;
+--k-radiation: #ff5a00; --kt-radiation: #c84600;
+--k-scientific: #b39ddb; --kt-scientific: #7e63c2;
+--k-torque: #b87333; --kt-torque: #8f541f;
+background-image: linear-gradient(var(--hn-grid) 1px, transparent 1px), linear-gradient(90deg, var(--hn-grid) 1px, transparent 1px);
+background-size: 52px 52px;
+}
+[data-theme="dark"] .hero-network {
+--hn-grid: rgba(255, 255, 255, 0.05);
+--hn-scrim: rgba(18, 20, 23, 0.7);
+--k-length: #7c93ff; --kt-length: #7c93ff;
+--k-area: #3cc4c6; --kt-area: #3cc4c6;
+--k-volume: #22d3ee; --kt-volume: #22d3ee;
+--k-weight: #fb923c; --kt-weight: #fb923c;
+--k-temperature: #ff7b7b; --kt-temperature: #ff7b7b;
+--k-time: #b69cff; --kt-time: #b69cff;
+--k-speed: #a3e635; --kt-speed: #a3e635;
+--k-pressure: #8b8dff; --kt-pressure: #8b8dff;
+--k-power: #fde047; --kt-power: #fde047;
+--k-energy: #fbbf24; --kt-energy: #fbbf24;
+--k-electricity: #33b5ff; --kt-electricity: #33b5ff;
+--k-frequency: #f08cff; --kt-frequency: #f08cff;
+--k-angle: #5ff0e0; --kt-angle: #5ff0e0;
+--k-digital: #7dd3fc; --kt-digital: #7dd3fc;
+--k-currency: #34d399; --kt-currency: #34d399;
+--k-density: #b4c24a; --kt-density: #b4c24a;
+--k-flow: #8af0e6; --kt-flow: #8af0e6;
+--k-agriculture: #4ade80; --kt-agriculture: #4ade80;
+--k-astronomy: #9a6bff; --kt-astronomy: #9a6bff;
+--k-chemistry: #f472b6; --kt-chemistry: #f472b6;
+--k-cooking: #ff8f85; --kt-cooking: #ff8f85;
+--k-engineering: #8fb4d9; --kt-engineering: #8fb4d9;
+--k-force: #ff6b87; --kt-force: #ff6b87;
+--k-fuel_economy: #ffd54a; --kt-fuel_economy: #ffd54a;
+--k-radiation: #ff7a2e; --kt-radiation: #ff7a2e;
+--k-scientific: #cbb8ff; --kt-scientific: #cbb8ff;
+--k-torque: #e0a070; --kt-torque: #e0a070;
+}
+.hero-network .k-length { --k: var(--k-length); --kt: var(--kt-length); }
+.hero-network .k-area { --k: var(--k-area); --kt: var(--kt-area); }
+.hero-network .k-volume { --k: var(--k-volume); --kt: var(--kt-volume); }
+.hero-network .k-weight { --k: var(--k-weight); --kt: var(--kt-weight); }
+.hero-network .k-temperature { --k: var(--k-temperature); --kt: var(--kt-temperature); }
+.hero-network .k-time { --k: var(--k-time); --kt: var(--kt-time); }
+.hero-network .k-speed { --k: var(--k-speed); --kt: var(--kt-speed); }
+.hero-network .k-pressure { --k: var(--k-pressure); --kt: var(--kt-pressure); }
+.hero-network .k-power { --k: var(--k-power); --kt: var(--kt-power); }
+.hero-network .k-energy { --k: var(--k-energy); --kt: var(--kt-energy); }
+.hero-network .k-electricity { --k: var(--k-electricity); --kt: var(--kt-electricity); }
+.hero-network .k-frequency { --k: var(--k-frequency); --kt: var(--kt-frequency); }
+.hero-network .k-angle { --k: var(--k-angle); --kt: var(--kt-angle); }
+.hero-network .k-digital { --k: var(--k-digital); --kt: var(--kt-digital); }
+.hero-network .k-currency { --k: var(--k-currency); --kt: var(--kt-currency); }
+.hero-network .k-density { --k: var(--k-density); --kt: var(--kt-density); }
+.hero-network .k-flow { --k: var(--k-flow); --kt: var(--kt-flow); }
+.hero-network .k-agriculture { --k: var(--k-agriculture); --kt: var(--kt-agriculture); }
+.hero-network .k-astronomy { --k: var(--k-astronomy); --kt: var(--kt-astronomy); }
+.hero-network .k-chemistry { --k: var(--k-chemistry); --kt: var(--kt-chemistry); }
+.hero-network .k-cooking { --k: var(--k-cooking); --kt: var(--kt-cooking); }
+.hero-network .k-engineering { --k: var(--k-engineering); --kt: var(--kt-engineering); }
+.hero-network .k-force { --k: var(--k-force); --kt: var(--kt-force); }
+.hero-network .k-fuel_economy { --k: var(--k-fuel_economy); --kt: var(--kt-fuel_economy); }
+.hero-network .k-radiation { --k: var(--k-radiation); --kt: var(--kt-radiation); }
+.hero-network .k-scientific { --k: var(--k-scientific); --kt: var(--kt-scientific); }
+.hero-network .k-torque { --k: var(--k-torque); --kt: var(--kt-torque); }
+/* The old hero bottom fade would wash out the lowest pills and the rail; the network fades its own grid. */
+.hero.hero-net::after { display: none; }
+.hero-network::before {
+position: absolute;
+inset: auto 0 0 0;
+height: 30%;
+content: "";
+background: linear-gradient(180deg, transparent, var(--bg));
+}
+/* Calm centre: a soft scrim over the text column dims whatever passes behind it. */
+.hero-network::after {
+position: absolute;
+inset: 0;
+content: "";
+background: radial-gradient(ellipse 34% 52% at 50% 48%, var(--hn-scrim) 0%, var(--hn-scrim) 55%, transparent 100%);
+}
+/* Below 1360px there are no side margins for corner pills, so a full-width conversion rail sits in a small
+   band under the hero text. The band is paid for by trimming the hero's bottom margin, so the converter
+   below stays exactly where it was. */
+@media (max-width: 1359px) {
+body.homepage .hero.hero-net { padding-bottom: 22px; margin-bottom: calc(-2px - var(--home-rhythm)); }
+.hero-network::after { background: radial-gradient(ellipse 50% 60% at 50% 46%, var(--hn-scrim) 0%, var(--hn-scrim) 60%, transparent 100%); }
+}
+@media (max-width: 767px) {
+body.homepage .hero.hero-net { margin-bottom: -22px; }
+.hero-network::after { background: radial-gradient(ellipse 60% 70% at 50% 44%, var(--hn-scrim) 0%, var(--hn-scrim) 60%, transparent 100%); }
+}
+.hero-network svg {
 position: absolute;
 inset: 0;
 width: 100%;
 height: 100%;
-z-index: -2;
+}
+.hero-network .hn-cpath { fill: none; stroke: var(--k); stroke-opacity: 0.16; stroke-width: 1; stroke-dasharray: 2 6; transition: stroke-opacity 0.6s ease, stroke-width 0.6s ease; }
+.hero-network .hn-cpath.on { stroke-opacity: 0.7; stroke-width: 1.4; }
+.hero-network .hn-sym { fill: var(--kt); font-weight: 700; opacity: 0.6; transition: opacity 0.6s ease; }
+.hero-network .hn-sym.mid { opacity: 0.1; }
+.hero-network .hn-sym.on { opacity: 1; font-weight: 800; }
+.hero-network .hn-sym.mid.on { opacity: 0.2; }
+.hero-network .hn-rail { fill: none; stroke: var(--k); stroke-opacity: 0.8; stroke-width: 1.4; stroke-dasharray: 2 4; }
+.hero-network .hn-row,
+.hero-network .hn-note,
+.hero-network .hn-tick { transition: opacity 0.4s ease; }
+.hero-network.is-out .hn-row,
+.hero-network.is-out .hn-note,
+.hero-network .hn-tick.is-out { opacity: 0; }
+.hero-network .hn-pill rect { fill: var(--surface); fill-opacity: 0.92; stroke: var(--k); stroke-opacity: 0.75; }
+.hero-network .hn-pill.flash rect { animation: hn-flash 1.2s ease-out 1; }
+.hero-network .hn-cat { fill: var(--kt, var(--muted)); font-size: 9px; font-weight: 800; letter-spacing: 0.08em; }
+.hero-network .hn-val { fill: var(--text); font-weight: 700; font-variant-numeric: tabular-nums; }
+.hero-network .hn-tick .hn-val { font-size: 12.5px; }
+.hero-network .hn-arrow { fill: var(--muted); }
+.hero-network .hn-out { fill: var(--kt); }
+.hero-network .hn-note { fill: var(--kt); font-size: 9.5px; }
+.hero-network .hn-p { fill: var(--k); opacity: 0; offset-rotate: 0deg; }
+/* Particles run once per scene change (a short burst), not continuously, to keep idle CPU low. */
+.hero-network.go .hn-p { animation: hn-run 2.4s ease-in-out 1 both; }
+.hero-network .hn-tick.go .hn-rp { animation: hn-run 0.9s ease-in-out 1 both; }
+.hero-network.is-paused *,
+.hero-network.is-static * { animation-play-state: paused !important; }
+.hero-network.is-static .hn-p { display: none; }
+@keyframes hn-run { 0% { offset-distance: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+@keyframes hn-flash { 0% { stroke-opacity: 1; stroke-width: 3; } 100% { stroke-opacity: 0.75; stroke-width: 1; } }
+@media (prefers-reduced-motion: reduce) {
+.hero-network *,
+.hero-network *::before { animation: none !important; transition: none !important; }
+.hero-network .hn-p { display: none; }
 }
 .hero-content {
 width: min(980px, calc(100% - 2rem));
