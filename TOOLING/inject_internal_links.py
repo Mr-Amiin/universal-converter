@@ -428,7 +428,7 @@ def validate_flagship_table(inv, root, problems):
     for slug, (cid, a, b) in FLAGSHIP.items():
         if cid not in inv.idx or a not in inv.idx[cid] or b not in inv.idx[cid]:
             problems.append(f"flagship table: {slug} -> unresolved unit token ({cid},{a},{b})")
-    appjs = Path(root) / "app.js"
+    appjs = Path(root) / "src" / "app.js"  # readable source; root app.js is minified
     if appjs.exists():
         txt = appjs.read_text(encoding="utf-8", errors="replace")
         for slug, (cid, fa, fb) in FLAGSHIP_APPJS_IDS.items():

@@ -11,7 +11,7 @@ import json, os, re, shutil, subprocess, sys, tempfile, time, traceback
 from playwright.sync_api import sync_playwright
 from harness import ROOT, ORIGIN, LIVE_RATES, Site
 
-CACHE_V20 = "universal-converter-v20"
+CACHE_V21 = "universal-converter-v21"
 # Expected indicator texts per language: (offline message, connection-restored message).
 INDICATOR_STRINGS = {
     "en": ('Offline mode: conversions still work', 'Back online'),
@@ -100,7 +100,7 @@ class Env:
         time.sleep(0.5)
         return controlled
 
-    def cache_urls(self, name=CACHE_V20):
+    def cache_urls(self, name=CACHE_V21):
         return self.page.evaluate("""async (n) => { if (!(await caches.has(n))) return null;
             const c = await caches.open(n); return (await c.keys()).map(r => r.url.replace(location.origin, '')); }""", name)
 
@@ -283,7 +283,7 @@ def main():
 
 def run_all(pw):
     steps = [s1_install_and_cache, s2_outage_refresh_uncached_restore, s3_currency, s4_language_theme_a11y,
-             s5_last_resort, s6_subresources, s7_cloudflare_redirect_host, s8_install_resilience, s9_upgrade_v19_to_v20,
+             s5_last_resort, s6_subresources, s7_cloudflare_redirect_host, s8_install_resilience, s9_upgrade_v19_to_v21,
              s10_indicator_all_languages]
     only = [a for a in sys.argv[1:] if a.isdigit()]
     for n, step in enumerate(steps, 1):
@@ -303,7 +303,7 @@ def s1_install_and_cache(pw):
         controlled = env.install()
         check("service worker active and controlling the page after first reload", controlled)
         names = env.cache_names()
-        check("only the v20 cache exists", names == [CACHE_V20], names)
+        check("only the v21 cache exists", names == [CACHE_V21], names)
         urls = env.cache_urls() or []
         for required in ["/", "/index.html", "/styles.css", "/app.js", "/search-engine.js", "/offline.html", "/rates.json",
                          "/logo.svg", "/logo.svg?v=2", "/logo-dark.svg?v=2", "/search-index/manifest.json"]:
@@ -317,11 +317,11 @@ def s1_install_and_cache(pw):
         check(f"all {len(expected)} exact search-index URLs from the manifest are cached (incl. ?v= query)", not missing, missing[:3])
         extra = [u for u in urls if u.startswith("/search-index/") and u not in expected]
         check("no unexpected search-index entries", not extra, extra[:3])
-        cached_rates = env.page.evaluate("""async () => { const c = await caches.open('%s'); const r = await c.match('/rates.json'); return r ? await r.json() : null; }""" % CACHE_V20)
+        cached_rates = env.page.evaluate("""async () => { const c = await caches.open('%s'); const r = await c.match('/rates.json'); return r ? await r.json() : null; }""" % CACHE_V21)
         check("cached /rates.json is the valid snapshot (base USD, positive rates)",
               cached_rates and cached_rates.get("base") == "USD" and len(cached_rates["rates"]) > 100 and all(float(x) > 0 for x in cached_rates["rates"].values()))
         check("cached rates.json equals the deployed file", cached_rates == rates_payload())
-        html = env.page.evaluate("""async () => { const c = await caches.open('%s'); return (await (await c.match('/')).text()); }""" % CACHE_V20)
+        html = env.page.evaluate("""async () => { const c = await caches.open('%s'); return (await (await c.match('/')).text()); }""" % CACHE_V21)
         check("cached '/' is the real homepage with the converter", 'id="fromValue"' in html and 'id="categoryList"' in html)
         check("no page errors during install", not env.page_errors, env.page_errors[:2])
     finally:
@@ -475,7 +475,7 @@ def s3_currency(pw):
         check("offline: UI states that offline reference rates are in use", re.search(r"offline|snapshot|reference|saved", note, re.I) is not None, note[-200:])
         check("offline: no uncaught errors", not env.page_errors, env.page_errors[:2])
         # ---- snapshot missing from the cache too -> built-in rates in app.js still work
-        env.page.evaluate("""async () => { const c = await caches.open('%s'); await c.delete('/rates.json'); }""" % CACHE_V20)
+        env.page.evaluate("""async () => { const c = await caches.open('%s'); await c.delete('/rates.json'); }""" % CACHE_V21)
         env.page.reload(); env.page.wait_for_selector("#categoryList button")
         meta = wait_currency_source(env.page, "builtin")
         check("snapshot absent: built-in fallback rates are used (source = builtin)", meta and meta["source"] == "builtin", meta)
@@ -557,7 +557,7 @@ def s5_last_resort(pw):
     try:
         env.install()
         page = env.page
-        page.evaluate("""async () => { const c = await caches.open('%s'); await c.delete('/'); await c.delete('/index.html'); }""" % CACHE_V20)
+        page.evaluate("""async () => { const c = await caches.open('%s'); await c.delete('/'); await c.delete('/index.html'); }""" % CACHE_V21)
         env.go_offline()
         for path in ["/", "/never/cached/path/"]:
             page.goto(ORIGIN + path)
@@ -613,11 +613,11 @@ def s7_cloudflare_redirect_host(pw):
     env = Env(pw, cloudflare=True)
     try:
         controlled = env.install()
-        check("installs on a redirecting host", controlled and env.cache_names() == [CACHE_V20], env.cache_names())
+        check("installs on a redirecting host", controlled and env.cache_names() == [CACHE_V21], env.cache_names())
         urls = env.cache_urls() or []
         check("'/' and '/index.html' both cached", "/" in urls and "/index.html" in urls)
         red = env.page.evaluate("""async () => { const c = await caches.open('%s'); const out = {};
-            for (const k of ['/', '/index.html', '/about.html', '/offline.html', '/guides.html']) { const r = await c.match(k); out[k] = r ? r.redirected : 'missing'; } return out; }""" % CACHE_V20)
+            for (const k of ['/', '/index.html', '/about.html', '/offline.html', '/guides.html']) { const r = await c.match(k); out[k] = r ? r.redirected : 'missing'; } return out; }""" % CACHE_V21)
         check("no cached entry is a redirected response", all(v is False for v in red.values()), red)
         env.go_offline()
         r = env.page.goto(ORIGIN + "/about.html")
@@ -651,7 +651,7 @@ def s8_install_resilience(pw):
         try:
             controlled = env.install()
             urls = env.cache_urls() or []
-            check(f"[{label}] service worker still installs and activates", controlled and env.cache_names() == [CACHE_V20], env.cache_names())
+            check(f"[{label}] service worker still installs and activates", controlled and env.cache_names() == [CACHE_V21], env.cache_names())
             check(f"[{label}] homepage + core assets cached", all(u in urls for u in ["/", "/index.html", "/app.js", "/styles.css", "/search-engine.js", "/offline.html"]))
             if "rates.json" in label:
                 check(f"[{label}] invalid/missing snapshot is NOT cached", "/rates.json" not in urls, [u for u in urls if "rates" in u])
@@ -668,20 +668,20 @@ def s8_install_resilience(pw):
         names = env.cache_names()
         has_active = env.page.evaluate("navigator.serviceWorker.getRegistration().then(r => !!(r && r.active))")
         check("a missing CORE asset aborts installation (no active worker, no partial cache serving)", not has_active, (has_active, names))
-        check("no v20 cache left claiming to be complete", CACHE_V20 not in names or not has_active, names)
+        check("no v21 cache left claiming to be complete", CACHE_V21 not in names or not has_active, names)
     finally:
         env.close()
 
 
 # --------------------------------------------------------------------------------------------
-def s9_upgrade_v19_to_v20(pw):
-    scenario("9. Upgrade from the deployed service-worker v19 to v20")
+def s9_upgrade_v19_to_v21(pw):
+    scenario("9. Upgrade from the deployed service-worker v19 to v21")
     tmp = tempfile.mkdtemp(prefix="uc-upgrade-")
     site_dir = os.path.join(tmp, "site")
     try:
         shutil.copytree(ROOT, site_dir, ignore=shutil.ignore_patterns(".git", "tests", "__pycache__"))
         files = ["service-worker.js", "app.js", "styles.css", "offline.html"]
-        v20 = {f: open(os.path.join(ROOT, f), "rb").read() for f in files}
+        v21 = {f: open(os.path.join(ROOT, f), "rb").read() for f in files}
         for f in files:                                   # restore the deployed v19 versions of the files this change touches
             blob = subprocess.check_output(["git", "-C", ROOT, "show", "HEAD:" + f])
             open(os.path.join(site_dir, f), "wb").write(blob)
@@ -708,24 +708,24 @@ def s9_upgrade_v19_to_v20(pw):
             open_category(page, "Electricity")
             page.fill("#fromValue", "314.15"); page.fill("#contextVoltage", "208")
             page.evaluate("window.__sameDocument = 'upgrade-marker'")
-            # deploy v20
+            # deploy v21
             for f in files:
-                open(os.path.join(site_dir, f), "wb").write(v20[f])
+                open(os.path.join(site_dir, f), "wb").write(v21[f])
             page.evaluate("navigator.serviceWorker.getRegistration().then(r => r.update())")
             end = time.time() + 20
-            while time.time() < end and env.cache_names() != [CACHE_V20]:
+            while time.time() < end and env.cache_names() != [CACHE_V21]:
                 time.sleep(0.3)
             names = env.cache_names()
-            check("update: v20 activated and the v19 cache was removed", names == [CACHE_V20], names)
+            check("update: v21 activated and the v19 cache was removed", names == [CACHE_V21], names)
             check("update: open page not reloaded, inputs untouched", page.evaluate("window.__sameDocument") == "upgrade-marker" and page.input_value("#fromValue") == "314.15" and page.input_value("#contextVoltage") == "208")
             urls = env.cache_urls() or []
-            check("update: v20 cache is complete (rates + search index + shell)", all(u in urls for u in ["/", "/index.html", "/rates.json", "/search-index/manifest.json", "/search-engine.js", "/offline.html"]) and len([u for u in urls if u.startswith("/search-index/")]) == 30, len(urls))
+            check("update: v21 cache is complete (rates + search index + shell)", all(u in urls for u in ["/", "/index.html", "/rates.json", "/search-index/manifest.json", "/search-engine.js", "/offline.html"]) and len([u for u in urls if u.startswith("/search-index/")]) == 30, len(urls))
             res = pick(page, "ampere", "watt", 2)
             check("update: converter keeps working in the old page during the switch (2 A @ 208 V = 416 W)", near(num(res), 416.0), res)
             # now offline refresh on the upgraded worker
             env.go_offline()
             page.reload(); page.wait_for_selector("#categoryList button")
-            check("after upgrade + offline refresh: v20 app.js active (indicator present and shows offline)", "Offline" in page.inner_text("#offlineStatus"))
+            check("after upgrade + offline refresh: v21 app.js active (indicator present and shows offline)", "Offline" in page.inner_text("#offlineStatus"))
             open_category(page, "Temperature")
             check("after upgrade + offline refresh: converter works", pick(page, "celsius", "fahrenheit", 100) == "212")
             r = page.goto(ORIGIN + "/never/cached/")
@@ -737,22 +737,22 @@ def s9_upgrade_v19_to_v20(pw):
         finally:
             env.close()
 
-        # failed upgrade: v20 with a missing core asset must leave v19 fully in charge
+        # failed upgrade: v21 with a missing core asset must leave v19 fully in charge
         for f in files:
             blob = subprocess.check_output(["git", "-C", ROOT, "show", "HEAD:" + f]); open(os.path.join(site_dir, f), "wb").write(blob)
         env = Env(pw, root=site_dir, live=live_payload())
         try:
             env.install()
             for f in files:
-                open(os.path.join(site_dir, f), "wb").write(v20[f])
-            env.site.overrides["/search-engine.js"] = (503, b"")            # core asset unavailable during the v20 install
+                open(os.path.join(site_dir, f), "wb").write(v21[f])
+            env.site.overrides["/search-engine.js"] = (503, b"")            # core asset unavailable during the v21 install
             env.page.evaluate("navigator.serviceWorker.getRegistration().then(r => r.update())")
             time.sleep(0.5)
             end = time.time() + 30       # wait for the install attempt to finish (it settles every core write first)
             while time.time() < end and env.page.evaluate("navigator.serviceWorker.getRegistration().then(r => !!(r.installing || r.waiting))"):
                 time.sleep(0.3)
             names = env.cache_names()
-            check("failed v20 install (core asset 503): v19 and its cache stay active, nothing half-installed", names == ["universal-converter-v19"], names)
+            check("failed v21 install (core asset 503): v19 and its cache stay active, nothing half-installed", names == ["universal-converter-v19"], names)
             env.go_offline()
             env.page.reload(); env.page.wait_for_selector("#categoryList button")
             check("v19 still serves the homepage offline after the failed upgrade", near(num(pick(env.page, "meter", "foot", 1)), 3.280839895))

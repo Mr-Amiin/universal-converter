@@ -5,7 +5,7 @@ const fs = require('fs'), path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const dataset = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
 const REMOTE = 'https://raw.githubusercontent.com/Mr-Amiin/universal-converter/data/rates.json';
-const appJs = fs.readFileSync(path.join(ROOT, 'app.js'), 'utf8');
+const appJs = fs.readFileSync(path.join(ROOT, 'src', 'app.js'), 'utf8');
 let failures = 0;
 const check = (name, ok, detail) => { console.log((ok ? 'PASS ' : 'FAIL ') + name + (ok ? '' : '  -> ' + detail)); if (!ok) failures++; };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));

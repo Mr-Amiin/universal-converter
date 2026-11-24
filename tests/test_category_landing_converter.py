@@ -132,7 +132,7 @@ BLOCKED = ("googlesyndication", "google-analytics", "googletagmanager")
 # instrumented copy with two read-only probes (the file on disk is untouched):
 #   window.__reg      -> [{id, units:[unitId,...]}, ...] from the real registry
 #   window.__getState -> the live converter state object
-_APP_SRC = (ROOT / "app.js").read_text(encoding="utf8")
+_APP_SRC = (ROOT / "src" / "app.js").read_text(encoding="utf8")
 _REG_LINE = "const categoryMap = new Map(categories.map((category) => [category.id, category]));"
 assert _APP_SRC.count(_REG_LINE) == 1 and _APP_SRC.rstrip().endswith("}());")
 INSTRUMENTED_APP = _APP_SRC.replace(

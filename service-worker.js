@@ -1,4 +1,4 @@
-const CACHE_NAME = "universal-converter-v20";
+const CACHE_NAME = "universal-converter-v21";
 const APP_SHELL = [
 "/",
 "/index.html",
@@ -207,7 +207,7 @@ self.addEventListener("install", (event) => {
         ));
     }).then(() => self.skipWaiting()).catch((error) => {
       // Never leave a half-filled cache behind: an older worker that is still active looks up
-      // every cache by name, so partial v20 entries could otherwise leak into it.
+      // every cache by name, so partial v21 entries could otherwise leak into it.
       return caches.delete(CACHE_NAME).then(() => { throw error; });
     })
   );
