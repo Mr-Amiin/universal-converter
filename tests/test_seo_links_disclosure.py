@@ -79,7 +79,7 @@ class TestStaticHtml(unittest.TestCase):
         print(f"\n[audit] anchors verified identical to HEAD across {len(PAGES)} pages: {total}")
 
     def test_css_block_is_present_once_and_scoped(self):
-        css = (ROOT / "styles.css").read_text(encoding="utf8")
+        css = (ROOT / "src" / "styles.css").read_text(encoding="utf8")
         self.assertEqual(css.count("BEGIN seo-links-disclosure"), 1)
         block = css[css.index("/* BEGIN seo-links-disclosure */") : css.index("/* END seo-links-disclosure */")]
         selectors = re.findall(r"(?:^|\})\s*([^{}@/]+?)\s*\{", block)

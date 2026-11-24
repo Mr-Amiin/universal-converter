@@ -10,7 +10,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LANGS = "es fr de pt it ar zh ja ko hi tr id so".split()  # English is the page source
-APP_JS = (ROOT / "app.js").read_text(encoding="utf-8")
+APP_JS = (ROOT / "src" / "app.js").read_text(encoding="utf-8")
 VOCAB = json.loads((ROOT / "tests/fixtures/i18n_comparison_vocab.json").read_text(encoding="utf-8"))
 
 HUB_KEYS = ["popular_conversions_heading", "all_conversions_heading_template",

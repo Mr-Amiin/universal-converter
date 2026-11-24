@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parent
 SITEMAP_PATH = ROOT / "sitemap.xml"
 TEMPLATE_PATH = ROOT / "templates" / "kg-to-lbs-template.html"
 REGISTRY_PATH = ROOT / "seo-conversion-registry.json"
-APP_JS_PATH = ROOT / "app.js"
+APP_JS_PATH = ROOT / "src" / "app.js"  # readable source; root app.js is the minified build
 
 UNIT_CATALOG = {
     "kilogram": {"name": "Kilogram", "symbol": "kg", "definition": "The kilogram (kg) is the SI base unit of mass.", "factor": 1.0, "category": "weight"},
