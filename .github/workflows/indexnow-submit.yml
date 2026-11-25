@@ -1,46 +1,54 @@
-name: Submit changed pages to IndexNow
+name: Submit queued pages to IndexNow
 
 on:
   push:
     branches:
       - main
+  schedule:
+    # Drain one 1,000-URL batch every 15 minutes while a backlog exists.
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   deployments: read
 
-# Serialize submissions and retain multiple pending main-branch runs.
-# GitHub allows up to 100 pending runs in a concurrency queue.
+# Serialize queue updates and submissions. The queue branch is the durable
+# source of truth; scheduled runs resume work even if a push event is delayed.
 concurrency:
   group: indexnow-production
   queue: max
 
 jobs:
-  submit-changed-pages:
+  submit-queued-pages:
     runs-on: ubuntu-latest
     timeout-minutes: 35
 
     steps:
-      - name: Check out the exact pushed commit
-        uses: actions/checkout@v4
+      - name: Check out repository history
+        uses: actions/checkout@v7
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ github.event_name == 'push' && github.sha || 'refs/heads/main' }}
           fetch-depth: 0
+          persist-credentials: true
 
-      - name: Wait for the matching successful GitHub Pages deployment and submit changed pages
+      - name: Discover deployed changes, maintain queue, and submit one batch
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REF: ${{ github.ref }}
           INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INDEXNOW_QUEUE_BRANCH: indexnow-queue
+          INDEXNOW_BATCH_SIZE: '1000'
         run: python scripts/indexnow-submit.py
 
-      - name: Save submission report
+      - name: Save queue and submission report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: indexnow-report-${{ github.run_id }}
+          name: indexnow-queue-report-${{ github.run_id }}
           path: indexnow-report/
           if-no-files-found: ignore
           retention-days: 30
