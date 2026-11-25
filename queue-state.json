@@ -1,9 +1,9 @@
 {
   "accepted_url_count": 1000,
   "last_scanned_deployment": {
-    "created_at": "2026-11-25T21:35:38Z",
-    "id": 8070077926,
-    "sha": "2c5ecf6c6f9167e4c0e0662b10ccb085575fc6d7"
+    "created_at": "2026-11-25T22:21:54Z",
+    "id": 8070970707,
+    "sha": "3fb00b0a62c9f3bbd7d0511aa1e33ff9e4a49c03"
   },
   "last_submission": {
     "accepted_at": "2026-11-25T21:44:14.317025+00:00",
@@ -19,5 +19,5 @@
   "next_batch_number": 329,
   "pending_url_count": 326859,
   "schema_version": 1,
-  "updated_at": "2026-11-25T21:44:14.346899+00:00"
+  "updated_at": "2026-11-25T22:24:29.134797+00:00"
 }
