@@ -1,21 +1,27 @@
 #!/usr/bin/env python3
-"""Submit changed public HTML pages from a successful GitHub Pages deployment.
+"""Maintain a durable IndexNow URL queue and submit one batch per run.
 
-Policy:
-- Only added/modified HTML pages are submitted.
-- Deleted HTML pages are recorded, never submitted.
-- At most 1,000 URLs are submitted per deployment.
-- Any overflow is preserved in the report artifact.
-- If a previous successful github-pages deployment cannot be identified,
-  fail closed: do not submit the whole site.
+The durable queue lives on an orphan Git branch (default: indexnow-queue),
+separate from the GitHub Pages `main` publishing branch. Each queue file holds
+at most 1,000 URLs. A batch is removed after IndexNow acknowledges it with
+HTTP 200 or 202. HTTP 202 means the URLs were received while key validation is
+pending. If persisting a post-submission removal fails, the same URLs may be
+sent again; this is at-least-once processing rather than risking lost URLs.
+
+The initial checkpoint is the successful Pages deployment immediately before
+the SEO/internal-linking rollout series that followed November 19 (30dadfd...).
+That lets first activation recover those deployed page changes without
+backfilling the whole site or relying on the old 30-day report artifact.
 """
 
 from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
+import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path, PurePosixPath
@@ -26,20 +32,48 @@ from urllib.request import Request, urlopen
 SITE_HOST = "www.theuniversalconverter.com"
 SITE_ORIGIN = f"https://{SITE_HOST}"
 INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow"
-MAX_URLS = 1000
 KEY_FILE_SUFFIX = ".txt"
 REPORT_DIR = Path("indexnow-report")
-MAX_DEPLOYMENT_PAGES = 100
+STATE_BRANCH_DEFAULT = "indexnow-queue"
+STATE_FILE = "queue-state.json"
+PENDING_DIR = "pending"
+SCHEMA_VERSION = 1
+MAX_BATCH_SIZE = 1000
+MAX_DEPLOYMENT_PAGES = 20
 MAX_STATUS_PAGES = 10
 PAGES_DEPLOYMENT_TIMEOUT_SECONDS = 25 * 60
 PAGES_DEPLOYMENT_POLL_SECONDS = 15
+RETRYABLE_HTTP_CODES = {408, 425, 429, 500, 502, 503, 504}
 
-# These are repository/tooling locations, not public converter pages.
+# Successful Pages deployment immediately before the SEO/internal-linking rollout
+# series that followed PR #28. This checkpoint predates PRs #29–#35, including
+# PR #31/#32 internal linking and PR #35 (87,688 pages). It is still a targeted
+# Git diff, not a full sitemap enumeration or site-wide submission.
+INITIAL_BASELINE_SHA = "30dadfdccdef"  # unique 12-character commit prefix
+INITIAL_BASELINE_DEPLOYMENT_ID = 7912191772
+INITIAL_BASELINE_CREATED_AT = "2026-11-19T11:47:39Z"
+
 EXCLUDED_PARTS = {
     ".git", ".github", ".vscode", "node_modules", "tests", "test",
     "scripts", "sitemap-rebuild-staging", "coverage", "vendor",
 }
-RETRYABLE_HTTP_CODES = {408, 425, 429, 500, 502, 503, 504}
+
+
+def git(args: list[str], cwd: Path | None = None, *, capture: bool = True) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        cwd=str(cwd) if cwd else None,
+        check=False,
+        stdout=subprocess.PIPE if capture else None,
+        stderr=subprocess.PIPE if capture else None,
+        text=True if capture else False,
+        encoding="utf-8" if capture else None,
+    )
+    if result.returncode != 0:
+        detail = (result.stderr or "").strip() if capture else ""
+        command = "git " + " ".join(args)
+        raise RuntimeError(f"{command} failed (exit {result.returncode}). {detail}")
+    return result.stdout.strip() if capture else ""
 
 
 def parse_github_time(value: str) -> datetime:
@@ -62,194 +96,123 @@ def gh_api(path: str):
     token = os.environ.get("GH_TOKEN")
     if not token:
         raise RuntimeError("GH_TOKEN is missing.")
-    req = Request(
+    request = Request(
         "https://api.github.com" + path,
         headers={
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "universal-converter-indexnow",
+            "User-Agent": "universal-converter-indexnow-queue",
         },
     )
-    with urlopen(req, timeout=30) as response:
+    with urlopen(request, timeout=30) as response:
         return json.loads(response.read().decode("utf-8"))
 
 
-def deployment_status_history(repo: str, deployment_id: int) -> list[dict]:
-    """Fetch the complete retained status history for one deployment.
-
-    GitHub marks earlier successful Pages deployments as inactive when a newer
-    deployment succeeds. That later inactive status does not erase the earlier
-    success. GitHub retains previous deployment statuses for 90 days, so a
-    baseline outside that window cannot be proven and is handled fail-closed.
-    """
-    collected: list[dict] = []
-    for page in range(1, MAX_STATUS_PAGES + 1):
-        page_statuses = gh_api(
-            f"/repos/{repo}/deployments/{deployment_id}/statuses"
-            f"?per_page=100&page={page}"
-        )
-        if not isinstance(page_statuses, list):
-            raise RuntimeError(
-                f"Unexpected deployment-status response for deployment {deployment_id}."
-            )
-        collected.extend(page_statuses)
-        if len(page_statuses) < 100:
-            return collected
-    raise RuntimeError(
-        f"Deployment {deployment_id} has more than {MAX_STATUS_PAGES * 100} "
-        "status records; refusing to make a partial success determination."
-    )
-
-
-def latest_deployment_status(statuses: list[dict]) -> dict | None:
-    if not statuses:
-        return None
-    # Select by timestamp and status ID, not response-array order.
-    return max(
-        statuses,
-        key=lambda status: (
-            parse_github_time(status.get("created_at", "")),
-            int(status.get("id", 0)),
-        ),
-    )
-
-
-def deployment_was_successful(repo: str, deployment_id: int) -> bool:
-    """Return true if this deployment ever reached success.
-
-    Do not require success to be the latest state: Pages automatically marks
-    prior successful, non-production deployments inactive after a newer
-    deployment succeeds. The historical success is the evidence that the
-    content was actually deployed.
-    """
-    return any(
-        status.get("state") == "success"
-        for status in deployment_status_history(repo, deployment_id)
-    )
-
-
-def previous_successful_deployment(
-    repo: str, current_deployment: dict
-) -> tuple[str, int] | None:
-    current_key = deployment_order_key(current_deployment)
-    candidates: list[dict] = []
-
-    # Gather all Pages deployments within a conservative pagination ceiling,
-    # then compare their actual creation times rather than trusting API order.
+def list_pages_deployments(repo: str) -> list[dict]:
+    deployments: list[dict] = []
     for page in range(1, MAX_DEPLOYMENT_PAGES + 1):
         query = urlencode({"environment": "github-pages", "per_page": 100, "page": page})
-        deployments = gh_api(f"/repos/{repo}/deployments?{query}")
-        for deployment in deployments:
-            if int(deployment.get("id", 0)) == int(current_deployment["id"]):
-                continue
-            if deployment.get("environment") != "github-pages":
-                continue
-            if deployment.get("ref") != "main":
-                continue
-            if not deployment.get("sha"):
-                continue
-            if deployment_order_key(deployment) < current_key:
-                candidates.append(deployment)
-        if len(deployments) < 100:
-            break
-    else:
-        raise RuntimeError(
-            "Deployment history exceeded the safe scan limit; refusing to guess a baseline."
+        batch = gh_api(f"/repos/{repo}/deployments?{query}")
+        if not isinstance(batch, list):
+            raise RuntimeError("Unexpected GitHub deployments API response.")
+        deployments.extend(
+            item for item in batch
+            if item.get("environment") == "github-pages" and item.get("ref") == "main"
         )
-
-    # Newest earlier deployment first. Accept any deployment that reached
-    # success, even if GitHub later changed its latest state to inactive.
-    candidates.sort(key=deployment_order_key, reverse=True)
-    for deployment in candidates:
-        if deployment_was_successful(repo, int(deployment["id"])):
-            return deployment["sha"], int(deployment["id"])
-        time.sleep(0.05)
-    return None
-
-
-def wait_for_successful_pages_deployment(
-    repo: str, expected_sha: str, expected_ref: str
-) -> dict:
-    """Wait for the Pages deployment created by the exact main push.
-
-    This uses the push event as the trigger for branch-based Pages, then polls
-    GitHub's deployment API until the matching commit has a successful status.
-    GitHub may later mark that deployment inactive after a newer deployment
-    succeeds, so any historical success status is accepted as proof it was
-    deployed. Each run processes its own exact deployed commit; it does not
-    skip a deployment merely because a newer one has also succeeded.
-    """
-    deadline = time.monotonic() + PAGES_DEPLOYMENT_TIMEOUT_SECONDS
-    last_state = "no matching deployment record yet"
-
-    while time.monotonic() < deadline:
-        matches: list[dict] = []
-        for page in range(1, 6):
-            query = urlencode({
-                "environment": "github-pages", "per_page": 100, "page": page
-            })
-            deployments = gh_api(f"/repos/{repo}/deployments?{query}")
-            for deployment in deployments:
-                if (
-                    deployment.get("environment") == "github-pages"
-                    and deployment.get("ref") == expected_ref
-                    and deployment.get("sha") == expected_sha
-                ):
-                    matches.append(deployment)
-            if len(deployments) < 100:
-                break
-
-        matches.sort(key=deployment_order_key, reverse=True)
-        if matches:
-            current = matches[0]
-            statuses = deployment_status_history(repo, int(current["id"]))
-            latest = latest_deployment_status(statuses)
-            if latest is None:
-                last_state = f"deployment {current['id']} has no status yet"
-            else:
-                state = latest.get("state", "unknown")
-                last_state = f"deployment {current['id']} latest status is {state}"
-                # A later Pages deployment can change this deployment's latest
-                # state from success to inactive before this queued workflow
-                # run polls it. Historical success is still valid evidence that
-                # this exact commit was deployed and must still be processed.
-                if any(status.get("state") == "success" for status in statuses):
-                    print(
-                        "Confirmed this commit reached a successful GitHub Pages "
-                        f"deployment: {current['id']} ({expected_sha}); latest status={state}."
-                    )
-                    return current
-                if state in {"failure", "error", "inactive"}:
-                    raise RuntimeError(
-                        "The matching GitHub Pages deployment has no successful "
-                        f"status and ended in state={state}; refusing to submit."
-                    )
-
-        time.sleep(PAGES_DEPLOYMENT_POLL_SECONDS)
-
+        if len(batch) < 100:
+            return sorted(deployments, key=deployment_order_key, reverse=True)
     raise RuntimeError(
-        "Timed out waiting for a successful github-pages deployment for "
-        f"{expected_ref} at {expected_sha}. Last observation: {last_state}."
+        "GitHub Pages deployment history exceeded the scan limit; refusing to guess."
     )
 
 
-def changed_paths(previous_sha: str, deployed_sha: str):
-    # NUL-delimited output safely handles spaces, tabs, and newlines in paths.
-    # --no-renames makes renames explicit as a deletion plus an addition.
+def deployment_status_history(repo: str, deployment_id: int) -> list[dict]:
+    statuses: list[dict] = []
+    for page in range(1, MAX_STATUS_PAGES + 1):
+        query = urlencode({"per_page": 100, "page": page})
+        batch = gh_api(
+            f"/repos/{repo}/deployments/{deployment_id}/statuses?{query}"
+        )
+        if not isinstance(batch, list):
+            raise RuntimeError(
+                f"Unexpected status response for deployment {deployment_id}."
+            )
+        statuses.extend(batch)
+        if len(batch) < 100:
+            return statuses
+    raise RuntimeError(
+        f"Deployment {deployment_id} has too many status records; refusing partial review."
+    )
+
+
+def deployment_ever_succeeded(repo: str, deployment: dict) -> bool:
+    # GitHub may append `inactive` after a later Pages deployment. Historical
+    # success remains proof that this exact commit was deployed successfully.
+    return any(
+        item.get("state") == "success"
+        for item in deployment_status_history(repo, int(deployment["id"]))
+    )
+
+
+def latest_successful_pages_deployment(repo: str) -> dict:
+    for deployment in list_pages_deployments(repo):
+        if deployment_ever_succeeded(repo, deployment):
+            return deployment
+    raise RuntimeError("No successful main/github-pages deployment could be identified.")
+
+
+def wait_for_expected_pages_deployment(repo: str, expected_sha: str) -> dict:
+    deadline = time.monotonic() + PAGES_DEPLOYMENT_TIMEOUT_SECONDS
+    last_state = "no matching github-pages deployment found"
+    while time.monotonic() < deadline:
+        matches = [
+            item for item in list_pages_deployments(repo)
+            if item.get("sha") == expected_sha
+        ]
+        for deployment in matches:
+            statuses = deployment_status_history(repo, int(deployment["id"]))
+            latest = max(
+                statuses,
+                key=lambda item: (
+                    parse_github_time(item.get("created_at", "")),
+                    int(item.get("id", 0)),
+                ),
+                default=None,
+            )
+            if any(item.get("state") == "success" for item in statuses):
+                print(
+                    "Confirmed Pages deployment reached success: "
+                    f"{deployment['id']} ({expected_sha}); latest="
+                    f"{latest.get('state') if latest else 'unknown'}."
+                )
+                return deployment
+            state = latest.get("state", "unknown") if latest else "no status yet"
+            last_state = f"deployment {deployment['id']} status={state}"
+            if state in {"failure", "error"}:
+                raise RuntimeError(
+                    f"The matching Pages deployment failed ({last_state}); not queueing URLs."
+                )
+        time.sleep(PAGES_DEPLOYMENT_POLL_SECONDS)
+    raise RuntimeError(
+        "Timed out waiting for the matching Pages deployment. Last observation: "
+        + last_state
+    )
+
+
+def changed_paths(previous_sha: str, deployed_sha: str) -> tuple[list[str], list[str]]:
     output = subprocess.check_output(
         [
             "git", "diff", "--name-status", "-z", "--no-renames",
             previous_sha, deployed_sha, "--",
         ]
     )
-    fields = output.decode("utf-8").split("\0")
+    parts = output.decode("utf-8").split("\0")
     added_or_modified: list[str] = []
     deleted: list[str] = []
     index = 0
-    while index < len(fields) - 1:
-        status = fields[index]
-        path = fields[index + 1]
+    while index + 1 < len(parts):
+        status, path = parts[index], parts[index + 1]
         index += 2
         if not status or not path:
             continue
@@ -260,7 +223,7 @@ def changed_paths(previous_sha: str, deployed_sha: str):
     return added_or_modified, deleted
 
 
-def public_html_url(path_text: str, require_file: bool) -> str | None:
+def public_html_url(path_text: str, *, require_file: bool) -> str | None:
     try:
         relative = PurePosixPath(path_text)
         parts = relative.parts
@@ -271,28 +234,23 @@ def public_html_url(path_text: str, require_file: bool) -> str | None:
             or any(part in EXCLUDED_PARTS or part.startswith(".") for part in parts)
         ):
             return None
-
         lower_name = parts[-1].lower()
         if not lower_name.endswith(".html"):
             return None
         if ".tmp" in lower_name or lower_name.endswith((".bak.html", ".old.html")):
             return None
-
         if require_file:
             root = Path.cwd().resolve()
-            candidate = root
-            for part in parts:
-                candidate = candidate / part
-                if candidate.is_symlink():
-                    return None
+            candidate = root.joinpath(*parts)
+            if any((root.joinpath(*parts[:i])).is_symlink() for i in range(1, len(parts) + 1)):
+                return None
             resolved = candidate.resolve()
             if not resolved.is_relative_to(root) or not resolved.is_file():
                 return None
-
         encoded_parts = [quote(part, safe="-._~") for part in parts]
         if lower_name == "index.html":
-            folder_parts = encoded_parts[:-1]
-            route = "/" if not folder_parts else "/".join(["", *folder_parts, ""])
+            folders = encoded_parts[:-1]
+            route = "/" if not folders else "/" + "/".join(folders) + "/"
         else:
             route = "/" + "/".join(encoded_parts)
         return SITE_ORIGIN + route
@@ -300,18 +258,177 @@ def public_html_url(path_text: str, require_file: bool) -> str | None:
         return None
 
 
-def write_report(lines: list[str]):
-    REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORT_DIR / "summary.txt").write_text(
-        "\n".join(lines) + "\n", encoding="utf-8"
+def atomic_write(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(content, encoding="utf-8", newline="\n")
+    temporary.replace(path)
+
+
+def default_state() -> dict:
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "last_scanned_deployment": {
+            "id": INITIAL_BASELINE_DEPLOYMENT_ID,
+            "sha": INITIAL_BASELINE_SHA,
+            "created_at": INITIAL_BASELINE_CREATED_AT,
+        },
+        "next_batch_number": 1,
+        "accepted_url_count": 0,
+        "last_submission": None,
+        "last_submission_attempt": None,
+    }
+
+
+def load_state(state_root: Path) -> dict:
+    path = state_root / STATE_FILE
+    if not path.is_file():
+        raise RuntimeError("Queue branch exists but queue-state.json is missing.")
+    try:
+        state = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RuntimeError(f"Queue state is unreadable: {exc}") from exc
+    if state.get("schema_version") != SCHEMA_VERSION:
+        raise RuntimeError("Unsupported IndexNow queue state schema version.")
+    checkpoint = state.get("last_scanned_deployment") or {}
+    if not checkpoint.get("sha"):
+        raise RuntimeError("Queue state has no scanned deployment checkpoint.")
+    return state
+
+
+def save_state(state_root: Path, state: dict) -> None:
+    atomic_write(
+        state_root / STATE_FILE,
+        json.dumps(state, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
     )
 
 
-def write_urls(filename: str, urls: list[str]):
-    REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    (REPORT_DIR / filename).write_text(
-        "".join(url + "\n" for url in urls), encoding="utf-8"
+def pending_files(state_root: Path) -> list[Path]:
+    folder = state_root / PENDING_DIR
+    if not folder.exists():
+        return []
+    return sorted(path for path in folder.glob("*.txt") if path.is_file())
+
+
+def read_pending_file(path: Path) -> list[str]:
+    return [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
+
+
+def pending_url_count(state_root: Path) -> int:
+    return sum(len(read_pending_file(path)) for path in pending_files(state_root))
+
+
+def pending_url_set(state_root: Path) -> set[str]:
+    result: set[str] = set()
+    for path in pending_files(state_root):
+        result.update(read_pending_file(path))
+    return result
+
+
+def enqueue_urls(state_root: Path, state: dict, urls: list[str], batch_size: int) -> int:
+    existing = pending_url_set(state_root)
+    unique: list[str] = []
+    seen = set(existing)
+    for url in urls:
+        if url not in seen:
+            seen.add(url)
+            unique.append(url)
+    next_number = int(state.get("next_batch_number", 1))
+    for offset in range(0, len(unique), batch_size):
+        chunk = unique[offset:offset + batch_size]
+        name = f"{next_number:012d}.txt"
+        atomic_write(
+            state_root / PENDING_DIR / name,
+            "".join(url + "\n" for url in chunk),
+        )
+        next_number += 1
+    state["next_batch_number"] = next_number
+    return len(unique)
+
+
+def remove_deleted_from_queue(state_root: Path, deleted_urls: set[str]) -> int:
+    if not deleted_urls:
+        return 0
+    removed = 0
+    for path in pending_files(state_root):
+        original = read_pending_file(path)
+        kept = [url for url in original if url not in deleted_urls]
+        removed += len(original) - len(kept)
+        if not kept:
+            path.unlink()
+        elif len(kept) != len(original):
+            atomic_write(path, "".join(url + "\n" for url in kept))
+    return removed
+
+
+def take_next_batch(state_root: Path, batch_size: int) -> tuple[Path, list[str]] | None:
+    for path in pending_files(state_root):
+        urls = read_pending_file(path)
+        if urls:
+            if len(urls) > batch_size:
+                raise RuntimeError(
+                    f"Queue batch {path.name} has {len(urls)} URLs, exceeding limit {batch_size}."
+                )
+            return path, urls
+        path.unlink()
+    return None
+
+
+def create_queue_worktree(repo_root: Path, branch: str) -> tuple[Path, bool]:
+    """Create a temporary worktree for an orphan state branch or fetch its tip."""
+    temp_root = Path(tempfile.mkdtemp(prefix="indexnow-queue-state-"))
+    # git worktree add requires an empty target directory; rmdir keeps the unique
+    # generated path while allowing Git to create the worktree directory.
+    temp_root.rmdir()
+    remote_ref = git(
+        ["ls-remote", "--heads", "origin", f"refs/heads/{branch}"],
+        cwd=repo_root,
     )
+    if remote_ref:
+        git(
+            [
+                "fetch", "origin",
+                f"+refs/heads/{branch}:refs/remotes/origin/{branch}",
+            ],
+            cwd=repo_root,
+        )
+        git(
+            ["worktree", "add", "--detach", str(temp_root), f"refs/remotes/origin/{branch}"],
+            cwd=repo_root,
+        )
+        # Keep this worktree detached. Commits can be pushed explicitly to the
+        # queue ref, and this avoids collisions with a local branch left by
+        # another worktree in local integration tests or reruns.
+        return temp_root, False
+
+    git(["worktree", "add", "--detach", str(temp_root), "HEAD"], cwd=repo_root)
+    git(["switch", "--orphan", branch], cwd=temp_root)
+    return temp_root, True
+
+
+def commit_and_push_state(state_root: Path, branch: str, message: str) -> bool:
+    git(["config", "user.name", "github-actions[bot]"], cwd=state_root)
+    git(
+        ["config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"],
+        cwd=state_root,
+    )
+    git(["add", "-A"], cwd=state_root)
+    check = subprocess.run(
+        ["git", "diff", "--cached", "--quiet"], cwd=state_root,
+        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+    if check.returncode == 0:
+        return False
+    if check.returncode != 1:
+        raise RuntimeError("Could not inspect staged queue-state changes.")
+    git(["commit", "-m", message], cwd=state_root)
+    git(["push", "origin", f"HEAD:refs/heads/{branch}"], cwd=state_root)
+    return True
+
+
+def is_submission_confirmed(http_status: int) -> bool:
+    """HTTP 200 and 202 both acknowledge receipt under the IndexNow protocol."""
+    return http_status in (200, 202)
 
 
 def retry_delay(error: HTTPError, attempt: int) -> int:
@@ -321,7 +438,7 @@ def retry_delay(error: HTTPError, attempt: int) -> int:
     return min(5 * (2 ** attempt), 30)
 
 
-def submit(urls: list[str], key: str):
+def submit(urls: list[str], key: str) -> tuple[int, str]:
     payload = {
         "host": SITE_HOST,
         "key": key,
@@ -335,7 +452,6 @@ def submit(urls: list[str], key: str):
         headers={"Content-Type": "application/json; charset=utf-8"},
         method="POST",
     )
-
     for attempt in range(4):
         try:
             with urlopen(request, timeout=60) as response:
@@ -344,134 +460,269 @@ def submit(urls: list[str], key: str):
             detail = error.read().decode("utf-8", "replace")
             if error.code in RETRYABLE_HTTP_CODES and attempt < 3:
                 delay = retry_delay(error, attempt)
-                print(
-                    f"IndexNow HTTP {error.code}; retrying in {delay}s "
-                    f"(attempt {attempt + 1}/4).",
-                    file=sys.stderr,
-                )
+                print(f"IndexNow HTTP {error.code}; retrying in {delay}s.", file=sys.stderr)
                 time.sleep(delay)
                 continue
-            raise RuntimeError(
-                f"IndexNow returned HTTP {error.code}: {detail}"
-            ) from error
+            raise RuntimeError(f"IndexNow returned HTTP {error.code}: {detail}") from error
         except URLError as error:
             if attempt < 3:
                 delay = min(5 * (2 ** attempt), 30)
-                print(
-                    f"IndexNow network error; retrying in {delay}s "
-                    f"(attempt {attempt + 1}/4): {error}",
-                    file=sys.stderr,
-                )
+                print(f"IndexNow network error; retrying in {delay}s: {error}", file=sys.stderr)
                 time.sleep(delay)
                 continue
             raise RuntimeError(f"IndexNow request failed after retries: {error}") from error
-
     raise RuntimeError("IndexNow submission exhausted its retry loop.")
 
 
-def main():
+def write_report(lines: list[str]) -> None:
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    repo = os.environ.get("GITHUB_REPOSITORY")
-    pushed_sha = os.environ.get("GITHUB_SHA")
-    pushed_ref = os.environ.get("GITHUB_REF")
-    key = os.environ.get("INDEXNOW_KEY", "").strip()
-    if not repo or not pushed_sha or not pushed_ref:
-        raise RuntimeError("GitHub repository/commit/ref environment is missing.")
-    if pushed_ref != "refs/heads/main":
-        write_report([
-            "Result: skipped",
-            f"Reason: push ref was {pushed_ref!r}, not refs/heads/main.",
-        ])
-        print("Not a main-branch push; skipped.")
-        return
+    atomic_write(REPORT_DIR / "summary.txt", "\n".join(lines) + "\n")
+
+
+def write_report_urls(filename: str, urls: list[str]) -> None:
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    atomic_write(REPORT_DIR / filename, "".join(url + "\n" for url in urls))
+
+
+def validate_key(key: str) -> None:
     if not key:
         raise RuntimeError("INDEXNOW_KEY secret is missing.")
     if not (8 <= len(key) <= 128) or any(
-        c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
-        for c in key
+        char not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-"
+        for char in key
     ):
         raise RuntimeError("INDEXNOW_KEY does not match the IndexNow key format.")
 
-    # Branch-based GitHub Pages deployments are created after the main push.
-    # Wait for the deployment for this exact commit before calculating changes.
-    current = wait_for_successful_pages_deployment(repo, pushed_sha, "main")
-    deployed_sha = current["sha"]
-    deployment_id = int(current["id"])
 
-    # Process this exact successful deployment, even if newer commits have
-    # already deployed. This preserves a separate diff for every deployed
-    # revision and avoids losing intermediate changes when runs are queued.
-    previous = previous_successful_deployment(repo, current)
-    if previous is None:
-        write_report([
-            "Result: skipped safely",
-            f"Current deployment: {deployment_id} ({deployed_sha})",
-            "Reason: no earlier successful main/github-pages deployment was found.",
-            "No full-site submission was attempted.",
-        ])
-        print("No previous successful production deployment found; fail-closed skip.")
-        return
+def scan_and_enqueue(
+    repo_root: Path,
+    state_root: Path,
+    state: dict,
+    deployment: dict,
+    batch_size: int,
+) -> tuple[int, int, list[str]]:
+    checkpoint = state["last_scanned_deployment"]
+    previous_sha = checkpoint["sha"]
+    deployed_sha = deployment["sha"]
+    if previous_sha == deployed_sha:
+        state["last_scanned_deployment"] = {
+            "id": int(deployment["id"]),
+            "sha": deployed_sha,
+            "created_at": deployment["created_at"],
+        }
+        return 0, 0, []
 
-    previous_sha, previous_id = previous
-    # The full-history checkout should contain both commits. Fail closed if it
-    # does not; never substitute the current branch tip or the whole site.
-    subprocess.check_call(["git", "cat-file", "-e", f"{previous_sha}^{{commit}}"])
+    git(["cat-file", "-e", f"{previous_sha}^{{commit}}"], cwd=repo_root)
+    git(["cat-file", "-e", f"{deployed_sha}^{{commit}}"], cwd=repo_root)
+    ancestry = subprocess.run(
+        ["git", "merge-base", "--is-ancestor", previous_sha, deployed_sha],
+        cwd=repo_root,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if ancestry.returncode != 0:
+        raise RuntimeError(
+            "The saved queue checkpoint is not an ancestor of the latest successful "
+            "Pages deployment. Queue checkpoint was preserved; refusing to skip commits."
+        )
 
-    changed, deleted = changed_paths(previous_sha, deployed_sha)
+    changed_paths_list, deleted_paths_list = changed_paths(previous_sha, deployed_sha)
+    # Check the changed files in the exact deployed commit, not in a newer main tip.
+    git(["checkout", "--detach", deployed_sha], cwd=repo_root)
     changed_urls = sorted({
-        url for path in changed
+        url for path in changed_paths_list
         if (url := public_html_url(path, require_file=True))
     })
     deleted_urls = sorted({
-        url for path in deleted
+        url for path in deleted_paths_list
         if (url := public_html_url(path, require_file=False))
     })
+    deleted_removed = remove_deleted_from_queue(state_root, set(deleted_urls))
+    newly_queued = enqueue_urls(state_root, state, changed_urls, batch_size)
+    state["last_scanned_deployment"] = {
+        "id": int(deployment["id"]),
+        "sha": deployed_sha,
+        "created_at": deployment["created_at"],
+    }
+    return newly_queued, deleted_removed, deleted_urls
 
-    selected = changed_urls[:MAX_URLS]
-    overflow = changed_urls[MAX_URLS:]
-    write_urls("submitted-candidates.txt", selected)
-    write_urls("not-submitted-over-limit.txt", overflow)
-    write_urls("deleted-report-only.txt", deleted_urls)
 
-    summary = [
-        "Result: preparing live IndexNow submission",
-        f"Site: {SITE_ORIGIN}",
-        f"Current deployment: {deployment_id} ({deployed_sha})",
-        f"Current deployment created at: {current['created_at']}",
-        f"Previous successful deployment: {previous_id} ({previous_sha})",
-        f"Changed/added public HTML URLs found: {len(changed_urls)}",
-        f"URLs selected for submission (limit {MAX_URLS}): {len(selected)}",
-        f"Changed URLs over the limit (not submitted): {len(overflow)}",
-        f"Deleted URLs (report only, not submitted): {len(deleted_urls)}",
-    ]
-
-    if not selected:
-        summary[0] = "Result: no changed public HTML pages; nothing submitted"
-        write_report(summary)
-        print("\n".join(summary))
+def main() -> None:
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    repo = os.environ.get("GITHUB_REPOSITORY")
+    event_name = os.environ.get("GITHUB_EVENT_NAME", "")
+    event_sha = os.environ.get("GITHUB_SHA", "")
+    event_ref = os.environ.get("GITHUB_REF", "")
+    key = os.environ.get("INDEXNOW_KEY", "").strip()
+    queue_branch = os.environ.get("INDEXNOW_QUEUE_BRANCH", STATE_BRANCH_DEFAULT)
+    try:
+        batch_size = int(os.environ.get("INDEXNOW_BATCH_SIZE", str(MAX_BATCH_SIZE)))
+    except ValueError as exc:
+        raise RuntimeError("INDEXNOW_BATCH_SIZE must be an integer.") from exc
+    if batch_size < 1 or batch_size > MAX_BATCH_SIZE:
+        raise RuntimeError(f"INDEXNOW_BATCH_SIZE must be between 1 and {MAX_BATCH_SIZE}.")
+    if not repo:
+        raise RuntimeError("GITHUB_REPOSITORY is missing.")
+    if event_ref and event_ref != "refs/heads/main":
+        write_report([
+            "Result: skipped",
+            f"Reason: workflow ref was {event_ref!r}, not refs/heads/main.",
+            "No queue state or IndexNow submission was changed.",
+        ])
+        print("Not running from main; skipped safely.")
         return
+    validate_key(key)
 
-    http_status, response_body = submit(selected, key)
-    if http_status == 200:
-        summary[0] = "Result: submitted successfully (IndexNow HTTP 200)"
-    elif http_status == 202:
-        summary[0] = "Result: received; IndexNow key validation pending (HTTP 202)"
-    else:
-        raise RuntimeError(f"Unexpected IndexNow HTTP status: {http_status}")
+    repo_root = Path.cwd().resolve()
+    if event_name == "push":
+        if not event_sha:
+            raise RuntimeError("GITHUB_SHA is missing for a main push event.")
+        wait_for_expected_pages_deployment(repo, event_sha)
 
-    summary.append(
-        "Note: IndexNow receipt does not guarantee crawling or indexing."
-    )
-    if response_body.strip():
-        summary.append(f"Response body: {response_body.strip()[:1000]}")
-    write_report(summary)
-    print("\n".join(summary))
-    if overflow:
-        print(
-            "WARNING: URLs beyond the 1,000-URL cap are in the report artifact, "
-            "not submitted.",
-            file=sys.stderr,
+    current_deployment = latest_successful_pages_deployment(repo)
+    deployed_sha = current_deployment["sha"]
+
+    # Bootstrap from the verified activation deployment. This captures changes
+    # from that checkpoint onward but does not backfill the existing whole site.
+    baseline = INITIAL_BASELINE_SHA
+    git(["cat-file", "-e", f"{baseline}^{{commit}}"], cwd=repo_root)
+
+    state_worktree, is_new_state = create_queue_worktree(repo_root, queue_branch)
+    try:
+        if is_new_state:
+            state = default_state()
+            if state["last_scanned_deployment"]["sha"] != baseline:
+                raise RuntimeError("Configured initial checkpoint does not match queue bootstrap.")
+        else:
+            state = load_state(state_worktree)
+
+        checkpoint_before = dict(state["last_scanned_deployment"])
+        pending_count_before = pending_url_count(state_worktree)
+        newly_queued, deleted_removed, deleted_urls = scan_and_enqueue(
+            repo_root, state_worktree, state, current_deployment, batch_size
         )
+        queue_before_submission = pending_url_count(state_worktree)
+        state_changed = (
+            is_new_state
+            or state["last_scanned_deployment"] != checkpoint_before
+            or deleted_removed > 0
+            or newly_queued > 0
+            or state.get("pending_url_count") != queue_before_submission
+            or pending_count_before != queue_before_submission
+        )
+        if state_changed:
+            state["pending_url_count"] = queue_before_submission
+            state["updated_at"] = datetime.now(timezone.utc).isoformat()
+            save_state(state_worktree, state)
+
+        # Persist discovered URLs and the scan checkpoint BEFORE contacting IndexNow.
+        # If the API fails or the runner stops, the URLs remain in the durable branch.
+        first_commit = False
+        if state_changed:
+            first_commit = commit_and_push_state(
+                state_worktree, queue_branch, "Queue deployed URLs for IndexNow"
+            )
+
+        next_batch = take_next_batch(state_worktree, batch_size)
+        report = [
+            f"Site: {SITE_ORIGIN}",
+            f"Current successful Pages deployment: {current_deployment['id']} ({deployed_sha})",
+            f"Deployment created at: {current_deployment['created_at']}",
+            f"Queue state branch: {queue_branch}",
+            f"New URLs added to persistent queue: {newly_queued}",
+            f"Pending URLs removed because pages were deleted: {deleted_removed}",
+            f"Deleted URLs (report only; not submitted): {len(deleted_urls)}",
+            f"Pending URLs before this batch: {queue_before_submission}",
+            f"Maximum URLs per run: {batch_size}",
+        ]
+        write_report_urls("deleted-report-only.txt", deleted_urls)
+
+        if next_batch is None:
+            report.insert(0, "Result: no pending URLs; nothing submitted")
+            report.append("Pending URLs remaining: 0")
+            write_report(report)
+            print("\n".join(report))
+            return
+
+        batch_path, selected = next_batch
+        report.append(f"Batch file: {batch_path.name}")
+        report.append(f"URLs selected for submission: {len(selected)}")
+
+        write_report_urls("submitted-this-run.txt", selected)
+        try:
+            http_status, response_body = submit(selected, key)
+        except Exception as submission_error:
+            failure_report = [
+                "Result: submission failed; the selected batch remains in the persistent queue",
+                f"Batch file: {batch_path.name}",
+                f"URLs retained for retry: {len(selected)}",
+                f"Pending URLs still queued: {queue_before_submission}",
+                f"Failure: {type(submission_error).__name__}: {submission_error}",
+            ]
+            write_report(failure_report)
+            raise
+        if not is_submission_confirmed(http_status):
+            raise RuntimeError(
+                f"IndexNow returned HTTP {http_status}; only HTTP 200 or 202 acknowledges receipt."
+            )
+
+        # Dequeue only after IndexNow acknowledges receipt with HTTP 200 or 202. If the
+        # following git push fails, the old batch remains remotely and may be
+        # resubmitted; at-least-once retry is safer than losing URLs.
+        batch_path.unlink()
+        state["accepted_url_count"] = int(state.get("accepted_url_count", 0)) + len(selected)
+        state["last_submission_attempt"] = {
+            "http_status": http_status,
+            "url_count": len(selected),
+            "attempted_at": datetime.now(timezone.utc).isoformat(),
+        }
+        state["last_submission"] = {
+            "deployment_id": int(current_deployment["id"]),
+            "http_status": http_status,
+            "url_count": len(selected),
+            "accepted_at": datetime.now(timezone.utc).isoformat(),
+        }
+        state["pending_url_count"] = pending_url_count(state_worktree)
+        state["updated_at"] = datetime.now(timezone.utc).isoformat()
+        save_state(state_worktree, state)
+        try:
+            second_commit = commit_and_push_state(
+                state_worktree, queue_branch, "Remove IndexNow batch acknowledged by provider"
+            )
+        except Exception as persistence_error:
+            write_report([
+                "Result: IndexNow acknowledged the batch, but queue cleanup could not be saved",
+                f"IndexNow HTTP status: {http_status}",
+                f"Batch file: {batch_path.name}",
+                f"URLs acknowledged: {len(selected)}",
+                "The remote queue still contains this batch; a later run may safely submit it again.",
+                f"Persistence failure: {type(persistence_error).__name__}: {persistence_error}",
+            ])
+            raise
+
+        if http_status == 200:
+            report.insert(0, "Result: acknowledged by IndexNow (HTTP 200)")
+        else:
+            report.insert(0, "Result: received; IndexNow key validation pending (HTTP 202)")
+        report.extend([
+            f"IndexNow HTTP status: {http_status}",
+            f"Pending URLs remaining after this batch: {state['pending_url_count']}",
+            f"Total URLs acknowledged since queue initialization: {state['accepted_url_count']}",
+            "Queue removal is persisted only after IndexNow acknowledges receipt with HTTP 200 or 202.",
+            "HTTP 202 means the URLs were received while key validation is pending.",
+            "Note: IndexNow receipt does not guarantee crawling or indexing.",
+        ])
+        if response_body.strip():
+            report.append(f"Response body: {response_body.strip()[:1000]}")
+        write_report(report)
+        print("\n".join(report))
+        print(f"Queue checkpoint persisted: {first_commit}; submission removal persisted: {second_commit}.")
+    finally:
+        try:
+            git(["worktree", "remove", "--force", str(state_worktree)], cwd=repo_root)
+        except Exception as cleanup_error:  # report cleanup; do not hide primary result
+            print(f"WARNING: could not clean temporary queue worktree: {cleanup_error}", file=sys.stderr)
+            shutil.rmtree(state_worktree, ignore_errors=True)
 
 
 if __name__ == "__main__":
@@ -479,8 +730,6 @@ if __name__ == "__main__":
         main()
     except Exception as exc:
         REPORT_DIR.mkdir(parents=True, exist_ok=True)
-        (REPORT_DIR / "error.txt").write_text(
-            f"{type(exc).__name__}: {exc}\n", encoding="utf-8"
-        )
+        atomic_write(REPORT_DIR / "error.txt", f"{type(exc).__name__}: {exc}\n")
         print(f"ERROR: {exc}", file=sys.stderr)
         sys.exit(1)
