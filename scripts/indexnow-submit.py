@@ -401,8 +401,12 @@ def create_queue_worktree(repo_root: Path, branch: str) -> tuple[Path, bool]:
         # another worktree in local integration tests or reruns.
         return temp_root, False
 
-    git(["worktree", "add", "--detach", str(temp_root), "HEAD"], cwd=repo_root)
-    git(["switch", "--orphan", branch], cwd=temp_root)
+    # Create the orphan worktree directly. This keeps Git from checking out the
+    # full website tree before immediately removing it with `switch --orphan`.
+    git(
+        ["worktree", "add", "--orphan", "-b", branch, str(temp_root)],
+        cwd=repo_root,
+    )
     return temp_root, True
 
 
