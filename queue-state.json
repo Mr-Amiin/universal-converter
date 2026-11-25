@@ -1,0 +1,14 @@
+{
+  "accepted_url_count": 0,
+  "last_scanned_deployment": {
+    "created_at": "2026-11-25T21:35:38Z",
+    "id": 8070077926,
+    "sha": "2c5ecf6c6f9167e4c0e0662b10ccb085575fc6d7"
+  },
+  "last_submission": null,
+  "last_submission_attempt": null,
+  "next_batch_number": 329,
+  "pending_url_count": 327859,
+  "schema_version": 1,
+  "updated_at": "2026-11-25T21:44:10.534561+00:00"
+}
