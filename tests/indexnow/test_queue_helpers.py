@@ -138,9 +138,53 @@ class QueueHelperTests(unittest.TestCase):
             subprocess.run(["git", "remote", "add", "origin", str(remote)], cwd=repo, check=True)
             subprocess.run(["git", "push", "-u", "origin", "main"], cwd=repo, check=True, capture_output=True)
 
-            worktree, is_new = MODULE.create_queue_worktree(repo, "indexnow-queue")
+            recorded_git_commands = []
+            real_git = MODULE.git
+
+            def recording_git(args, cwd=None, *, capture=True):
+                recorded_git_commands.append(list(args))
+                return real_git(args, cwd=cwd, capture=capture)
+
+            with patch.object(MODULE, "git", side_effect=recording_git):
+                worktree, is_new = MODULE.create_queue_worktree(repo, "indexnow-queue")
             try:
                 self.assertTrue(is_new)
+
+                # First-time queue creation must use Git's native orphan-worktree
+                # mode instead of checking out the full main/site tree and then
+                # switching to an orphan branch.
+                add_commands = [
+                    command for command in recorded_git_commands
+                    if command[:2] == ["worktree", "add"]
+                ]
+                self.assertEqual(len(add_commands), 1)
+                self.assertEqual(
+                    add_commands[0][2:5],
+                    ["--orphan", "-b", "indexnow-queue"],
+                )
+                self.assertNotIn("--detach", add_commands[0])
+
+                # The new worktree starts with an empty tree and an unborn branch.
+                self.assertEqual(
+                    sorted(item.name for item in worktree.iterdir() if item.name != ".git"),
+                    [],
+                )
+                self.assertEqual(
+                    subprocess.check_output(
+                        ["git", "symbolic-ref", "--short", "HEAD"],
+                        cwd=worktree,
+                        text=True,
+                    ).strip(),
+                    "indexnow-queue",
+                )
+                head_check = subprocess.run(
+                    ["git", "rev-parse", "--verify", "HEAD"],
+                    cwd=worktree,
+                    capture_output=True,
+                    text=True,
+                )
+                self.assertNotEqual(head_check.returncode, 0)
+
                 state = MODULE.default_state()
                 MODULE.save_state(worktree, state)
                 self.assertTrue(MODULE.commit_and_push_state(worktree, "indexnow-queue", "seed queue"))
@@ -149,6 +193,13 @@ class QueueHelperTests(unittest.TestCase):
                     text=True,
                 ).splitlines()
                 self.assertEqual(tree_files, ["queue-state.json"])
+
+                # The first queue commit must be a root commit with no parent.
+                root_commit = subprocess.check_output(
+                    ["git", "--git-dir", str(remote), "rev-list", "--parents", "-n", "1", "refs/heads/indexnow-queue"],
+                    text=True,
+                ).strip().split()
+                self.assertEqual(len(root_commit), 1)
             finally:
                 MODULE.git(["worktree", "remove", "--force", str(worktree)], cwd=repo)
 
