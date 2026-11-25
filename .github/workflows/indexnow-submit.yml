@@ -1,0 +1,46 @@
+name: Submit changed pages to IndexNow
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  deployments: read
+
+# Serialize submissions and retain multiple pending main-branch runs.
+# GitHub allows up to 100 pending runs in a concurrency queue.
+concurrency:
+  group: indexnow-production
+  queue: max
+
+jobs:
+  submit-changed-pages:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+
+    steps:
+      - name: Check out the exact pushed commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Wait for the matching successful GitHub Pages deployment and submit changed pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REF: ${{ github.ref }}
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+        run: python scripts/indexnow-submit.py
+
+      - name: Save submission report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-report-${{ github.run_id }}
+          path: indexnow-report/
+          if-no-files-found: ignore
+          retention-days: 30
