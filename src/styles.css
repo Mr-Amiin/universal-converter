@@ -3595,6 +3595,31 @@ min-height: 280px !important;
 }
 }
 
+/* Phones only (up to 767px): hide the single-category card (icon, name, unit
+   count) on SEO conversion pages and category hub pages so the converter sits
+   directly under the intro text. Both are body.seo-page; the homepage and other
+   pages are not. The card is .category-panel; app.js wraps it in
+   .category-panel-stack and sets display:flex INLINE on that wrapper, so
+   !important is required to remove the wrapper (and its grid gap) as well.
+   On phones the wrapper holds only the card (the left ad is moved out by
+   app.js at <=900px). Tablet (768px+) and desktop are unchanged; the category
+   stays reachable via the breadcrumb and the mobile menu Categories submenu. */
+@media (max-width: 767px) {
+body.seo-page .category-panel-stack,
+body.seo-page .category-panel {
+display: none !important;
+}
+/* Close the leftover gap above the converter: the intro paragraph's bottom
+   margin (16px) and the converter section's top padding (32px) stacked to 48px.
+   Leave a small 12px gap so the card does not touch the text. */
+body.seo-page .seo-top .hero-content p {
+margin-bottom: 0;
+}
+body.seo-page .converter-section .tool-section {
+padding-top: 12px;
+}
+}
+
 /* BEGIN seo-links-disclosure */
 /* Category landing pages: the "All conversions" link list is collapsed by default; the links stay in the HTML.
    The toggle sits at the bottom-right of the grid, one card wide (grid: 4 columns, 2 under 900px, 1 under 560px,
