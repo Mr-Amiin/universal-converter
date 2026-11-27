@@ -2,5 +2,26 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <sitemap>
     <loc>https://theuniversalconverter.com/sitemap-rebuild-staging/45-Tier3.xml</loc>
-  </sitemap> 
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0001.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0002.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0003.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0004.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0005.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0006.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://theuniversalconverter.com/sitemap-0007.xml</loc>
+  </sitemap>
 </sitemapindex>
