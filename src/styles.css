@@ -1435,6 +1435,14 @@ font-size: 0.66rem;
 font-weight: 900;
 text-align: center;
 }
+/* Inline SVG category icons (see iconFor() in app.js). The chip above keeps its 42x34 box,
+   gradient and centering; the stroke is currentColor, i.e. the chip's white. */
+.category-icon svg,
+.overview-icon svg {
+display: block;
+width: 22px;
+height: 22px;
+}
 .overview-icon {
 margin-bottom: 0.75rem;
 }

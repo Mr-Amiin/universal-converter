@@ -2931,7 +2931,7 @@ button.type = "button";
 button.className = category.id === state.categoryId ? "active" : "";
 button.innerHTML = `
 <span class="category-row">
-<span class="category-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
+<span class="category-icon" aria-hidden="true">${iconFor(category.id)}</span>
 <span>
 <span class="category-name">${escapeHtml(getCategoryDisplayName(category))}</span>
 <span class="category-meta">${category.units.length.toLocaleString("en-US")} ${escapeHtml(unitsLabel)}</span>
@@ -2959,7 +2959,7 @@ const displayName = getCategoryDisplayName(category);
 const displayDescription = getCategoryDisplayDescription(category);
 return `
 <a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(displayName)}: ${unitCount} ${escapeAttribute(unitsLabel)}, ${pageCount} ${escapeAttribute(pagesLabel)}">
-<span class="overview-icon" aria-hidden="true">${escapeHtml(iconFor(category.id))}</span>
+<span class="overview-icon" aria-hidden="true">${iconFor(category.id)}</span>
 <h3>${escapeHtml(displayName)}</h3>
 <p>${escapeHtml(displayDescription)}</p>
 <div class="unit-chips">
@@ -3422,37 +3422,45 @@ function categoryPageUrl(id) {
 const slugs = { flow: "flow-rate", fuel_economy: "fuel-economy" };
 return `/${slugs[id] || id}/`;
 }
+// Category icons: trusted, predefined inline SVG line icons (24x24 viewBox, Lucide-style:
+// 1.8 stroke, currentColor, round caps/joins). The markup below is a static constant. It is
+// never built from user input or from the category id (the id is only an own-property lookup
+// key), so renderCategoryList()/renderOverview() insert it WITHOUT escapeHtml(). An unknown
+// id gets the static generic fallback tile. No emoji, text glyphs, remote images or CDNs.
 function iconFor(id) {
+const attrs = 'xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true"';
 const icons = {
-length: "m",
-area: "m2",
-volume: "L",
-weight: "kg",
-temperature: "C/F",
-time: "h",
-speed: "km/h",
-pressure: "Pa",
-energy: "J",
-power: "W",
-force: "N",
-torque: "Nm",
-electricity: "V",
-frequency: "Hz",
-digital: "GB",
-angle: "deg",
-density: "rho",
-flow: "L/s",
-fuel_economy: "mpg",
-radiation: "Sv",
-chemistry: "mol",
-agriculture: "ha",
-cooking: "cup",
-astronomy: "AU",
-engineering: "psi",
-scientific: "SI",
-currency: "USD"
+length: '<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>',
+area: '<rect x="7" y="7" width="14" height="14" rx="1.5"/><path d="M7 3.5h14"/><path d="M7 2.2v2.6"/><path d="M21 2.2v2.6"/><path d="M3.5 7v14"/><path d="M2.2 7h2.6"/><path d="M2.2 21h2.6"/>',
+volume: '<path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V3"/><path d="M6 14h12"/><path d="M6 8h3"/><path d="M6 11h2"/>',
+weight: '<path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>',
+temperature: '<path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/><path d="M17.5 6.5h2"/><path d="M17.5 10h2"/>',
+time: '<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',
+speed: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/><path d="M12 5.5V7"/><path d="M5.8 11.2l1.1.7"/><path d="M18.2 11.2l-1.1.7"/>',
+pressure: '<circle cx="12" cy="9.5" r="7.5"/><path d="m12 9.5 3-3"/><path d="M12 4.2v1"/><path d="M6.7 9.5h1"/><path d="M17.3 9.5h-1"/><path d="M10.2 17v4.5h3.6V17"/>',
+energy: '<rect x="2" y="7" width="16" height="10" rx="2" ry="2"/><path d="M22 11v2"/><path d="M6 11v2"/><path d="M10 11v2"/><path d="M14 11v2"/>',
+power: '<path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/>',
+force: '<path d="M12 2v20"/><path d="m15 19-3 3-3-3"/><path d="m19 9 3 3-3 3"/><path d="M2 12h20"/><path d="m5 9-3 3 3 3"/><path d="m9 5 3-3 3 3"/>',
+torque: '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><circle cx="12" cy="12" r="1.2"/>',
+electricity: '<path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+frequency: '<path d="M2 12c1.7-7 3.3-7 5 0s3.3 7 5 0 3.3-7 5 0 3.3 7 5 0"/>',
+digital: '<path d="M22 12H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><path d="M6 16h.01"/><path d="M10 16h.01"/>',
+angle: '<path d="M2 17A10 10 0 0 1 22 17Z"/><path d="M9.5 17a2.5 2.5 0 0 1 5 0"/><path d="M20.66 12L18.41 13.3"/><path d="M17 8.34L15.7 10.59"/><path d="M12 7L12 10.2"/><path d="M7 8.34L8.3 10.59"/><path d="M3.34 12L5.59 13.3"/>',
+density: '<path d="M12 1.5l4.5 2.6v5.2L12 11.9 7.5 9.3V4.1Z"/><path d="M7.5 4.1 12 6.7l4.5-2.6"/><path d="M12 6.7v5.2"/><path d="M3 12.6l9 5.2 9-5.2"/><path d="M3 17l9 5.2 9-5.2"/>',
+flow: '<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+fuel_economy: '<path d="M3 22h12"/><path d="M4 9h10"/><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"/><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2a2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"/>',
+radiation: '<path d="M16.8 3.69A9.6 9.6 0 0 0 7.2 3.69L10 8.54A4 4 0 0 1 14 8.54Z"/><path d="M2.4 12A9.6 9.6 0 0 0 7.2 20.31L10 15.46A4 4 0 0 1 8 12Z"/><path d="M16.8 20.31A9.6 9.6 0 0 0 21.6 12L16 12A4 4 0 0 1 14 15.46Z"/><circle cx="12" cy="12" r="1.4"/>',
+chemistry: '<path d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2"/><path d="M8.5 2h7"/><path d="M7 16h10"/>',
+agriculture: '<path d="M7 20h10"/><path d="M10 20c5.5-2.5.8-6.4 3-10"/><path d="M9.5 9.4c1.1.8 1.8 2.2 2.3 3.7-2 .4-3.5.4-4.8-.3-1.2-.6-2.3-1.9-3-4.2 2.8-.5 4.4 0 5.5.8z"/><path d="M14.1 6a7 7 0 0 0-1.1 4c1.9-.1 3.3-.6 4.3-1.4 1-1 1.6-2.3 1.7-4.6-2.7.1-4 1-4.9 2z"/>',
+cooking: '<path d="M2 12h20"/><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="m4 8 16-4"/><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"/>',
+astronomy: '<circle cx="12" cy="12" r="3"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><path d="M10.4 21.9a10 10 0 0 0 9.941-15.416"/><path d="M13.5 2.1a10 10 0 0 0-9.841 15.416"/>',
+engineering: '<circle cx="12" cy="6" r="2"/><path d="M12 4V2"/><path d="M10.6 7.5 4.5 20.5"/><path d="m13.4 7.5 6.1 13"/><path d="M7.2 15q4.8 3.6 9.6 0"/>',
+scientific: '<circle cx="12" cy="12" r="1.2"/><ellipse cx="12" cy="12" rx="10" ry="4"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"/>',
+currency: '<circle cx="8" cy="8" r="6"/><path d="M18.09 10.37A6 6 0 1 1 10.34 18"/><path d="M7 6h1v4"/><path d="m16.71 13.88.7.71-2.82 2.82"/>'
 };
-return icons[id] || "U";
+const fallback = '<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18"/><path d="M12 3v18"/>';
+const body = Object.prototype.hasOwnProperty.call(icons, id) ? icons[id] : fallback;
+return `<svg ${attrs}>${body}</svg>`;
 }
 // A category LANDING page (e.g. /torque/) is an seo-page whose
 // window.__seoPageData names a category but no from/to unit pair. Returns
