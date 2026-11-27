@@ -2959,8 +2959,10 @@ const displayName = getCategoryDisplayName(category);
 const displayDescription = getCategoryDisplayDescription(category);
 return `
 <a class="overview-card" href="${escapeAttribute(href)}" aria-label="${escapeAttribute(displayName)}: ${unitCount} ${escapeAttribute(unitsLabel)}, ${pageCount} ${escapeAttribute(pagesLabel)}">
+<div class="overview-card-head">
 <span class="overview-icon" aria-hidden="true">${iconFor(category.id)}</span>
 <h3>${escapeHtml(displayName)}</h3>
+</div>
 <p>${escapeHtml(displayDescription)}</p>
 <div class="unit-chips">
 <span>${unitCount} ${escapeHtml(unitsLabel)}</span>

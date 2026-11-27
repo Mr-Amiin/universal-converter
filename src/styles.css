@@ -2965,6 +2965,26 @@ order: 2;
 display: block;
 transition: border-color 160ms ease, transform 160ms ease;
 }
+/* Homepage overview cards: icon chip and category name side by side (scoped; sidebar untouched) */
+.overview-grid .overview-card-head {
+display: flex;
+align-items: center;
+justify-content: flex-start;
+gap: 0.7rem;
+margin: 0 0 0.75rem;
+text-align: left;
+}
+.overview-grid .overview-card-head .overview-icon {
+flex: 0 0 42px;
+margin: 0;
+}
+.overview-grid .overview-card-head h3 {
+flex: 1 1 auto;
+min-width: 0;
+margin: 0;
+overflow-wrap: anywhere;
+text-align: left;
+}
 .overview-grid a:hover,
 .overview-grid a:focus-visible {
 border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
