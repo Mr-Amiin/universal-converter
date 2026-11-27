@@ -1,23 +1,23 @@
 {
-  "accepted_url_count": 12000,
+  "accepted_url_count": 13000,
   "last_scanned_deployment": {
     "created_at": "2026-11-27T22:14:37Z",
     "id": 8120309476,
     "sha": "9794cfd18b7980eed43b30c31735a150ed0d2158"
   },
   "last_submission": {
-    "accepted_at": "2026-11-27T22:15:37.821762+00:00",
+    "accepted_at": "2026-11-27T22:41:46.054866+00:00",
     "deployment_id": 8120309476,
     "http_status": 200,
     "url_count": 1000
   },
   "last_submission_attempt": {
-    "attempted_at": "2026-11-27T22:15:37.821743+00:00",
+    "attempted_at": "2026-11-27T22:41:46.054833+00:00",
     "http_status": 200,
     "url_count": 1000
   },
   "next_batch_number": 329,
-  "pending_url_count": 47790,
+  "pending_url_count": 46790,
   "schema_version": 1,
-  "updated_at": "2026-11-27T22:15:37.827491+00:00"
+  "updated_at": "2026-11-27T22:41:46.060819+00:00"
 }
