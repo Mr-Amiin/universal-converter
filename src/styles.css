@@ -214,6 +214,27 @@ font-size: 0.96rem;
 .site-footer nav {
 flex-wrap: wrap;
 }
+.site-footer nav a[href$="privacy.html"]::after {
+content: "|";
+content: "|" / "";
+margin-inline-start: clamp(0.8rem, 2vw, 1.5rem);
+color: var(--muted);
+}
+.page-card a[href^="mailto:"] {
+color: var(--accent-strong);
+font-weight: 600;
+text-decoration: underline;
+text-underline-offset: 0.2em;
+overflow-wrap: anywhere;
+}
+.page-card a[href^="mailto:"]:hover {
+text-decoration-thickness: 2px;
+}
+.page-card a[href^="mailto:"]:focus-visible {
+outline: 2px solid var(--accent-strong);
+outline-offset: 3px;
+border-radius: 2px;
+}
 .top-nav a,
 .site-footer nav a,
 .text-link {
